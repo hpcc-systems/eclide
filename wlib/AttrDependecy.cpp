@@ -6,7 +6,7 @@
 #include "RepositoryView.h"
 #include "dali.h"
 //#include "..\querybuilder\RepositoryFrame.h"
-//#include "atlsgrid.h"
+#include "atlsgrid.h"
 #include <CustomMessages.h>
 
 //  ===========================================================================
