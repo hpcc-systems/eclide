@@ -108,6 +108,7 @@ set ( SRCS
 include_directories (
 	../clib
 	../wtlex
+	
 	${EXTERNALS_DIRECTORY}/wtl/include
 	)
 
