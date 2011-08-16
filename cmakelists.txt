@@ -62,7 +62,7 @@ add_subdirectory ( EclLib )
 #add_subdirectory ( RoxieDebugger )
 #add_subdirectory ( sgrid )
 #add_subdirectory ( tabctrls )
-#add_subdirectory ( wlib )
+add_subdirectory ( wlib )
 #add_subdirectory ( wtlex )
 #add_subdirectory ( WtlTimeLine )
 
