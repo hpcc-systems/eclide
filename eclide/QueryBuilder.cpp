@@ -113,8 +113,8 @@ BOOL CQueryBuilderApp::InitInstance()
 	CComPtr<IConfig> ini = CreateIConfig(QUERYBUILDER_INI, iniPath);
 	CComPtr<IConfig> config = CreateIConfig(QUERYBUILDER_CFG);
 
-	//if (!hGrid)
-	//	hGrid = ::LoadLibrary(SGRID::CGridCtrl::GetLibraryName());
+	if (!hGrid)
+		hGrid = ::LoadLibrary(SGRID::CGridCtrl::GetLibraryName());
 
 	std::_tstring majorVersion;
 	GetAppMajorVersion(majorVersion);

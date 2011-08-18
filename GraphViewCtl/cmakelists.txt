@@ -171,12 +171,14 @@ include_directories (
 	../../GraphControl/graphlayout	
 		
 	${EXTERNALS_DIRECTORY}/wtl/include
+
 	${EXTERNALS_DIRECTORY}/agg/include
 	${EXTERNALS_DIRECTORY}/agg/font_freetype
 	${EXTERNALS_DIRECTORY}/agg/agg2d
 
 	${EXTERNALS_DIRECTORY}/freetype2/include
 	${EXTERNALS_DIRECTORY}/freetype2/include/freetype
+	
 	${EXTERNALS_DIRECTORY}/graphviz2/lib/pathplan
 	)
 
@@ -242,11 +244,13 @@ add_dependencies ( GRAPHVIEWCTL
 		COMMS
 	)
 
+SET ( FULL_LIBRARY_OUTPUT_PATH "${LIBRARY_OUTPUT_PATH}/${CMAKE_CFG_INTDIR}")
+
 target_link_libraries( GRAPHVIEWCTL
 		CLIB
 		COMMS
 		
-		../../../GraphControl/build/bin/Release/graphlayout
+		${FULL_LIBRARY_OUTPUT_PATH}/graphlayout.lib
 		
 		#${EXTERNALS_DIRECTORY}/freetype2/objs/win32/vc2008/freetype239MT.lib		
 	)

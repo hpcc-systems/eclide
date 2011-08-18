@@ -183,7 +183,7 @@ if (Boost_FOUND)
 	link_directories ( ${Boost_LIBRARY_DIRS} )
 endif (Boost_FOUND)
 
-ADD_DEFINITIONS( -D_AFXDLL )
+ADD_DEFINITIONS( -D_AFXDLL -D_USRDLL )
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 add_executable ( ECLIDE WIN32
 		${SRCS}
@@ -202,9 +202,8 @@ target_link_libraries( ECLIDE
 		GRAPHVIEWCTL
 		WLIB
 		
-		../../../../HPCC/dev/bin100/Release/BugTrap		
+		../../../HPCC/dev/bin100/Release/BugTrap		
 	)
 
 set_target_properties(ECLIDE PROPERTIES
-    COMPILE_DEFINITIONS _BIND_TO_CURRENT_CRT_VERSION,_BIND_TO_CURRENT_MFC_VERSION
     LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")

@@ -10,6 +10,7 @@ set ( SRCS
 		resource.h
 		sdksgrid.h
 		sdkstooltip.h
+		sgrid.rc
 		sgrid.cpp
 		sgrid.h
 		sgridbase.cpp
@@ -32,19 +33,15 @@ set ( SRCS
 	)
 
 include_directories (
+	../sgrid
 	../clib
 	../wtlex
 
 	${EXTERNALS_DIRECTORY}/wtl/include
 	)
 
-if (Boost_FOUND)
-	include_directories ( ${Boost_INCLUDE_DIRS} )
-	link_directories ( ${Boost_LIBRARY_DIRS} )
-endif (Boost_FOUND)
-
-add_definitions( -D_AFXDLL )
-ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
+add_definitions( -D_AFXDLL -D_USRDLL )
+#ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 add_library ( SGRID SHARED
 		${SRCS}
 
@@ -101,13 +98,3 @@ add_library ( SGRID SHARED
 		CxImage/xmemfile.cpp
 		CxImage/xmemfile.h
 	)
-
-#add_dependencies ( SGRID
-#	)
-
-#target_link_libraries( SGRID
-#	)
-
-set_target_properties(SGRID PROPERTIES
-    COMPILE_DEFINITIONS _BIND_TO_CURRENT_CRT_VERSION,_BIND_TO_CURRENT_MFC_VERSION
-    LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")

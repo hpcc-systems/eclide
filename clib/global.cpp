@@ -294,7 +294,7 @@ public:
 			CString _defaultVal = defaultVal, _val;
 			if (!m_Cfg.GetString(section.c_str(), label.c_str(), _val, _defaultVal))
 			{
-				ATLTRACE(_T("GetString(%s,%s,Err=%x)\r\n"), section, label, ::GetLastError() );
+				//ATLTRACE(_T("GetString(%s,%s,Err=%x)\r\n"), section, label, ::GetLastError() );
 				_val = _defaultVal;
 			}
 			SectionLabel id(section, label);
