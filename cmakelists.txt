@@ -1,31 +1,35 @@
-project ( Supercomputer )
+project ( ECLIDE )
 cmake_minimum_required (VERSION 2.8)
+
+IF ( WIN32 )
+    SET ( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/../bin/${CMAKE_BUILD_TYPE}" )
+    SET ( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/../bin/${CMAKE_BUILD_TYPE}" )
+ELSE ( WIN32 )
+    SET ( EXECUTABLE_OUTPUT_PATH "/usr/lib/mozilla/plugins" )
+    SET ( LIBRARY_OUTPUT_PATH "/usr/lib/mozilla/plugins" )
+ENDIF ( WIN32 )
 
 MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar)
   IF(MSVC)
-    GET_FILENAME_COMPONENT(PrecompiledBasename ${PrecompiledHeader} NAME_WE)    
-	SET(PrecompiledBinary "${CMAKE_CURRENT_BINARY_DIR}/${PrecompiledBasename}.pch")    
-	SET(Sources ${${SourcesVar}})    
-	SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}                                
-	PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""                                           
-	OBJECT_OUTPUTS "${PrecompiledBinary}")    
-	SET_SOURCE_FILES_PROPERTIES(${Sources}                                
-	PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledBinary}\" /FI\"${PrecompiledBinary}\" /Fp\"${PrecompiledBinary}\""                                           
-	OBJECT_DEPENDS "${PrecompiledBinary}")      
-	# Add precompiled header to SourcesVar    
-	LIST(APPEND ${SourcesVar} ${PrecompiledSource})  
+    GET_FILENAME_COMPONENT(PrecompiledBasename ${PrecompiledHeader} NAME_WE)
+    SET(PrecompiledBinary "$(IntDir)/${PrecompiledBasename}.pch")
+    SET(Sources ${${SourcesVar}})
+
+    SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}
+    				PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+    					OBJECT_OUTPUTS "${PrecompiledBinary}")
+    SET_SOURCE_FILES_PROPERTIES(${Sources}
+    				PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+    					OBJECT_DEPENDS "${PrecompiledBinary}") 
+    # Add precompiled header to SourcesVar
+    LIST(APPEND ${SourcesVar} ${PrecompiledSource})
+    LIST(APPEND ${SourcesVar} ${PrecompiledHeader})
   ENDIF(MSVC)
 ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 if ("${EXTERNALS_DIRECTORY}" STREQUAL "")
 	set (EXTERNALS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../HPCC/dev/Third_party")
 endif()
-
-if (WIN32)
-set ( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}" )
-set ( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}" )
-else (WIN32)
-endif (WIN32)
 
 SET( BOOST_ROOT "${EXTERNALS_DIRECTORY}/boost" )
 SET( Boost_ADDITIONAL_VERSIONS "1.44" "1.43" "1.43.0" "1.42" "1.42.0" )
@@ -54,7 +58,7 @@ add_subdirectory ( EclLib )
 #add_subdirectory ( ECLNetCtl )
 #add_subdirectory ( EditLog )
 #add_subdirectory ( EntityExtraction )
-#add_subdirectory ( en_us )
+add_subdirectory ( en_us )
 #add_subdirectory ( FileSyncAndSpray )
 #add_subdirectory ( GraphicalQueryBuilder )
 add_subdirectory ( GraphViewCtl )

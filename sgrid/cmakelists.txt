@@ -102,11 +102,12 @@ add_library ( SGRID SHARED
 		CxImage/xmemfile.h
 	)
 
-add_dependencies ( SGRID
-		CLIB
-	)
+#add_dependencies ( SGRID
+#	)
 
-target_link_libraries( SGRID
-		CLIB
-	)
+#target_link_libraries( SGRID
+#	)
 
+set_target_properties(SGRID PROPERTIES
+    COMPILE_DEFINITIONS _BIND_TO_CURRENT_CRT_VERSION,_BIND_TO_CURRENT_MFC_VERSION
+    LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")

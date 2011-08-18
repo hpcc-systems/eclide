@@ -117,17 +117,16 @@ if (Boost_FOUND)
 	link_directories ( ${Boost_LIBRARY_DIRS} )
 endif (Boost_FOUND)
 
-#add_definitions( -DCLIB_EXPORTS )
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 add_library ( CLIB SHARED
 		${SRCS}
 	)
 
 target_link_libraries( CLIB
-		Wininet.lib
-		Ws2_32.lib
-		msxml2.lib
-		comsupp.lib
-		version.lib
+		Wininet
+		Ws2_32
+		msxml2
+		comsupp
+		version
 	)
 

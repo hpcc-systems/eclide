@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'GraphViewCtl'
+		'GraphViewCtl.DLL'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}

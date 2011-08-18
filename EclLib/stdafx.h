@@ -44,6 +44,7 @@ namespace std
 }
 
 //  BOOST  ---
+#define BOOST_LIB_DIAGNOSTIC
 #ifdef _DEBUG
 #define BOOST_SPIRIT_DEBUG  
 #define BOOST_SPIRIT_DEBUG_OUT std::cerr
