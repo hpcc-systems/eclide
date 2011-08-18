@@ -1,0 +1,100 @@
+#pragma once
+
+#include "clib.h"
+
+CLIB_API void SetClipboard(const std::_tstring & txt);
+CLIB_API void CopyBitmapToClipboard(HBITMAP hBitmap, HPALETTE hPal = 0);
+CLIB_API const TCHAR * CheckExtension(const std::_tstring & path, const std::string & defaultExt, std::_tstring & ext);
+CLIB_API bool HasClipboardText();
+CLIB_API unsigned GetClipboardText(std::_tstring& cbtext);
+CLIB_API const TCHAR * EncodeForCSV(const TCHAR *csv, std::_tstring &encoded);
+CLIB_API int DecodeCSV(const std::_tstring & line, std::vector<std::_tstring> &decoded);
+CLIB_API const TCHAR * EncodeForEclNoQuote(const TCHAR *rawString, std::_tstring &encoded, bool ucescape=false);
+CLIB_API const TCHAR * EncodeForEcl(const TCHAR *rawString, std::_tstring &encoded, bool ucescape=false);
+CLIB_API const TCHAR * DecodeFromEcl(const TCHAR *rawString, std::_tstring & decoded);
+CLIB_API const TCHAR *IntToString(int i, std::_tstring &str); 
+CLIB_API bool StringToInt(const TCHAR* from, int &to);
+CLIB_API bool StringToInt(const TCHAR* from, __int64 &to);
+CLIB_API void TidyCRLF(std::_tstring & source);
+CLIB_API const TCHAR* Format(std::_tstring& str, const TCHAR* fmt ...);
+CLIB_API bool AddSeparator(std::_tstring& path);
+CLIB_API std::_tstring& MakeLower(std::_tstring& str);
+CLIB_API void Replace(std::_tstring& str, TCHAR replace, const std::_tstring& with);
+CLIB_API void Replace(std::_tstring& str, const TCHAR* replace, const std::_tstring& with);
+CLIB_API const TCHAR * EscapeXML(const std::_tstring & source, std::_tstring & target, bool escapeQuotes = false);
+CLIB_API const TCHAR * UnescapeXML(const std::_tstring & source, std::_tstring & target);
+CLIB_API const TCHAR * GetActiveXDLLPath(const std::_tstring & clsID, std::_tstring & path);
+CLIB_API const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & folder);
+
+//  Should be in wlib?
+void CLIB_API InsertSeparator(WTL::CMenu &menu);
+BOOL CLIB_API InsertMenuItem(WTL::CMenu &menu, int id, const TCHAR *item);
+BOOL CLIB_API InsertMenuItem(WTL::CMenu &menu, int pos, int id, const TCHAR *item);
+
+inline int round_int(double x)
+{
+	ATLASSERT(x > static_cast<double> (INT_MIN / 2) - 1.0);
+	ATLASSERT(x < static_cast<double> (INT_MAX / 2) + 1.0);
+
+	const static float round_to_nearest = 0.5f;
+#if _WIN64
+	int i = x;
+#elif _WIN32_WCE
+	int i = x;
+#else
+	int i;
+	__asm
+	{
+		fld x
+		fadd st, st (0)
+		fadd round_to_nearest
+		fistp i
+		sar i, 1
+	}
+#endif
+	return i;
+}
+
+inline int floor_int (double x)
+{
+	//assert (x > static_cast <double> (INT_MIN / 2) - 1.0);
+	//assert (x < static_cast <double> (INT_MAX / 2) + 1.0);
+
+	const static float round_towards_m_i = -0.5f;
+#if _WIN64
+	int i = x;
+#elif _WIN32_WCE
+	int i = x;
+#else
+	int i;
+	__asm
+	{
+		fld x
+		fadd st, st (0)
+		fadd round_towards_m_i
+		fistp i
+		sar i, 1
+	}
+#endif
+	return (i);
+}
+CLIB_API int ceil_int (double x);
+
+#define MAKEVERSION(major, minor) (ULONG)(MAKELONG(minor,major))
+
+CLIB_API const TCHAR * GetVersion(const std::_tstring & dllLabel, std::_tstring & version);
+CLIB_API ULONG GetComCtl32Version();
+
+#ifndef SEISINT_LIBEXPORTS
+CLIB_API const TCHAR * GetMyIP(std::_tstring & ip);
+#endif
+
+//  comsupp.lib does not have this function in MBCS builds...
+#ifndef SEISINT_LIBEXPORTS
+#ifndef UNICODE
+namespace _com_util 
+{
+    CLIB_API BSTR __stdcall ConvertStringToBSTR(const char* pSrc);
+}
+#endif
+#endif
