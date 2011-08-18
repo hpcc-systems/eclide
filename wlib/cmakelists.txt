@@ -100,8 +100,8 @@ include_directories (
 	../wtlex
 	../dockingwindows
 	
-	${EXTERNALS_DIRECTORY}/wtl/include
-	${EXTERNALS_DIRECTORY}/scintilla/include
+	${WTL_INCLUDE_DIR}/include
+	${SCINTILLA_INCLUDE_DIRS}/include
 	)
 
 if (Boost_FOUND)

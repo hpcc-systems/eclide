@@ -62,7 +62,7 @@ public:
 #if _MSC_VER < 1400
       return _T("SCILEXER.DLL");
 #else
-      return _T("SCILEXER.DLL");
+      return _T("ECLEDITOR.DLL");
 #endif
    }
 

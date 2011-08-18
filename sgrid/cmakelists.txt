@@ -37,7 +37,7 @@ include_directories (
 	../clib
 	../wtlex
 
-	${EXTERNALS_DIRECTORY}/wtl/include
+	${WTL_INCLUDE_DIR}/include
 	)
 
 add_definitions( -D_AFXDLL -D_USRDLL )

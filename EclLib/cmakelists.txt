@@ -25,7 +25,7 @@ include_directories (
 	../clib
 	../ecllib
 
-	${EXTERNALS_DIRECTORY}/wtl/include
+	${WTL_INCLUDE_DIR}/include
 	)
 
 if (Boost_FOUND)

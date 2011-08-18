@@ -137,10 +137,11 @@ include_directories (
 	../clib
 	../ecllib
 
-	${EXTERNALS_DIRECTORY}/wtl/include
-	${EXTERNALS_DIRECTORY}/gsoap
-	${EXTERNALS_DIRECTORY}/gsoap/extras
-	${EXTERNALS_DIRECTORY}/gsoap/mod_gsoap/gsoap_win/wininet
+	${WTL_INCLUDE_DIR}/include
+
+	${GSOAP_INCLUDE_DIRS}
+	${GSOAP_INCLUDE_DIRS}/extras
+	${GSOAP_INCLUDE_DIRS}/mod_gsoap/gsoap_win/wininet
 	)
 
 if (Boost_FOUND)
@@ -153,9 +154,9 @@ ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 add_library ( COMMS SHARED 
 		${SRCS}
 
-		${EXTERNALS_DIRECTORY}/gsoap/stdsoap2.cpp
-		${EXTERNALS_DIRECTORY}/gsoap/mod_gsoap/gsoap_win/wininet/gsoapWinInet.cpp
-		${EXTERNALS_DIRECTORY}/gsoap/mod_gsoap/gsoap_win/wininet/gsoapWinInet.h
+		${GSOAP_INCLUDE_DIRS}/stdsoap2.cpp
+		${GSOAP_INCLUDE_DIRS}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.cpp
+		${GSOAP_INCLUDE_DIRS}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.h
 	)
 
 add_dependencies ( COMMS

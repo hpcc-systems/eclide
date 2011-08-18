@@ -173,9 +173,9 @@ include_directories (
 		../tabctrls
 		../dockingwindows
 
-		${EXTERNALS_DIRECTORY}/wtl/include
-		${EXTERNALS_DIRECTORY}/scintilla/include
-		${EXTERNALS_DIRECTORY}/BugTrap/Win32/BugTrap
+		${WTL_INCLUDE_DIR}/include
+		${SCINTILLA_INCLUDE_DIR}/include
+		${BUGTRAP_INCLUDE_DIR}
 	)
 
 if (Boost_FOUND)
@@ -194,6 +194,7 @@ add_dependencies ( ECLIDE
 		COMMS
 		GRAPHVIEWCTL
 		WLIB
+		BUGTRAP
 	)
 
 target_link_libraries( ECLIDE
@@ -201,8 +202,7 @@ target_link_libraries( ECLIDE
 		COMMS
 		GRAPHVIEWCTL
 		WLIB
-		
-		../../../HPCC/dev/bin100/Release/BugTrap		
+		BUGTRAP
 	)
 
 set_target_properties(ECLIDE PROPERTIES
