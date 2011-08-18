@@ -1,0 +1,36 @@
+project( ZLIB )
+
+set ( SRCS
+		${ZLIB_INCLUDE_DIR}/src/adler32.c
+		${ZLIB_INCLUDE_DIR}/src/compress.c
+		${ZLIB_INCLUDE_DIR}/src/crc32.c
+		${ZLIB_INCLUDE_DIR}/src/deflate.c
+		${ZLIB_INCLUDE_DIR}/src/gzio.c
+		${ZLIB_INCLUDE_DIR}/src/infback.c
+		${ZLIB_INCLUDE_DIR}/src/inffast.c
+		${ZLIB_INCLUDE_DIR}/src/inflate.c
+		${ZLIB_INCLUDE_DIR}/src/inftrees.c
+		${ZLIB_INCLUDE_DIR}/src/ioapi.c
+		${ZLIB_INCLUDE_DIR}/src/iowin32.c
+		${ZLIB_INCLUDE_DIR}/src/mztools.c
+		${ZLIB_INCLUDE_DIR}/src/trees.c
+		${ZLIB_INCLUDE_DIR}/src/uncompr.c
+		${ZLIB_INCLUDE_DIR}/src/unzip.c
+		${ZLIB_INCLUDE_DIR}/src/zip.c
+		${ZLIB_INCLUDE_DIR}/src/zutil.c
+
+		${ZLIB_INCLUDE_DIR}/zlibvc.def
+	)
+
+include_directories (
+	#${ZLIB_INCLUDE_DIR}
+	${ZLIB_INCLUDE_DIR}/Include
+	)
+
+add_library ( ZLIB SHARED
+		${SRCS}
+	)
+
+target_link_libraries( ZLIB
+	)
+
