@@ -207,3 +207,5 @@ target_link_libraries( ECLIDE
 
 set_target_properties(ECLIDE PROPERTIES
     LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")
+
+install ( TARGETS ECLIDE RUNTIME DESTINATION bin )

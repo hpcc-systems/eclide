@@ -252,3 +252,11 @@ target_link_libraries( GRAPHVIEWCTL
 		
 		${FULL_LIBRARY_OUTPUT_PATH}/graphlayout.lib
 	)
+
+install ( TARGETS 
+			GRAPHVIEWCTL 
+			RUNTIME DESTINATION bin )
+
+install ( PROGRAMS 
+			${FULL_LIBRARY_OUTPUT_PATH}/graphlayout.dll 
+			DESTINATION bin )

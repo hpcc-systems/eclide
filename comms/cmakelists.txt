@@ -171,4 +171,4 @@ target_link_libraries( COMMS
 		authz.lib
 	)
 
-	
+install ( TARGETS COMMS RUNTIME DESTINATION bin )	

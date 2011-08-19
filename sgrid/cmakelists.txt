@@ -98,3 +98,5 @@ add_library ( SGRID SHARED
 		CxImage/xmemfile.cpp
 		CxImage/xmemfile.h
 	)
+
+install ( TARGETS SGRID RUNTIME DESTINATION bin )

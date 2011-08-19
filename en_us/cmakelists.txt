@@ -21,3 +21,4 @@ add_library ( EN_US SHARED
 		${SRCS}
 	)
 
+install ( TARGETS EN_US RUNTIME DESTINATION bin )
