@@ -17,6 +17,13 @@ else ( )
     MESSAGE( "BUGTRAP not found:  " ${BUGTRAP_ROOT})
 endif ( )
 
+set ( GRAPHLAYOUT_ROOT "${CMAKE_BINARY_DIR}/../GraphControl" )
+find_package( GRAPHLAYOUT )
+if ( GRAPHLAYOUT )
+else ( )
+    MESSAGE( "GRAPHLAYOUT not found:  " ${GRAPHLAYOUT})
+endif ( )
+
 set ( GRAPHVIZ_ROOT "${EXTERNALS_DIRECTORY}/graphviz2" )
 find_package( GRAPHVIZ )
 if ( GRAPHVIZ_FOUND )
