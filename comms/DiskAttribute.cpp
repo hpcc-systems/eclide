@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "attribute.h"
+#include "DiskAttribute.h"
 #include "module.h"
 #include "DiskRepository.h"
 #include "SoapUtil.h"
@@ -16,7 +16,7 @@ using namespace WsAttributes;
 #else
 #endif
 
-class CDiskAttribute : public IAttribute, public IAttributeHistory, public clib::CLockableUnknown
+class CDiskAttribute : public IDiskAttribute, public IAttributeHistory, public clib::CLockableUnknown
 {
 protected:
 	bool m_placeholder;
@@ -48,7 +48,11 @@ protected:
 	refresh_signal_type on_refresh;
 
 public:
-	IMPLEMENT_CLOCKABLEUNKNOWN;
+	BEGIN_CLOCKABLEUNKNOWN
+		IMPLEMENT_INTERFACE(IDiskAttribute)
+		IMPLEMENT_INTERFACE(IAttribute)
+		IMPLEMENT_INTERFACE(IAttributeHistory)
+	END_CUNKNOWN(clib::CLockableUnknown)
 
 	CDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed, bool placeholder) 
 		: m_moduleLabel(module), m_label(label), m_type(CreateIAttributeType(type)), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
@@ -440,6 +444,12 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return false;
+	}
+	//  IDiskAttribute  ---
+	const TCHAR * GetPath()
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return m_url;
 	}
 };
 

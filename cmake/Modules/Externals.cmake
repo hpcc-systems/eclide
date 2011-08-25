@@ -17,7 +17,7 @@ else ( )
     MESSAGE( "BUGTRAP not found:  " ${BUGTRAP_ROOT})
 endif ( )
 
-set ( GRAPHLAYOUT_ROOT "${CMAKE_BINARY_DIR}/../GraphControl" )
+set ( GRAPHLAYOUT_ROOT "${CMAKE_SOURCE_DIR}/../GraphControl" )
 find_package( GRAPHLAYOUT )
 if ( GRAPHLAYOUT )
 else ( )
