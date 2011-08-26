@@ -103,3 +103,4 @@ target_link_libraries( ECLEDITOR
 	imm32
 	)
 
+install ( TARGETS ECLEDITOR RUNTIME DESTINATION bin )

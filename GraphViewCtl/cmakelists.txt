@@ -168,7 +168,7 @@ include_directories (
 	../wtlex
 	../wtltimeline
 	
-	../../GraphControl/graphlayout	
+	${GRAPHLAYOUT_INCLUDE_DIRS}	
 		
 	${WTL_INCLUDE_DIR}/include
 
@@ -250,5 +250,13 @@ target_link_libraries( GRAPHVIEWCTL
 		CLIB
 		COMMS
 		
-		${FULL_LIBRARY_OUTPUT_PATH}/graphlayout.lib
+		${GRAPHLAYOUT_LIBRARY_DIRS}
 	)
+
+install ( TARGETS 
+			GRAPHVIEWCTL 
+			RUNTIME DESTINATION bin )
+
+install ( PROGRAMS 
+			${GRAPHLAYOUT_LIBRARY_DIRS}/graphlayout.dll 
+			DESTINATION bin )

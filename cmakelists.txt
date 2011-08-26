@@ -4,8 +4,8 @@ cmake_minimum_required (VERSION 2.8)
 set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
 IF ( WIN32 )
-    SET ( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/../bin" CACHE PATH "Location of BIN files" )
-    SET ( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/../bin" CACHE PATH "Location of LIB files" )
+    SET ( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BIN files" )
+    SET ( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB files" )
 ELSE ( WIN32 )
     SET ( EXECUTABLE_OUTPUT_PATH "/usr/lib/mozilla/plugins" )
     SET ( LIBRARY_OUTPUT_PATH "/usr/lib/mozilla/plugins" )
@@ -37,7 +37,8 @@ ELSE (WIN32)
 
 ENDIF (WIN32)
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-ADD_SUBDIRECTORY ( BugTrap )
+
+ADD_SUBDIRECTORY ( BugTrap )
 set_property(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
 ADD_SUBDIRECTORY ( zlib )
 set_property(TARGET ZLIB PROPERTY FOLDER "3rdParty")

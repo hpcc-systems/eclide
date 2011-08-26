@@ -13,6 +13,7 @@
 #include "TabbedChildWindowEx.h"
 #include "EclDlgBuilder.h"
 #include <EclCC.h>
+#include "DiskAttribute.h"
 
 enum UM2
 {
@@ -118,16 +119,20 @@ public:
 
 	void UpdateAttribute(IAttribute * attr)
 	{
-		ATLASSERT(false);
 		CComPtr<IWorkspaceItem> fromID = m_workspaceItem;
-//		CComPtr<IWorkspaceItem> toID = CreateIWorkspaceItem(m_workspaceItem->GetRepository(), attr);
-		//WinID toID(attr->GetModuleLabel(), attr->GetLabel());
-		//m_dlgview.SetAttribute(attr);
-		//g_builder_window[toID] = g_builder_window[fromID];
-		////g_attr_window[toID] = this;
-		//g_builder_window[fromID] = std::make_pair<CChildAttributeFrm *, CAttributeFrame *>(NULL, NULL);
-		//UIUpdateTitle();
-		//(*this)(attr, false, NULL, false);
+		CComQIPtr<IAttribute> test = attr;
+		CComQIPtr<IDiskAttribute> dattr = attr;
+		ATLASSERT(dattr);
+		if (dattr)
+		{
+			CComPtr<IWorkspaceItem> toID = m_workspaceItem->GetRepository()->CreateIWorkspaceItem(attr, dattr->GetPath());
+			g_builder_window[toID] = g_builder_window[fromID];
+			//g_attr_window[toID] = this;
+			g_builder_window[fromID] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
+			m_dlgview.SetNamePath(dattr->GetPath());
+			UIUpdateTitle();
+			(*this)(attr, false, NULL, false);
+		}
 	}
 
 	LRESULT OnCreate(LPCREATESTRUCT lParam);
@@ -195,6 +200,7 @@ public:
 		COMMAND_ID_HANDLER_EX(ID_TAB_REMOVE, OnRemoveActiveTab)
 		COMMAND_ID_HANDLER_EX(ID_TAB_REMOVE_ALL, OnRemoveAllTabs)
 		COMMAND_ID_HANDLER_EX(ID_ECL_SYNCTOC, OnEclSyncToc)
+		COMMAND_ID_HANDLER_EX(ID_HELP, OnEclHelp)
 		COMMAND_ID_HANDLER_EX(ID_ECL_GOTO, OnEclGoto)
 		COMMAND_ID_HANDLER_EX(ID_ECL_GOTOSYNCTOC, OnEclGotoSyncToc)
 
@@ -237,6 +243,31 @@ public:
 		{
 			if (IAttribute * currAttr = m_workspaceItem->GetAttribute())
 				GetIMainFrame()->SyncTOC(currAttr);
+		}
+	}
+
+	void OnEclHelp(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+	{
+		CString message;
+		m_dlgview.GetWordAtCurPos(message);
+		if (message[0])
+		{
+			boost::filesystem::path appFolder;
+			GetProgramFolder(appFolder);
+			appFolder /= "ECLReference.chm";
+			std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
+
+			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
+			HH_AKLINK link = {0};
+			link.cbStruct =     sizeof(HH_AKLINK) ;
+			link.fReserved =    FALSE ;
+			link.pszKeywords =  (const TCHAR *)message;
+			link.pszUrl =       NULL ;
+			link.pszMsgText =   NULL ;
+			link.pszMsgTitle =  NULL ;
+			link.pszWindow =    NULL ;
+			link.fIndexOnFail = TRUE ;
+			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_KEYWORD_LOOKUP, (DWORD)&link);
 		}
 	}
 
@@ -693,7 +724,8 @@ LRESULT CBuilderFrame::OnCreate(LPCREATESTRUCT lParam)
 
 	baseClass::OnCreate(lParam);
 
-	m_attrConnection = m_workspaceItem->GetAttribute()->on_refresh_connect(boost::ref(*this));
+	if (m_workspaceItem->GetAttribute())
+		m_attrConnection = m_workspaceItem->GetAttribute()->on_refresh_connect(boost::ref(*this));
 
 	m_dlgview.SetFocus();
 
@@ -750,6 +782,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 			return true;
 
 		UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
+		UPDATEUI(cui, ID_HELP, TRUE);
 		UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());

@@ -130,3 +130,4 @@ target_link_libraries( CLIB
 		version
 	)
 
+install ( TARGETS CLIB RUNTIME DESTINATION bin )
