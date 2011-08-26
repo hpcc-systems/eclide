@@ -254,17 +254,10 @@ public:
 		{
 			boost::filesystem::path appFolder;
 			GetProgramFolder(appFolder);
-			appFolder /= "ECLR.chm";
+			appFolder /= "ECLReference.chm";
 			std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
 
-			HH_POPUP popup = {0};
-			popup.cbStruct = sizeof(HH_POPUP);
-			popup.pszText = _T("OUTPUT");
-			popup.pt.x = 100;
-			popup.pt.y = 100;
-			popup.clrForeground = -1;
-			popup.clrBackground = -1;
-			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOC, NULL);
+			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
 			HH_AKLINK link = {0};
 			link.cbStruct =     sizeof(HH_AKLINK) ;
 			link.fReserved =    FALSE ;
@@ -789,6 +782,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 			return true;
 
 		UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
+		UPDATEUI(cui, ID_HELP, TRUE);
 		UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
