@@ -30,7 +30,7 @@ COMMS_API bool ChangePassword(const CString &serverIP, const CString &user, cons
 	else
 	{
 		_DBGLOG(serverIP, LEVEL_WARNING, server.GetClientErrorMsg());
-		retCode = server.GetClientErrorXXX();
+		retCode = server.GetClientErrorCode();
 		retMsg = _T("Change Password SOAP Failure");
 	}
 	return false;
@@ -58,7 +58,12 @@ COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CS
 	//}
 
 	ResetNamespace();
-	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(serverIP, user, password, 0, 0);
+	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(serverIP, user, password);
+	if (server.namespaces == NULL)	//  No Server  ---
+	{
+		retMsg = _T("Unable to communicate with server.");
+		return false;
+	}
 
 	_ns1__VerifyUserRequest request;
 	CStringAssign application(request.application, global::GetApplicationName());
@@ -77,12 +82,13 @@ COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CS
 	else
 	{
 		_DBGLOG(serverIP, LEVEL_WARNING, server.GetClientErrorMsg());
-		retCode = server.GetClientErrorXXX();
+		retCode = server.GetClientErrorCode();
 		if (retCode == 401)
 			retMsg = _T("Invalid User ID/Password");	//Parse error _could_ mean bad password for Verify User
 		else
 			retMsg = server.GetClientErrorMsg();
 	}
+	ResetNamespace();
 	return false;
 }
 #else

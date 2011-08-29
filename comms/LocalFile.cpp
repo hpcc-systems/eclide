@@ -3,7 +3,7 @@
 
 #include "workunit.h"
 #include "dali.h"
-#include "gSoapUtil.h"
+#include "SoapUtil.h"
 #include "cache.h"
 
 #if _COMMS_VER < 68200

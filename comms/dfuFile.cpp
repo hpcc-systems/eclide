@@ -2,7 +2,7 @@
 #include "Dfu.h"
 
 #include "clib.h"
-#include "gSoapUtil.h"
+#include "SoapUtil.h"
 #include "cache.h"
 #include "logger.h"
 #include "global.h"

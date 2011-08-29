@@ -3,7 +3,7 @@
 #include "attribute.h"
 #include "module.h"
 #include "repository.h"
-#include "gSoapUtil.h"
+#include "SoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"

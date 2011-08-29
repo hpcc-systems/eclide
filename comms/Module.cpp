@@ -4,7 +4,7 @@
 #include "repository.h"
 #include "clib.h"
 #include "cache.h"
-#include "gSoapUtil.h"
+#include "SoapUtil.h"
 #include "ModuleHelper.h"
 
 #if _COMMS_VER < 68200

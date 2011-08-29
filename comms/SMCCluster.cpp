@@ -2,7 +2,7 @@
 #include "Cluster.h"
 
 #include "smc.h"
-#include "gSoapUtil.h"
+#include "SoapUtil.h"
 #include "Cache.h"
 
 #if _COMMS_VER < 68200
