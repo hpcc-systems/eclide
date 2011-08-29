@@ -2,7 +2,7 @@
 #include "smc.h"
 
 #include "cache.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "clib.h"
 #include "logger.h"
 #include "global.h"

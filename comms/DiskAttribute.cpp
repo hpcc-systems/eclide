@@ -2,7 +2,7 @@
 #include "DiskAttribute.h"
 #include "module.h"
 #include "DiskRepository.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"

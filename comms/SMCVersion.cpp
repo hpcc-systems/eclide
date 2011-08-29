@@ -2,7 +2,7 @@
 #include "SMCVersion.h"
 
 #include "smc.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "Cache.h"
 #include <VersionParser.h>	//EclLib
 

@@ -58,6 +58,8 @@ set ( SRCS
 		Graph.h
 		Group.cpp
 		Group.h
+		GSoapUtil.cpp
+		GSoapUtil.h
 		#HtmlHelper.cpp
 		#HtmlHelper.h
 		LocalFile.cpp
@@ -98,6 +100,7 @@ set ( SRCS
 		SMCVersion.h
 		Topology.cpp
 		Topology.h
+		WebService.cpp
 		#WebPage.cpp
 		#WebPage.h
 		WebService.h

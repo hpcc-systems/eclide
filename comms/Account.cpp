@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "account.h"
 
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "SMCVersion.h"
 #include "EclCC.h"
 
@@ -57,6 +57,7 @@ COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CS
 	//	}
 	//}
 
+	ResetNamespace();
 	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(serverIP, user, password, 0, 0);
 
 	_ns1__VerifyUserRequest request;

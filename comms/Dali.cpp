@@ -3,7 +3,7 @@
 
 #include "cache.h"
 #include "Result.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "RecursiveMutex.h"
 #include "logger.h"
 #include "thread.h"

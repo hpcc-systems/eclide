@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "topology.h"
 
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"

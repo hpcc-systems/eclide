@@ -2,7 +2,7 @@
 #include "attribute.h"
 #include "module.h"
 #include "ModFileRepository.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"

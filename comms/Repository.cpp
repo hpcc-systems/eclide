@@ -2,7 +2,7 @@
 #include "repositoryImpl.h"
 
 #include "Module.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"

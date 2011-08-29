@@ -6,10 +6,3 @@
 
 // TODO: reference any additional headers you need in STDAFX.H
 // and not in this file
-
-#if _COMMS_VER == 68200
-#  include "68200/WebService.cpp"
-#elif _COMMS_VER == 68201
-#  include "68201/WebService.cpp"
-#endif
-
