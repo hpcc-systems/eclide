@@ -332,7 +332,9 @@ public:
 			if (fs::exists(path))
 			{
 				try {
-					fs::remove_all(path);
+					int retVal = MoveToRecycleBin(path.native_directory_string());
+					if (retVal != 0)
+						throw std::exception("Unknown Error During Folder Delete.", retVal);
 				} catch (const std::exception & ex) {
 					_DBGLOG(LEVEL_WARNING, ex.what());
 					return false;

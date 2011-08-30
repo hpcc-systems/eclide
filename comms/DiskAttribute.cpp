@@ -327,7 +327,12 @@ public:
 	{
 		try {
 			if (boost::filesystem::exists(m_path))
-				return boost::filesystem::remove(m_path);
+			{
+				int retVal = MoveToRecycleBin(m_path.native_file_string());
+				if (retVal != 0)
+					throw std::exception("Unknown Error During Folder Delete.", retVal);
+				return true;
+			}
 		} catch (const std::exception & ex) {
 			_DBGLOG(LEVEL_WARNING, ex.what());
 			return false;
