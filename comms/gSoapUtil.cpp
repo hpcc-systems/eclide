@@ -80,6 +80,9 @@ bool testCall(const std::string & url, const std::string & user, const std::stri
 SOAP_NMAC struct Namespace * GetNamespace(const std::string & url, const std::string & user, const std::string & pw)
 {
 	clib::recursive_mutex::scoped_lock proc(g_namespaceMutex);
+	if (g_workingNamespace)
+		return g_workingNamespace;
+
 	if (g_namespaces.empty())
 	{
 		g_namespaces.push_back(namespacesOSS);

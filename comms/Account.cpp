@@ -61,6 +61,7 @@ COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CS
 	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(serverIP, user, password);
 	if (server.namespaces == NULL)	//  No Server  ---
 	{
+		retCode = 1003;
 		retMsg = _T("Unable to communicate with server.");
 		return false;
 	}
