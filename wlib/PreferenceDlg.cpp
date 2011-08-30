@@ -454,11 +454,21 @@ public:
 	}
 	LRESULT OnIpFieldChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
+		CString serverIP = m_ServerIP;
 		DoDataExchange(true);
-		DoChanged();
-		if ( !m_Advanced )
+		if (boost::algorithm::contains(static_cast<const TCHAR *>(m_ServerIP), _T(":")) || boost::algorithm::contains(static_cast<const TCHAR *>(m_ServerIP), _T("/")))
 		{
-			UpdateServerFields();
+			::MessageBox(NULL, _T("Server should not contain ':' or '/'."), _T("ECL IDE"), MB_ICONEXCLAMATION);
+			m_ServerIP = serverIP;
+			DoDataExchange(false);
+		}
+		else
+		{
+			DoChanged();
+			if ( !m_Advanced )
+			{
+				UpdateServerFields();
+			}
 		}
 		return 0;
 	}
