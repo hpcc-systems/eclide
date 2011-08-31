@@ -1882,7 +1882,7 @@ void CMainFrame::OnWorkspaceRemove()
 {
 	IWorkspaceVector workspaceToRemove;
 	workspaceToRemove.push_back((IWorkspace *)m_workspaceCombo->GetItemData(m_workspaceCombo->GetCurSel()));
-	if (MessageBox(_T("Are you sure?"), _T("Delete Workspace"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+	if (MessageBox(_T("Are you sure?"), _T("Delete Workspace"), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		DoWorkspaceRemove(workspaceToRemove);
 }
 

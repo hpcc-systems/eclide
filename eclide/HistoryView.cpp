@@ -474,7 +474,7 @@ LRESULT CHistoryView::OnLvnItemchangedListHistory(int /*idCtrl*/, LPNMHDR pNMHDR
 
 void CHistoryView::OnHistoryRollback(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 {
-	if (MessageBox(ROLLBACK_MESSAGE, _T("Reinstate"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+	if (MessageBox(ROLLBACK_MESSAGE, _T("Reinstate"), MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION) == IDYES)
 	{
 		int sel = -1;
 		sel = m_HistoryList.GetNextItem(sel, LVNI_SELECTED);

@@ -227,7 +227,7 @@ public:
 
 	void OnRemoveAllTabs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 	{
-		if(MessageBox(_T("Are you sure you want to close all workunits"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if(MessageBox(_T("Are you sure you want to close all workunits"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION) == IDYES)
 			RemoveAllTabs();
 	}
 
@@ -673,7 +673,7 @@ public:
 			break;
 		case ID_WORKUNIT_DELETE:	
 			{
-				if (MessageBox(_T("Are you sure?"), _T("Delete Workunit"), MB_YESNO | MB_ICONQUESTION) == IDYES)	//Keep in sync with WorkunitFrame.h
+				if (MessageBox(_T("Are you sure?"), _T("Delete Workunit"), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with WorkunitFrame.h
 				{
 					ActiveResultsWindow()->SetDeleteWorkunit();
 					PostMessage(WM_COMMAND, ID_TAB_REMOVE);

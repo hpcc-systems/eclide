@@ -196,7 +196,7 @@ public:
 			pT->m_view.DoCheckSyntax(s.attrs);
 			break;
 		case ID_REPOSITORY_ROLLBACK:
-			if (pT->MessageBox(ROLLBACK_MESSAGE, _T("Rollback"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+			if (pT->MessageBox(ROLLBACK_MESSAGE, _T("Rollback"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
 				pT->m_view.DoRollback(s.attrs);
 			break;
 		case ID_REPOSITORY_HISTORY:

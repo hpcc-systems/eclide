@@ -103,7 +103,7 @@ bool CItemEdit::ChangeLabel(bool bAsk)
 			CString title;
 			title.LoadString(IDS_PROJNAME);
 			bChange=MessageBox(_T("Change label"),
-				title, MB_YESNO|MB_ICONQUESTION)==IDYES;
+				title, MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION)==IDYES;
 			bMBox=true;
 		}
 		else

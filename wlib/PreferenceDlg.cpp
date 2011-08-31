@@ -1437,7 +1437,7 @@ public:
 
 	LRESULT OnBnClickedButtonDefaults(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		if (MessageBox(_T("Restore default color scheme.  Are you sure you want to continue?"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (MessageBox(_T("Restore default color scheme.  Are you sure you want to continue?"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		{
 			m_langRef->RestoreDefaults();
 			m_ecl.InitColors(m_langRef);
@@ -1989,7 +1989,7 @@ public:
 	{
 		CString title;
 		GetWindowText(title);
-		if ( GetChanged() && IDNO == MessageBox(_T("Lose Changes?"), title, MB_YESNO | MB_ICONQUESTION) )
+		if ( GetChanged() && IDNO == MessageBox(_T("Lose Changes?"), title, MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION) )
 		{
 			//set it back 
 			m_cbConfig.SetCurSel( m_ConfigId );
@@ -2047,7 +2047,7 @@ tryagain:
 		GetWindowText(title);
 		CString prompt;
 		prompt.FormatMessage(_T("Delete Configuration '%1'?"), m_ConfigLabel);
-		if ( IDYES == MessageBox(prompt,title,MB_YESNO | MB_ICONQUESTION) )
+		if ( IDYES == MessageBox(prompt,title,MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) )
 		{
 			CWaitCursor wait;
 			SetChanged(false);
@@ -2083,7 +2083,7 @@ tryagain:
 		{
 			CString title;
 			GetWindowText(title);
-			if ( IDNO == MessageBox(_T("Lose Changes?"),title,MB_YESNO | MB_ICONQUESTION) )
+			if ( IDNO == MessageBox(_T("Lose Changes?"),title,MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION) )
 			{
 				return;
 			}
