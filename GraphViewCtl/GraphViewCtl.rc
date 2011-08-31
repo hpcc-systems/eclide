@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 1, 4
- PRODUCTVERSION 6, 0, 1, 4
+ FILEVERSION 6, 0, 1, 5
+ PRODUCTVERSION 6, 0, 1, 5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -71,12 +71,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "HPCC Systems"
             VALUE "FileDescription", "GraphView Control"
-            VALUE "FileVersion", "6, 0, 1, 4\0"
+            VALUE "FileVersion", "6, 0, 1, 5\0"
             VALUE "InternalName", "GraphViewCtl.dll"
             VALUE "LegalCopyright", "(c) HPCC Systems.  All rights reserved."
             VALUE "OriginalFilename", "GraphViewCtl.dll"
             VALUE "ProductName", "GraphViewControl"
-            VALUE "ProductVersion", "6, 0, 1, 4\0"
+            VALUE "ProductVersion", "6, 0, 1, 5\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -197,6 +197,9 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
+
+
 
 
 
