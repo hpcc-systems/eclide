@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 1, 5
- PRODUCTVERSION 6, 0, 1, 5
+ FILEVERSION 6, 0, 1, 8
+ PRODUCTVERSION 6, 0, 1, 8
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "6, 0, 1, 5\0"
+            VALUE "FileVersion", "6, 0, 1, 8\0"
             VALUE "InternalName", "en_us.dll"
             VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
             VALUE "OriginalFilename", "en_us.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "6, 0, 1, 5\0"
+            VALUE "ProductVersion", "6, 0, 1, 8\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -468,8 +468,10 @@ CAPTION "Import File(s)"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Do you want to import the following files?",IDC_STATIC_CAPTION,3,3,237,11,SS_NOPREFIX | NOT WS_GROUP
-    LISTBOX         IDC_LIST_ATTRIBUTES,3,15,238,180,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "To Sandbox",IDC_CHECK_SANDBOX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,64,201,54,10
+    LISTBOX         IDC_LIST_ATTRIBUTES,3,15,238,163,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
+    LTEXT           "Target:",IDC_STATIC_TO,3,183,35,11,SS_NOPREFIX | NOT WS_GROUP
+    COMBOBOX        IDC_COMBO_MODULE,35,182,206,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "To Sandbox",IDC_CHECK_SANDBOX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,3,201,54,10
     DEFPUSHBUTTON   "OK",IDOK,139,198,50,14,WS_GROUP
     PUSHBUTTON      "Cancel",IDCANCEL,192,198,50,14
 END
@@ -2659,16 +2661,6 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
-
-
-
-
-
-
-
-
-
 
 
 
