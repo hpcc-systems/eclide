@@ -38,6 +38,15 @@ public:
 	{
 		return m_repositoryCode.c_str();
 	}
+	const TCHAR * GetFileExtension()
+	{
+		if (m_fileExtension.empty())
+		{
+			m_fileExtension = _T(".");
+			m_fileExtension += GetRepositoryCode();
+		}
+		return m_fileExtension.c_str();
+	}
 	const TCHAR * GetDescription()
 	{
 		if(m_description.empty())

@@ -185,6 +185,8 @@ void CRepositoryView::OnPaint(HDC /*hDc*/)
 //
 void CRepositoryView::Refresh(IModule * module)
 {
+	CComPtr<IRepository> rep = m_Owner->GetRepository();
+	rep->ClearShortTermCache();
 	if (module == NULL)
 	{
 		WTL::CLockWindowUpdate lock(m_hWnd);
@@ -194,9 +196,7 @@ void CRepositoryView::Refresh(IModule * module)
 		m_Root->Expand();
 	}
 	else
-	{
 		TreeNode::RefreshChildren(module->GetQualifiedLabel(), m_Root);
-	}
 }
 
 IAttribute * CRepositoryView::GetFirstSelectedAttribute()

@@ -2489,8 +2489,8 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 	}
 	else if (boost::algorithm::iequals(boost::filesystem::extension(path), ".mod"))
 	{
-		DoConfirmImportDlg(*this, path);
-		m_Repository->Post_Reset();
+		IModuleAdapt targetModule = DoConfirmImportDlg(*this, path);
+		m_Repository->Send_Refresh(targetModule);
 		return TRUE;
 	}
 	CComPtr<IRepository> rep = AttachRepository();

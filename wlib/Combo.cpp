@@ -571,7 +571,7 @@ CComboLabel & CComboLabel::operator = (HWND hWnd)
 	return *this;
 }
 //  ===========================================================================
-void CComboModule::Load(const TCHAR *label)
+void CComboModule::Load(const TCHAR *label, bool includeBlank)
 {
 	ResetContent();
 	if (label)
@@ -583,7 +583,8 @@ void CComboModule::Load(const TCHAR *label)
 		m_value = _T("");
 	}
 
-	AddString(_T(""));
+	if (includeBlank)
+		AddString(_T(""));
 	clib::thread run(__FUNCTION__, boost::bind(&GetModules, this));
 }
 
@@ -601,8 +602,11 @@ void CComboModule::LoadModules(IModuleVector & modules)
 	clib::recursive_mutex::scoped_lock lock(m_mutex);
 	for(IModuleVector::iterator itr = modules.begin(); itr != modules.end(); ++itr)
 	{
-		InsertString(-1,itr->get()->GetQualifiedLabel());
+		int item = InsertString(-1,itr->get()->GetQualifiedLabel());
+		SetItemDataPtr(item, itr->get());
 	}
+	SetCurSel(0);
+	GetSelectedModule();
 }
 
 void CComboModule::SelectDefault(const TCHAR *defSel)
@@ -628,6 +632,11 @@ const TCHAR * CComboModule::GetSelectedModule()
 {
 	GetLBText(GetCurSel(), m_value);
 	return m_value;
+}
+
+IModule * CComboModule::GetSelectedIModule()
+{
+	return (IModule *)this->GetItemDataPtr(GetCurSel());
 }
 //  ===========================================================================
 

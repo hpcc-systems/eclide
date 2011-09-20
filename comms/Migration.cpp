@@ -138,28 +138,31 @@ protected:
 		return retVal;
 	}
 
-	static void thread_AddEclToRep(CComPtr<CMigration> self, const std::_tstring modLabel, const std::_tstring attrLabel, IAttributeType * type, const std::_tstring comment, const std::_tstring ecl, const std::_tstring modBy, const std::_tstring modWhen, bool sandbox)
+	typedef std::pair<std::_tstring, std::_tstring> ModAttrPair;
+	static void thread_AddEclToModule(CComPtr<CMigration> self, IModuleAdapt module, ModAttrPair modAttr, IAttributeType * type, const std::_tstring comment, const std::_tstring ecl, const std::_tstring modBy, const std::_tstring modWhen, bool sandbox)
 	{
 #ifndef _DEBUG
 		try
 		{
 #endif
-			self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  Migration Start")) % modLabel % attrLabel).str());
-			IModuleAdapt toMod = GetModule(self->m_targetRep, modLabel.c_str());
+			if (module)
+				modAttr.first = module->GetLabel() + std::_tstring(_T(".")) + modAttr.first;
+			self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  Migration Start")) % modAttr.first % modAttr.second).str());
+			IModuleAdapt toMod = GetModule(self->m_targetRep, modAttr.first.c_str());
 			if (!toMod)
-				toMod = GetModulePlaceholder(self->m_targetRep, modLabel.c_str());
+				toMod = GetModulePlaceholder(self->m_targetRep, modAttr.first.c_str());
 			if (!toMod)
 			{
-				self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  AMT Unable To Locate \"toMod\"")) % modLabel % attrLabel).str());
+				self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  AMT Unable To Locate \"toMod\"")) % modAttr.first % modAttr.second).str());
 				ATLASSERT(false);
 				return;
 			}
-			IAttributeAdapt toAttr = GetAttribute(self->m_targetRep, modLabel.c_str(), attrLabel.c_str(), type);
+			IAttributeAdapt toAttr = GetAttribute(self->m_targetRep, modAttr.first.c_str(), modAttr.second.c_str(), type);
 			if (!toAttr)
-				toAttr = GetAttributePlaceholder(self->m_targetRep, modLabel.c_str(), attrLabel.c_str(), type);
+				toAttr = GetAttributePlaceholder(self->m_targetRep, modAttr.first.c_str(), modAttr.second.c_str(), type);
 			if (!toAttr)
 			{
-				self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  AMT Unable To Locate \"toAttr\"")) % modLabel % attrLabel).str());
+				self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  AMT Unable To Locate \"toAttr\"")) % modAttr.first % modAttr.second).str());
 				ATLASSERT(false);
 				return;
 			}
@@ -169,49 +172,49 @@ protected:
 			if (!toMod->Exists())
 			{
 				if (!toMod->Create())
-					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create Folder Failed - See Warning Tab")) % modLabel % attrLabel).str());
+					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create Folder Failed - See Warning Tab")) % modAttr.first % modAttr.second).str());
 			}
 
 			if (!toAttr->Exists())
 			{
 				if (!toAttr->Create())
-					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create File Failed - See Warning Tab")) % modLabel % attrLabel).str());
+					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create File Failed - See Warning Tab")) % modAttr.first % modAttr.second).str());
 			}
 
 			if (toAttr)
 			{
 				if (toAttr->IsLocked())
-					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Target File Locked")) % modLabel % attrLabel).str());
+					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Target File Locked")) % modAttr.first % modAttr.second).str());
 				else 
 				{
 					bool result = true;
 					std::_tstring toEcl = GetText(toAttr->GetAsHistory());
 					if (boost::algorithm::equals(ecl, toEcl) && boost::algorithm::equals(toAttr->GetChecksum(), toAttr->GetChecksumLocal()))
-						self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  ECL already matches, skipping.")) % modLabel % attrLabel).str());
+						self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  ECL already matches, skipping.")) % modAttr.first % modAttr.second).str());
 					else
 					{
 						if (!sandbox && !toAttr->IsCheckedOut())
 						{
 							result = Checkout(toAttr);
 							if (!result)
-								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkout Target File - See Warning Tab")) % modLabel % attrLabel).str());
+								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkout Target File - See Warning Tab")) % modAttr.first % modAttr.second).str());
 						}
 						if (result)
 						{
 							result = SetText(toAttr, ecl.c_str());
 							if (!result)
-								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Save Target ECL - See Warning Tab")) % modLabel % attrLabel).str());
+								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Save Target ECL - See Warning Tab")) % modAttr.first % modAttr.second).str());
 						}
 					}
 					if (!sandbox && toAttr->IsCheckedOut())
 					{
 						result = Checkin(toAttr, comment.c_str());
 						if (!result)
-							self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkin Target File - See Warning Tab")) % modLabel % attrLabel).str());
+							self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkin Target File - See Warning Tab")) % modAttr.first % modAttr.second).str());
 					}
 				}
 			}
-			self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  Migration End")) % modLabel % attrLabel).str());
+			self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  Migration End")) % modAttr.first % modAttr.second).str());
 			if (self->m_threads.Size() <= 1 || self->m_threads.Size() % MAX_THREAD_COUNT == 0)
 			{
 				self->m_caller->Invalidate(false);
@@ -230,11 +233,11 @@ protected:
 		}
 		catch(std::exception & e)
 		{
-			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  %3%.")) % modLabel % attrLabel % e.what()).str());
+			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  %3%.")) % modAttr.first % modAttr.second % e.what()).str());
 		}
 		catch(...)
 		{
-			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  Unknown.")) % modLabel % attrLabel).str());
+			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  Unknown.")) % modAttr.first % modAttr.second).str());
 		}
 #endif
 	}
@@ -288,7 +291,7 @@ protected:
 
 	static void thread_AddToRep(CComPtr<CMigration> self, IAttributeHistoryAdapt fromAttr, const std::_tstring comment, bool sandbox)
 	{
-		thread_AddEclToRep(self, fromAttr->GetModuleLabel(), fromAttr->GetLabel(), fromAttr->GetType(), comment, GetText(fromAttr), fromAttr->GetModifiedBy(), fromAttr->GetModifiedDate(), sandbox);
+		thread_AddEclToModule(self, NULL, ModAttrPair(fromAttr->GetModuleLabel(), fromAttr->GetLabel()), fromAttr->GetType(), comment, GetText(fromAttr), fromAttr->GetModifiedBy(), fromAttr->GetModifiedDate(), sandbox);
 	}
 
 
@@ -320,20 +323,30 @@ public:
 
 	void AddEclToRep(const std::_tstring & modLabel, const std::_tstring & attrLabel, IAttributeType * type, const std::_tstring & comment, const std::_tstring & ecl, const std::_tstring & by, bool sandbox)
 	{
-		std::_tstring modDate;
-		CurrentDateTimeUTCString(modDate);
-		std::_tstring comments = comment.length() ? comment : (boost::_tformat(_T("%1%, Copied with AMT from File Modified by %2%")) % modDate % by).str();
-		m_threads.Append(__FUNCTION__, boost::bind(&thread_AddEclToRep, this, modLabel, attrLabel, type, comments, ecl, by, modDate, sandbox));
+		AddEclToModule(NULL, modLabel, attrLabel, type, comment, ecl, by, sandbox);
 	}
 
 	void AddEclToRep(const std::_tstring & modAttrLabel, IAttributeType * type, const std::_tstring & comment, const std::_tstring & ecl, const std::_tstring & by, bool sandbox)
+	{
+		AddEclToModule(NULL, modAttrLabel, type, comment, ecl, by, sandbox);
+	}
+
+	void AddEclToModule(IModuleAdapt module, const std::_tstring & modLabel, const std::_tstring & attrLabel, IAttributeType * type, const std::_tstring & comment, const std::_tstring & ecl, const std::_tstring & by, bool sandbox)
+	{
+		std::_tstring modDate;
+		CurrentDateTimeUTCString(modDate);
+		std::_tstring comments = comment.length() ? comment : (boost::_tformat(_T("%1%, Copied with AMT from File Modified by %2%")) % modDate % by).str();
+		m_threads.Append(__FUNCTION__, boost::bind(&thread_AddEclToModule, this, module, ModAttrPair(modLabel, attrLabel), type, comments, ecl, by, modDate, sandbox));
+	}
+
+	void AddEclToModule(IModuleAdapt module, const std::_tstring & modAttrLabel, IAttributeType * type, const std::_tstring & comment, const std::_tstring & ecl, const std::_tstring & by, bool sandbox)
 	{
 		typedef std::vector<std::_tstring> split_vector_type;
 		split_vector_type SplitVec; 
 		boost::algorithm::split(SplitVec, modAttrLabel, boost::algorithm::is_any_of("."), boost::algorithm::token_compress_on);
 		if (SplitVec.size() == 2)
 		{
-			AddEclToRep(SplitVec[0], SplitVec[1], type, comment, ecl, by, sandbox);
+			AddEclToModule(module, SplitVec[0], SplitVec[1], type, comment, ecl, by, sandbox);
 		}
 	}
 

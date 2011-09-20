@@ -448,8 +448,9 @@ public:
 			CModuleHelper modHelper(moduleName + _T(".") + attributeName);
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
 			boost::algorithm::replace_all(module, _T("."), _T("/"));
-			fs::wpath path = repositoryPath / module / attributeName;
-			if (fs::exists(path))
+			std::_tstring fileName = attributeName + type->GetFileExtension();
+			fs::wpath path = repositoryPath / module / fileName;
+			if (!fs::exists(path))
 			{
 				IAttribute * attribute = CreateDiskAttributePlaceholder(this, moduleName.c_str(), attributeName.c_str(), type->GetRepositoryCode(), path);
 				return attribute;
