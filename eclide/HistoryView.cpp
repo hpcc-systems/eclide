@@ -26,7 +26,7 @@ public:
 	{
 		return _T("");
 	}
-	const TCHAR *GetModuleQualifiedLabel() const
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		return _T("");
 	}
@@ -86,7 +86,7 @@ public:
 	{
 		return m_attr->GetID();
 	}
-	const TCHAR *GetModuleQualifiedLabel() const
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		return m_attr->GetModuleQualifiedLabel();
 	}

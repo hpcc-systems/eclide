@@ -12,7 +12,7 @@ protected:
 
 public:
 	virtual IAttributeType *GetType() const = 0;
-	virtual const TCHAR *GetModuleQualifiedLabel() const = 0;
+	virtual const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const = 0;
 	virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
 	virtual const TCHAR *GetLabel() const = 0;
 

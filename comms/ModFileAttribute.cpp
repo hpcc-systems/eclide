@@ -143,9 +143,10 @@ public:
 		return m_module;
 	}
 
-	const TCHAR *GetModuleQualifiedLabel() const
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		ATLASSERT(!excludeRoot);
 		return m_moduleLabel;
 	}
 
@@ -158,6 +159,7 @@ public:
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		ATLASSERT(!excludeRoot);
 		return m_qualifiedLabel;
 	}
 

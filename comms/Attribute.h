@@ -68,7 +68,7 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
 	const TCHAR *GetURL() const;
 	const TCHAR *GetID() const;
 	IModule *GetModule() const;
-	const TCHAR *GetModuleQualifiedLabel() const;
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const;
 	const TCHAR *GetLabel() const;
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const;
 	const SecAccessFlags GetAccess() const;

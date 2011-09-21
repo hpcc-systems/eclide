@@ -8,7 +8,7 @@ __interface IAttribute;
 __interface __declspec(uuid("5408B16C-8103-47aa-906B-347727AAED24")) IAttributeHistory : public clib::ILockableUnknown
 {
 	const TCHAR *GetID() const;
-	const TCHAR *GetModuleQualifiedLabel() const;
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const;
 	const TCHAR *GetLabel() const;
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const;
 	IAttributeType *GetType() const;

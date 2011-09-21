@@ -255,7 +255,7 @@ public:
 	{
 		return m_NullStr;
 	}
-	const TCHAR *GetModuleQualifiedLabel() const
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		return m_NullStr;
 	}

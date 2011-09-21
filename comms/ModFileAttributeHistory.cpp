@@ -57,10 +57,10 @@ public:
 		return m_id;
 	}
 
-	const TCHAR *GetModuleQualifiedLabel() const
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_attribute->GetModuleQualifiedLabel();
+		return m_attribute->GetModuleQualifiedLabel(excludeRoot);
 	}
 
 	const TCHAR *GetLabel() const
