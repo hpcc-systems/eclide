@@ -63,8 +63,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 1, 8
- PRODUCTVERSION 6, 0, 1, 8
+ FILEVERSION 6, 0, 1, 9
+ PRODUCTVERSION 6, 0, 1, 9
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -81,12 +81,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "HPCC Systems"
             VALUE "FileDescription", "sgrid Dynamic Link Library"
-            VALUE "FileVersion", "6, 0, 1, 8\0"
+            VALUE "FileVersion", "6, 0, 1, 9\0"
             VALUE "InternalName", "sgrid.dll"
             VALUE "LegalCopyright", "Copyright (C) 2004"
             VALUE "OriginalFilename", "sgrid.dll"
             VALUE "ProductName", " sgrid Dynamic Link Library"
-            VALUE "ProductVersion", "6, 0, 1, 8\0"
+            VALUE "ProductVersion", "6, 0, 1, 9\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -119,6 +119,7 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
 
 
 

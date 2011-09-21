@@ -344,10 +344,21 @@ public:
 		typedef std::vector<std::_tstring> split_vector_type;
 		split_vector_type SplitVec; 
 		boost::algorithm::split(SplitVec, modAttrLabel, boost::algorithm::is_any_of("."), boost::algorithm::token_compress_on);
-		if (SplitVec.size() == 2)
+		std::_tstring modLabel, attrLabel;
+		for (int i = 0; i < SplitVec.size(); ++i)
 		{
-			AddEclToModule(module, SplitVec[0], SplitVec[1], type, comment, ecl, by, sandbox);
+			if (i == SplitVec.size() - 1)
+				attrLabel = SplitVec[i];
+			else 
+			{
+				if (!modLabel.empty())
+					modLabel += _T(".");
+				modLabel += SplitVec[i];
+			}
 		}
+
+		if (!modLabel.empty() && !attrLabel.empty())
+			AddEclToModule(module, modLabel, attrLabel, type, comment, ecl, by, sandbox);
 	}
 
 	void Start()

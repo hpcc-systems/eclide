@@ -363,6 +363,10 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 					attrs[std::make_pair(attributeLabel, CreateIAttributeECLType())] = CommentEclPair(attributeComment, attributeEcl);
 
 				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
+				//  Fix DABs new module bracketing
+				boost::algorithm::replace_all(line, _T("<"), _T(""));
+				boost::algorithm::replace_all(line, _T(">"), _T("."));
+				//  ---
 				boost::algorithm::trim(line);
 				attributeLabel = line;
 				attributeComment.clear();
