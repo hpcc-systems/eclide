@@ -80,7 +80,7 @@ public:
 
 public: 
 	DECLARE_FRAME_WND_CLASS(NULL, IDR_BUILDERWINDOW)
-	CBuilderFrame(IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(this)
+	CBuilderFrame(IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(workspaceItem->GetAttribute(), this)
 	{
 	}
 

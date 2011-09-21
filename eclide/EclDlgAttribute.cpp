@@ -20,6 +20,10 @@ void CAttributeDlg::GetTitle(CString & title)
 	title += CString(m_attribute->GetModuleLabel()) + _T(".") + CString(m_attribute->GetLabel());
 }
 
+//bool CBuilderDlg::DoFileOpen(const CString & sPathName) 
+//{
+//  Help Alligning with BuilderDlg COmpare
+//}
 bool CAttributeDlg::DoSave(bool attrOnly)
 {
 	CWaitCursor wait;
@@ -27,6 +31,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 	m_view.GetText(ecl);
 	if (m_attribute->SetText(ecl))
 	{
+		//  Save local item for history  ---
 		boost::filesystem::path path;
 		GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
 		path /= CT2A(m_attribute->GetModuleLabel());
@@ -42,6 +47,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 		file.Create(CString(CA2T(path.native_file_string().c_str())));
 		file.Write(ecl);
 		file.Close();
+		//  ---  ---  ---
 
 		m_view.SetSavePoint();
 		IAttributeVector attrs;
@@ -64,6 +70,11 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 	}
 	return false;
 }
+
+//bool CBuilderDlg::DoFileSave(const CString & sPathName) 
+//{
+//  Help Alligning with BuilderDlg COmpare
+//}
 
 void CAttributeDlg::DoCheckSyntax()
 {
@@ -189,6 +200,7 @@ void CAttributeDlg::OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*h
 		GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), m_attribute->GetModuleLabel());
 }
 
+	//  IAttribute Notifications  ---
 void CAttributeDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
 {
 	if (eclChanged)

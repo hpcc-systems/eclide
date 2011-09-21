@@ -2,6 +2,7 @@
 
 #include "EclDlg.h"
 #include "CtlColor.h"
+#include "Migration.h"
 #include "ButtonMenu.h"
 
 enum BUM
@@ -22,6 +23,7 @@ class CBuilderDlg :
 	public WTL::CDialogResize<CBuilderDlg>,
 	public WTL::CWinDataExchange<CBuilderDlg>,
 	public CCtlColor,
+	public IMigrationCallback,
 	public boost::signals::trackable
 {
 	typedef CBuilderDlg thisClass;
@@ -47,6 +49,11 @@ protected:
 	CString m_debug;
 
 	bool m_advanced;
+	
+	//  AttributeDlg Stuff  ---
+	CComPtr<IAttribute> m_attribute;
+	CComPtr<IMigration> m_migrator;
+	boost::signals::connection m_sigConn;
 
 public:
 	WTL::CButtonMenuCtrl m_goButton;
@@ -55,7 +62,7 @@ public:
 	
 	enum { IDD = IDD_BUILDERVIEW };
 
-	CBuilderDlg(IEclBuilderSlot * owner);
+	CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner);
 
 	//  ---  CEclDlgQBImpl Virtuals  ---
 	bool DoSave(bool attrOnly);
@@ -105,7 +112,8 @@ public:
 	void DoCheckComplexity();
 	void DoCheckDependency();
 	void DoUpdateScheduleInfo();
-	IAttribute * GetAttribute() {return NULL;};
+	void SetAttribute(IAttribute *attribute);
+	IAttribute * GetAttribute();
 
 	void ShowHide(UINT nID, bool hide);
 	void ShowAdvanced();
@@ -188,5 +196,14 @@ public:
 	LRESULT OnBnClickedButtonArchive(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	LRESULT OnCbnSelendokComboCluster(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+
+	//  IAttribute Notifications  ---
+	void operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted);
+
+	//  IMigrationCallback  ---
+	BOOL Invalidate(BOOL bErase = TRUE);
+	void LogMsg(const std::_tstring & msg);
+	void PostStatus(const TCHAR* pStr);
+	void PostProgress(int progress);
 };
 //  ===========================================================================
