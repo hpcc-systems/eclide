@@ -143,7 +143,7 @@ public:
 		return m_module;
 	}
 
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_moduleLabel;
@@ -179,7 +179,7 @@ public:
 		if (refresh || !m_eclSet)
 		{
 			proc.unlock();
-			StlLinked<IAttribute> attr = m_repository->GetAttribute(GetModuleLabel(), GetLabel(), GetType(), 0, true, true, noBroadcast);
+			StlLinked<IAttribute> attr = m_repository->GetAttribute(GetModuleQualifiedLabel(), GetLabel(), GetType(), 0, true, true, noBroadcast);
 			proc.lock();
 		}
 		return m_ecl;
@@ -292,7 +292,7 @@ public:
 	IAttribute * Rename(const TCHAR* label)
 	{
 		//No lock needed - this is just a lazy way of calling into repository
-		return m_repository->RenameAttribute(GetModuleLabel(), GetLabel(), GetType(), label);
+		return m_repository->RenameAttribute(GetModuleQualifiedLabel(), GetLabel(), GetType(), label);
 	}
 
 	bool Delete()
@@ -317,7 +317,7 @@ public:
 		{
 			m_placeholder = false;
 			proc.unlock();
-			if (m_repository->InsertAttribute(GetModuleLabel(), GetLabel(), m_type) != NULL)
+			if (m_repository->InsertAttribute(GetModuleQualifiedLabel(), GetLabel(), m_type) != NULL)
 			{
 				return true;
 			}

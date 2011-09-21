@@ -1,7 +1,8 @@
 #include "StdAfx.h"
+
+#include "AttributeImpl.h"
 #include "DiskAttribute.h"
 #include "module.h"
-#include "DiskRepository.h"
 #include "SoapUtil.h"
 #include "clib.h"
 #include "cache.h"
@@ -16,11 +17,12 @@ using namespace WsAttributes;
 #else
 #endif
 
-class CDiskAttribute : public IDiskAttribute, public IAttributeHistory, public clib::CLockableUnknown
+class CDiskAttribute;
+static CacheT<std::_tstring, CDiskAttribute> DiskAttributeCache;
+
+class CDiskAttribute : public CAttributeBase, public IDiskAttribute, public IAttributeHistory
 {
 protected:
-	bool m_placeholder;
-	IRepository * m_repository;
 	CString m_id;
 	CString m_url;
 	mutable CComPtr<IModule> m_module;
@@ -54,8 +56,8 @@ public:
 		IMPLEMENT_INTERFACE(IAttributeHistory)
 	END_CUNKNOWN(clib::CLockableUnknown)
 
-	CDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed, bool placeholder) 
-		: m_moduleLabel(module), m_label(label), m_type(CreateIAttributeType(type)), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
+	CDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed) 
+		: m_moduleLabel(module), m_label(label), m_type(CreateIAttributeType(type)), m_version(version), m_sandboxed(sandboxed)
 	{
 		ATLASSERT(!boost::algorithm::contains(module, _T("\\")));
 		ATLASSERT(!boost::algorithm::contains(module, _T("/")));
@@ -78,7 +80,7 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_id = m_repository->GetID();
-		m_id = m_id + _T("/") + m_moduleLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode() + (m_placeholder ? _T("/placeholder") : _T(""));
+		m_id = m_id + _T("/") + m_moduleLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode();
 		m_id.MakeLower();
 	}
 
@@ -149,7 +151,7 @@ public:
 			m_module = m_repository->GetModule(m_moduleLabel);
 		return m_module;
 	}
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_moduleLabel;
@@ -187,7 +189,7 @@ public:
 		if (refresh || !m_eclSet)
 		{
 			proc.unlock();
-			StlLinked<IAttribute> attr = m_repository->GetAttribute(GetModuleLabel(), GetLabel(), GetType(), 0, true, true, noBroadcast);
+			StlLinked<IAttribute> attr = m_repository->GetAttribute(GetModuleQualifiedLabel(), GetLabel(), GetType(), 0, true, true, noBroadcast);
 			proc.lock();
 		}
 		return m_ecl;
@@ -318,7 +320,7 @@ public:
 			_DBGLOG(LEVEL_WARNING, ex.what());
 			return NULL;
 		}
-		IAttribute * newAttr = m_repository->GetAttribute(GetModuleLabel(), label, GetType());
+		IAttribute * newAttr = m_repository->GetAttribute(GetModuleQualifiedLabel(), label, GetType());
 		Refresh(false, newAttr, false);
 		return newAttr;
 	}
@@ -328,9 +330,11 @@ public:
 		try {
 			if (boost::filesystem::exists(m_path))
 			{
+				SetText(_T(""), true);
 				int retVal = MoveToRecycleBin(m_path.native_file_string());
 				if (retVal != 0)
 					throw std::exception("Unknown Error During Folder Delete.", retVal);
+				DiskAttributeCache.Clear(this);
 				return true;
 			}
 		} catch (const std::exception & ex) {
@@ -343,7 +347,7 @@ public:
 	bool Exists() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return !m_placeholder;
+		return boost::filesystem::exists(m_path);
 	}
 
 	bool Create()
@@ -351,9 +355,8 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (!Exists())	
 		{
-			m_placeholder = false;
 			proc.unlock();
-			if (m_repository->InsertAttribute(GetModuleLabel(), GetLabel(), m_type) != NULL)
+			if (m_repository->InsertAttribute(GetModuleQualifiedLabel(), GetLabel(), m_type) != NULL)
 			{
 				return true;
 			}
@@ -364,7 +367,6 @@ public:
 	void Update(const std::_tstring & moduleName, const std::_tstring & label, const std::_tstring & ecl)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		m_placeholder = false;
 		m_moduleLabel = moduleName.c_str();
 		m_label = label.c_str();
 		m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
@@ -409,8 +411,7 @@ public:
 
 	int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
 	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return false;
+		return CAttributeBase::PreProcess(action, overrideEcl, attrs, errs);
 	}
 
 	boost::signals::connection on_refresh_connect(const refresh_slot_type& s)
@@ -458,23 +459,21 @@ public:
 	}
 };
 
-static CacheT<std::_tstring, CDiskAttribute> DiskAttributeCache;
-
 void ClearDiskAttributeCache()
 {
 	ATLTRACE(_T("File cache before clearing(size=%u)\r\n"), DiskAttributeCache.Size());
 	DiskAttributeCache.Clear();
 }
 
-IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed, bool placeholder)
+IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed)
 {
-	CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::wpath(), version, sandboxed, placeholder);
+	CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::wpath(), version, sandboxed);
 	return DiskAttributeCache.Exists(attr->GetCacheID());
 }
 
-CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed, bool placeholder)
+CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed)
 {
-	return DiskAttributeCache.Get(new CDiskAttribute(rep, module, label, type, path, version, sandboxed, placeholder));
+	return DiskAttributeCache.Get(new CDiskAttribute(rep, module, label, type, path, version, sandboxed));
 }
 
 //IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, unsigned version, bool sandboxed)
@@ -484,7 +483,7 @@ CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* mod
 
 IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path)
 {
-	return CreateDiskAttributeRaw(rep, module, label, type, path, 0, false, true);
+	return CreateDiskAttributeRaw(rep, module, label, type, path, 0, false);
 }
 
 IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl)
@@ -492,7 +491,7 @@ IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &mo
 	if (moduleLabel.empty() || label.empty())
 		return 0;
 
-	CDiskAttribute * attr = CreateDiskAttributeRaw(rep, moduleLabel.c_str(), label.c_str(), type.c_str(), path, 0, false, false);
+	CDiskAttribute * attr = CreateDiskAttributeRaw(rep, moduleLabel.c_str(), label.c_str(), type.c_str(), path, 0, false);
 	ATLASSERT(attr);
 	attr->Update(moduleLabel, label, ecl);
 	return attr;

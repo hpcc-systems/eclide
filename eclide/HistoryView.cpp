@@ -26,7 +26,7 @@ public:
 	{
 		return _T("");
 	}
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel() const
 	{
 		return _T("");
 	}
@@ -86,9 +86,9 @@ public:
 	{
 		return m_attr->GetID();
 	}
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel() const
 	{
-		return m_attr->GetModuleLabel();
+		return m_attr->GetModuleQualifiedLabel();
 	}
 	const TCHAR *GetLabel() const
 	{
@@ -285,7 +285,7 @@ void CHistoryView::initHistoryList()
 	m_labels.clear();
 	CRepLabelVector localLabels;
 	CComPtr<IRepository> rep = ::AttachRepository();
-	rep->GetLabels(m_Attribute->GetModuleLabel(), m_Attribute->GetLabel(), m_labels, localLabels);
+	rep->GetLabels(m_Attribute->GetModuleQualifiedLabel(), m_Attribute->GetLabel(), m_labels, localLabels);
 
 	m_HistoryList.DeleteAllItems();
 	boost::gregorian::date prevDate(boost::gregorian::day_clock::local_day());

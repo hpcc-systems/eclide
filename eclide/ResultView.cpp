@@ -1193,7 +1193,7 @@ public:
 		CComPtr<IAttribute> attr;
 		if (IDOK == ::DoGetAttr(rep, attr, _T("Select File")))
 		{
-			DoDrilldownSingle(attr->GetModuleLabel(), attr->GetLabel());
+			DoDrilldownSingle(attr->GetModuleQualifiedLabel(), attr->GetLabel());
 		}
 	}
 
@@ -1203,7 +1203,7 @@ public:
 		CComPtr<IAttribute> attr;
 		if (IDOK == ::DoGetAttr(rep, attr, _T("Select File")))
 		{
-			DoDrilldown(attr->GetModuleLabel(), attr->GetLabel());
+			DoDrilldown(attr->GetModuleQualifiedLabel(), attr->GetLabel());
 		}
 	}
 
@@ -1213,7 +1213,7 @@ public:
 		CComPtr<IAttribute> attr;
 		if (IDOK == ::DoGetAttr(rep, attr, _T("Select File")))
 		{
-			DoDrilldown2(attr->GetModuleLabel(), attr->GetLabel());
+			DoDrilldown2(attr->GetModuleQualifiedLabel(), attr->GetLabel());
 		}
 	}
 

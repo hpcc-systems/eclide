@@ -11,6 +11,7 @@ set ( SRCS
 		#attrHelper.h
 		Attribute.cpp
 		Attribute.h
+		AttributeImpl.h
 		AttributeHistory.cpp
 		AttributeHistory.h
 		AttributeType.cpp

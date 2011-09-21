@@ -31,7 +31,8 @@ std::map<WorksaceID, FramePair> g_builder_window;
 class CBuilderFrame : 
 	public CChildFrame, 
 	public IEclBuilderSlot, 
-	public CResultSlotImpl
+	public CResultSlotImpl,
+	public boost::signals::trackable
 {
 	typedef CBuilderFrame thisClass;
 	typedef CChildFrame baseClass;
@@ -278,7 +279,7 @@ public:
 		if (message[0])
 		{
 			if (IAttribute * currAttr = m_workspaceItem->GetAttribute())
-				GetIMainFrame()->OpenAttribute(message, currAttr->GetType(), currAttr->GetModuleLabel());
+				GetIMainFrame()->OpenAttribute(message, currAttr->GetType(), currAttr->GetModuleQualifiedLabel());
 			else
 				GetIMainFrame()->OpenAttribute(message, CreateIAttributeECLType());
 		}
@@ -291,7 +292,7 @@ public:
 		if (message[0])
 		{
 			if (IAttribute * currAttr = m_workspaceItem->GetAttribute())
-				GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), currAttr->GetModuleLabel());
+				GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), currAttr->GetModuleQualifiedLabel());
 			else
 				GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType());
 		}
@@ -860,7 +861,7 @@ void CBuilderFrame::SavePersistInfo(CPersistMap & persistInfo)
 			CComPtr<IAttribute> attr = m_workspaceItem->GetAttribute();
 			if (attr)
 			{
-				persistInfo.Set(PERSIST_MODULE, attr->GetModuleLabel());
+				persistInfo.Set(PERSIST_MODULE, attr->GetModuleQualifiedLabel());
 				persistInfo.Set(PERSIST_ATTRIBUTE, attr->GetLabel());
 				persistInfo.Set(PERSIST_ATTRIBUTETYPE, attr->GetType()->GetRepositoryCode());
 			}

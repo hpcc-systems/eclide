@@ -248,7 +248,7 @@ public:
 			ATLASSERT(s.attrs.size() == 1);
 			{
 				CString label = s.attrs[0]->GetLabel();
-				if (GetRenameAttribute(s.attrs[0]->GetModuleLabel(), label, s.attrs[0]->GetType(), true))
+				if (GetRenameAttribute(s.attrs[0]->GetModuleQualifiedLabel(), label, s.attrs[0]->GetType(), true))
 					pT->m_view.DoRenameAttribute(s.attrs[0].get(), (const TCHAR *)label);
 			}
 			break;
@@ -312,7 +312,7 @@ public:
 						{
 							CString ecl = invoke->GetEcl();
 							ecl.Replace(_T("%cluster%"), CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER)));
-							ecl.Replace(_T("%module%"), s.attrs[0]->GetModuleLabel());
+							ecl.Replace(_T("%module%"), s.attrs[0]->GetModuleQualifiedLabel());
 							ecl.Replace(_T("%attribute%"), s.attrs[0]->GetLabel());
 							GetIMainFrame()->OpenBuilder(ecl); 
 						}

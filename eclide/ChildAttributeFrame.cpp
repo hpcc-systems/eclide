@@ -72,8 +72,8 @@ public:
 
 	void UpdateAttribute(IAttribute * attr)
 	{
-		WinID fromID(m_dlgview.GetAttribute()->GetModuleLabel(), m_dlgview.GetAttribute()->GetLabel());
-		WinID toID(attr->GetModuleLabel(), attr->GetLabel());
+		WinID fromID(m_dlgview.GetAttribute()->GetModuleQualifiedLabel(), m_dlgview.GetAttribute()->GetLabel());
+		WinID toID(attr->GetModuleQualifiedLabel(), attr->GetLabel());
 		m_dlgview.SetAttribute(attr);
 		g_attr_window[toID] = g_attr_window[fromID];
 		//g_attr_window[toID] = this;
@@ -255,7 +255,7 @@ public:
 	{
 		return m_NullStr;
 	}
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel() const
 	{
 		return m_NullStr;
 	}
@@ -454,7 +454,7 @@ void CAttributeFrame::SavePersistInfo(CPersistMap & persistInfo)
 {
 	baseClass::SavePersistInfo(persistInfo);
 	persistInfo.Set(PERSIST_TYPE, PERSISTVAL_ATTRIBUTE);
-	persistInfo.Set(PERSIST_MODULE, m_dlgview.GetAttribute()->GetModuleLabel());
+	persistInfo.Set(PERSIST_MODULE, m_dlgview.GetAttribute()->GetModuleQualifiedLabel());
 	persistInfo.Set(PERSIST_ATTRIBUTE, m_dlgview.GetAttribute()->GetLabel());
 	persistInfo.Set(PERSIST_ATTRIBUTETYPE, m_dlgview.GetAttribute()->GetType()->GetRepositoryCode());
 
@@ -485,13 +485,13 @@ public:
 	CChildAttributeFrm(IAttribute * attr, IWorkspaceItem * workspaceItem)
 	{
 		m_view = new CAttributeFrame(attr, workspaceItem);
-		WinID id(m_view->m_dlgview.GetAttribute()->GetModuleLabel(), m_view->m_dlgview.GetAttribute()->GetLabel());
+		WinID id(m_view->m_dlgview.GetAttribute()->GetModuleQualifiedLabel(), m_view->m_dlgview.GetAttribute()->GetLabel());
 		g_attr_window[id].first = this;
 		g_attr_window[id].second = m_view;
 	}
 	virtual ~CChildAttributeFrm()
 	{
-		WinID id(m_view->m_dlgview.GetAttribute()->GetModuleLabel(), m_view->m_dlgview.GetAttribute()->GetLabel());
+		WinID id(m_view->m_dlgview.GetAttribute()->GetModuleQualifiedLabel(), m_view->m_dlgview.GetAttribute()->GetLabel());
 		g_attr_window[id] = std::make_pair<CChildAttributeFrm *, CAttributeFrame *>(NULL, NULL);
 	}
 
@@ -558,7 +558,7 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, const std::_tstring & module, const st
 HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem * workspaceItem, bool bHistoryView, const CSyntaxErrorVector & errors, Dali::CEclExceptionVector * errors2, const std::_tstring & searchTerm, FINDMODE findmode, unsigned int row, unsigned int col)
 {
 	bool readOnly = attribute->GetAccess() < SecAccess_Write;
-	WinID id(attribute->GetModuleLabel(), attribute->GetLabel());
+	WinID id(attribute->GetModuleQualifiedLabel(), attribute->GetLabel());
 
 	FramePair win = g_attr_window[id];
 	if (win.second && win.second->IsWindow())
@@ -605,7 +605,7 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem
 
 void SaveAttributeMDI(IAttribute * attribute)
 {
-	WinID id(attribute->GetModuleLabel(), attribute->GetLabel());
+	WinID id(attribute->GetModuleQualifiedLabel(), attribute->GetLabel());
 
 	CAttributeFrame * win = g_attr_window[id].second;
 	if (win && win->IsWindow())
@@ -614,7 +614,7 @@ void SaveAttributeMDI(IAttribute * attribute)
 
 bool GetAttributeText(IAttribute * attribute, CString & result)
 {
-	WinID id(attribute->GetModuleLabel(), attribute->GetLabel());
+	WinID id(attribute->GetModuleQualifiedLabel(), attribute->GetLabel());
 
 	CAttributeFrame * win = g_attr_window[id].second;
 	if (win && win->IsWindow())
@@ -627,7 +627,7 @@ bool GetAttributeText(IAttribute * attribute, CString & result)
 
 bool SetAttributeText(IAttribute * attribute, const std::_tstring & text, bool resetSavePoint, bool clearUndo)
 {
-	WinID id(attribute->GetModuleLabel(), attribute->GetLabel());
+	WinID id(attribute->GetModuleQualifiedLabel(), attribute->GetLabel());
 
 	CAttributeFrame * win = g_attr_window[id].second;
 	if (win && win->IsWindow())
@@ -640,7 +640,7 @@ bool SetAttributeText(IAttribute * attribute, const std::_tstring & text, bool r
 
 void UpdateAttributeMDI(IAttribute * from, IAttribute * to)
 {
-	WinID id(from->GetModuleLabel(), from->GetLabel());
+	WinID id(from->GetModuleQualifiedLabel(), from->GetLabel());
 
 	CAttributeFrame * win = g_attr_window[id].second;
 	if (win && win->IsWindow())

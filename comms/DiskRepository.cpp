@@ -14,9 +14,8 @@ using namespace WsAttributes;
 namespace fs = boost::filesystem;
 
 IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false);
-IModule * CreateDiskModulePlaceholder(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path);
 IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl);
-IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed, bool placeholder);
+IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed);
 IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path);
 //IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring & label, const ECLAttribute * data);
 void ClearDiskAttributeCache();
@@ -133,6 +132,26 @@ public:
 		for(IModuleVector::const_iterator itr = modules.begin(); itr != modules.end(); ++itr)
 			result.push_back(itr->get()->GetLabel());
 		return result.size();
+	}
+
+	IModule * GetModulePlaceholder(const TCHAR* moduleName) const
+	{
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
+		CModuleHelper modHelper(moduleName);
+		StdStringVector tokens;
+		modHelper.GetQualifiedLabel(tokens);
+		ATLASSERT(!tokens.empty());
+		StringPathMap::const_iterator found = m_paths.find(tokens[0]);
+		if (found != m_paths.end())
+		{
+			boost::filesystem::wpath path = found->second.parent_path();
+			for (unsigned int i = 0; i < tokens.size(); ++i)
+				path /= tokens[i];
+			IModule * module = CreateDiskModule(this, moduleName, path, true);
+			return module;
+		}
+
+		return NULL;
 	}
 
 	virtual IModule * InsertModule(const TCHAR* moduleName) const
@@ -426,7 +445,7 @@ public:
 
 	virtual IAttribute * GetAttributeFast(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, int version = 0, bool sandbox = true, bool text = false, bool noBroadcast = false) const
 	{
-		IAttribute * retVal = ::GetDiskAttribute(this, module, attribute, type, version, sandbox, false);
+		IAttribute * retVal = ::GetDiskAttribute(this, module, attribute, type, version, sandbox);
 		if (retVal)
 			return retVal;
 
@@ -576,7 +595,7 @@ public:
 		for(IAttributeVector::const_iterator itr = attributes.begin(); itr != attributes.end(); ++itr)
 		{
 			fs::wpath fromPath;
-			std::_tstring fromModule = itr->get()->GetModuleLabel();
+			std::_tstring fromModule = itr->get()->GetModuleQualifiedLabel();
 			GetPath(fromModule, itr->get()->GetLabel(), itr->get()->GetType(), fromPath);
 			if (fs::exists(fromPath))
 			{

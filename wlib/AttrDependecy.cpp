@@ -38,7 +38,7 @@ public:
 		{
 			if (itr != m_attrs.begin())
 				txt += delim;
-			txt += (boost::_tformat(_T("%1%.%2%\t%3%\t%4%\t%5%")) %	itr->get()->GetModuleLabel() % 
+			txt += (boost::_tformat(_T("%1%.%2%\t%3%\t%4%\t%5%")) %	itr->get()->GetModuleQualifiedLabel() % 
 																	itr->get()->GetLabel() % 
 																	itr->get()->GetModifiedBy() % 
 																	itr->get()->GetModifiedDate() % 

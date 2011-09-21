@@ -276,7 +276,7 @@ public:
 	}
 	void DoRenameAttribute(IAttribute * attr, const std::_tstring & label)
 	{
-		std::_tstring moduleLabel = attr->GetModuleLabel();
+		std::_tstring moduleLabel = attr->GetModuleQualifiedLabel();
 		CComPtr<IAttribute> newAttr = attr->Rename(label.c_str());
 		if (newAttr)
 		{
@@ -303,7 +303,7 @@ public:
 			std::map<std::_tstring, bool> modDedup;
 			for(IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
 			{
-				modDedup[itr->get()->GetModuleLabel()] = true;
+				modDedup[itr->get()->GetModuleQualifiedLabel()] = true;
 				CComPtr<IAttribute> newAttr = rep->GetAttribute(target.c_str(), itr->get()->GetLabel(), itr->get()->GetType());
 				m_Owner->UpdateAttribute(itr->get(), newAttr);
 			}
@@ -343,7 +343,7 @@ public:
 			if (newAttr)
 			{
 				newAttr->SetText(itr->get()->GetText());
-				newAttr->Checkin((boost::_tformat(_T("Copied from %1%")) % itr->get()->GetModuleLabel()).str().c_str());
+				newAttr->Checkin((boost::_tformat(_T("Copied from %1%")) % itr->get()->GetModuleQualifiedLabel()).str().c_str());
 			}
 		}
 		TreeNode::RefreshChildren(target, m_Root);
@@ -378,7 +378,7 @@ public:
 			CurrentDateTimeUTCString(dateTime);
 			for(IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
 			{
-				std::_tstring modLabel = itr->get()->GetModuleLabel();
+				std::_tstring modLabel = itr->get()->GetModuleQualifiedLabel();
 				boost::algorithm::replace_all(modLabel, _T("."), _T("_"));
 				std::_tstring attrLabel = itr->get()->GetLabel();
 				std::_tstring userID = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER)));

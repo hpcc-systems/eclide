@@ -60,7 +60,7 @@ public:
 		return m_id;
 	}
 
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_module;

@@ -2938,7 +2938,7 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
 		}
 		else
 		{
-			HWND hwnd = ::OpenAttributeMDI(this, attribute->GetModuleLabel(), attribute->GetLabel(), type, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), false, errors);
+			HWND hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), type, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), false, errors);
 			if (hwnd)
 				PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 		}
@@ -2996,7 +2996,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
 		}
 		else
 		{
-			hwnd = ::OpenAttributeMDI(this, attribute->GetModuleLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), bHistoryView);
+			hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), bHistoryView);
 		}
 	}
 	if (hwnd)
@@ -3026,7 +3026,7 @@ void CMainFrame::SaveAttribute(IAttribute * attribute)
 }
 void CMainFrame::InsertText(IAttribute * attribute)
 {
-	CString label = CString(attribute->GetModuleLabel()) + "." + CString(attribute->GetLabel());
+	CString label = CString(attribute->GetModuleQualifiedLabel()) + "." + CString(attribute->GetLabel());
 	::SendMessage(MDIGetActive()->GetSafeHwnd(), CWM_INSERTTEXT, 0, (LPARAM)&label);
 }
 bool CMainFrame::ShowComment(IAttribute * attribute, CString & comment)
