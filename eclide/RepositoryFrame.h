@@ -312,7 +312,7 @@ public:
 						{
 							CString ecl = invoke->GetEcl();
 							ecl.Replace(_T("%cluster%"), CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER)));
-							ecl.Replace(_T("%module%"), s.attrs[0]->GetModuleQualifiedLabel());
+							ecl.Replace(_T("%module%"), s.attrs[0]->GetModuleQualifiedLabel(true));
 							ecl.Replace(_T("%attribute%"), s.attrs[0]->GetLabel());
 							GetIMainFrame()->OpenBuilder(ecl); 
 						}

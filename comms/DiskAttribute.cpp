@@ -27,7 +27,8 @@ protected:
 	CString m_url;
 	mutable CComPtr<IModule> m_module;
 	boost::filesystem::wpath m_path;
-	CString m_moduleLabel;
+	CString m_moduleQualifiedLabel;
+	CString m_moduleQualifiedLabelNoRoot;
 	CString m_label;
 	CString m_qualifiedLabel;
 	CString m_qualifiedLabelNoRoot;
@@ -57,7 +58,7 @@ public:
 	END_CUNKNOWN(clib::CLockableUnknown)
 
 	CDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed) 
-		: m_moduleLabel(module), m_label(label), m_type(CreateIAttributeType(type)), m_version(version), m_sandboxed(sandboxed)
+		: m_moduleQualifiedLabel(module), m_label(label), m_type(CreateIAttributeType(type)), m_version(version), m_sandboxed(sandboxed)
 	{
 		ATLASSERT(!boost::algorithm::contains(module, _T("\\")));
 		ATLASSERT(!boost::algorithm::contains(module, _T("/")));
@@ -80,7 +81,7 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_id = m_repository->GetID();
-		m_id = m_id + _T("/") + m_moduleLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode();
+		m_id = m_id + _T("/") + m_moduleQualifiedLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode();
 		m_id.MakeLower();
 	}
 
@@ -148,14 +149,14 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (!m_module)
-			m_module = m_repository->GetModule(m_moduleLabel);
+			m_module = m_repository->GetModule(m_moduleQualifiedLabel);
 		return m_module;
 	}
 	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		ATLASSERT(!excludeRoot);
-		return m_moduleLabel;
+		return m_moduleQualifiedLabel;
 	}
 
 	const TCHAR *GetLabel() const
@@ -368,10 +369,11 @@ public:
 	void Update(const std::_tstring & moduleName, const std::_tstring & label, const std::_tstring & ecl)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		m_moduleLabel = moduleName.c_str();
+		m_moduleQualifiedLabel = moduleName.c_str();
 		m_label = label.c_str();
-		m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
+		m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
 		CModuleHelper modHelper(m_qualifiedLabel);
+		m_moduleQualifiedLabelNoRoot = modHelper.GetModuleLabelNoRoot();
 		m_qualifiedLabelNoRoot = modHelper.GetQualifiedLabelNoRoot();
 		m_checkedOut = false;
 		m_sandboxed = false;
