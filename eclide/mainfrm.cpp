@@ -1897,7 +1897,7 @@ void CMainFrame::OnHelpLanguageReference()
 	if (IsRemoteDaliEnabled())
 	{
 		url = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-		boost::algorithm::ireplace_first(url, _T("/WsWorkunits"), _T("/?inner=../WsRoxieQuery/BrowseResources"));
+		boost::algorithm::ireplace_first(url, _T("/WsWorkunits"), _T("/WsSMC/BrowseResources"));
 	}
 	::ShellExecute(0, _T("open"), url.c_str(), 0, 0, SW_SHOWNORMAL);
 }
