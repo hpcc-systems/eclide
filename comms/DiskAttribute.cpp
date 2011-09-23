@@ -220,6 +220,8 @@ public:
 			UpdateChecksumLocal();
 			m_checksum = m_checksumLocal;
 
+			proc.unlock();
+			Refresh(true, NULL, false);
 			result = true;
 		}
 		return result;
