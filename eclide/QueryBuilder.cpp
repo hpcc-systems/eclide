@@ -130,6 +130,7 @@ BOOL CQueryBuilderApp::InitInstance()
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
+	theApp.EnableTaskbarInteraction(false);
 
 	//const TCHAR * path = _tgetenv(_T("PATH"));
 	//if (path)
