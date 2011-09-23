@@ -281,7 +281,6 @@
 #define IDC_SPIN_COUNT                  284
 #define IDC_EDIT_COPYASECL              285
 #define IDC_STATIC_FIND2                286
-#define IDC_EDIT_RESULT_FONT            287
 #define IDC_EDIT_COUNT                  288
 #define IDC_BUTTON_LAYOUT_ANALYZE       289
 #define IDC_STATIC_AUTOSAVEFREQ         290

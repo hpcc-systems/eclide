@@ -93,16 +93,16 @@ public:
 //  ===========================================================================
 #define GLYPH_WIDTH 15
 
-class CMyComboBox : public CWindowImpl<CMyComboBox, CComboBox>, public COwnerDraw<CMyComboBox>
+class CFontComboBox : public CWindowImpl<CFontComboBox, CComboBox>, public COwnerDraw<CFontComboBox>
 {
-	typedef CWindowImpl<CMyComboBox, CComboBox> thisClass;
-	typedef COwnerDraw<CMyComboBox> baseClass;
+	typedef CWindowImpl<CFontComboBox, CComboBox> thisClass;
+	typedef COwnerDraw<CFontComboBox> baseClass;
 protected:
 	CImageList m_img;	
 	int m_cyItem;
 
 public:
-	CMyComboBox()
+	CFontComboBox()
 	{
 		m_cyItem = -1;
 	}
@@ -118,7 +118,7 @@ public:
 
 	static BOOL CALLBACK EnumFontProc (LPLOGFONT lplf, LPTEXTMETRIC /*lptm*/, DWORD dwType, LPARAM lpData)	
 	{	
-		CMyComboBox * pThis = reinterpret_cast<CMyComboBox *>(lpData);		
+		CFontComboBox * pThis = reinterpret_cast<CFontComboBox *>(lpData);		
 		int index = pThis->AddString(lplf->lfFaceName);
 		pThis->SetItemData(index, dwType); 
 		return TRUE;
@@ -1066,7 +1066,7 @@ protected:
 	IConfigAdapt m_config;
 	IConfigAdapt m_ini;
 	CString m_ConfigLabel;
-	CMyComboBox m_comboFont;
+	CFontComboBox m_comboFont;
 	CComboBox m_comboFontSize;
 	std::_tstring m_Font;
 	std::_tstring m_FontSize;	
@@ -1453,15 +1453,14 @@ class CPrefResultDlg : public CDialogImpl<CPrefResultDlg>,
 	typedef CDialogImpl<thisClass> baseClass;
 protected:
 	IOwner * m_owner;
-	CComPtr<CCustomAutoComplete> m_FontResultAC;
-
 	IConfigAdapt m_config;
 	IConfigAdapt m_ini;
 	CString m_ConfigLabel;
 	int m_ResultLimit;
 	int m_AutoOpenResult;
-	CString m_FontResult;
+	std::_tstring m_Font;
 	int m_FontSizeResult;
+	CFontComboBox m_comboFont;
 
 public:
 	CPrefResultDlg(IOwner *owner, IConfig * config) : m_config(config), m_owner(owner)
@@ -1486,27 +1485,41 @@ public:
 	{
 		m_ResultLimit = m_config->Get(GLOBAL_WORKUNIT_RESULTLIMIT);
 		m_AutoOpenResult = m_config->Get(GLOBAL_AUTOOPENRESULT);
-		m_FontResult = m_config->Get(GLOBAL_FONT_RESULT);
+		m_Font = CString(m_config->Get(GLOBAL_FONT_RESULT));
 		m_FontSizeResult = m_config->Get(GLOBAL_FONTSIZE_RESULT);
+		SetComboText(m_comboFont, m_Font);
 
 		DoDataExchange();
 
 		DoChanged(false);
 	}
 
+	void SetComboText(CComboBox & combo, const std::_tstring & text)
+	{
+		int nItem = combo.FindStringExact(-1,text.c_str());
+		if ( nItem >= 0 )
+		{
+			combo.SetCurSel(nItem);
+		}
+		else
+		{
+			combo.SetWindowText(text.c_str());
+		}
+	}
+
 	void UpdateConfig()
 	{
 		m_config->Set(GLOBAL_WORKUNIT_RESULTLIMIT, m_ResultLimit);
 		m_config->Set(GLOBAL_AUTOOPENRESULT, m_AutoOpenResult);
-		m_config->Set(GLOBAL_FONT_RESULT, m_FontResult);
+		CString font;
+		m_comboFont.GetWindowText(font);
+		m_config->Set(GLOBAL_FONT_RESULT, font);
 		m_config->Set(GLOBAL_FONTSIZE_RESULT, m_FontSizeResult);
 	}
 
 	void DoApply(bool bMakeGlobal)
 	{
 		DoDataExchange(true);
-
-		m_FontResultAC->AddItem(m_FontResult);
 
 		UpdateConfig();
 
@@ -1523,6 +1536,8 @@ public:
 		MSG_WM_DESTROY(OnDestroy)
 
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
+		COMMAND_HANDLER(IDC_COMBO_FONT, CBN_SELCHANGE, OnCbnSelendokComboFont)
+		COMMAND_HANDLER(IDC_COMBO_FONT, CBN_SELENDOK, OnCbnSelendokComboFont)
 		NOTIFY_CODE_HANDLER(UDN_DELTAPOS, OnSpinChange)
 
 		REFLECT_NOTIFICATIONS()
@@ -1530,9 +1545,19 @@ public:
 
 	BEGIN_DDX_MAP(thisClass)
 		DDX_INT(IDC_EDIT_LIMITRESULT, m_ResultLimit)
-		DDX_TEXT(IDC_EDIT_RESULT_FONT, m_FontResult)
 		DDX_INT(IDC_EDIT_RESULT_FONTSIZE, m_FontSizeResult)
 	END_DDX_MAP()
+
+	void InitComboFont()
+	{
+		CWindow wndPlaceholder = GetDlgItem(IDC_COMBO_FONT);
+		CRect rc;
+		wndPlaceholder.GetWindowRect(rc);
+		ScreenToClient(rc);
+		wndPlaceholder.DestroyWindow();
+		m_comboFont.Create(m_hWnd, rc, _T(""), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VSCROLL | CBS_DROPDOWN | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | CBS_SORT , 0, IDC_COMBO_FONT);
+		m_comboFont.Init();
+	}
 
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
 	{
@@ -1543,8 +1568,8 @@ public:
 
 		CString regPath(::GetRegPathQB());
 		regPath += _T("\\Preferences\\");
-		m_FontResultAC = new CCustomAutoComplete(HKEY_CURRENT_USER, regPath+_T("FontResult"));
-		m_FontResultAC->Bind(GetDlgItem(IDC_EDIT_RESULT_FONT), ACO_AUTOSUGGEST | ACO_AUTOAPPEND | ACO_UPDOWNKEYDROPSLIST);
+
+		InitComboFont();
 
 		SetLimit(IDC_SPIN_LIMITRESULT, 0, 9999);
 		SetLimit(IDC_SPIN_RESULT_FONTSIZE, 2, 32);
@@ -1558,13 +1583,20 @@ public:
 	void OnDestroy()
 	{
 		SetMsgHandled(false);
-		m_FontResultAC->Unbind();
 	}
 	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		DoChanged();
 		return 0;
 	}
+	LRESULT OnCbnSelendokComboFont(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoChanged();
+		CString font;
+		m_Font = m_comboFont.GetLBText(m_comboFont.GetCurSel(), font);
+		return 0;
+	}
+
 	LRESULT OnSpinChange(int idCtrl, LPNMHDR pnmHdr, BOOL &bHandled)
 	{
 		DoChanged();
