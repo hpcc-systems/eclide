@@ -255,19 +255,19 @@ public:
 		case ID_REPOSITORY_MOVEATTRIBUTE:
 			ATLASSERT(s.attrs.size() > 0);
 			{
-				CString label;
+				std::_tstring label;
 				if (GetModuleLabel(label))
-					pT->m_view.DoMoveAttribute(s.attrs, (const TCHAR *)label);
+					pT->m_view.DoMoveAttribute(s.attrs, label);
 			}
 			break;
 		case ID_REPOSITORY_COPYATTRIBUTE:
 			ATLASSERT(s.attrs.size() > 0);
 			{
-				CString label;
+				std::_tstring label;
 				if (GetModuleLabel(label))
 				{
 					CWaitCursor wait;
-					pT->m_view.DoCopyAttribute(s.attrs, (const TCHAR *)label);
+					pT->m_view.DoCopyAttribute(s.attrs, label);
 				}
 			}
 			break;

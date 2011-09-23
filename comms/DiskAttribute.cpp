@@ -336,6 +336,7 @@ public:
 				int retVal = MoveToRecycleBin(m_path.native_file_string());
 				if (retVal != 0)
 					throw std::exception("Unknown Error During Folder Delete.", retVal);
+				Refresh(false, NULL, true);
 				DiskAttributeCache.Clear(this);
 				return true;
 			}

@@ -6,6 +6,7 @@
 #include "SourceView.h"
 #include "EclParser.h"
 #include "workspace.h"
+#include "StdString.h"
 
 const TCHAR * const ERR_INVALID_IDENTIFIER_TITLE = _T("Invalid Identifier");
 const TCHAR * const ERR_INVALID_IDENTIFIER = _T("Identifier must start with a character or '_' and can contain characters, numbers and '_'.");
@@ -370,17 +371,17 @@ public:
 	}
 };
 //  ===========================================================================
-class CModuleDlg : public WTL::CDialogImpl<CModuleDlg>, public WTL::CWinDataExchange<CModuleDlg>
+class CModuleDlg : public WTL::CDialogImpl<CModuleDlg>, public CWinDataExchangeStd<CModuleDlg>
 {
 protected:
-	CString &m_Label;
+	std::_tstring &m_Label;
 	WTL::CComboBox m_Combo;
 
 public:
 	bool m_ok;
 	enum { IDD = IDD_SELECT_MODULE };
 
-	CModuleDlg(CString &label) : m_Label(label)
+	CModuleDlg(std::_tstring &label) : m_Label(label)
 	{
 		m_ok = false;
 	}
@@ -397,7 +398,7 @@ public:
 	END_MSG_MAP()
 
 	BEGIN_DDX_MAP(CModuleDlg)
-		DDX_TEXT(IDC_COMBO_MODULE, m_Label)
+		DDX_COMBO_VALUE(IDC_COMBO_MODULE, m_Label);
 	END_DDX_MAP()
 
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
@@ -476,7 +477,7 @@ bool SetVersionLabel(CString & label, bool SetAndValidate)
 	return dlg.m_ok;
 }
 
-bool GetModuleLabel(CString & label)
+bool GetModuleLabel(std::_tstring & label)
 {
 	CModuleDlg dlg(label);
 	dlg.DoModal();

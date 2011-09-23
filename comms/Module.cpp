@@ -167,9 +167,8 @@ public:
 		IModuleVector children;
 		GetModules(children);
 		for(IModuleVector::iterator itr = children.begin(); itr != children.end(); ++itr)
-		{
 			itr->get()->Delete();
-		}
+
 		return m_repository->DeleteModule(GetQualifiedLabel());
 	}
 
