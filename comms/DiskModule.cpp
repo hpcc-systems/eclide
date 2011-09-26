@@ -283,10 +283,12 @@ using namespace WsAttributes;
 #else
 #endif
 
+class CDiskModule;
+static CacheT<std::_tstring, CDiskModule> DiskModuleCache;
+
 class CDiskModule : public IModule, public clib::CLockableUnknown
 {
 protected:
-	bool m_placeholder;
 	IRepository * m_repository;
 	CComPtr<IModule> m_parent;
 	boost::filesystem::wpath m_path;
@@ -304,7 +306,7 @@ protected:
 public:
 	IMPLEMENT_CLOCKABLEUNKNOWN;
 
-	CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf, bool placeholder) : m_label(label.c_str()), m_labelLeaf(labelLeaf.c_str()), m_placeholder(placeholder)
+	CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_label(label.c_str()), m_labelLeaf(labelLeaf.c_str())
 	{
 		m_repository = const_cast<IRepository *>(rep);
 		m_parent = const_cast<IModule *>(parent);
@@ -312,7 +314,7 @@ public:
 		m_pathStr = path.native_file_string().c_str();
 		m_url = path.native_file_string().c_str();
 		m_id = m_url;
-		m_id += _T("/") + m_label + (m_placeholder ? _T("/placeholder") : _T(""));
+		m_id += _T("/") + m_label;
 		m_id.MakeLower();
 		m_plugin = false;
 		m_access = SecAccess_Full;
@@ -417,13 +419,22 @@ public:
 	}
 	bool Delete()
 	{
-		return m_repository->DeleteModule(GetQualifiedLabel());
+		IModuleVector children;
+		GetModules(children);
+		for(IModuleVector::iterator itr = children.begin(); itr != children.end(); ++itr)
+			itr->get()->Delete();
+		if (m_repository->DeleteModule(GetQualifiedLabel()))
+		{
+			DiskModuleCache.Clear(this);
+			return true;
+		}
+		return false;
 	}
 
 	bool Exists() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return !m_placeholder;
+		return boost::filesystem::exists(m_path);
 	}
 
 	bool Create()
@@ -431,7 +442,6 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (!Exists())	
 		{
-			m_placeholder = false;
 			proc.unlock();
 			if (m_repository->InsertModule(GetQualifiedLabel()) != NULL)
 			{
@@ -466,7 +476,6 @@ public:
 	void Update(bool noBroadcast = false)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		m_placeholder = false;
 		//CFileAccess fileAccess((const TCHAR *)m_url);
 
 		m_access = SecAccess_Full;
@@ -500,15 +509,13 @@ public:
 	}
 };
 
-static CacheT<std::_tstring, CDiskModule> DiskModuleCache;
-
 void ClearDiskModuleCache()
 {
 	ATLTRACE(_T("Module cache before clearing(size=%u)\r\n"), DiskModuleCache.Size());
 	DiskModuleCache.Clear();
 }
 
-CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, boost::filesystem::wpath path, bool placeholder)
+CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, boost::filesystem::wpath path)
 {
 	CModuleHelper modHelper(label);
 	StdStringVector tokens;
@@ -524,22 +531,16 @@ CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & 
 			qualifiedLabel += CModuleHelper::DELIMTER;
 		qualifiedLabel += *itr;
 		path /= *itr;
-		retVal = DiskModuleCache.Get(new CDiskModule(rep, retVal, path, qualifiedLabel.c_str(), *itr, placeholder));
+		retVal = DiskModuleCache.Get(new CDiskModule(rep, retVal, path, qualifiedLabel.c_str(), *itr));
 	}
 	return retVal;
 }
 
 IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false)
 {
-	CDiskModule * mod = CreateDiskModuleRaw(rep, label, path, false);
+	CDiskModule * mod = CreateDiskModuleRaw(rep, label, path);
 	ATLASSERT(mod);
 	mod->Update(noBroadcast);
-	return mod;
-}
-
-IModule * CreateDiskModulePlaceholder(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path)
-{
-	CDiskModule * mod = CreateDiskModuleRaw(rep, label, path, true);
 	return mod;
 }
 

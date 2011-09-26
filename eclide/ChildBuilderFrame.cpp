@@ -13,6 +13,7 @@
 #include "TabbedChildWindowEx.h"
 #include "EclDlgBuilder.h"
 #include <EclCC.h>
+#include "DiskAttribute.h"
 
 enum UM2
 {
@@ -30,7 +31,8 @@ std::map<WorksaceID, FramePair> g_builder_window;
 class CBuilderFrame : 
 	public CChildFrame, 
 	public IEclBuilderSlot, 
-	public CResultSlotImpl
+	public CResultSlotImpl,
+	public boost::signals::trackable
 {
 	typedef CBuilderFrame thisClass;
 	typedef CChildFrame baseClass;
@@ -79,7 +81,7 @@ public:
 
 public: 
 	DECLARE_FRAME_WND_CLASS(NULL, IDR_BUILDERWINDOW)
-	CBuilderFrame(IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(this)
+	CBuilderFrame(IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(workspaceItem->GetAttribute(), this)
 	{
 	}
 
@@ -118,16 +120,20 @@ public:
 
 	void UpdateAttribute(IAttribute * attr)
 	{
-		ATLASSERT(false);
 		CComPtr<IWorkspaceItem> fromID = m_workspaceItem;
-//		CComPtr<IWorkspaceItem> toID = CreateIWorkspaceItem(m_workspaceItem->GetRepository(), attr);
-		//WinID toID(attr->GetModuleLabel(), attr->GetLabel());
-		//m_dlgview.SetAttribute(attr);
-		//g_builder_window[toID] = g_builder_window[fromID];
-		////g_attr_window[toID] = this;
-		//g_builder_window[fromID] = std::make_pair<CChildAttributeFrm *, CAttributeFrame *>(NULL, NULL);
-		//UIUpdateTitle();
-		//(*this)(attr, false, NULL, false);
+		CComQIPtr<IAttribute> test = attr;
+		CComQIPtr<IDiskAttribute> dattr = attr;
+		ATLASSERT(dattr);
+		if (dattr)
+		{
+			CComPtr<IWorkspaceItem> toID = m_workspaceItem->GetRepository()->CreateIWorkspaceItem(attr, dattr->GetPath());
+			g_builder_window[toID] = g_builder_window[fromID];
+			//g_attr_window[toID] = this;
+			g_builder_window[fromID] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
+			m_dlgview.SetNamePath(dattr->GetPath());
+			UIUpdateTitle();
+			(*this)(attr, false, NULL, false);
+		}
 	}
 
 	LRESULT OnCreate(LPCREATESTRUCT lParam);
@@ -195,6 +201,7 @@ public:
 		COMMAND_ID_HANDLER_EX(ID_TAB_REMOVE, OnRemoveActiveTab)
 		COMMAND_ID_HANDLER_EX(ID_TAB_REMOVE_ALL, OnRemoveAllTabs)
 		COMMAND_ID_HANDLER_EX(ID_ECL_SYNCTOC, OnEclSyncToc)
+		COMMAND_ID_HANDLER_EX(ID_HELP, OnEclHelp)
 		COMMAND_ID_HANDLER_EX(ID_ECL_GOTO, OnEclGoto)
 		COMMAND_ID_HANDLER_EX(ID_ECL_GOTOSYNCTOC, OnEclGotoSyncToc)
 
@@ -221,7 +228,7 @@ public:
 
 	void OnRemoveAllTabs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 	{
-		if(MessageBox(_T("Are you sure you want to close all workunits"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if(MessageBox(_T("Are you sure you want to close all workunits"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION) == IDYES)
 			RemoveAllTabs();
 	}
 
@@ -240,6 +247,31 @@ public:
 		}
 	}
 
+	void OnEclHelp(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+	{
+		CString message;
+		m_dlgview.GetWordAtCurPos(message);
+		if (message[0])
+		{
+			boost::filesystem::path appFolder;
+			GetProgramFolder(appFolder);
+			appFolder /= "ECLReference.chm";
+			std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
+
+			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
+			HH_AKLINK link = {0};
+			link.cbStruct =     sizeof(HH_AKLINK) ;
+			link.fReserved =    FALSE ;
+			link.pszKeywords =  (const TCHAR *)message;
+			link.pszUrl =       NULL ;
+			link.pszMsgText =   NULL ;
+			link.pszMsgTitle =  NULL ;
+			link.pszWindow =    NULL ;
+			link.fIndexOnFail = TRUE ;
+			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_KEYWORD_LOOKUP, (DWORD)&link);
+		}
+	}
+
 	void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 	{
 		CString message;
@@ -247,7 +279,7 @@ public:
 		if (message[0])
 		{
 			if (IAttribute * currAttr = m_workspaceItem->GetAttribute())
-				GetIMainFrame()->OpenAttribute(message, currAttr->GetType(), currAttr->GetModuleLabel());
+				GetIMainFrame()->OpenAttribute(message, currAttr->GetType(), currAttr->GetModuleQualifiedLabel());
 			else
 				GetIMainFrame()->OpenAttribute(message, CreateIAttributeECLType());
 		}
@@ -260,7 +292,7 @@ public:
 		if (message[0])
 		{
 			if (IAttribute * currAttr = m_workspaceItem->GetAttribute())
-				GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), currAttr->GetModuleLabel());
+				GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), currAttr->GetModuleQualifiedLabel());
 			else
 				GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType());
 		}
@@ -642,7 +674,7 @@ public:
 			break;
 		case ID_WORKUNIT_DELETE:	
 			{
-				if (MessageBox(_T("Are you sure?"), _T("Delete Workunit"), MB_YESNO | MB_ICONQUESTION) == IDYES)	//Keep in sync with WorkunitFrame.h
+				if (MessageBox(_T("Are you sure?"), _T("Delete Workunit"), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with WorkunitFrame.h
 				{
 					ActiveResultsWindow()->SetDeleteWorkunit();
 					PostMessage(WM_COMMAND, ID_TAB_REMOVE);
@@ -693,7 +725,8 @@ LRESULT CBuilderFrame::OnCreate(LPCREATESTRUCT lParam)
 
 	baseClass::OnCreate(lParam);
 
-	m_attrConnection = m_workspaceItem->GetAttribute()->on_refresh_connect(boost::ref(*this));
+	if (m_workspaceItem->GetAttribute())
+		m_attrConnection = m_workspaceItem->GetAttribute()->on_refresh_connect(boost::ref(*this));
 
 	m_dlgview.SetFocus();
 
@@ -750,6 +783,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 			return true;
 
 		UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
+		UPDATEUI(cui, ID_HELP, TRUE);
 		UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
@@ -827,7 +861,7 @@ void CBuilderFrame::SavePersistInfo(CPersistMap & persistInfo)
 			CComPtr<IAttribute> attr = m_workspaceItem->GetAttribute();
 			if (attr)
 			{
-				persistInfo.Set(PERSIST_MODULE, attr->GetModuleLabel());
+				persistInfo.Set(PERSIST_MODULE, attr->GetModuleQualifiedLabel());
 				persistInfo.Set(PERSIST_ATTRIBUTE, attr->GetLabel());
 				persistInfo.Set(PERSIST_ATTRIBUTETYPE, attr->GetType()->GetRepositoryCode());
 			}

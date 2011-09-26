@@ -129,7 +129,7 @@ public:
 		if (!m_workingFolder.empty() && !boost::filesystem::exists(m_workingFolder))
 		{
 			std::_tstring error_msg = (boost::_tformat(_T("Working folder invalid:  %1%")) % m_workingFolder).str() + _T("\r\nCreate?");
-			if (::MessageBox(NULL, _T("ECL IDE"), error_msg.c_str(), MB_ICONASTERISK | MB_YESNO) == IDYES)
+			if (::MessageBox(NULL, error_msg.c_str(), _T("ECL IDE"), MB_ICONASTERISK | MB_YESNO) == IDYES)
 			{
 				try {
 					boost::filesystem::create_directories(m_workingFolder);

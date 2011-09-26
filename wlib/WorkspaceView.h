@@ -187,7 +187,7 @@ public:
 			warning += _T("\r\n");
 		}
 
-		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		{
 			CComPtr<IProject> rep = m_Owner->GetProject();
 
@@ -259,7 +259,7 @@ public:
 		std::_tstring plurral = attrs.size() > 1 ? _T("s") : _T("");
 		std::_tstring title = (boost::_tformat(_T("Delete File%1%")) % plurral).str();
 		std::_tstring warning = (boost::_tformat(_T("Are you sure you want to move %1% file%2% to the Trash folder?")) % attrs.size() % plurral).str();
-		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		{
 			std::_tstring dateTime;
 			CurrentDateTimeUTCString(dateTime);

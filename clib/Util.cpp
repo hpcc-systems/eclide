@@ -465,6 +465,18 @@ void Replace(std::_tstring& str, const TCHAR* replace, const std::_tstring& with
 	}
 }
 
+int MoveToRecycleBin(const std::_tstring & path)
+{
+	TCHAR buff[MAX_PATH + 3];
+	ZeroMemory(buff, sizeof(buff));
+	_tcscpy(buff, path.c_str());
+	SHFILEOPSTRUCT fileop = {0}; 
+	fileop.wFunc = FO_DELETE; 
+	fileop.pFrom = buff; 
+	fileop.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION; 
+	return SHFileOperation(&fileop);
+}
+
 #ifndef SEISINT_LIBEXPORTS
 namespace _com_util 
 {
@@ -474,6 +486,54 @@ namespace _com_util
 	}
 }
 #endif
+
+int round_int(double x)
+{
+	ATLASSERT(x > static_cast<double> (INT_MIN / 2) - 1.0);
+	ATLASSERT(x < static_cast<double> (INT_MAX / 2) + 1.0);
+
+	const static float round_to_nearest = 0.5f;
+#if _WIN64
+	int i = x;
+#elif _WIN32_WCE
+	int i = x;
+#else
+	int i;
+	__asm
+	{
+		fld x
+		fadd st, st (0)
+		fadd round_to_nearest
+		fistp i
+		sar i, 1
+	}
+#endif
+	return i;
+}
+
+int floor_int (double x)
+{
+	//assert (x > static_cast <double> (INT_MIN / 2) - 1.0);
+	//assert (x < static_cast <double> (INT_MAX / 2) + 1.0);
+
+	const static float round_towards_m_i = -0.5f;
+#if _WIN64
+	int i = x;
+#elif _WIN32_WCE
+	int i = x;
+#else
+	int i;
+	__asm
+	{
+		fld x
+		fadd st, st (0)
+		fadd round_towards_m_i
+		fistp i
+		sar i, 1
+	}
+#endif
+	return (i);
+}
 
 int ceil_int (double x)
 {

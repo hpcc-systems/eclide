@@ -368,7 +368,7 @@ SYNTAX_CHECK CAttributeNode::CheckSyntax()
 {
 	Dali::CEclExceptionVector errors;
 	StlLinked<Dali::IDali> dali = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
-	if (dali->CheckSyntax(_T("hthor"), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attribute->GetModuleLabel(), m_attribute->GetLabel(), _T(""), m_attribute->GetText(), -1, _T(""), false, false, errors))
+	if (dali->CheckSyntax(_T("hthor"), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attribute->GetModuleQualifiedLabel(), m_attribute->GetLabel(), _T(""), m_attribute->GetText(), -1, _T(""), false, false, errors))
 	{
 		m_syntaxCheck = SYNTAX_CHECK_PASS;
 		m_syntaxSummary.clear();
@@ -457,7 +457,7 @@ void CRepositoryFilterNode::ItemExpanding()
 	rep->GetAllModules(modules, false, true, true);
 	for(IAttributeVector::iterator itr = m_results->begin(); itr != m_results->end(); ++itr)
 	{
-		std::_tstring module = itr->get()->GetModuleLabel();
+		std::_tstring module = itr->get()->GetModuleQualifiedLabel();
 		if (m_modules.find(module) == m_modules.end())
 		{
 			IModule * found = Find(&modules, module);
@@ -601,7 +601,7 @@ SYNTAX_CHECK CAttributeHistoryNode::CheckSyntax()
 {
 	m_errors.clear();
 	StlLinked<Dali::IDali> dali = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
-	if (dali->CheckSyntax(_T("hthor"), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attributeHistory->GetAttribute()->GetModuleLabel(), m_attributeHistory->GetAttribute()->GetLabel(), _T(""), m_attributeHistory->GetText(), -1, _T(""), false, false, m_errors))
+	if (dali->CheckSyntax(_T("hthor"), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attributeHistory->GetAttribute()->GetModuleQualifiedLabel(), m_attributeHistory->GetAttribute()->GetLabel(), _T(""), m_attributeHistory->GetText(), -1, _T(""), false, false, m_errors))
 	{
 		m_syntaxCheck = SYNTAX_CHECK_PASS;
 		for(Dali::CEclExceptionVector::iterator itr = m_errors.begin(); itr != m_errors.end(); ++itr)

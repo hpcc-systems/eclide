@@ -7,8 +7,11 @@
 #include <util.h> //clib
 #include <EclCC.h> //commms
 //  ===========================================================================
-CBuilderDlg::CBuilderDlg(IEclBuilderSlot * owner) : m_owner(owner), baseClass(owner)
+CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
 {
+	if (m_attribute)
+		m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
+
 	m_comboQueueClusterCtrl = new CComboQueueCluster();
 	m_comboLabelCtrl = new CComboLabel();
 	m_advanced = false;
@@ -52,7 +55,31 @@ bool CBuilderDlg::DoFileOpen(const CString & sPathName)
 
 bool CBuilderDlg::DoSave(bool attrOnly) 
 {
-	if (!m_path.IsEmpty()) 
+	CWaitCursor wait;
+	CString ecl;
+	m_view.GetText(ecl);
+	if (m_attribute && m_attribute->SetText(ecl))
+	{
+		m_view.SetSavePoint();
+		IAttributeVector attrs;
+		Dali::CEclExceptionVector errors;
+		m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, errors);
+		if (attrs.size())
+		{
+			if (!m_migrator)
+				m_migrator = CreateIMigration(::AttachRepository());
+			m_migrator->Stop();
+			for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
+				m_migrator->AddToRep(itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
+			m_migrator->Start();
+			m_migrator->Join();
+			SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
+			GetIMainFrame()->Send_RefreshRepositoryWindow(m_attribute->GetModule());
+			GetIMainFrame()->SyncTOC(m_attribute->GetQualifiedLabel(), m_attribute->GetType());
+		}
+		return true;
+	}
+	else if (!m_path.IsEmpty()) 
 		return DoFileSave(m_path);
 	if (!attrOnly)
 		return DoFileSaveAs();
@@ -404,6 +431,21 @@ void CBuilderDlg::DoCheckDependency()
 	SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errorResults);
 }
 
+void CBuilderDlg::SetAttribute(IAttribute *attribute)
+{
+	if (m_attribute)
+		m_sigConn.disconnect();
+
+	m_attribute = attribute;
+	if (m_attribute)
+		m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
+}
+
+IAttribute *CBuilderDlg::GetAttribute()
+{
+	return m_attribute;
+}
+
 void CBuilderDlg::DoUpdateScheduleInfo()
 {
 	DoDataExchange(true);
@@ -627,4 +669,32 @@ LRESULT CBuilderDlg::OnCbnSelendokComboCluster(WORD /*wNotifyCode*/, WORD /*wID*
 	PostMessage(BUM_REFRESHQUEUECLUSTER);
 	return 0;
 }
-//  ===========================================================================
+
+	//  IAttribute Notifications  ---
+void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
+{
+	if (eclChanged)
+	{
+		CString ecl;
+		m_view.GetText(ecl);
+		if (ecl.Compare(attr->GetText(false)) != 0)
+			m_view.SetText(attr->GetText(false));
+	}
+	//TODO handle renamed and deleted.
+	ATLASSERT(!newAttrAsOldOneMoved && !deleted);
+}
+
+	//  IMigrationCallback  ---
+BOOL CBuilderDlg::Invalidate(BOOL bErase)
+{
+	return TRUE;
+}
+void CBuilderDlg::LogMsg(const std::_tstring & msg)
+{
+}
+void CBuilderDlg::PostStatus(const TCHAR* pStr)
+{
+}
+void CBuilderDlg::PostProgress(int progress)
+{
+}//  ===========================================================================

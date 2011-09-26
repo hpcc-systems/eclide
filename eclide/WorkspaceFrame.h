@@ -78,7 +78,7 @@ public:
 							workspacesToRemove.push_back(ws_node->GetWorkspace());
 					}
 				}
-				if (pT->MessageBox(_T("Are you sure?"), _T("Delete Workspace"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+				if (pT->MessageBox(_T("Are you sure?"), _T("Delete Workspace"), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 					GetIMainFrame()->DoWorkspaceRemove(workspacesToRemove);
 			}
 			break;

@@ -1882,7 +1882,7 @@ void CMainFrame::OnWorkspaceRemove()
 {
 	IWorkspaceVector workspaceToRemove;
 	workspaceToRemove.push_back((IWorkspace *)m_workspaceCombo->GetItemData(m_workspaceCombo->GetCurSel()));
-	if (MessageBox(_T("Are you sure?"), _T("Delete Workspace"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+	if (MessageBox(_T("Are you sure?"), _T("Delete Workspace"), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		DoWorkspaceRemove(workspaceToRemove);
 }
 
@@ -1897,7 +1897,7 @@ void CMainFrame::OnHelpLanguageReference()
 	if (IsRemoteDaliEnabled())
 	{
 		url = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-		boost::algorithm::ireplace_first(url, _T("/WsWorkunits"), _T("/?inner=../WsRoxieQuery/BrowseResources"));
+		boost::algorithm::ireplace_first(url, _T("/WsWorkunits"), _T("/WsSMC/BrowseResources"));
 	}
 	::ShellExecute(0, _T("open"), url.c_str(), 0, 0, SW_SHOWNORMAL);
 }
@@ -2489,8 +2489,8 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 	}
 	else if (boost::algorithm::iequals(boost::filesystem::extension(path), ".mod"))
 	{
-		DoConfirmImportDlg(*this, path);
-		m_Repository->Post_Reset();
+		IModuleAdapt targetModule = DoConfirmImportDlg(*this, path);
+		m_Repository->Send_Refresh(targetModule);
 		return TRUE;
 	}
 	CComPtr<IRepository> rep = AttachRepository();
@@ -2938,7 +2938,7 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
 		}
 		else
 		{
-			HWND hwnd = ::OpenAttributeMDI(this, attribute->GetModuleLabel(), attribute->GetLabel(), type, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), false, errors);
+			HWND hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), type, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), false, errors);
 			if (hwnd)
 				PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 		}
@@ -2996,7 +2996,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
 		}
 		else
 		{
-			hwnd = ::OpenAttributeMDI(this, attribute->GetModuleLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), bHistoryView);
+			hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), bHistoryView);
 		}
 	}
 	if (hwnd)
@@ -3026,7 +3026,7 @@ void CMainFrame::SaveAttribute(IAttribute * attribute)
 }
 void CMainFrame::InsertText(IAttribute * attribute)
 {
-	CString label = CString(attribute->GetModuleLabel()) + "." + CString(attribute->GetLabel());
+	CString label = CString(attribute->GetModuleQualifiedLabel()) + "." + CString(attribute->GetLabel());
 	::SendMessage(MDIGetActive()->GetSafeHwnd(), CWM_INSERTTEXT, 0, (LPARAM)&label);
 }
 bool CMainFrame::ShowComment(IAttribute * attribute, CString & comment)

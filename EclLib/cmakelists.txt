@@ -46,3 +46,5 @@ add_dependencies ( ECLLIB
 target_link_libraries( ECLLIB
 		CLIB
 	)
+
+install ( TARGETS ECLLIB RUNTIME DESTINATION bin )

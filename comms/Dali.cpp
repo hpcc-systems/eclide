@@ -3,7 +3,7 @@
 
 #include "cache.h"
 #include "Result.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "RecursiveMutex.h"
 #include "logger.h"
 #include "thread.h"
@@ -729,7 +729,7 @@ public:
 	bool GetDependanciesTree(const std::_tstring & cluster, const std::_tstring & queue, const std::_tstring & snapshot, const std::_tstring & items, std::_tstring & xmlDepends, CEclExceptionVector & outExceptions)
 	{
 		CString url, user, password;
-		CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password), 60 * 60, 60 * 60);
+		CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password), 0, 20 * RECV_TIMEOUT, 20 * RECV_TIMEOUT);
 		CStringPool stringPool;
 
 		_ns6__WUGetDependancyTrees request;

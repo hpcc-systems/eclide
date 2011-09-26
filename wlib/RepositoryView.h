@@ -240,7 +240,7 @@ public:
 			warning += _T("\r\n");
 		}
 
-		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
 		{
 			CComPtr<IRepository> rep = m_Owner->GetRepository();
 
@@ -276,7 +276,7 @@ public:
 	}
 	void DoRenameAttribute(IAttribute * attr, const std::_tstring & label)
 	{
-		std::_tstring moduleLabel = attr->GetModuleLabel();
+		std::_tstring moduleLabel = attr->GetModuleQualifiedLabel();
 		CComPtr<IAttribute> newAttr = attr->Rename(label.c_str());
 		if (newAttr)
 		{
@@ -303,7 +303,7 @@ public:
 			std::map<std::_tstring, bool> modDedup;
 			for(IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
 			{
-				modDedup[itr->get()->GetModuleLabel()] = true;
+				modDedup[itr->get()->GetModuleQualifiedLabel()] = true;
 				CComPtr<IAttribute> newAttr = rep->GetAttribute(target.c_str(), itr->get()->GetLabel(), itr->get()->GetType());
 				m_Owner->UpdateAttribute(itr->get(), newAttr);
 			}
@@ -335,7 +335,7 @@ public:
 			CComPtr<IAttribute> newAttr = rep->GetAttribute(target.c_str(), itr->get()->GetLabel(), itr->get()->GetType());
 			if (newAttr)
 			{
-				if (IDYES == pT->MessageBox((boost::_tformat(_T("\"%1%.%2%\" Already exists, overwrite?")) % target.c_str() % itr->get()->GetLabel()).str().c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION)) 
+				if (IDYES == pT->MessageBox((boost::_tformat(_T("\"%1%.%2%\" Already exists, overwrite?")) % target.c_str() % itr->get()->GetLabel()).str().c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION)) 
 					newAttr = rep->GetAttribute(target.c_str(), itr->get()->GetLabel(), itr->get()->GetType());
 			}
 			else
@@ -343,7 +343,7 @@ public:
 			if (newAttr)
 			{
 				newAttr->SetText(itr->get()->GetText());
-				newAttr->Checkin((boost::_tformat(_T("Copied from %1%")) % itr->get()->GetModuleLabel()).str().c_str());
+				newAttr->Checkin((boost::_tformat(_T("Copied from %1%")) % itr->get()->GetModuleQualifiedLabel()).str().c_str());
 			}
 		}
 		TreeNode::RefreshChildren(target, m_Root);
@@ -357,7 +357,7 @@ public:
 		std::_tstring plurral = attrs.size() > 1 ? _T("s") : _T("");
 		std::_tstring title = (boost::_tformat(_T("Delete File%1%")) % plurral).str();
 		std::_tstring warning = (boost::_tformat(_T("Are you sure you want to delete %1% file%2% permanently?")) % attrs.size() % plurral).str();
-		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		{
 			CComPtr<IRepository> rep = AttachRepository();
 			rep->DeleteAttributes(attrs);
@@ -372,13 +372,13 @@ public:
 		std::_tstring plurral = attrs.size() > 1 ? _T("s") : _T("");
 		std::_tstring title = (boost::_tformat(_T("Delete File%1%")) % plurral).str();
 		std::_tstring warning = (boost::_tformat(_T("Are you sure you want to move %1% file%2% to the Trash folder?")) % attrs.size() % plurral).str();
-		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (pT->MessageBox(warning.c_str(), title.c_str(), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		{
 			std::_tstring dateTime;
 			CurrentDateTimeUTCString(dateTime);
 			for(IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
 			{
-				std::_tstring modLabel = itr->get()->GetModuleLabel();
+				std::_tstring modLabel = itr->get()->GetModuleQualifiedLabel();
 				boost::algorithm::replace_all(modLabel, _T("."), _T("_"));
 				std::_tstring attrLabel = itr->get()->GetLabel();
 				std::_tstring userID = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER)));

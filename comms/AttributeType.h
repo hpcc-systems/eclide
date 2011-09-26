@@ -27,6 +27,7 @@ const TCHAR * const PREPROCESS_LABEL[] =
 __interface IAttributeType : public IUnknown
 {
 	const TCHAR * GetRepositoryCode();
+	const TCHAR * GetFileExtension();
 	const TCHAR * GetDescription();
 	const TCHAR * GetDefaultText(const std::_tstring & attrLabel);
 };

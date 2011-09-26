@@ -281,7 +281,6 @@
 #define IDC_SPIN_COUNT                  284
 #define IDC_EDIT_COPYASECL              285
 #define IDC_STATIC_FIND2                286
-#define IDC_EDIT_RESULT_FONT            287
 #define IDC_EDIT_COUNT                  288
 #define IDC_BUTTON_LAYOUT_ANALYZE       289
 #define IDC_STATIC_AUTOSAVEFREQ         290
@@ -431,6 +430,7 @@
 #define IDC_EDIT_DZ_IP                  420
 #define IDC_STATIC_CAPTION              421
 #define IDC_BUTTON_DZ_REFRESH           422
+#define IDC_STATIC_TO                   422
 #define IDC_XB_ADVANCED_NAMING          423
 #define IDC_BUTTON_FILE_NEW_MODULE_PICK 424
 #define IDC_EDIT_NEW_LOGICAL_FILE_NAME  425
@@ -539,6 +539,8 @@
 #define IDC_STATIC_ONLYVIALOGIN         523
 #define IDC_BUTTON_MOVEDOWN             523
 #define IDC_STATIC_WUARGUMENTS          524
+#define IDC_COMBO1                      524
+#define IDC_COMBO_MODULES               524
 #define IDC_EDIT_ARGUMENTS2             525
 #define IDC_EDIT_WUARGUMENTS            525
 #define ID_COL_PANE                     32772
@@ -873,7 +875,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61412
 #define _APS_NEXT_COMMAND_VALUE         33086
-#define _APS_NEXT_CONTROL_VALUE         524
+#define _APS_NEXT_CONTROL_VALUE         525
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

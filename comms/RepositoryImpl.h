@@ -23,7 +23,6 @@ public:
 
 typedef std::map<std::_tstring, std::pair<std::_tstring, std::_tstring> > PasswordCacheT;
 extern PasswordCacheT g_passwordCache;
-IModule * CreateModulePlaceholder(const IRepository *rep, const std::_tstring &label);
 IAttribute * CreateAttributePlaceholder(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, IAttributeType * type);
 
 IAttribute * GetAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version = 0, bool sandboxed = true, bool placeholder = false);
@@ -140,11 +139,10 @@ public:
 		return retVal.get();
 	}
 
-	IModule * GetModulePlaceholder(const TCHAR* label) const
+	virtual IModule * GetModulePlaceholder(const TCHAR* label) const
 	{
-		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		IModule * module = CreateModulePlaceholder(this, label);
-		return module;
+		ATLASSERT(false);
+		return NULL;
 	}
 
 	unsigned GetModules(const std::_tstring & module, IModuleVector & modules, bool GetChecksum = false, bool noRefresh=true) const
@@ -411,7 +409,7 @@ public:
 
 	IAttribute * RenameAttribute(IAttribute * attr, const TCHAR* label) const
 	{
-		StlLinked<IAttribute> newAttr = RenameAttribute(attr->GetModuleLabel(), attr->GetLabel(), attr->GetType(), label);
+		StlLinked<IAttribute> newAttr = RenameAttribute(attr->GetModuleQualifiedLabel(), attr->GetLabel(), attr->GetType(), label);
 		if (newAttr)
 			attr->Refresh(false, newAttr);
 		return newAttr.get();
@@ -435,7 +433,7 @@ public:
 			itr->get()->PreProcess(PREPROCESS_COMMIT, NULL, dependantAttrs, errors);
 			for(IAttributeVector::const_iterator itr = dependantAttrs.begin(); itr != dependantAttrs.end(); ++itr)
 			{
-				StlLinked<IAttribute> attr = GetAttribute(itr->get()->GetModuleLabel(), itr->get()->GetLabel(), itr->get()->GetType());
+				StlLinked<IAttribute> attr = GetAttribute(itr->get()->GetModuleQualifiedLabel(), itr->get()->GetLabel(), itr->get()->GetType());
 				if (attr)
 					attrToProcess.push_back(attr);
 			}
@@ -472,7 +470,7 @@ public:
 			{
 				for (IAttributeVector::iterator itr = attrToCheckin.begin(); itr != attrToCheckin.end(); ++itr)
 				{
-					CComPtr<IAttribute> attr = GetAttribute(itr->get()->GetModuleLabel(), itr->get()->GetLabel(), itr->get()->GetType(), 0, false, true, true);
+					CComPtr<IAttribute> attr = GetAttribute(itr->get()->GetModuleQualifiedLabel(), itr->get()->GetLabel(), itr->get()->GetType(), 0, false, true, true);
 					if (attr)
 						attrsToRevert.push_back(attr.p);
 				}
