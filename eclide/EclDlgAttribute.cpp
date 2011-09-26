@@ -17,9 +17,13 @@ CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_att
 void CAttributeDlg::GetTitle(CString & title)
 {
 	title = m_view.IsDirty() ? "*" : "";
-	title += CString(m_attribute->GetModuleLabel()) + _T(".") + CString(m_attribute->GetLabel());
+	title += CString(m_attribute->GetModuleQualifiedLabel()) + _T(".") + CString(m_attribute->GetLabel());
 }
 
+//bool CBuilderDlg::DoFileOpen(const CString & sPathName) 
+//{
+//  Help Alligning with BuilderDlg COmpare
+//}
 bool CAttributeDlg::DoSave(bool attrOnly)
 {
 	CWaitCursor wait;
@@ -27,9 +31,10 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 	m_view.GetText(ecl);
 	if (m_attribute->SetText(ecl))
 	{
+		//  Save local item for history  ---
 		boost::filesystem::path path;
 		GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
-		path /= CT2A(m_attribute->GetModuleLabel());
+		path /= CT2A(m_attribute->GetModuleQualifiedLabel());
 		boost::filesystem::create_directories(path);
 		path /= CT2A(m_attribute->GetLabel());
 		boost::filesystem::create_directories(path);
@@ -42,6 +47,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 		file.Create(CString(CA2T(path.native_file_string().c_str())));
 		file.Write(ecl);
 		file.Close();
+		//  ---  ---  ---
 
 		m_view.SetSavePoint();
 		IAttributeVector attrs;
@@ -65,13 +71,18 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 	return false;
 }
 
+//bool CBuilderDlg::DoFileSave(const CString & sPathName) 
+//{
+//  Help Alligning with BuilderDlg COmpare
+//}
+
 void CAttributeDlg::DoCheckSyntax()
 {
 	m_view.SyntaxChecking();
 	CString ecl;
 	m_view.GetText(ecl);
 	CString cluster(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER));
-	CString module(m_attribute->GetModuleLabel());
+	CString module(m_attribute->GetModuleQualifiedLabel());
 	CString attribute(m_attribute->GetLabel());
 	if (m_attribute->GetType() == CreateIAttributeECLType())
 	{
@@ -100,7 +111,7 @@ void CAttributeDlg::DoCheckComplexity()
 	StlLinked<Dali::IDali> server = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
 	std::_tstring complexity, complexitDisplay;
 	Dali::CEclExceptionVector errorResults;
-	server->CheckComplexity(GetCluster(), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), ecl, m_attribute->GetModuleLabel(), m_attribute->GetLabel(), complexity, errorResults);
+	server->CheckComplexity(GetCluster(), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), ecl, m_attribute->GetModuleQualifiedLabel(), m_attribute->GetLabel(), complexity, errorResults);
 	if (complexity.length() == 0)
 	{
 		complexitDisplay = ComplexityErrorMsg;
@@ -120,7 +131,7 @@ void CAttributeDlg::DoCheckDependency()
 	StlLinked<IRepository> rep = ::AttachRepository();
 	StlLinked<Dali::IDali> dali = Dali::AttachDali();
 	Dali::CEclExceptionVector errorResults;
-	DoShowDependantAttributes(rep, dali, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE))), GetCluster(), static_cast<const TCHAR *>(ecl), m_attribute->GetModuleLabel(), m_attribute->GetLabel(), errorResults);
+	DoShowDependantAttributes(rep, dali, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE))), GetCluster(), static_cast<const TCHAR *>(ecl), m_attribute->GetModuleQualifiedLabel(), m_attribute->GetLabel(), errorResults);
 	SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errorResults);
 }
 
@@ -178,7 +189,7 @@ void CAttributeDlg::OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 	CString message;
 	GetWordAtCurPos(message);
 	if (message[0])
-		GetIMainFrame()->OpenAttribute(message, m_attribute->GetType(), m_attribute->GetModuleLabel());
+		GetIMainFrame()->OpenAttribute(message, m_attribute->GetType(), m_attribute->GetModuleQualifiedLabel());
 }
 
 void CAttributeDlg::OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
@@ -186,9 +197,10 @@ void CAttributeDlg::OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*h
 	CString message;
 	GetWordAtCurPos(message);
 	if (message[0])
-		GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), m_attribute->GetModuleLabel());
+		GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), m_attribute->GetModuleQualifiedLabel());
 }
 
+	//  IAttribute Notifications  ---
 void CAttributeDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
 {
 	if (eclChanged)

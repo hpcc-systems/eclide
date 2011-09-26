@@ -125,3 +125,5 @@ target_link_libraries( WLIB
 		COMMS
 		SGRID
 	)
+
+install ( TARGETS WLIB RUNTIME DESTINATION bin )

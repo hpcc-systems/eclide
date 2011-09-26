@@ -62,6 +62,7 @@ public:
 	void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 	void OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 
+	//  IAttribute Notifications  ---
 	void operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted);
 
 	//  IMigrationCallback  ---

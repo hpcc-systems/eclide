@@ -25,59 +25,15 @@ CLIB_API const TCHAR * EscapeXML(const std::_tstring & source, std::_tstring & t
 CLIB_API const TCHAR * UnescapeXML(const std::_tstring & source, std::_tstring & target);
 CLIB_API const TCHAR * GetActiveXDLLPath(const std::_tstring & clsID, std::_tstring & path);
 CLIB_API const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & folder);
+CLIB_API int MoveToRecycleBin(const std::_tstring & path);
 
 //  Should be in wlib?
 void CLIB_API InsertSeparator(WTL::CMenu &menu);
 BOOL CLIB_API InsertMenuItem(WTL::CMenu &menu, int id, const TCHAR *item);
 BOOL CLIB_API InsertMenuItem(WTL::CMenu &menu, int pos, int id, const TCHAR *item);
 
-inline int round_int(double x)
-{
-	ATLASSERT(x > static_cast<double> (INT_MIN / 2) - 1.0);
-	ATLASSERT(x < static_cast<double> (INT_MAX / 2) + 1.0);
-
-	const static float round_to_nearest = 0.5f;
-#if _WIN64
-	int i = x;
-#elif _WIN32_WCE
-	int i = x;
-#else
-	int i;
-	__asm
-	{
-		fld x
-		fadd st, st (0)
-		fadd round_to_nearest
-		fistp i
-		sar i, 1
-	}
-#endif
-	return i;
-}
-
-inline int floor_int (double x)
-{
-	//assert (x > static_cast <double> (INT_MIN / 2) - 1.0);
-	//assert (x < static_cast <double> (INT_MAX / 2) + 1.0);
-
-	const static float round_towards_m_i = -0.5f;
-#if _WIN64
-	int i = x;
-#elif _WIN32_WCE
-	int i = x;
-#else
-	int i;
-	__asm
-	{
-		fld x
-		fadd st, st (0)
-		fadd round_towards_m_i
-		fistp i
-		sar i, 1
-	}
-#endif
-	return (i);
-}
+CLIB_API int round_int(double x);
+CLIB_API int floor_int (double x);
 CLIB_API int ceil_int (double x);
 
 #define MAKEVERSION(major, minor) (ULONG)(MAKELONG(minor,major))

@@ -307,13 +307,14 @@ protected:
 	CString m_value;
 
 public:
-	void Load(const TCHAR *label);
+	void Load(const TCHAR *label, bool includeBlank = true);
 	static void GetModules(CComPtr<CComboModule> self);
 	void LoadModules(IModuleVector & modules);
 
 	void SelectDefault(const TCHAR *selection);
 	CComboModule & operator = (HWND hWnd);
 	const TCHAR * GetSelectedModule();
+	IModule * GetSelectedIModule();
 };
 
 

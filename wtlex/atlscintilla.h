@@ -59,11 +59,7 @@ public:
 
    static LPCTSTR GetLibraryName()
    {
-#if _MSC_VER < 1400
-      return _T("SCILEXER.DLL");
-#else
       return _T("ECLEDITOR.DLL");
-#endif
    }
 
    // Operations

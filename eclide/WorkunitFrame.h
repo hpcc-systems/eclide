@@ -147,7 +147,7 @@ public:
 			m_view.DoResubmit(*wus);
 			break;
 		case ID_WORKUNIT_DELETE:
-			if (MessageBox(_T("Are you sure?"), _T("Delete Workunit"), MB_YESNO | MB_ICONQUESTION) == IDYES)	//Keep in sync with ChildBduilderFrame.cpp
+			if (MessageBox(_T("Are you sure?"), _T("Delete Workunit"), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with ChildBduilderFrame.cpp
 				m_view.DoDelete(*wus);
 			break;
 		case ID_WORKUNIT_PROTECT:

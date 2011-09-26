@@ -7,6 +7,7 @@
 #include "WorkspaceView.h"
 #include "UnicodeFile.h"
 #include "Migration.h"
+#include "EclCC.h"
 
 //  ===========================================================================
 class CAttrDlg : 
@@ -203,25 +204,28 @@ void DoShowSyntaxDlg(HWND hwndParent, IRepositoryAdapt rep, IAttributeVector & _
 typedef std::pair<std::_tstring, std::_tstring> CommentEclPair;
 typedef std::pair<std::_tstring, IAttributeTypeAdapt> ModAttrTypePair;
 typedef std::map<ModAttrTypePair, CommentEclPair> AttrMap;
-class CAttrDlg2 : 
-	public CDialogImpl<CAttrDlg2>, 
+class CAttrImportDlg : 
+	public CDialogImpl<CAttrImportDlg>, 
 	public CRepositorySlotImpl,
 	public IMigrationCallback
 {
-	typedef CAttrDlg2 thisClass;
+	typedef CAttrImportDlg thisClass;
 	typedef CDialogImpl<thisClass> baseClass;
 
 public:
 	IRepositoryAdapt & m_rep;
 	const AttrMap & m_attrs;
 	CListBox m_listAttrs;
+	CComPtr<CComboModule> m_comboModuleCtrl;
+	IModuleAdapt m_targetModule;
 	CButton m_checkSandbox; 
 	CComPtr<IMigration> m_migrator;
 	bool m_defaultToSandbox;
 
-	CAttrDlg2(IRepositoryAdapt target, const AttrMap & attrs, bool defaultToSandbox)
+	CAttrImportDlg(IRepositoryAdapt target, const AttrMap & attrs, bool defaultToSandbox)
 		: m_rep(target), m_attrs(attrs)
 	{
+		m_comboModuleCtrl = new CComboModule();
 		m_defaultToSandbox = defaultToSandbox;
 	}
 
@@ -230,6 +234,13 @@ public:
 		//must return a "high" ref counted object
 		IRepositoryAdapt rep = m_rep;
 		return rep.Detach();
+	}
+
+	IModule * GetTargetModule() 
+	{
+		if (IsLocalRepositoryEnabled())
+			return m_comboModuleCtrl->GetSelectedIModule();
+		return NULL;
 	}
 
 	enum { IDD = IDD_ATTRVERIFY2 };
@@ -252,11 +263,24 @@ public:
 		{
 			m_listAttrs.AddString(itr->first.first.c_str());
 		}
+
+		*m_comboModuleCtrl = GetDlgItem(IDC_COMBO_MODULE);
 		m_checkSandbox = GetDlgItem(IDC_CHECK_SANDBOX);
 
-		if (m_defaultToSandbox)
-			m_checkSandbox.SetCheck(true);
+		if (IsLocalRepositoryEnabled())
+		{
+			m_comboModuleCtrl->Load(_T(""), false);
 
+			m_defaultToSandbox = false;
+			m_checkSandbox.EnableWindow(False);
+		}
+		else
+		{
+			GetDlgItem(IDC_STATIC_TO).EnableWindow(false);
+			m_comboModuleCtrl->EnableWindow(false);
+			if (m_defaultToSandbox)
+				m_checkSandbox.SetCheck(true);
+		}
 
 		return TRUE;
 	}
@@ -266,13 +290,14 @@ public:
 	}
 	void OnOk(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 	{
+		m_targetModule = GetTargetModule();
+
 		CComPtr<IRepository> rep = AttachRepository();
 		m_migrator = CreateIMigration(rep, this);
 		m_migrator->Stop();
 		for(AttrMap::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
-		{
-			m_migrator->AddEclToRep(itr->first.first, itr->first.second, itr->second.first, itr->second.second, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))), m_checkSandbox.GetCheck() != 0);
-		}
+			m_migrator->AddEclToModule(m_targetModule, itr->first.first, itr->first.second, itr->second.first, itr->second.second, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))), m_checkSandbox.GetCheck() != 0);
+
 		GetDlgItem(IDOK).EnableWindow(FALSE);
 		GetDlgItem(IDCANCEL).EnableWindow(FALSE);
 		m_migrator->Start();
@@ -309,7 +334,7 @@ public:
 	}
 };
 
-void DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
+IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
 {
 #define IMPORT_MARKER _T("//Import:")
 #define COMMENT_MARKER _T("//Comment:")
@@ -338,6 +363,10 @@ void DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
 					attrs[std::make_pair(attributeLabel, CreateIAttributeECLType())] = CommentEclPair(attributeComment, attributeEcl);
 
 				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
+				//  Fix DABs new module bracketing
+				boost::algorithm::replace_all(line, _T("<"), _T(""));
+				boost::algorithm::replace_all(line, _T(">"), _T("."));
+				//  ---
 				boost::algorithm::trim(line);
 				attributeLabel = line;
 				attributeComment.clear();
@@ -355,12 +384,11 @@ void DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
 			}
 		}
 		if (attributeLabel.length() && attributeEcl.length())
-		{
 			attrs[std::make_pair(attributeLabel, CreateIAttributeECLType())] = CommentEclPair(attributeComment, attributeEcl);
-		}
-		CAttrDlg2 dlg(AttachRepository(), attrs, true);
+
+		CAttrImportDlg dlg(AttachRepository(), attrs, true);
 		if (dlg.DoModal(hwndParent) == IDOK)
-		{
-		}
+			return dlg.m_targetModule;
 	}
+	return NULL;
 }

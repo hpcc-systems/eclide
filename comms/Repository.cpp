@@ -2,7 +2,7 @@
 #include "repositoryImpl.h"
 
 #include "Module.h"
-#include "SoapUtil.h"
+#include "gSoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"
@@ -25,6 +25,7 @@ void ClearWorkspaceItemCache();
 PasswordCacheT g_passwordCache;
 
 IModule * CreateModule(const IRepository *rep, const ns2__ECLModule *data, bool noBroadcast=false);
+IModule * CreateModulePlaceholder(const IRepository *rep, const std::_tstring &label);
 IAttribute * CreateAttribute(const IRepository *rep, const ns2__ECLAttribute * data, bool noBroadcast=false);
 IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const ns2__ECLAttribute * data);
 
@@ -93,6 +94,13 @@ public:
 		modulesCache.update(modules);
 		moduleHierarchyCache.update(moduleHierarchy);
 		return modules.size();
+	}
+
+	IModule * GetModulePlaceholder(const TCHAR* label) const
+	{
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
+		IModule * module = CreateModulePlaceholder(this, label);
+		return module;
 	}
 
 	virtual IModule * InsertModule(const TCHAR* moduleName) const
@@ -657,7 +665,7 @@ public:
 		for(std::size_t i = 0 ; i < pAttributes.size(); ++i)
 		{
 			ns2__DeleteAttributeRequest deleteAttributeRequest;
-			deleteAttributeRequest.ModuleName = stringPool.Create(pAttributes[i]->GetModuleLabel());
+			deleteAttributeRequest.ModuleName = stringPool.Create(pAttributes[i]->GetModuleQualifiedLabel());
 			deleteAttributeRequest.AttributeName = stringPool.Create(pAttributes[i]->GetLabel());
 
 			arrayOfDeleteAttributeRequest.DeleteAttributeRequest.push_back(deleteAttributeRequestPool.Create(deleteAttributeRequest));
@@ -696,7 +704,7 @@ public:
 		for(std::size_t i = 0 ; i < pAttributes.size(); ++i)
 		{
 			ns2__CheckinAttributeRequest checkinAttributeRequest;
-			checkinAttributeRequest.ModuleName = stringPool.Create(pAttributes[i]->GetModuleLabel());
+			checkinAttributeRequest.ModuleName = stringPool.Create(pAttributes[i]->GetModuleQualifiedLabel());
 			checkinAttributeRequest.AttributeName = stringPool.Create(pAttributes[i]->GetLabel());
 			checkinAttributeRequest.Description = stringPool.Create(comment);
 
@@ -733,7 +741,7 @@ public:
 		for(std::size_t i = 0 ;i < attributes.size(); ++i)
 		{
 			ns2__CheckoutAttributeRequest checkoutAttributeRequest;
-			checkoutAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleLabel());
+			checkoutAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleQualifiedLabel());
 			checkoutAttributeRequest.AttributeName = stringPool.Create(attributes[i]->GetLabel());
 			request.Attributes->CheckoutAttributeRequest.push_back(checkoutAttributeRequestPool.Create(checkoutAttributeRequest));
 		}
@@ -767,7 +775,7 @@ public:
 		for(std::size_t i = 0 ; i < attributes.size(); ++i)
 		{
 			ns2__SaveAttributeRequest saveAttributeRequest;
-			saveAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleLabel());
+			saveAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleQualifiedLabel());
 			saveAttributeRequest.AttributeName = stringPool.Create(attributes[i]->GetLabel());
 			saveAttributeRequest.Text = stringPool.Create(attributes[i]->GetText(false));
 			request.Attributes->SaveAttributeRequest.push_back(saveAttributeRequestPool.Create(saveAttributeRequest));
@@ -802,7 +810,7 @@ public:
 		for(std::size_t i = 0 ; i < attributes.size(); ++i)
 		{
 			ns2__RenameAttributeRequest saveAttributeRequest;
-			saveAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleLabel());
+			saveAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleQualifiedLabel());
 			saveAttributeRequest.AttributeName = stringPool.Create(attributes[i]->GetLabel());
 			saveAttributeRequest.NewModuleName = stringPool.Create(module);
 			saveAttributeRequest.NewAttributeName = stringPool.Create(attributes[i]->GetLabel());
@@ -820,7 +828,7 @@ public:
 					CComPtr<IAttribute> attribute = CreateAttribute(this, response.outAttributes->ECLAttribute[i]);
 					for(std::size_t i = 0 ; i < attributes.size(); ++i)
 					{
-						if (boost::algorithm::iequals(attribute->GetModuleLabel(), module) && boost::algorithm::iequals(attribute->GetLabel(), attributes[i]->GetLabel()))
+						if (boost::algorithm::iequals(attribute->GetModuleQualifiedLabel(), module) && boost::algorithm::iequals(attribute->GetLabel(), attributes[i]->GetLabel()))
 						{
 							attributes[i]->Refresh(false, attribute);
 							break;
@@ -848,7 +856,7 @@ public:
 		for(std::size_t i = 0 ; i < attributes.size(); ++i)
 		{
 			ns2__RollbackAttributeRequest rollbackAttributeRequest;
-			rollbackAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleLabel());
+			rollbackAttributeRequest.ModuleName = stringPool.Create(attributes[i]->GetModuleQualifiedLabel());
 			rollbackAttributeRequest.AttributeName = stringPool.Create(attributes[i]->GetLabel());
 			request.Attributes->RollbackAttributeRequest.push_back(rollbackAttributeRequestPool.Create(rollbackAttributeRequest));
 		}

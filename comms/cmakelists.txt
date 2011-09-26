@@ -11,6 +11,7 @@ set ( SRCS
 		#attrHelper.h
 		Attribute.cpp
 		Attribute.h
+		AttributeImpl.h
 		AttributeHistory.cpp
 		AttributeHistory.h
 		AttributeType.cpp
@@ -58,6 +59,8 @@ set ( SRCS
 		Graph.h
 		Group.cpp
 		Group.h
+		GSoapUtil.cpp
+		GSoapUtil.h
 		#HtmlHelper.cpp
 		#HtmlHelper.h
 		LocalFile.cpp
@@ -98,6 +101,7 @@ set ( SRCS
 		SMCVersion.h
 		Topology.cpp
 		Topology.h
+		WebService.cpp
 		#WebPage.cpp
 		#WebPage.h
 		WebService.h
@@ -171,4 +175,4 @@ target_link_libraries( COMMS
 		authz.lib
 	)
 
-	
+install ( TARGETS COMMS RUNTIME DESTINATION bin )	

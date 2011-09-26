@@ -1,17 +1,14 @@
 #include "StdAfx.h"
 
-#include "attribute.h"
+#include "AttributeImpl.h"
 #include "module.h"
-#include "repository.h"
 #include "SoapUtil.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"
 #include "util.h"
 #include "md5.hpp"
-#include "cmdProcess.h"
 #include "Migration.h"
-#include "SaltErrorParser.h"
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
@@ -27,7 +24,7 @@ COMMS_API const TCHAR *GetAttrStateLabel(int nIndex)
 	return ATTRSTATELABEL[nIndex];
 }
 //  ===========================================================================
-class CAttribute : public IAttribute, public IAttributeHistory, public clib::CLockableUnknown
+class CAttribute : public CAttributeBase, public IAttribute, public IAttributeHistory
 {
 protected:
 	bool m_placeholder;
@@ -36,7 +33,7 @@ protected:
 	CString m_id;
 	CString m_url;
 	mutable CComPtr<IModule> m_module;
-	CString m_moduleLabel;
+	CString m_moduleQualifiedLabel;
 	CString m_label;
 	CString m_qualifiedLabel;
 	CComPtr<IAttributeType> m_type;
@@ -65,7 +62,7 @@ public:
 	END_CUNKNOWN(clib::CLockableUnknown)
 
 	CAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed, bool placeholder) 
-		: m_moduleLabel(module), m_label(label), m_type(type), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
+		: m_moduleQualifiedLabel(module), m_label(label), m_type(type), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
 	{
 		m_repository = const_cast<IRepository *>(rep);
 		m_url = m_repository->GetUrl();
@@ -85,7 +82,7 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_id = m_repository->GetID();
-		m_id = m_id + _T("/") + m_moduleLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode();
+		m_id = m_id + _T("/") + m_moduleQualifiedLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode();
 	}
 
 	IRepository* GetRepository()
@@ -152,13 +149,14 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (!m_module)
-			m_module = m_repository->GetModule(m_moduleLabel);
+			m_module = m_repository->GetModule(m_moduleQualifiedLabel);
 		return m_module;
 	}
-	const TCHAR *GetModuleLabel() const
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_moduleLabel;
+		ATLASSERT(!excludeRoot);
+		return m_moduleQualifiedLabel;
 	}
 
 	const TCHAR *GetLabel() const
@@ -170,6 +168,7 @@ public:
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		ATLASSERT(!excludeRoot);
 		return m_qualifiedLabel;
 	}
 
@@ -191,7 +190,7 @@ public:
 		if (!m_placeholder && (refresh || !m_eclSet))
 		{
 			proc.unlock();
-			StlLinked<IAttribute> attr = m_repository->GetAttribute(GetModuleLabel(), GetLabel(), GetType(), 0, true, true, noBroadcast);
+			StlLinked<IAttribute> attr = m_repository->GetAttribute(GetModuleQualifiedLabel(), GetLabel(), GetType(), 0, true, true, noBroadcast);
 			proc.lock();
 		}
 		return m_ecl;
@@ -289,7 +288,7 @@ public:
 		//No lock needed - this is just a lazy way of calling into repository
 		boost::filesystem::path path;
 		GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
-		path /= CT2A(GetModuleLabel());
+		path /= CT2A(GetModuleQualifiedLabel());
 		path /= CT2A(GetLabel());
 		if (exists(path))
 		{
@@ -304,7 +303,7 @@ public:
 			}
   		}
 
-		unsigned int retVal = m_repository->GetAttributeHistory(GetModuleLabel(), GetLabel(), m_type, attributes);
+		unsigned int retVal = m_repository->GetAttributeHistory(GetModuleQualifiedLabel(), GetLabel(), m_type, attributes);
 		IAttributeHistoryCompare compare;
 		std::sort(attributes.rbegin(), attributes.rend(), compare);
 		return retVal;
@@ -353,7 +352,7 @@ public:
 		{
 			m_placeholder = false;
 			proc.unlock();
-			m_repository->InsertAttribute(GetModuleLabel(), GetLabel(), m_type);
+			m_repository->InsertAttribute(GetModuleQualifiedLabel(), GetLabel(), m_type);
 			return true;
 		}
 		return false;
@@ -364,9 +363,9 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_placeholder = false;
-		m_moduleLabel = CW2T(c->ModuleName, CP_UTF8);
+		m_moduleQualifiedLabel = CW2T(c->ModuleName, CP_UTF8);
 		m_label = CW2T(c->Name, CP_UTF8);
-		m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
+		m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
 #if _COMMS_VER < 64801
 #elif _COMMS_VER < 70000
 		if (c->Type)
@@ -410,9 +409,9 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_placeholder = false;
-		SAFE_ASSIGN2CSTRING(m_moduleLabel, c->ModuleName);
+		SAFE_ASSIGN2CSTRING(m_moduleQualifiedLabel, c->ModuleName);
 		SAFE_ASSIGN2CSTRING(m_label, c->Name);
-		m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
+		m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
 		if (c->Access)
 			m_access = static_cast<SecAccessFlags>(*c->Access);
 		if (c->Type)
@@ -497,7 +496,7 @@ public:
 						IAttributeTypeVector esdlType;
 						esdlType.push_back(CreateIAttributeESDLType());
 						IAttributeVector otherEsdlAttrs;
-						m_repository->GetAttributes(GetModuleLabel(), esdlType, otherEsdlAttrs);
+						m_repository->GetAttributes(GetModuleQualifiedLabel(), esdlType, otherEsdlAttrs);
 						for(IAttributeVector::const_iterator itr = otherEsdlAttrs.begin(); itr != otherEsdlAttrs.end(); ++itr)
 						{
 							IAttributeVector tmpAttrs;
@@ -542,7 +541,7 @@ public:
 			errorFile.HandsOff();
 			
 			std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7%")) % 
-				batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleLabel() % GetLabel() % 
+				batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel() % GetLabel() % 
 				inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName()).str();
 
 			//_DBGLOG(m_url, LEVEL_INFO, cmd.c_str());

@@ -136,3 +136,4 @@ target_link_libraries( BUGTRAP
 		wininet
 	)
 
+install ( TARGETS BUGTRAP RUNTIME DESTINATION bin )

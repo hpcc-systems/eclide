@@ -232,7 +232,7 @@ public:
 					Dali::CEclExceptionVector errorResults;
 					StlLinked<IRepository> rep = AttachRepository();
 					StlLinked<Dali::IDali> dali = Dali::AttachDali();
-					dali->GetDependancies(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), ecl, m_Attribute->GetModuleLabel(), m_Attribute->GetLabel(), daliAttrs, errorResults);
+					dali->GetDependancies(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), ecl, m_Attribute->GetModuleQualifiedLabel(), m_Attribute->GetLabel(), daliAttrs, errorResults);
 					//TODO:  Do somthing with the errors...
 					for(Dali::AttributeVector::iterator itr = daliAttrs.begin(); itr != daliAttrs.end(); ++itr)
 					{

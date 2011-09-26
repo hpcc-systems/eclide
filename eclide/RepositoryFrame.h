@@ -196,7 +196,7 @@ public:
 			pT->m_view.DoCheckSyntax(s.attrs);
 			break;
 		case ID_REPOSITORY_ROLLBACK:
-			if (pT->MessageBox(ROLLBACK_MESSAGE, _T("Rollback"), MB_YESNO | MB_ICONQUESTION) == IDYES)
+			if (pT->MessageBox(ROLLBACK_MESSAGE, _T("Rollback"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
 				pT->m_view.DoRollback(s.attrs);
 			break;
 		case ID_REPOSITORY_HISTORY:
@@ -248,26 +248,26 @@ public:
 			ATLASSERT(s.attrs.size() == 1);
 			{
 				CString label = s.attrs[0]->GetLabel();
-				if (GetRenameAttribute(s.attrs[0]->GetModuleLabel(), label, s.attrs[0]->GetType(), true))
+				if (GetRenameAttribute(s.attrs[0]->GetModuleQualifiedLabel(), label, s.attrs[0]->GetType(), true))
 					pT->m_view.DoRenameAttribute(s.attrs[0].get(), (const TCHAR *)label);
 			}
 			break;
 		case ID_REPOSITORY_MOVEATTRIBUTE:
 			ATLASSERT(s.attrs.size() > 0);
 			{
-				CString label;
+				std::_tstring label;
 				if (GetModuleLabel(label))
-					pT->m_view.DoMoveAttribute(s.attrs, (const TCHAR *)label);
+					pT->m_view.DoMoveAttribute(s.attrs, label);
 			}
 			break;
 		case ID_REPOSITORY_COPYATTRIBUTE:
 			ATLASSERT(s.attrs.size() > 0);
 			{
-				CString label;
+				std::_tstring label;
 				if (GetModuleLabel(label))
 				{
 					CWaitCursor wait;
-					pT->m_view.DoCopyAttribute(s.attrs, (const TCHAR *)label);
+					pT->m_view.DoCopyAttribute(s.attrs, label);
 				}
 			}
 			break;
@@ -312,7 +312,7 @@ public:
 						{
 							CString ecl = invoke->GetEcl();
 							ecl.Replace(_T("%cluster%"), CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER)));
-							ecl.Replace(_T("%module%"), s.attrs[0]->GetModuleLabel());
+							ecl.Replace(_T("%module%"), s.attrs[0]->GetModuleQualifiedLabel(true));
 							ecl.Replace(_T("%attribute%"), s.attrs[0]->GetLabel());
 							GetIMainFrame()->OpenBuilder(ecl); 
 						}
