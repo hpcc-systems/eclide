@@ -371,7 +371,9 @@ public:
 		CModuleHelper modHelper(module);
 		StdStringVector tokens;
 		modHelper.GetQualifiedLabel(tokens);
-		ATLASSERT(!tokens.empty());
+		if (tokens.empty())
+			return false;
+
 		StringPathMap::const_iterator found = m_paths.find(tokens[0]);
 		if (found != m_paths.end())
 		{
