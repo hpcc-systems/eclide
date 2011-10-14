@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 2, 4
- PRODUCTVERSION 6, 0, 2, 4
+ FILEVERSION 6,0,3,0
+ PRODUCTVERSION 6,0,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "6, 0, 2, 4\0"
+            VALUE "FileVersion", "6, 0, 3, 0"
             VALUE "InternalName", "en_us.dll"
             VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
             VALUE "OriginalFilename", "en_us.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "6, 0, 2, 4\0"
+            VALUE "ProductVersion", "6, 0, 3, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -491,11 +491,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    ICON            "",IDC_STATIC_ICON,5,5,21,20,SS_CENTERIMAGE,WS_EX_TRANSPARENT
+    ICON            "",IDC_STATIC_ICON,5,5,20,20,SS_CENTERIMAGE,WS_EX_TRANSPARENT
     LTEXT           "ECL IDE by HPCC Systems.",IDC_STATIC_PRODUCT,100,12,180,12
     LTEXT           "Version:",IDC_STATIC_VERSION,100,24,180,12
     LTEXT           "Server:",IDC_STATIC_SERVER,100,36,180,12
-    LTEXT           "Copyright (c) 2000-2011",IDC_STATIC,100,48,180,12
+    LTEXT           "Compiler:",IDC_STATIC_COMPILER,100,48,180,12
+    LTEXT           "Copyright (c) 2000-2011",IDC_STATIC,100,60,180,12
     LTEXT           "---------",IDC_STATIC_BEVEL,5,92,285,8
     LTEXT           "Warning: ",IDC_STATIC_WARNING,10,100,220,40
     DEFPUSHBUTTON   "OK",IDOK,235,100,50,14
@@ -1071,6 +1072,10 @@ BEGIN
     END
 
     IDD_ATTRVERIFY2, DIALOG
+    BEGIN
+    END
+
+    IDD_ABOUTBOX, DIALOG
     BEGIN
     END
 
@@ -2661,14 +2666,4 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
-
-
-
-
-
-
-
-
-
 
