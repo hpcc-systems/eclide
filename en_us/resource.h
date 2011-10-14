@@ -543,6 +543,7 @@
 #define IDC_COMBO_MODULES               524
 #define IDC_EDIT_ARGUMENTS2             525
 #define IDC_EDIT_WUARGUMENTS            525
+#define IDC_STATIC_COMPILER             525
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -875,7 +876,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61412
 #define _APS_NEXT_COMMAND_VALUE         33086
-#define _APS_NEXT_CONTROL_VALUE         525
+#define _APS_NEXT_CONTROL_VALUE         526
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif
