@@ -571,7 +571,7 @@ CComboLabel & CComboLabel::operator = (HWND hWnd)
 	return *this;
 }
 //  ===========================================================================
-void CComboModule::Load(const TCHAR *label, bool includeBlank)
+void CComboModule::Load(const TCHAR *label, bool includeBlank, bool includeReadOnly)
 {
 	ResetContent();
 	if (label)
@@ -585,25 +585,28 @@ void CComboModule::Load(const TCHAR *label, bool includeBlank)
 
 	if (includeBlank)
 		AddString(_T(""));
-	clib::thread run(__FUNCTION__, boost::bind(&GetModules, this));
+	clib::thread run(__FUNCTION__, boost::bind(&GetModules, this, includeReadOnly));
 }
 
-void CComboModule::GetModules(CComPtr<CComboModule> self)
+void CComboModule::GetModules(CComPtr<CComboModule> self, bool includeReadOnly)
 {
 	CComPtr<IRepository> rep = AttachRepository();
 
 	IModuleVector modules;
 	rep->GetAllModules(modules);
-	self->LoadModules(modules);
+	self->LoadModules(modules, includeReadOnly);
 }
 
-void CComboModule::LoadModules(IModuleVector & modules)
+void CComboModule::LoadModules(IModuleVector & modules, bool includeReadOnly)
 {
 	clib::recursive_mutex::scoped_lock lock(m_mutex);
 	for(IModuleVector::iterator itr = modules.begin(); itr != modules.end(); ++itr)
 	{
-		int item = InsertString(-1,itr->get()->GetQualifiedLabel());
-		SetItemDataPtr(item, itr->get());
+		if (includeReadOnly || ((itr->get()->GetAccess() & SecAccess_Write) == SecAccess_Write))
+		{
+			int item = InsertString(-1,itr->get()->GetQualifiedLabel());
+			SetItemDataPtr(item, itr->get());
+		}
 	}
 	SetCurSel(0);
 	GetSelectedModule();

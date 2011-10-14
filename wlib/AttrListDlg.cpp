@@ -269,7 +269,7 @@ public:
 
 		if (IsLocalRepositoryEnabled())
 		{
-			m_comboModuleCtrl->Load(_T(""), false);
+			m_comboModuleCtrl->Load(_T(""), false, false);
 
 			m_defaultToSandbox = false;
 			m_checkSandbox.EnableWindow(False);
