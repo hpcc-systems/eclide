@@ -378,6 +378,8 @@ void CBuilderDlg::RestorePersistInfo(const CPersistMap & persistInfo)
 		m_maxRuntime.SetPos(0);
 	}
 	m_path = persistInfo.Get(PERSIST_FILEPATH);
+	m_view.OpenFile(m_path);
+	ResetSavePoint(true);
 	m_name = persistInfo.Get(PERSIST_LABEL);
 	baseClass::RestorePersistInfo(persistInfo);
 

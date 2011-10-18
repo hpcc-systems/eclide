@@ -257,17 +257,15 @@ public:
 
 	void RestorePersistInfo(const CPersistMap & persistInfo)
 	{
-		m_ecl->SetText(persistInfo.Get(PERSIST_ECL));
-		try
-		{
-			if (boost::lexical_cast<int, const TCHAR *>(persistInfo.Get(PERSIST_DIRTY)) != 1)
-				m_ecl->EmptyUndoBuffer();
-			else
-				m_ecl->SetSavePoint();
-		}
-		catch(const boost::bad_lexical_cast &)
+		CString persistEcl = persistInfo.Get(PERSIST_ECL);
+		CString currentEcl;
+		m_ecl->GetText(currentEcl);
+		if (persistEcl.Compare(currentEcl) != 0)
+			m_ecl->SetText(persistEcl);
+		else
 		{
 			m_ecl->EmptyUndoBuffer();
+			m_ecl->SetSavePoint();
 		}
 	}
 

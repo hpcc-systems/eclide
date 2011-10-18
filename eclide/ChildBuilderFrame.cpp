@@ -969,6 +969,7 @@ void CBuilderFrame::RestorePersistInfo(const CPersistMap & persistInfo)
 	m_dlgview.SetDebug(persistInfo.Get(PERSIST_DEBUG));
 
 	m_dlgview.RestorePersistInfo(persistInfo);
+	UIUpdateTitle();
 }
 //  ===========================================================================
 class CChildBuilderFrm : public CWtlMDIChildFrame<StlLinked<CBuilderFrame> >
