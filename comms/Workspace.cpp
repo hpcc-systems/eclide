@@ -273,6 +273,8 @@ public:
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
+		std::_tstring id = m_id;
+		std::_tstring folder = m_folder;
         ar	& BOOST_SERIALIZATION_NVP(m_id)
 			& BOOST_SERIALIZATION_NVP(m_folder)
 			& BOOST_SERIALIZATION_NVP(m_label)
@@ -280,6 +282,8 @@ public:
 			& BOOST_SERIALIZATION_NVP(m_windows)
 			& BOOST_SERIALIZATION_NVP(m_showInRoot)
 			;
+		m_id = id;
+		m_folder = folder;
     }
 };
 BOOST_CLASS_VERSION(CWorkspace, 0)

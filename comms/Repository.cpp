@@ -877,6 +877,13 @@ public:
 		return false;
 	}
 
+	virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
+	{
+		boost::filesystem::path userFolder;
+		path = GetUserFolder(userFolder, GetUserId()) / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);
+		boost::filesystem::create_directories(path);
+		return path;
+	}
 };
 
 CacheT<std::_tstring, CRepository> RepositoryCache;

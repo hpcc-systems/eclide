@@ -623,6 +623,19 @@ public:
 		ATLASSERT(false);
 		return false;
 	}
+
+	virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
+	{
+		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+			path = CT2A(eclcc->GetWorkingFolder());
+		else
+		{		
+			boost::filesystem::path userFolder;
+			path = GetUserFolder(userFolder, GetUserId());/*  GJS / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);*/
+		}
+		boost::filesystem::create_directories(path);
+		return path;
+	}
 };
 
 static CacheT<std::_tstring, CDiskRepository> DiskRepositoryCache;

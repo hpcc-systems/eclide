@@ -69,7 +69,11 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+#ifdef _TARGET_EE
+IDR_MAINFRAME           ICON                    "res\\QueryBuilderEE.ico"
+#else
 IDR_MAINFRAME           ICON                    "res\\QueryBuilder.ico"
+#endif
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

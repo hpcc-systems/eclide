@@ -587,13 +587,7 @@ public:
 		return  ::CreateIWorkspaceItem(this, type, pm);
 	}
 
-	const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
-	{
-		boost::filesystem::path userFolder;
-		path = GetUserFolder(userFolder, GetUserId());/*GJS / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);*/
-		boost::filesystem::create_directories(path);
-		return path;
-	}
+	const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const = 0;
 
 	void Refresh()
 	{
