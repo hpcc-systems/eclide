@@ -1204,7 +1204,11 @@ IDB_MAIN_AMT            BITMAP                  "res\\main_amt.bmp"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
+#ifdef _TARGET_EE
+IDR_MAINFRAME           ICON                    "res\\QueryBuilderEE.ico"
+#else
 IDR_MAINFRAME           ICON                    "res\\QueryBuilder.ico"
+#endif
 IDI_FOLDER_OPEN         ICON                    "res\\folder_closed.ico"
 IDI_PINNED              ICON                    "res\\Pinned.ico"
 IDI_ICON_UPFOLDER       ICON                    "res\\icon1.ico"
@@ -2116,10 +2120,27 @@ BEGIN
     END
 END
 
+IDR_POPUP_EEGO MENU
+BEGIN
+    POPUP "Go"
+    BEGIN
+        MENUITEM "&Submit",                     ID_GO_SUBMIT
+        MENUITEM "&Compile",                    ID_GO_COMPILE
+        MENUITEM "&Debug",                      ID_GO_DEBUG
+    END
+END
+
 IDR_POPUP_GO2 MENU
 BEGIN
     MENUITEM "&Submit",                     ID_GO_SUBMIT
     MENUITEM "&Compile",                    ID_GO_COMPILE
+END
+
+IDR_POPUP_EEGO2 MENU
+BEGIN
+    MENUITEM "&Submit",                     ID_GO_SUBMIT
+    MENUITEM "&Compile",                    ID_GO_COMPILE
+    MENUITEM "&Debug",                      ID_GO_DEBUG
 END
 
 IDR_POPUP_ERRORLOG MENU

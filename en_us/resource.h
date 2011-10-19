@@ -544,6 +544,7 @@
 #define IDC_EDIT_ARGUMENTS2             525
 #define IDC_EDIT_WUARGUMENTS            525
 #define IDC_STATIC_COMPILER             525
+#define IDC_STATIC_LOCATION             526
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -840,8 +841,8 @@
 #define ID_DIFFERENCES_NEXT             33077
 #define ID_GO_SUBMIT                    33079
 #define ID_GO_COMPILE                   33080
-#define ID_EDIT_LOCATEFILEINEXPLORER    33081
-#define ID__COPY                        33082
+#define ID_GO_DEBUG                     33081
+#define ID_EDIT_LOCATEFILEINEXPLORER    33082
 #define ID_SYNTAX_COPY                  33083
 #define ID_SYNTAX_COPYALL               33084
 #define ID_EDIT_COPYALL                 33085
@@ -863,20 +864,18 @@
 #define IDR_POPUP_WORKUNIT_LOCAL        61406
 #define IDR_POPUP_GO                    61407
 #define IDR_POPUP_GO2                   61408
-#define IDR_MENU1                       61409
-#define IDR_POPUP_ERRORLOG              61409
-#define IDR_MENU2                       61410
-#define IDR_MENU3                       61411
-#define IDR_POPUP_SYNTAX                61411
-#define IDC_STATIC_LOCATION             65535
+#define IDR_POPUP_EEGO                  61409
+#define IDR_POPUP_EEGO2                 61410
+#define IDR_POPUP_ERRORLOG              61411
+#define IDR_POPUP_SYNTAX                61412
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        61412
+#define _APS_NEXT_RESOURCE_VALUE        61413
 #define _APS_NEXT_COMMAND_VALUE         33086
-#define _APS_NEXT_CONTROL_VALUE         526
+#define _APS_NEXT_CONTROL_VALUE         527
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif
