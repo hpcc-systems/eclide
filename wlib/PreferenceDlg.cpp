@@ -560,7 +560,6 @@ protected:
 	IOwner * m_owner;
 	int  m_TabWidth;
 	int  m_TabUseSpaces;
-	CComPtr<CCustomAutoComplete> m_FontAC;
 
 	IConfigAdapt m_config;
 	IConfigAdapt m_ini;
@@ -571,8 +570,6 @@ protected:
 	int m_LineNo;
 	int m_Tree;
 	int m_Tooltip;
-	CString m_Font;
-	int m_FontSize;	
 	int m_SyncRepository;
 	int m_autoCompleteOnDot;
 	int m_doubleClickSelQual;
@@ -600,8 +597,6 @@ public:
 		m_LineNo = m_config->Get(GLOBAL_LINENO);
 		m_Tree = m_config->Get(GLOBAL_TREE);
 		m_Tooltip = m_config->Get(GLOBAL_TOOLTIP);
-		m_Font = m_config->Get(GLOBAL_FONT);
-		m_FontSize = m_config->Get(GLOBAL_FONTSIZE);
 		m_SyncRepository = m_config->Get(GLOBAL_SYNCREPOSITORY);
 		m_autoCompleteOnDot = m_config->Get(GLOBAL_AUTOCOMPLETEONDOT);
 		m_doubleClickSelQual = m_config->Get(GLOBAL_DOUBLECLICKSELQUAL);
@@ -621,8 +616,6 @@ public:
 		m_config->Set(GLOBAL_LINENO, m_LineNo);
 		m_config->Set(GLOBAL_TREE, m_Tree);
 		m_config->Set(GLOBAL_TOOLTIP, m_Tooltip);
-		m_config->Set(GLOBAL_FONT, m_Font);
-		m_config->Set(GLOBAL_FONTSIZE, m_FontSize);
 		m_config->Set(GLOBAL_SYNCREPOSITORY, m_SyncRepository);
 		m_config->Set(GLOBAL_AUTOCOMPLETEONDOT, m_autoCompleteOnDot);
 		m_config->Set(GLOBAL_DOUBLECLICKSELQUAL, m_doubleClickSelQual);
@@ -631,8 +624,6 @@ public:
 	void DoApply(bool bMakeGlobal)
 	{
 		DoDataExchange(true);
-
-		m_FontAC->AddItem(m_Font);
 
 		SaveToConfig();
 		DoChanged(false);
@@ -669,8 +660,6 @@ public:
 		DDX_INT(IDC_EDIT_AUTOSAVEFREQ, m_AutoSaveFreq)
 		DDX_CHECK(IDC_CHECK_LINENO, m_LineNo)
 		DDX_CHECK(IDC_CHECK_TREE, m_Tree)
-		DDX_TEXT(IDC_EDIT_FONT, m_Font)
-		DDX_INT(IDC_EDIT_FONTSIZE, m_FontSize)
 		DDX_CHECK(IDC_CHECK_TOOLTIP, m_Tooltip)
 		DDX_CHECK(IDC_CHECK_SYNCREPOSITORY, m_SyncRepository)
 		DDX_CHECK(IDC_CHECK_AUTOCOMPLETEONDOT, m_autoCompleteOnDot)
@@ -687,11 +676,7 @@ public:
 		CString regPath(::GetRegPathQB());
 		regPath += _T("\\Preferences\\");
 
-		m_FontAC = new CCustomAutoComplete(HKEY_CURRENT_USER, regPath+_T("Font"));
-		m_FontAC->Bind(GetDlgItem(IDC_EDIT_FONT), ACO_AUTOSUGGEST | ACO_AUTOAPPEND | ACO_UPDOWNKEYDROPSLIST);
-
 		SetLimit(IDC_SPIN_AUTOSAVEFREQ, 0, 60);
-		SetLimit(IDC_SPIN_FONTSIZE, 2, 64);
 
 		LoadFromConfig(m_config);
 		DoChanged(false);
@@ -702,7 +687,6 @@ public:
 	void OnDestroy()
 	{
 		SetMsgHandled(false);
-		m_FontAC->Unbind();
 	}
 
 	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)

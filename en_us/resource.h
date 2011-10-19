@@ -258,7 +258,6 @@
 #define IDC_STATIC_EXPRESSION           261
 #define IDC_EDIT_ATTRIBUTESERVER        262
 #define IDC_EDIT_CONDITION              263
-#define IDC_EDIT_FONT                   264
 #define IDC_EDIT_VALUE                  265
 #define IDC_STATIC_CONDITIONTYPE2       266
 #define IDC_EDIT_ACCOUNTSERVER          267
@@ -297,8 +296,6 @@
 #define IDC_EDIT_AUTOSAVEFREQ           298
 #define IDC_STATIC_VALUE                299
 #define IDC_CHECK_DOUBLECLICKSEL        299
-#define IDC_EDIT_FONTSIZE               300
-#define IDC_SPIN_FONTSIZE               301
 #define IDC_EDIT_WORKUNITPOLL           302
 #define IDC_CHECK_TABUSESPACES          302
 #define IDC_LIST_RESULTS                303
@@ -311,7 +308,6 @@
 #define IDC_ECL_PLACEHOLDER             308
 #define IDC_STATIC_TOPOLOGY             309
 #define IDC_SPIN_LIMITRESULT            310
-#define IDC_STATIC_FONTSIZE2            311
 #define IDC_EDIT_RESULT_FONTSIZE        312
 #define IDC_SPIN_RESULT_FONTSIZE        313
 #define IDC_EDIT_SPRAYSERVER            314
