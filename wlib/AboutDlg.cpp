@@ -57,13 +57,13 @@ public:
 
 		CenterWindow(GetParent());
 
-		std::_tstring version = _T("Version:\t");
+		std::_tstring version = _T("Version:\t\t");
 		GetAboutVersion(version);
 		SetDlgItemText(IDC_STATIC_VERSION, version.c_str());
 
 		CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
 
-		std::_tstring server = _T("Server:\t");
+		std::_tstring server = _T("Server:\t\t");
 		CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
 		server += serverVersion->GetString();
 		SetDlgItemText(IDC_STATIC_SERVER, server.c_str());
