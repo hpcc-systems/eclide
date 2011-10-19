@@ -1319,9 +1319,10 @@ public:
 		SetMsgHandled(false);
 	}
 
-	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		DoChanged();
+		if (wID != IDC_ECL_PLACEHOLDER)
+			DoChanged();
 		return 0;
 	}
 
