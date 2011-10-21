@@ -22,7 +22,6 @@ public:
 };
 
 typedef std::map<std::_tstring, std::pair<std::_tstring, std::_tstring> > PasswordCacheT;
-extern PasswordCacheT g_passwordCache;
 IAttribute * CreateAttributePlaceholder(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, IAttributeType * type);
 
 IAttribute * GetAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version = 0, bool sandboxed = true, bool placeholder = false);
@@ -32,13 +31,15 @@ IAttribute * GetAttribute(const IRepository *rep, const TCHAR* module, const TCH
 typedef std::map<std::_tstring, IModuleVector> IModuleHierarchy;
 class CRepositoryBase : public IRepository, public CUnknown
 {
+private:
+	std::_tstring m_blank;
+
 protected:
 	mutable CachePool<IModuleVector> m_cacheGetModules;
 	mutable CachePool<IModuleHierarchy> m_cacheGetModulesHierarchy;
 	mutable CachePoolMap<IAttributeVector> m_cacheGetAttributes;
 	mutable CachePool<CRepLabelVector> m_cacheGetLabels;
 
-	std::_tstring m_url;
 	std::_tstring m_label;
 	std::_tstring m_instance;
 	std::_tstring m_id;
@@ -47,15 +48,9 @@ protected:
 public:
 	IMPLEMENT_CUNKNOWN;
 
-	CRepositoryBase(const TCHAR* url, const TCHAR* userId, const TCHAR* password, const TCHAR* label, const TCHAR* instance) : m_label(label), m_url(url), m_instance(instance), 
-		 m_cacheGetModules(60 * 5), m_cacheGetAttributes(55)
+	CRepositoryBase(const TCHAR* userId, const TCHAR* password, const TCHAR* label, const TCHAR* instance) : m_label(label), m_instance(instance), m_cacheGetModules(60 * 5), m_cacheGetAttributes(55)
 	{
 		UpdateID();
-		if (g_passwordCache.find(m_url) == g_passwordCache.end())
-		{
-			g_passwordCache[m_url].first = userId;
-			g_passwordCache[m_url].second = password;
-		}
 	}
 
 	~CRepositoryBase()
@@ -64,7 +59,7 @@ public:
 
 	void UpdateID()
 	{
-		m_id = m_url + _T("/") + m_label + _T("/") + m_repositoryLabel + _T("/") + m_instance;
+		m_id = /*m_url + _T("/") + */m_label + _T("/") + m_repositoryLabel + _T("/") + m_instance;
 		boost::algorithm::trim_right_if(m_id, boost::algorithm::is_any_of(_T("/")));
 	}
 
@@ -98,22 +93,16 @@ public:
 		return m_label.c_str();
 	}
 
-	const TCHAR * GetUrl() const
+	virtual const TCHAR * GetUserId() const
 	{
 		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_url.c_str();
+		return m_blank.c_str();
 	}
 
-	const TCHAR * GetUserId() const
+	virtual const TCHAR * GetPassword() const
 	{
 		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return g_passwordCache[m_url].first.c_str();
-	}
-
-	const TCHAR * GetPassword() const
-	{
-		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return g_passwordCache[m_url].second.c_str();
+		return m_blank.c_str();
 	}
 
 	bool GetModule(CComPtr<IModule> & /*modulePtr*/) const

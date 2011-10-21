@@ -415,7 +415,7 @@ public:
 
 	const TCHAR * GetAttributeFilePath(IAttribute * attr, std::_tstring & path) const
 	{
-		path = attr->GetURL();
+		path = attr->GetPath();
 		return path.c_str();
 	}
 

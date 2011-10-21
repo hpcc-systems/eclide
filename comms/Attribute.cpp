@@ -26,12 +26,14 @@ COMMS_API const TCHAR *GetAttrStateLabel(int nIndex)
 //  ===========================================================================
 class CAttribute : public CAttributeBase, public IAttribute, public IAttributeHistory
 {
+private:
+	static std::_tstring attrEmptyString;
+
 protected:
 	bool m_placeholder;
 
 	CComPtr<IRepository> m_repository;
 	CString m_id;
-	CString m_url;
 	mutable CComPtr<IModule> m_module;
 	CString m_moduleQualifiedLabel;
 	CString m_label;
@@ -65,7 +67,6 @@ public:
 		: m_moduleQualifiedLabel(module), m_label(label), m_type(type), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
 	{
 		m_repository = const_cast<IRepository *>(rep);
-		m_url = m_repository->GetUrl();
 		m_checkedOut = false;
 		m_locked = false;
 		m_orphaned = false;
@@ -130,11 +131,6 @@ public:
 		md5_string(premd5, checksum);
 		m_checksumLocalTidied = checksum.c_str();
 	}
-	const TCHAR *GetURL() const
-	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_url;
-	}
 	const TCHAR *GetID() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -155,7 +151,7 @@ public:
 	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		ATLASSERT(!excludeRoot);
+		//  Remote repos never have root...
 		return m_moduleQualifiedLabel;
 	}
 
@@ -170,6 +166,12 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		ATLASSERT(!excludeRoot);
 		return m_qualifiedLabel;
+	}
+
+	const TCHAR *GetPath() const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return attrEmptyString.c_str();
 	}
 
 	const SecAccessFlags GetAccess() const
@@ -544,7 +546,6 @@ public:
 				batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel() % GetLabel() % 
 				inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName()).str();
 
-			//_DBGLOG(m_url, LEVEL_INFO, cmd.c_str());
 			std::_tstring in;
 			std::_tstring out;
 			std::_tstring err;
@@ -632,7 +633,7 @@ public:
 		return false;
 	}
 };
-
+std::_tstring CAttribute::attrEmptyString;
 //  ===========================================================================
 static CacheT<std::_tstring, CAttribute> AttributeCache;
 

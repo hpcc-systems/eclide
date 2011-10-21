@@ -140,17 +140,9 @@ public:
 				}
 				else if (s.attrs.size())
 				{
-					path = s.attrs[0]->GetURL();
+					path = s.attrs[0]->GetModule()->GetPath();
 					if (!path.empty())
-					{
-						try {
-							boost::filesystem::wpath file = path;
-							boost::filesystem::wpath folder = file.parent_path();
-							::ShellExecute(NULL, _T("open"), _T(""), _T(""), folder.native_directory_string().c_str(), SW_SHOWNORMAL);
-						} catch (const std::exception & ex) {
-							_DBGLOG(LEVEL_WARNING, ex.what());
-						}
-					}
+						::ShellExecute(NULL, _T("open"), _T(""), _T(""), path.c_str(), SW_SHOWNORMAL);
 				}
 			}
 			break;

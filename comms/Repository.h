@@ -35,7 +35,6 @@ __interface IRepository : public IUnknown
 
 	const TCHAR *GetID() const;
 	const TCHAR *GetLabel() const;
-	const TCHAR *GetUrl() const;
 	const TCHAR *GetUserId() const;
 	const TCHAR *GetPassword() const;
 

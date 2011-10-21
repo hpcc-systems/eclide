@@ -24,7 +24,7 @@ enum UM
 //  Frame Messages
 	UM_CLEAR_DIFF,
 	UM_NEWSELECTION,
-	UM_NEWCHECK,
+	//UM_NEWCHECK,
 	UM_PROGRESSUPDATE,
 	UM_LAST
 };
@@ -49,6 +49,7 @@ struct STRUCT_PASTE
 	std::_tstring m_errors;
 };
 
+#define NSUPPORT_WORKSPACE
 class CRepositoryCompareView : 
 	public CMultiTreeNodeViewCtrl, 
 	public WTL::CCustomDraw<CRepositoryCompareView>,
@@ -60,7 +61,9 @@ class CRepositoryCompareView :
 	typedef CMultiTreeNodeViewCtrl baseClass;
 	typedef WTL::CCustomDraw<CRepositoryCompareView> customClass;
 	//typedef WTL::CThemeImpl<CRepositoryCompareView> themeClass;
+#ifdef _SUPPORT_WORKSPACE
 	friend void thread_LoadWorkspaceItems(CRepositoryCompareView * self, CWorkspacePairNode * ws);
+#endif
 	friend void thread_LoadAttributes(CRepositoryCompareView * self, CModulePairNode * mod);
 	friend void thread_LoadWorkspacesAndModules(CRepositoryCompareView * self, bool noRefresh);
 	friend void thread_ItemClicked(CRepositoryCompareView * self, CTreeNode * tn, bool shiftKey);

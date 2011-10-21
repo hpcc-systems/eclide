@@ -26,29 +26,38 @@ typedef std::vector<fs::wpath> PathVector;
 class CDiskRepository : public CRepositoryBase
 {
 protected:
+	fs::wpath m_amtRoot;
 	StringPathMap m_paths;
 	PathVector m_pathOrder;
 
 public:
 	IMPLEMENT_CUNKNOWN;
 
-	CDiskRepository(const TCHAR* url, const TCHAR* label) : CRepositoryBase(url, _T(""), _T(""), label, _T(""))
+	CDiskRepository(const TCHAR* label) : CRepositoryBase(_T(""), _T(""), label, _T(""))
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{
 			for (int i = 0; i < eclcc->GetEclFolderCount(); ++i)
 			{
 				fs::wpath path = fs::wpath(eclcc->GetEclFolder(i), fs::native);
+				ATLASSERT(fs::exists(path));
 				m_paths[path.leaf()] = path;
 				m_pathOrder.push_back(path);
 			}
 		}
 		else
 		{
-			fs::wpath path = fs::wpath(url, fs::native);
-			m_paths[path.leaf()] = path;
-			m_pathOrder.push_back(path);
+			//  IDE Initalised repository with no folders.
+			ATLASSERT(false);
 		}
+	}
+
+	CDiskRepository(const TCHAR* url, const TCHAR* label) : CRepositoryBase(_T(""), _T(""), label, _T(""))
+	{
+		m_amtRoot = fs::wpath(url, fs::native);
+		ATLASSERT(fs::exists(m_amtRoot));
+		m_paths[m_amtRoot.leaf()] = m_amtRoot;
+		m_pathOrder.push_back(m_amtRoot);
 	}
 
 	~CDiskRepository()
@@ -89,7 +98,7 @@ public:
 
 		if (fs::exists(path) && fs::is_directory(path))
 		{
-			std::_tstring leaf = path.leaf().c_str();
+			std::_tstring leaf = path.leaf();
 			if (!boost::algorithm::starts_with(leaf, _T(".")))
 			{  
 				std::_tstring label = module;
@@ -117,12 +126,27 @@ public:
 		return modules.size();
 	}
 
-	virtual unsigned GetAllModules(IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool GetChecksum = false, bool noRefresh = true, bool noBroadcast = false) const
+	virtual unsigned GetAllModules(IModuleVector & _modules, IModuleHierarchy & _moduleHierarchy, bool GetChecksum = false, bool noRefresh = true, bool noBroadcast = false) const
 	{
+		IModuleVector modules;
+		IModuleHierarchy moduleHierarchy;
 		for(PathVector::const_iterator itr = m_pathOrder.begin(); itr != m_pathOrder.end(); ++itr)
 			GetAllModules(*itr, _T(""), modules, moduleHierarchy, noRefresh, noBroadcast);
-		//std::sort(modules.begin(), modules.end(), IModuleCompare());
-		return modules.size();
+
+		if (!m_amtRoot.empty())
+		{
+			for (IModuleHierarchy::const_iterator itr = moduleHierarchy.begin(); itr != moduleHierarchy.end(); ++itr) 
+			{
+				if (itr->first.empty())
+					continue;
+				else if (boost::algorithm::equals(m_amtRoot.leaf(), itr->first))
+					_moduleHierarchy[_T("")] = itr->second;
+				else
+					_moduleHierarchy[itr->first] = itr->second;
+				_modules.insert(_modules.end(), itr->second.begin(), itr->second.end());
+			}
+		}
+		return _modules.size();
 	}
 
 	virtual unsigned GetModulesAutoC(const std::_tstring & module, StdStringVector &result) const
@@ -134,23 +158,26 @@ public:
 		return result.size();
 	}
 
-	IModule * GetModulePlaceholder(const TCHAR* moduleName) const
+	IModule * GetModulePlaceholder(const TCHAR* _moduleName) const
 	{
-		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		CModuleHelper modHelper(moduleName);
-		StdStringVector tokens;
-		modHelper.GetQualifiedLabel(tokens);
-		ATLASSERT(!tokens.empty());
-		StringPathMap::const_iterator found = m_paths.find(tokens[0]);
-		if (found != m_paths.end())
+		fs::wpath repositoryPath;
+		std::_tstring moduleName = _moduleName;
+		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
-			boost::filesystem::wpath path = found->second.parent_path();
-			for (unsigned int i = 0; i < tokens.size(); ++i)
-				path /= tokens[i];
-			IModule * module = CreateDiskModule(this, moduleName, path, true);
-			return module;
+			CModuleHelper modHelper(moduleName);
+			StdStringVector tokens;
+			modHelper.GetQualifiedLabel(tokens);
+			ATLASSERT(!tokens.empty());
+			StringPathMap::const_iterator found = m_paths.find(tokens[0]);
+			if (found != m_paths.end())
+			{
+				boost::filesystem::wpath path = found->second.parent_path();
+				for (unsigned int i = 0; i < tokens.size(); ++i)
+					path /= tokens[i];
+				IModule * module = CreateDiskModule(this, moduleName, path, true);
+				return module;
+			}
 		}
-
 		return NULL;
 	}
 
@@ -368,6 +395,9 @@ public:
 
 	bool GetRepositoryPath(std::_tstring & module, fs::wpath & path) const
 	{
+		if (!m_amtRoot.empty() && !boost::algorithm::istarts_with(module, m_amtRoot.leaf()))
+			module = m_amtRoot.leaf() + _T(".") + module;
+
 		CModuleHelper modHelper(module);
 		StdStringVector tokens;
 		modHelper.GetQualifiedLabel(tokens);

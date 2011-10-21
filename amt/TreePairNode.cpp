@@ -219,6 +219,8 @@ ATTRSTATE CModulePairNode::GetStateRHS()
 //  ===========================================================================
 CAttributePairNode::CAttributePairNode(IAttribute * lhs, IAttribute * rhs)
 {
+	ATLASSERT(lhs);
+	ATLASSERT(rhs);
 	m_lhs = lhs;
 	m_rhs = rhs;
 	m_label = m_lhs->GetLabel();

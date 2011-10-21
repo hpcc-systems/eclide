@@ -294,7 +294,8 @@ protected:
 	boost::filesystem::wpath m_path;
 	std::_tstring m_pathStr;
 	CString m_url;
-	CString m_label;
+	CString m_qualifiedLabel;
+	CString m_qualifiedLabelNoRoot;
 	CString m_labelLeaf;
 	CString m_id;
 	bool m_plugin;
@@ -306,7 +307,7 @@ protected:
 public:
 	IMPLEMENT_CLOCKABLEUNKNOWN;
 
-	CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_label(label.c_str()), m_labelLeaf(labelLeaf.c_str())
+	CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_qualifiedLabel(label.c_str()), m_labelLeaf(labelLeaf.c_str())
 	{
 		m_repository = const_cast<IRepository *>(rep);
 		m_parent = const_cast<IModule *>(parent);
@@ -314,10 +315,13 @@ public:
 		m_pathStr = path.native_file_string().c_str();
 		m_url = path.native_file_string().c_str();
 		m_id = m_url;
-		m_id += _T("/") + m_label;
+		m_id += _T("/") + m_qualifiedLabel;
 		m_id.MakeLower();
 		m_plugin = false;
 		m_access = SecAccess_Full;
+
+		CModuleHelper modHelper(m_qualifiedLabel + _T(".dummy"));
+		m_qualifiedLabelNoRoot = modHelper.GetModuleLabelNoRoot();
 	}
 
 	~CDiskModule()
@@ -337,14 +341,16 @@ public:
 
 	const TCHAR *GetLabel() const
 	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_labelLeaf;
 	}
 
-	const TCHAR *GetQualifiedLabel() const
+	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_label;
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
+		if (excludeRoot)
+			return m_qualifiedLabelNoRoot;
+		return m_qualifiedLabel;
 	}
 
 	const TCHAR *GetPath() const

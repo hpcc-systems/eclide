@@ -19,7 +19,6 @@ class CAttributeHistory : public IAttributeHistory, public clib::CLockableUnknow
 {
 protected:
 	CComPtr<IRepository> m_repository;
-	CString m_url;
 	CString m_module;
 	CString m_label;
 	IAttributeType * m_type;
@@ -39,7 +38,6 @@ public:
 		: m_module(module), m_label(label), m_type(type), m_version(version)
 	{
 		m_repository = const_cast<IRepository *>(rep);
-		m_url = m_repository->GetUrl();
 		m_eclFetched = false;
 		UpdateId();
 	}

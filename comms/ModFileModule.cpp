@@ -19,7 +19,6 @@ protected:
 	bool m_placeholder;
 	CComPtr<IRepository> m_repository;
 	CComPtr<IModule> m_parent;
-	CString m_url;
 	CString m_label;
 	CString m_labelLeaf;
 	CString m_id;
@@ -36,7 +35,6 @@ public:
 	{
 		m_repository = const_cast<IRepository *>(rep);
 		m_parent = const_cast<IModule *>(parent);
-		m_url = rep->GetUrl();
 		m_id = rep->GetID();
 		m_id += _T("/") + m_label + (m_placeholder ? _T("/placeholder") : _T(""));
 		m_plugin = false;
@@ -64,9 +62,10 @@ public:
 		return m_labelLeaf;
 	}
 
-	const TCHAR *GetQualifiedLabel() const
+	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
+		ATLASSERT(excludeRoot == false);
 		return m_label;
 	}
 

@@ -10,6 +10,7 @@
 #include "Logger.h"
 #include "MainFrm2.h"
 
+#define MAX_THREAD_COUNT 2
 //  ===========================================================================
 class NoCaseCompare
 {
@@ -122,7 +123,7 @@ void CRepositoryCompareView::Init(IRepository * repLHS, IRepository * repRHS, co
 
 	m_migrator = CreateIMigration(m_repRHS, this);
 
-#ifndef _DEBUG
+#ifndef _XXXDEBUG
 	Load(NULL, false);
 #endif
 }
@@ -155,6 +156,7 @@ void thread_GetModules(IRepository * rep, std::_tstring parentLabel, IModuleVect
 	LogMsg((boost::_tformat(_T("thread_GetModules - %1%(%2%) - End")) % rep->GetLabel() % rep->GetRepositoryLabel()).str());
 }
 
+#ifdef _SUPPORT_WORKSPACE
 void loadWorkspaces(CRepositoryCompareView * self, WsWsPairVector & sortedWorkspaces, bool noRefresh)
 {
 	ATLASSERT(self->m_repLHS);
@@ -200,6 +202,7 @@ void loadWorkspaces(CRepositoryCompareView * self, WsWsPairVector & sortedWorksp
 	}
 	::InterlockedDecrement(&self->m_loadingModules);
 }
+#endif
 
 void loadModules(CRepositoryCompareView * self, const std::_tstring & parentLabel, ModModPairVector & sortedModules, bool noRefresh)
 {
@@ -220,11 +223,11 @@ void loadModules(CRepositoryCompareView * self, const std::_tstring & parentLabe
 		LabelModModPairMap mergedMods;
 		for(IModuleVector::const_iterator itr = lhsModules.begin(); itr != lhsModules.end(); ++itr)
 		{
-			mergedMods[itr->get()->GetQualifiedLabel()].first = *itr;
+			mergedMods[itr->get()->GetQualifiedLabel(true)].first = *itr;
 		}
 		for(IModuleVector::const_iterator itr = rhsModules.begin(); itr != rhsModules.end(); ++itr)
 		{
-			mergedMods[itr->get()->GetQualifiedLabel()].second = *itr;
+			mergedMods[itr->get()->GetQualifiedLabel(true)].second = *itr;
 		}
 
 		for(LabelModModPairMap::const_iterator itr = mergedMods.begin(); itr != mergedMods.end(); ++itr)
@@ -235,6 +238,7 @@ void loadModules(CRepositoryCompareView * self, const std::_tstring & parentLabe
 				lhs = self->m_repLHS->GetModulePlaceholder(itr->first.c_str());
 			if (!rhs)
 				rhs = self->m_repRHS->GetModulePlaceholder(itr->first.c_str());
+			ATLASSERT(lhs && rhs);
 			if (lhs->GetRepository() != self->m_repLHS.p || rhs->GetRepository() != self->m_repRHS.p)
 			{
 				ATLASSERT(false);
@@ -259,7 +263,9 @@ void thread_LoadWorkspacesAndModules(CRepositoryCompareView * self, bool noRefre
 {
 	WsWsPairVector sortedWorkspaces;
 	ModModPairVector sortedModules;
+#ifdef _SUPPORT_WORKSPACE
 	loadWorkspaces(self, sortedWorkspaces, noRefresh);
+#endif
 	loadModules(self, _T(""), sortedModules, noRefresh);
 	self->SendMessage(UM_MODULESLOADED, (WPARAM)&sortedWorkspaces, (LPARAM)&sortedModules);
 }
@@ -272,6 +278,7 @@ void thread_GetAttributes(IModule * module, IAttributeVector * attrs)
 	LogMsg((boost::_tformat(_T("thread_GetAttributes - %1%(%2%) - End")) % module->GetRepository()->GetLabel() % module->GetQualifiedLabel()).str());
 }
 
+#ifdef _SUPPORT_WORKSPACE
 void thread_GetWsAttributes(IWorkspace * workspace, IAttributeVector * attrs)
 {
 	LogMsg((boost::_tformat(_T("thread_GetWsAttributes - %1% - Start")) % workspace->GetLabel()).str());
@@ -329,13 +336,16 @@ void loadWsAttributes(CRepositoryCompareView * self, CWorkspacePairNode * ws, in
 		}
 	}
 }
+#endif
 
+#ifdef _SUPPORT_WORKSPACE
 void thread_LoadWorkspaceItems(CRepositoryCompareView * self, CWorkspacePairNode * ws)
 {
 	STRUCT_ATTRIBUTESLOADED info;
 	loadWsAttributes(self, ws, self->m_filter, info);
 	self->SendMessage(UM_ATTRIBUTESLOADED, (WPARAM)&info);
 }
+#endif
 
 void loadAttributes(CRepositoryCompareView * self, IModule * mod_lhs, IModule * mod_rhs, int filter, STRUCT_ATTRIBUTESLOADED & info)
 {
@@ -366,9 +376,9 @@ void loadAttributes(CRepositoryCompareView * self, IModule * mod_lhs, IModule * 
 		CComPtr<IAttribute> lhs = itr->second.first;
 		CComPtr<IAttribute> rhs = itr->second.second;
 		if (!lhs)
-			lhs = self->m_repLHS->GetAttributePlaceholder(mod_lhs->GetQualifiedLabel(), itr->first.c_str(), rhs->GetType());  // Should this be mod_rhs???
+			lhs = self->m_repLHS->GetAttributePlaceholder(mod_lhs->GetQualifiedLabel(true), itr->first.c_str(), rhs->GetType());  // Should this be mod_rhs???
 		if (!rhs)
-			rhs = self->m_repRHS->GetAttributePlaceholder(mod_lhs->GetQualifiedLabel(), itr->first.c_str(), lhs->GetType());  
+			rhs = self->m_repRHS->GetAttributePlaceholder(mod_lhs->GetQualifiedLabel(true), itr->first.c_str(), lhs->GetType());  
 		sortedAttributes.push_back(std::make_pair(lhs, rhs));
 	}
 	std::sort(sortedAttributes.begin(), sortedAttributes.end(), AttrAttrPairCompare());
@@ -411,8 +421,12 @@ void CRepositoryCompareView::Load(CTreeNode * item, bool noRefresh)
 	}
 	else if (CComQIPtr<CWorkspacePairNode> wsPairNode = item)
 	{
+#ifdef _SUPPORT_WORKSPACE
 		loading->InsertBelow(*this, *item);
 		m_expandThreads.Append(__FUNCTION__, boost::bind(&thread_LoadWorkspaceItems, this, wsPairNode));
+#else
+		ATLASSERT(false);
+#endif
 	}
 	else if (CComQIPtr<CModulePairNode> modPairNode = item)
 	{
@@ -455,7 +469,7 @@ void CRepositoryCompareView::SelectAll()
 		}
 		item = nextItem;
 	}
-	m_selectThreads.SetMaxThreadCount(15);
+	m_selectThreads.SetMaxThreadCount(MAX_THREAD_COUNT);
 }
 
 void CRepositoryCompareView::Clear()
@@ -489,7 +503,7 @@ void CRepositoryCompareView::ExpandAll()
 		}
 		item = item.GetNextSibling();
 	}
-	m_expandThreads.SetMaxThreadCount(15);
+	m_expandThreads.SetMaxThreadCount(MAX_THREAD_COUNT);
 }
 bool CRepositoryCompareView::SetFilter(int filter)
 {
@@ -554,7 +568,7 @@ void thread_Paste(CRepositoryCompareView * self, IRepository * rep, std::_tstrin
 			self->m_selectThreads.Append(__FUNCTION__, boost::bind(thread_GetAttribute, self, &mutex, &info, rep, *itr, labels.size() == 3 ? CreateIAttributeType(labels[2]) : CreateIAttributeECLType()));
 		}
 	}
-	self->m_selectThreads.SetMaxThreadCount(15);
+	self->m_selectThreads.SetMaxThreadCount(MAX_THREAD_COUNT);
 	self->m_selectThreads.Join();
 	LogMsg(_T("Pasting Files - End"));
 	self->SendMessage(UM_PASTE, (WPARAM)&info);
@@ -700,6 +714,7 @@ void thread_ItemClicked(CRepositoryCompareView * self, CTreeNode * tn, bool shif
 	info.m_item = tn;
 	if (CComQIPtr<CWorkspacePairNode> workspaceNode = tn)
 	{
+#ifdef _SUPPORT_WORKSPACE
 		LogMsg((boost::_tformat(_T("Loading Content (%1%) - Start")) % workspaceNode->m_lhs->GetLabel()).str());
 		STRUCT_ATTRIBUTESLOADED wsInfo;
 		loadWsAttributes(self, workspaceNode, self->m_filter, wsInfo);
@@ -708,6 +723,9 @@ void thread_ItemClicked(CRepositoryCompareView * self, CTreeNode * tn, bool shif
 			info.m_attrs.push_back(itr->first);
 		}
 		LogMsg((boost::_tformat(_T("Loading Content (%1%) - End")) % workspaceNode->m_lhs->GetLabel()).str());
+#else
+		ATLASSERT(false);
+#endif
 	}
 	else if (CComQIPtr<CModulePairNode> moduleNode = tn)
 	{
@@ -759,7 +777,7 @@ void CRepositoryCompareView::OnLButtonDown(UINT nFlags, CPoint point)
 				CComPtr<CTreeNode> tn = (CTreeNode *)it.GetData();
 				m_selectThreads.Append(__FUNCTION__, boost::bind(&thread_ItemClicked, this, tn.p, (::GetKeyState(VK_SHIFT) & 0x80) == 0x80));
 			}
-			m_selectThreads.SetMaxThreadCount(15);
+			m_selectThreads.SetMaxThreadCount(MAX_THREAD_COUNT);
 		}
 		else
 		{
@@ -1053,7 +1071,7 @@ LRESULT CRepositoryCompareView::OnItemClicked(UINT /*uMsg*/, WPARAM wParam, LPAR
 {
 	STRUCT_ITEMCLICKED * info = (STRUCT_ITEMCLICKED *)wParam;
 	m_sel.ItemClicked(info->m_item, &info->m_attrs, &info->m_depAttrs);
-	SendFrameMessage(UM_NEWCHECK);
+	//SendFrameMessage(UM_NEWCHECK);
 	return 0;
 }
 
@@ -1086,12 +1104,12 @@ LRESULT CRepositoryCompareView::OnSelChanged(WPARAM wParam, LPNMHDR pNMHDR, BOOL
 		if ( pnmtv->itemNew.hItem && pnmtv->itemNew.lParam )
 		{
 			CComPtr<CTreeNode> tn = (CTreeNode *)pnmtv->itemNew.lParam;
-			SendFrameMessage(UM_NEWSELECTION, (WPARAM)tn.p, (LPARAM)true);
+			PostFrameMessage(UM_NEWSELECTION, (WPARAM)tn.p, (LPARAM)true);
 		}
 		else if ( pnmtv->itemOld.hItem && pnmtv->itemOld.lParam )
 		{
 			CComPtr<CTreeNode> tn = (CTreeNode *)pnmtv->itemOld.lParam;
-			SendFrameMessage(UM_NEWSELECTION, (WPARAM)tn.p, (LPARAM)false);
+			PostFrameMessage(UM_NEWSELECTION, (WPARAM)tn.p, (LPARAM)false);
 		}
 	}
 	return 0;

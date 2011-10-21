@@ -65,12 +65,12 @@ __interface IModule;
 
 __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute : public clib::ILockableUnknown
 {
-	const TCHAR *GetURL() const;
 	const TCHAR *GetID() const;
-	IModule *GetModule() const;
-	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const;
 	const TCHAR *GetLabel() const;
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const;
+	const TCHAR *GetPath() const;
+	IModule *GetModule() const;
+	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const;
 	const SecAccessFlags GetAccess() const;
 	IAttributeType * GetType() const;
 	const TCHAR *GetText(bool refresh = true, bool noBroadcast = false) const;
