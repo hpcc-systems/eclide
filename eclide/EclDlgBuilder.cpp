@@ -203,7 +203,11 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 	m_maxRuntime.SetPos(0);
 
 	m_goButton.SubclassWindow(GetDlgItem(IDC_BUTTON_GO));
+#ifdef _TARGET_EE
+	m_goButton.SetMenu(IDR_POPUP_EEGO);
+#else
 	m_goButton.SetMenu(IDR_POPUP_GO);
+#endif
 
 	m_debugButton = GetDlgItem(IDC_BUTTON_DEBUG);
 	m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
@@ -378,6 +382,8 @@ void CBuilderDlg::RestorePersistInfo(const CPersistMap & persistInfo)
 		m_maxRuntime.SetPos(0);
 	}
 	m_path = persistInfo.Get(PERSIST_FILEPATH);
+	m_view.OpenFile(m_path);
+	ResetSavePoint(true);
 	m_name = persistInfo.Get(PERSIST_LABEL);
 	baseClass::RestorePersistInfo(persistInfo);
 
@@ -552,6 +558,9 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 		break;
 	case ID_GO_COMPILE:
 		m_owner->OnButtonGo(Dali::WUActionCompile);
+		break;
+	case ID_GO_DEBUG:
+		m_owner->OnButtonDebug();
 		break;
 	default:
 		ATLASSERT(false);

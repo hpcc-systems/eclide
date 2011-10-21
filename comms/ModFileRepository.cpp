@@ -82,12 +82,6 @@ public:
 		return m_label;
 	}
 
-	const TCHAR * GetUrl() const
-	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_url;
-	}
-
 	const TCHAR * GetUserId() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);

@@ -33,11 +33,18 @@ IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const ns2__EC
 
 class CRepository : public CRepositoryBase
 {
+	std::_tstring m_url;
+
 public:
 	IMPLEMENT_CUNKNOWN;
 
-	CRepository(const TCHAR* url, const TCHAR* userId, const TCHAR* password, const TCHAR* label, const TCHAR* instance) : CRepositoryBase(url, userId, password, label, instance)
+	CRepository(const TCHAR* url, const TCHAR* userId, const TCHAR* password, const TCHAR* label, const TCHAR* instance) : m_url(url), CRepositoryBase(userId, password, label, instance)
 	{
+		if (g_passwordCache.find(m_url) == g_passwordCache.end())
+		{
+			g_passwordCache[m_url].first = userId;
+			g_passwordCache[m_url].second = password;
+		}
 	}
 
 	~CRepository()
@@ -94,6 +101,18 @@ public:
 		modulesCache.update(modules);
 		moduleHierarchyCache.update(moduleHierarchy);
 		return modules.size();
+	}
+
+	const TCHAR * GetUserId() const
+	{
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return g_passwordCache[m_url].first.c_str();
+	}
+
+	const TCHAR * GetPassword() const
+	{
+		//clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return g_passwordCache[m_url].second.c_str();
 	}
 
 	IModule * GetModulePlaceholder(const TCHAR* label) const
@@ -877,6 +896,13 @@ public:
 		return false;
 	}
 
+	virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
+	{
+		boost::filesystem::path userFolder;
+		path = GetUserFolder(userFolder, GetUserId()) / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);
+		boost::filesystem::create_directories(path);
+		return path;
+	}
 };
 
 CacheT<std::_tstring, CRepository> RepositoryCache;

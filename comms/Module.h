@@ -18,7 +18,7 @@ __interface IModule : public clib::ILockableUnknown
 {
 	const TCHAR *GetID() const;
 	const TCHAR *GetLabel() const;
-	const TCHAR *GetQualifiedLabel() const;
+	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const;
 	const TCHAR *GetPath() const;
 	const SecAccessFlags GetAccess() const;
 	IModule * GetParentModule() const;

@@ -787,6 +787,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 		UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
 		UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
+		UPDATEUI(cui, ID_GO_DEBUG, IsRemoteDaliEnabled());
 		if (m_dlgview.CanExecute())
 		{
 			if (!m_dlgview.m_goButton.IsWindowEnabled())
@@ -969,6 +970,7 @@ void CBuilderFrame::RestorePersistInfo(const CPersistMap & persistInfo)
 	m_dlgview.SetDebug(persistInfo.Get(PERSIST_DEBUG));
 
 	m_dlgview.RestorePersistInfo(persistInfo);
+	UIUpdateTitle();
 }
 //  ===========================================================================
 class CChildBuilderFrm : public CWtlMDIChildFrame<StlLinked<CBuilderFrame> >

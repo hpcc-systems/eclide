@@ -291,7 +291,7 @@ protected:
 
 	static void thread_AddToRep(CComPtr<CMigration> self, IAttributeHistoryAdapt fromAttr, const std::_tstring comment, bool sandbox)
 	{
-		thread_AddEclToModule(self, NULL, ModAttrPair(fromAttr->GetModuleQualifiedLabel(), fromAttr->GetLabel()), fromAttr->GetType(), comment, GetText(fromAttr), fromAttr->GetModifiedBy(), fromAttr->GetModifiedDate(), sandbox);
+		thread_AddEclToModule(self, NULL, ModAttrPair(fromAttr->GetModuleQualifiedLabel(true), fromAttr->GetLabel()), fromAttr->GetType(), comment, GetText(fromAttr), fromAttr->GetModifiedBy(), fromAttr->GetModifiedDate(), sandbox);
 	}
 
 

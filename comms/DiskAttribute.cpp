@@ -24,9 +24,9 @@ class CDiskAttribute : public CAttributeBase, public IDiskAttribute, public IAtt
 {
 protected:
 	CString m_id;
-	CString m_url;
 	mutable CComPtr<IModule> m_module;
 	boost::filesystem::wpath m_path;
+	std::_tstring m_pathStr;
 	CString m_moduleQualifiedLabel;
 	CString m_moduleQualifiedLabelNoRoot;
 	CString m_label;
@@ -65,7 +65,7 @@ public:
 		ATLASSERT(boost::algorithm::contains(module, _T(".")));	
 		m_repository = const_cast<IRepository *>(rep);
 		m_path = path;
-		m_url = path.native_file_string().c_str();
+		m_pathStr = path.native_file_string().c_str();
 		m_checkedOut = false;
 		m_locked = false;
 		m_orphaned = false;
@@ -130,11 +130,6 @@ public:
 		md5_string(premd5, checksum);
 		m_checksumLocalTidied = checksum.c_str();
 	}
-	const TCHAR *GetURL() const
-	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_url;
-	}
 	const TCHAR *GetID() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -155,7 +150,8 @@ public:
 	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		ATLASSERT(!excludeRoot);
+		if (excludeRoot)
+			return m_moduleQualifiedLabelNoRoot;
 		return m_moduleQualifiedLabel;
 	}
 
@@ -171,6 +167,12 @@ public:
 		if (excludeRoot)
 			return m_qualifiedLabelNoRoot;
 		return m_qualifiedLabel;
+	}
+
+	const TCHAR *GetPath() const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return m_pathStr.c_str();
 	}
 
 	const SecAccessFlags GetAccess() const
@@ -383,7 +385,7 @@ public:
 		m_locked = false;
 
 		{
-			HANDLE hFile = CreateFile(m_url,
+			HANDLE hFile = CreateFile(m_pathStr.c_str(),
 				GENERIC_READ | GENERIC_WRITE, 
 				0,
 				NULL,
@@ -461,7 +463,7 @@ public:
 	const TCHAR * GetPath()
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_url;
+		return m_pathStr.c_str();
 	}
 };
 

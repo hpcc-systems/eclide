@@ -307,9 +307,9 @@ protected:
 	CString m_value;
 
 public:
-	void Load(const TCHAR *label, bool includeBlank = true);
-	static void GetModules(CComPtr<CComboModule> self);
-	void LoadModules(IModuleVector & modules);
+	void Load(const TCHAR *label, bool includeBlank = true, bool includeReadOnly = true);
+	static void GetModules(CComPtr<CComboModule> self, bool includeReadOnly);
+	void LoadModules(IModuleVector & modules, bool includeReadOnly);
 
 	void SelectDefault(const TCHAR *selection);
 	CComboModule & operator = (HWND hWnd);

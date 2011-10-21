@@ -15,17 +15,21 @@ using namespace WsAttributes;
 #else
 #endif
 
+//  ===========================================================================
 class CModFileAttribute : public IAttribute, public IAttributeHistory, public clib::CLockableUnknown
 {
+private:
+	static std::_tstring attrEmptyString;
 protected:
 	bool m_placeholder;
 	CComPtr<IRepository> m_repository;
 	CString m_id;
-	CString m_url;
 	mutable CComPtr<IModule> m_module;
-	CString m_moduleLabel;
+	CString m_moduleQualifiedLabel;
+	CString m_moduleQualifiedLabelNoRoot;
 	CString m_label;
 	CString m_qualifiedLabel;
+	CString m_qualifiedLabelNoRoot;
 	CComPtr<IAttributeType> m_type;
 	CString m_ecl;
 	CString m_description;
@@ -48,17 +52,16 @@ public:
 	IMPLEMENT_CLOCKABLEUNKNOWN;
 
 	CModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR * ecl, unsigned version, bool sandboxed, bool placeholder) 
-		: m_moduleLabel(module), m_label(label), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
+		: m_moduleQualifiedLabel(module), m_label(label), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
 	{
 		m_repository = const_cast<IRepository *>(rep);
 		m_type = CreateIAttributeECLType();
-		m_url = m_repository->GetUrl();
 		m_checkedOut = false;
 		m_locked = false;
 		m_orphaned = false;
 		m_ecl = ecl;
 		m_eclSet = true;
-		m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
+		m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
 		UpdateChecksumLocal();
 		UpdateID();
 	}
@@ -71,7 +74,8 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_id = m_repository->GetID();
-		m_id = m_id + _T("/") + m_moduleLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode() + (m_placeholder ? _T("/placeholder") : _T(""));
+		m_id = m_id + _T("/") + m_moduleQualifiedLabel + _T("/") + m_label + _T("/") + m_type->GetRepositoryCode() + (m_placeholder ? _T("/placeholder") : _T(""));
+		m_id.MakeLower();
 	}
 
 	IRepository* GetRepository()
@@ -119,11 +123,6 @@ public:
 		md5_string(premd5, checksum);
 		m_checksumLocalTidied = checksum.c_str();
 	}
-	const TCHAR *GetURL() const
-	{
-		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return m_url;
-	}
 	const TCHAR *GetID() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -134,20 +133,18 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_id;
 	}
-
 	IModule *GetModule() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (!m_module)
-			m_module = m_repository->GetModule(m_moduleLabel);
+			m_module = m_repository->GetModule(m_moduleQualifiedLabel);
 		return m_module;
 	}
-
 	const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		ATLASSERT(!excludeRoot);
-		return m_moduleLabel;
+		return m_moduleQualifiedLabel;
 	}
 
 	const TCHAR *GetLabel() const
@@ -159,8 +156,15 @@ public:
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		ATLASSERT(!excludeRoot);
+		if (excludeRoot)
+			return m_qualifiedLabelNoRoot;
 		return m_qualifiedLabel;
+	}
+
+	const TCHAR *GetPath() const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return attrEmptyString.c_str();
 	}
 
 	const SecAccessFlags GetAccess() const
@@ -169,7 +173,7 @@ public:
 		return SecAccess_Full;
 	}
 
-	IAttributeType * GetType() const
+	IAttributeType *GetType() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_type;
@@ -409,7 +413,8 @@ public:
 		return false;
 	}
 };
-
+std::_tstring CModFileAttribute::attrEmptyString;
+//  ===========================================================================
 static CacheT<std::_tstring, CModFileAttribute> ModFileAttributeCache;
 
 void ClearModFileAttributeCache()
