@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 2, 0
- PRODUCTVERSION 6, 0, 2, 0
+ FILEVERSION 6, 0, 3, 1
+ PRODUCTVERSION 6, 0, 3, 1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "6, 0, 2, 0\0"
+            VALUE "FileVersion", "6, 0, 3, 1\0"
             VALUE "InternalName", "en_us.dll"
             VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
             VALUE "OriginalFilename", "en_us.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "6, 0, 2, 0\0"
+            VALUE "ProductVersion", "6, 0, 3, 1\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -305,9 +305,9 @@ IDD_PREF_RESULTS DIALOGEX 0, 0, 290, 58
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Result Font:",IDC_STATIC_FONT2,10,10,39,8
+    LTEXT           "&Result Font:",IDC_STATIC_FONT,10,10,39,8
     COMBOBOX        IDC_COMBO_FONT,71,7,208,14,CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Si&ze:",IDC_STATIC_FONTSIZE2,10,25,36,8
+    LTEXT           "Si&ze:",IDC_STATIC_FONTSIZE,10,25,36,8
     EDITTEXT        IDC_EDIT_RESULT_FONTSIZE,71,23,40,14,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_SPIN_RESULT_FONTSIZE,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,110,23,11,14
     LTEXT           "Limit Result (rows):",IDC_STATIC_LIMITRESULT,162,26,62,8
@@ -358,11 +358,6 @@ BEGIN
     CONTROL         "Open MDI Children Maximized",IDC_CHECK_OPENMDICHILDMAX,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,54,111,10
     CONTROL         "Tooltips",IDC_CHECK_TOOLTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,227,54,52,10
-    LTEXT           "&Font:",IDC_STATIC_FONT,10,69,18,8
-    EDITTEXT        IDC_EDIT_FONT,71,66,208,14,ES_AUTOHSCROLL
-    LTEXT           "Si&ze:",IDC_STATIC_FONTSIZE,10,84,16,8
-    EDITTEXT        IDC_EDIT_FONTSIZE,71,82,40,14,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "",IDC_SPIN_FONTSIZE,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,110,82,11,14
     CONTROL         "Keep Repository Synchronised",IDC_CHECK_SYNCREPOSITORY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,99,113,10
     CONTROL         "Auto Complete on Period",IDC_CHECK_AUTOCOMPLETEONDOT,
@@ -491,11 +486,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    ICON            "",IDC_STATIC_ICON,5,5,21,20,SS_CENTERIMAGE,WS_EX_TRANSPARENT
+    ICON            "",IDC_STATIC_ICON,5,5,20,20,SS_CENTERIMAGE,WS_EX_TRANSPARENT
     LTEXT           "ECL IDE by HPCC Systems.",IDC_STATIC_PRODUCT,100,12,180,12
     LTEXT           "Version:",IDC_STATIC_VERSION,100,24,180,12
     LTEXT           "Server:",IDC_STATIC_SERVER,100,36,180,12
-    LTEXT           "Copyright (c) 2000-2011",IDC_STATIC,100,48,180,12
+    LTEXT           "Compiler:",IDC_STATIC_COMPILER,100,48,180,12
+    LTEXT           "Copyright (c) 2000-2011",IDC_STATIC,100,60,180,12
     LTEXT           "---------",IDC_STATIC_BEVEL,5,92,285,8
     LTEXT           "Warning: ",IDC_STATIC_WARNING,10,100,220,40
     DEFPUSHBUTTON   "OK",IDOK,235,100,50,14
@@ -1074,6 +1070,10 @@ BEGIN
     BEGIN
     END
 
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+    END
+
     IDD_LOGIN, DIALOG
     BEGIN
     END
@@ -1200,6 +1200,7 @@ IDB_MAIN_AMT            BITMAP                  "res\\main_amt.bmp"
 // remains consistent on all systems.
 IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
 IDR_MAINFRAME           ICON                    "res\\QueryBuilder.ico"
+IDR_MAINFRAME_AMT       ICON                    "res\\AMT.ico"
 IDI_FOLDER_OPEN         ICON                    "res\\folder_closed.ico"
 IDI_PINNED              ICON                    "res\\Pinned.ico"
 IDI_ICON_UPFOLDER       ICON                    "res\\icon1.ico"
@@ -1216,7 +1217,6 @@ IDI_CHECKEDOUT          ICON                    "res\\checkedout.ico"
 IDI_PARTIALCHECK        ICON                    "res\\threestate_partialcheck.ico"
 IDI_UNCHECKED           ICON                    "res\\threestate_unchecked.ico"
 IDI_CHECKED             ICON                    "res\\threestate_checked.ico"
-IDR_MAINFRAME_AMT       ICON                    "res\\AMT.ico"
 IDI_RADIO_UNCHECKED     ICON                    "res\\radio_unchecked.ico"
 IDI_RADIO_CHECKED       ICON                    "res\\radio_checked.ico"
 IDI_BUSY                ICON                    "res\\threestate_busy.ico"
@@ -2111,10 +2111,27 @@ BEGIN
     END
 END
 
+IDR_POPUP_EEGO MENU
+BEGIN
+    POPUP "Go"
+    BEGIN
+        MENUITEM "&Submit",                     ID_GO_SUBMIT
+        MENUITEM "&Compile",                    ID_GO_COMPILE
+        MENUITEM "&Debug",                      ID_GO_DEBUG
+    END
+END
+
 IDR_POPUP_GO2 MENU
 BEGIN
     MENUITEM "&Submit",                     ID_GO_SUBMIT
     MENUITEM "&Compile",                    ID_GO_COMPILE
+END
+
+IDR_POPUP_EEGO2 MENU
+BEGIN
+    MENUITEM "&Submit",                     ID_GO_SUBMIT
+    MENUITEM "&Compile",                    ID_GO_COMPILE
+    MENUITEM "&Debug",                      ID_GO_DEBUG
 END
 
 IDR_POPUP_ERRORLOG MENU
@@ -2661,9 +2678,6 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
-
-
 
 
 

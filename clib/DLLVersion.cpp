@@ -159,31 +159,29 @@ BOOL CDLLVersion::Open( IN LPCTSTR lpszFileName )
 
 BOOL CDLLVersion::GetVersionInfo( IN LPCTSTR lpszFileName )
 {
-	ATLASSERT(boost::filesystem::exists(lpszFileName));
-	DWORD dwDummy = 0;
-	DWORD dwSize  = ::GetFileVersionInfoSize( 
-		const_cast< LPTSTR >( lpszFileName ), &dwDummy // Set to 0
-	);
+	m_bValid = false;
+	if (boost::filesystem::exists(lpszFileName))
+	{
+		DWORD dwDummy = 0;
+		DWORD dwSize  = ::GetFileVersionInfoSize(const_cast< LPTSTR >( lpszFileName ), &dwDummy);
 
-	if ( dwSize > 0 )
-	{		
-		m_lpbyVIB = (LPBYTE)malloc( dwSize );
+		if (dwSize > 0)
+		{		
+			m_lpbyVIB = (LPBYTE)malloc( dwSize );
 
-		if ( m_lpbyVIB != NULL && 
-			::GetFileVersionInfo( const_cast< LPTSTR >( lpszFileName ), 
-			0, dwSize, m_lpbyVIB ) )
-		{
-			UINT   uLen    = 0;
-			LPVOID lpVSFFI = NULL;
-			
-			if ( ::VerQueryValue( m_lpbyVIB, _T( "\\" ), (LPVOID*)&lpVSFFI, &uLen ) )
+			if (m_lpbyVIB != NULL && ::GetFileVersionInfo( const_cast< LPTSTR >( lpszFileName ), 0, dwSize, m_lpbyVIB ))
 			{
-				::CopyMemory( &m_vsffi, lpVSFFI, sizeof( VS_FIXEDFILEINFO ) );
-				m_bValid = ( m_vsffi.dwSignature == VS_FFI_SIGNATURE );
+				UINT   uLen    = 0;
+				LPVOID lpVSFFI = NULL;
+			
+				if (::VerQueryValue( m_lpbyVIB, _T( "\\" ), (LPVOID*)&lpVSFFI, &uLen ))
+				{
+					::CopyMemory( &m_vsffi, lpVSFFI, sizeof( VS_FIXEDFILEINFO ) );
+					m_bValid = ( m_vsffi.dwSignature == VS_FFI_SIGNATURE );
+				}
 			}
 		}
 	}
-
 	return m_bValid;
 }
 
