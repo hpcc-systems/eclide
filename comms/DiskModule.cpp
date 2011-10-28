@@ -450,9 +450,7 @@ public:
 		{
 			proc.unlock();
 			if (m_repository->InsertModule(GetQualifiedLabel()) != NULL)
-			{
 				return true;
-			}
 		}
 		return false;
 	}
