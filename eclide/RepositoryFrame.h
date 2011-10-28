@@ -24,7 +24,6 @@ struct ContextState
 	bool CanRollback;
 	bool CanHistory;
 	bool CanInvoke;
-	bool CanInsertRootModule;
 	bool CanInsertModule;
 	bool CanRenameModule;
 	bool CanDeleteModule;
@@ -72,7 +71,7 @@ public:
 		m.EnableMenuItem(ID_REPOSITORY_OPENBUILDER, state.CanOpenBuilder ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_EDIT_LOCATEFILEINEXPLORER, state.CanOpenInExplorer ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_COPY, state.CanCopy ? MF_ENABLED : MF_GRAYED);
-		m.EnableMenuItem(ID_REPOSITORY_PASTE, state.CanPaste ? MF_ENABLED : MF_GRAYED);
+		m.EnableMenuItem(ID_REPOSITORY_PASTE, MF_GRAYED); //TODO:  Add nested folder support state.CanPaste ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_CHECKOUT, state.CanCheckout ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_CHECKIN, state.CanCheckin ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_CHECKINANDREVERT, state.CanCheckin ? MF_ENABLED : MF_GRAYED);
@@ -196,7 +195,7 @@ public:
 			GetIMainFrame()->ShowHistory(s.attrs.begin()->get());
 			break;
 		case ID_REPOSITORY_INSERTMODULE:
-			if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+			if (IsLocalRepositoryEnabled())
 			{
 				ATLASSERT((s.mods.size() + s.plugins.size()) == 1);
 				CString label;
@@ -344,8 +343,10 @@ public:
 		state.CanRollback = false;
 		state.CanInvoke = s.attrs.size() == 1;
 		state.CanHistory = s.attrs.size() == 1;
-		state.CanInsertRootModule = true;
-		state.CanInsertModule = (s.mods.size() + s.plugins.size()) == 1 && s.attrs.size() == 0 && WRITEACCESS((s.mods.size() ? s.mods[0] : s.plugins[0]));
+		if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+			state.CanInsertModule = (s.mods.size() + s.plugins.size()) == 1 && s.attrs.size() == 0 && WRITEACCESS((s.mods.size() ? s.mods[0] : s.plugins[0]));
+		else
+			state.CanInsertModule = true;
 		state.CanRenameModule = s.mods.size() == 1 && s.attrs.size() == 0 && WRITEACCESS(s.mods[0]);
 		state.CanDeleteModule = s.mods.size() > 0 && s.attrs.size() == 0 && WRITEACCESS(s.mods[0]);
 		state.CanInsertAttribute = s.mods.size() == 1 && !s.mods[0]->IsPlugin() && WRITEACCESS(s.mods[0]) && s.attrs.size() == 0;
