@@ -570,8 +570,8 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 
 void CBuilderDlg::OnEclSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 {
-	//GetIMainFrame()->SyncTOC(m_workspace->m_attribute->GetQualifiedLabel(), m_attribute->GetType());
-	int d = 0;
+	if (m_attribute)
+		GetIMainFrame()->SyncTOC(m_attribute->GetQualifiedLabel(), m_attribute->GetType());
 }
 
 void CBuilderDlg::OnLocateFileInExplorer(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
@@ -594,7 +594,12 @@ void CBuilderDlg::OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWn
 	CString message;
 	GetWordAtCurPos(message);
 	if (message[0])
-		GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType());
+	{
+		if (m_attribute)
+			GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), m_attribute->GetModuleQualifiedLabel());
+		else
+			GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType());
+	}
 }
 
 LRESULT CBuilderDlg::OnBnClickedButtonGo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& bHandled)
@@ -687,7 +692,11 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
 		CString ecl;
 		m_view.GetText(ecl);
 		if (ecl.Compare(attr->GetText(false)) != 0)
-			m_view.SetText(attr->GetText(false));
+		{
+			CString message = m_name + _T("\r\n\r\n") + _T("This file has been modified outside of the source editor.\r\nDo you want to reload it and lose the changes made in the source editor?");
+			if (MessageBox(message, CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with ChildBduilderFrame.cpp
+				m_view.SetText(attr->GetText(false));
+		}
 	}
 	//TODO handle renamed and deleted.
 	ATLASSERT(!newAttrAsOldOneMoved && !deleted);
