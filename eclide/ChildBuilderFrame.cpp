@@ -1071,6 +1071,8 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
 	{
 		pChild = new CChildBuilderFrm(workspaceItem);
 		CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
+		if (workspaceItem->GetAttribute())
+			pChild->m_view->SetReadOnly(workspaceItem->GetAttribute()->IsLocked());
 	}
 	return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
 }
