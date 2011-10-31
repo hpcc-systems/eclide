@@ -71,7 +71,7 @@ public:
 		m.EnableMenuItem(ID_REPOSITORY_OPENBUILDER, state.CanOpenBuilder ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_EDIT_LOCATEFILEINEXPLORER, state.CanOpenInExplorer ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_COPY, state.CanCopy ? MF_ENABLED : MF_GRAYED);
-		m.EnableMenuItem(ID_REPOSITORY_PASTE, MF_GRAYED); //TODO:  Add nested folder support state.CanPaste ? MF_ENABLED : MF_GRAYED);
+		m.EnableMenuItem(ID_REPOSITORY_PASTE, state.CanPaste ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_CHECKOUT, state.CanCheckout ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_CHECKIN, state.CanCheckin ? MF_ENABLED : MF_GRAYED);
 		m.EnableMenuItem(ID_REPOSITORY_CHECKINANDREVERT, state.CanCheckin ? MF_ENABLED : MF_GRAYED);
@@ -336,7 +336,10 @@ public:
 		state.CanOpenInExplorer = (s.mods.size() + s.attrs.size() == 1);
 		state.CanPrint = false;
 		state.CanCopy = s.mods.size() == 0 && s.attrs.size() > 0;
-		state.CanPaste = HasClipboardText();
+		if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+			state.CanPaste = false;
+		else
+			state.CanPaste = HasClipboardText();
 		state.CanCheckin = false;
 		state.CanCheckout = RemoteRepository;
 		state.CanCheckSyntax = s.attrs.size() > 0;
