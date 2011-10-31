@@ -164,7 +164,6 @@ public:
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		ATLASSERT(!excludeRoot);
 		return m_qualifiedLabel;
 	}
 

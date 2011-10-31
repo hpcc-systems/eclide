@@ -15,6 +15,7 @@ typedef std::vector<StringBoolPair> WPathVector;
 
 TRI_BOOL g_EnableCompiler = TRI_BOOL_UNKNOWN;
 TRI_BOOL g_EnableRemoteDali = TRI_BOOL_UNKNOWN;
+TRI_BOOL g_EnableRemoteQueue = TRI_BOOL_UNKNOWN;
 
 class CEclCC : public IEclCC, public CUnknown
 {
@@ -93,7 +94,7 @@ public:
 				text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER09);
 				break;
 			}
-			if (text.GetLength() > 0)
+			if (text.GetLength() > 0 && fs::exists(static_cast<const TCHAR *>(text)) && fs::is_directory(static_cast<const TCHAR *>(text)))
 				m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
 		}
 	}
@@ -450,6 +451,16 @@ void EnableRemoteDaliEnabled(TRI_BOOL enable)
 TRI_BOOL IsRemoteDaliEnabled()
 {
 	return g_EnableRemoteDali;
+}
+
+void EnableRemoteQueueEnabled(TRI_BOOL enable)
+{
+	g_EnableRemoteQueue = enable;
+}
+
+TRI_BOOL IsRemoteQueueEnabled()
+{
+	return g_EnableRemoteQueue;
 }
 
 IEclCC * CreateIEclCC()
