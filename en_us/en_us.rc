@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 3, 6
- PRODUCTVERSION 6, 0, 3, 6
+ FILEVERSION 6, 0, 3, 8
+ PRODUCTVERSION 6, 0, 3, 8
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "6, 0, 3, 6\0"
+            VALUE "FileVersion", "6, 0, 3, 8\0"
             VALUE "InternalName", "en_us.dll"
             VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
             VALUE "OriginalFilename", "en_us.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "6, 0, 3, 6\0"
+            VALUE "ProductVersion", "6, 0, 3, 8\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1199,8 +1199,13 @@ IDB_MAIN_AMT            BITMAP                  "res\\main_amt.bmp"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
+#ifdef _TARGET_EE
+IDR_MAINFRAME           ICON                    "res\\QueryBuilderEE.ico"
+IDR_MAINFRAME_AMT       ICON                    "res\\AMTEE.ico"
+#else
 IDR_MAINFRAME           ICON                    "res\\QueryBuilder.ico"
 IDR_MAINFRAME_AMT       ICON                    "res\\AMT.ico"
+#endif
 IDI_FOLDER_OPEN         ICON                    "res\\folder_closed.ico"
 IDI_PINNED              ICON                    "res\\Pinned.ico"
 IDI_ICON_UPFOLDER       ICON                    "res\\icon1.ico"
@@ -2678,6 +2683,14 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
+
+
+
+
+
+
+
 
 
 
