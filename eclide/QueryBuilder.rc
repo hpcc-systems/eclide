@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 3, 6
- PRODUCTVERSION 6, 0, 3, 6
+ FILEVERSION 6, 0, 3, 8
+ PRODUCTVERSION 6, 0, 3, 8
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -47,12 +47,12 @@ BEGIN
             VALUE "Comments", "ECL IDE"
             VALUE "CompanyName", "HPCC Systems"
             VALUE "FileDescription", "ECL IDE Application"
-            VALUE "FileVersion", "6, 0, 3, 6\0"
+            VALUE "FileVersion", "6, 0, 3, 8\0"
             VALUE "InternalName", "ECLIDE"
             VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
             VALUE "OriginalFilename", "eclide.exe"
             VALUE "ProductName", "ECL IDE Application"
-            VALUE "ProductVersion", "6, 0, 3, 6\0"
+            VALUE "ProductVersion", "6, 0, 3, 8\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -153,6 +153,14 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
+
+
+
+
+
+
+
 
 
 
