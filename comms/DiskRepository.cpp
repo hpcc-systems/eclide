@@ -175,16 +175,6 @@ public:
 
 	int GetAllModules(const fs::wpath & path, const std::_tstring & module, IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool noRefresh = true, bool noBroadcast = false) const
 	{
-		CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), path.native_file_string());
-		CachePoolAccessor<IModuleHierarchy> moduleHierarchyCache(m_cacheGetModulesHierarchy, GetCacheID(), path.native_file_string());
-
-		if (!modulesCache.needs_update(noRefresh) && !moduleHierarchyCache.needs_update(noRefresh))
-		{
-			modules = modulesCache.get();
-			moduleHierarchy = moduleHierarchyCache.get();
-			return modules.size();
-		}
-
 		if (fs::exists(path) && fs::is_directory(path))
 		{
 			std::_tstring leaf = path.leaf();
@@ -204,13 +194,6 @@ public:
 					GetAllModules(*itr, label, modules, moduleHierarchy, false, noBroadcast);
 				}
 			}
-		}
-
-		if (noRefresh)
-		{
-			m_cacheGetAttributes.clear();	//Need to clear attr cache when mod cache is cleared
-			modulesCache.update(modules);
-			moduleHierarchyCache.update(moduleHierarchy);
 		}
 		return modules.size();
 	}
@@ -378,22 +361,24 @@ public:
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{
-			IModuleVector modules;
-			IModuleHierarchy moduleHierarchy;
-			for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
+			for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr) 
+			{
+				IModuleVector modules;
+				IModuleHierarchy moduleHierarchy;
 				GetAllModules(itr->second->m_path, _T(""), modules, moduleHierarchy, true, true);
 
-			for (IModuleVector::const_iterator itr = modules.begin(); itr != modules.end(); ++itr)
-			{
-				if (module.empty() || algo::iequals(module, itr->get()->GetQualifiedLabel()))
+				for (IModuleVector::const_iterator m_itr = modules.begin(); m_itr != modules.end(); ++m_itr)
 				{
-					IAttributeVector attrs;
-					itr->get()->GetAttributes(attrs, true);
-					for (IAttributeVector::const_iterator a_itr = attrs.begin(); a_itr != attrs.end(); ++a_itr)
+					if (module.empty() || algo::iequals(module, m_itr->get()->GetQualifiedLabel()))
 					{
-						std::_tstring ecl = a_itr->get()->GetText(false, true);
-						if (algo::icontains(ecl, searchText))
-							attributes.push_back(a_itr->get());
+						IAttributeVector attrs;
+						m_itr->get()->GetAttributes(attrs, true);
+						for (IAttributeVector::const_iterator a_itr = attrs.begin(); a_itr != attrs.end(); ++a_itr)
+						{
+							std::_tstring ecl = a_itr->get()->GetText(false, true);
+							if (algo::icontains(ecl, searchText))
+								attributes.push_back(a_itr->get());
+						}
 					}
 				}
 			}
