@@ -250,26 +250,9 @@ public:
 	void OnEclHelp(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 	{
 		CString message;
-		m_dlgview.GetWordAtCurPos(message);
+		m_dlgview.GetWordAtCurPosNoPeriodPlusHash(message);
 		if (message[0])
-		{
-			boost::filesystem::path appFolder;
-			GetProgramFolder(appFolder);
-			appFolder /= "ECLReference.chm";
-			std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
-
-			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
-			HH_AKLINK link = {0};
-			link.cbStruct =     sizeof(HH_AKLINK) ;
-			link.fReserved =    FALSE ;
-			link.pszKeywords =  (const TCHAR *)message;
-			link.pszUrl =       NULL ;
-			link.pszMsgText =   NULL ;
-			link.pszMsgTitle =  NULL ;
-			link.pszWindow =    NULL ;
-			link.fIndexOnFail = TRUE ;
-			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_KEYWORD_LOOKUP, (DWORD)&link);
-		}
+			ShowHelp((const TCHAR *)message);
 	}
 
 	void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
