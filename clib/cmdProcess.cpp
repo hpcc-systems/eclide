@@ -299,7 +299,6 @@ public:
 
 int CLIB_API runProcess(const std::_tstring &command, const std::_tstring &directory, const std::_tstring &_path, const std::_tstring &in, std::_tstring &out, std::_tstring &err)
 {
-//#ifdef _DEBUG
 		if 	((GetKeyState(VK_SHIFT) & 0x8000) != 0)
 		{
 			std::_tstring clippy = _T("\r\ncd ");
@@ -325,13 +324,26 @@ int CLIB_API runProcess(const std::_tstring &command, const std::_tstring &direc
 		}
 	}
 		
-	CProcess proc(in, out, err);
-	int retVal = proc.Run(command, directory);
+#ifndef _DEBUG	//Let debugger react to Exception
+	try
+	{
+#endif
+		CProcess proc(in, out, err);
+		int retVal = proc.Run(command, directory);
 
-	if (!envPath.empty())
-		_tputenv(envPath.c_str());
+		if (!envPath.empty())
+			_tputenv(envPath.c_str());
 
-	return retVal;
+		return retVal;
+#ifndef _DEBUG
+	}
+	catch(...)
+	{
+		_DBGLOG(LEVEL_SEVERE, (boost::_tformat(_T("GPF - %1%")) % command.c_str()).str().c_str());
+		ATLASSERT(false);
+	}
+#endif
+	return -1;
 }
 
 #else
