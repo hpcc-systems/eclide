@@ -128,6 +128,7 @@ target_link_libraries( CLIB
 		msxml2
 		comsupp
 		version
+		Htmlhelp
 	)
 
 install ( TARGETS CLIB RUNTIME DESTINATION bin )
