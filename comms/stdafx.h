@@ -44,7 +44,7 @@
 #include <boost/asio.hpp>
 
 //  Services  ---
-const TCHAR * const _COMMS_VER_STR = _T("build_682_01");
+const TCHAR * const _COMMS_VER_STR = _T("build_682_00");
 #if _COMMS_VER == 471
 #  include "471/WebService.h"
 #elif _COMMS_VER == 491
