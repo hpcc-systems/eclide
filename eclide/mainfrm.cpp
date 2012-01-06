@@ -1136,11 +1136,7 @@ void CMainFrame::InitializeRibbon()
 
 
 		CMFCRibbonButton* pBtnSubmit = new CMFCRibbonButton(ID_ECL_GO, _T("Submit\ns"), 43,7);
-#ifdef _TARGET_EE
 		pBtnSubmit->SetMenu(IDR_POPUP_EEGO2, TRUE);
-#else
-		pBtnSubmit->SetMenu(IDR_POPUP_GO2, TRUE);
-#endif
 		pPanelBuilder->Add(pBtnSubmit);
 		pPanelBuilder->Add(new CMFCRibbonSeparator());
 		pPanelBuilder->Add(new CMFCRibbonButton(ID_ECL_SYNCTOC, _T("Locate\nl"), 42, 6));

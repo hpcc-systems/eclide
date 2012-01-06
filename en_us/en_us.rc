@@ -1199,11 +1199,7 @@ IDB_MAIN_AMT            BITMAP                  "res\\main_amt.bmp"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
-#ifdef _TARGET_EE
 IDR_MAINFRAME           ICON                    "res\\QueryBuilderEE.ico"
-#else
-IDR_MAINFRAME           ICON                    "res\\QueryBuilder.ico"
-#endif
 IDR_MAINFRAME_AMT       ICON                    "res\\AMTEE.ico"
 IDI_FOLDER_OPEN         ICON                    "res\\folder_closed.ico"
 IDI_PINNED              ICON                    "res\\Pinned.ico"
