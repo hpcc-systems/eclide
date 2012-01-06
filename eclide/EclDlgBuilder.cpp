@@ -203,11 +203,7 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 	m_maxRuntime.SetPos(0);
 
 	m_goButton.SubclassWindow(GetDlgItem(IDC_BUTTON_GO));
-#ifdef _TARGET_EE
 	m_goButton.SetMenu(IDR_POPUP_EEGO);
-#else
-	m_goButton.SetMenu(IDR_POPUP_GO);
-#endif
 
 	m_debugButton = GetDlgItem(IDC_BUTTON_DEBUG);
 	m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
