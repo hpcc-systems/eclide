@@ -158,6 +158,12 @@ public:
 		return blankString.c_str();
 	}
 
+	const TCHAR * GetTabTip(std::_tstring & tabTip)
+	{
+		tabTip = GetPath();
+		return tabTip.c_str();
+	}
+
 	BEGIN_MSG_MAP(thisClass)
 		MSG_WM_CREATE(OnCreate)
 		MSG_WM_SIZE(OnSize)
