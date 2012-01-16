@@ -1914,17 +1914,24 @@ LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp)
 
 	if (pInfo)
 	{
-		ASSERT_VALID (pInfo->m_pTabWnd);
-		if (!pInfo->m_pTabWnd->IsMDITab ())
-		{
+		ASSERT_VALID(pInfo->m_pTabWnd);
+		if (!pInfo->m_pTabWnd->IsMDITab())
 			return 0;
-		}
-		std::_tstring tooltip;
-		HWND hWnd = GetActive();
+
+		HWND hWnd = NULL;
+		CWnd * wnd = pInfo->m_pTabWnd->GetTabWnd(pInfo->m_nTabIndex);
+		if (wnd)
+			hWnd = wnd->GetSafeHwnd();
+		if (hWnd == NULL || !::IsWindow(hWnd))
+			hWnd = GetActive();
+
 		if (::IsWindow(hWnd))
+		{
+			std::_tstring tooltip;
 			::SendMessage(hWnd, CWM_GETTOOLTIPTEXT, (WPARAM)&tooltip, NULL);
-		if (!tooltip.empty())
-			pInfo->m_strText = tooltip.c_str();
+			if (!tooltip.empty())
+				pInfo->m_strText = tooltip.c_str();
+		}
 	}
 
 	return 0;
@@ -2075,6 +2082,7 @@ void CMainFrame::DoLogout()
 {
 	EnableLocalRepository(TRI_BOOL_UNKNOWN);
 	EnableRemoteDaliEnabled(TRI_BOOL_UNKNOWN);
+	EnableRemoteQueueEnabled(TRI_BOOL_UNKNOWN);
 
 	m_supressSyncTOC = true;
 	KillTimer(TIMER_AUTOSAVE);

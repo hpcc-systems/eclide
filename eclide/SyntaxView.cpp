@@ -101,6 +101,7 @@ void CSyntaxView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
 	m.LoadMenu(IDR_POPUP_SYNTAX);
 	m.EnableMenuItem(ID_EDIT_COPY, m_list.GetSelectedCount() == 0);
 	m.EnableMenuItem(ID_EDIT_COPYALL, m_list.GetItemCount() == 0);
+	m.EnableMenuItem(ID_SYNTAX_LOCATEERROR, m_list.GetItemCount() == 0);
 	unsigned int id = m.GetSubMenu(0).TrackPopupMenuEx(TPM_RETURNCMD, pPoint.x, pPoint.y, m_hWnd, NULL);
 	switch (id)
 	{
@@ -122,6 +123,17 @@ void CSyntaxView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
 				FormatRow(m_list, i, clip);
 			}
 			SetClipboard(clip);
+		}
+		break;
+	case ID_SYNTAX_LOCATEERROR:	
+		{
+			int row = m_list.GetSelectedIndex();
+			if (row > -1)
+			{
+				CString code;
+				m_list.GetItemText(row, 1, code);
+				ShowHelp((const TCHAR *)code);
+			}
 		}
 		break;
 	}

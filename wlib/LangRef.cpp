@@ -45,10 +45,10 @@ void restore(T &s, const char * filename)
 		// restore the schedule from the archive
 		ia >> BOOST_SERIALIZATION_NVP(s);
 	}
-	catch(boost::archive::archive_exception &)
+	catch(const boost::archive::archive_exception &e)
 	{
+		//  This typically means the count is wrong...
 		ATLASSERT(false);
-//		boost::filesystem::remove();
 	}
 }
 //  ===========================================================================
@@ -710,10 +710,12 @@ public:
 	}
 };
 
+boost::recursive_mutex g_langRef_mutex;
 StlLinked<CLangRef> g_langRef;
 
 ILangRef * CreateEclLangRef()
 {
+	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
 	if (!g_langRef)
 	{
 		g_langRef = new CLangRef;

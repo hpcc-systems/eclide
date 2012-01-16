@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "Util.h"
+#include "global.h"
+#include <HtmlHelp.h>
 
 static ULONG COMCTL_VERSION=0; 
 
@@ -475,6 +477,33 @@ int MoveToRecycleBin(const std::_tstring & path)
 	fileop.pFrom = buff; 
 	fileop.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION; 
 	return SHFileOperation(&fileop);
+}
+
+void ShowHelp(const std::_tstring word)
+{
+	if (word.empty())
+		return;
+
+	boost::filesystem::path appFolder;
+	GetProgramFolder(appFolder);
+#ifdef _DEBUG
+	appFolder /= "ECLReference_debug.chm";
+#else
+	appFolder /= "ECLReference.chm";
+#endif
+	std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
+
+	HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
+	HH_AKLINK link = {0};
+	link.cbStruct =     sizeof(HH_AKLINK) ;
+	link.fReserved =    FALSE ;
+	link.pszKeywords =  word.c_str();
+	link.pszUrl =       NULL ;
+	link.pszMsgText =   NULL ;
+	link.pszMsgTitle =  NULL ;
+	link.pszWindow =    NULL ;
+	link.fIndexOnFail = TRUE ;
+	HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_KEYWORD_LOOKUP, (DWORD)&link);
 }
 
 #ifndef SEISINT_LIBEXPORTS

@@ -182,10 +182,12 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (!Exists())	
 		{
+			if (m_parent)
+				m_parent->Create();
 			m_placeholder = false;
 			proc.unlock();
-			m_repository->InsertModule(GetQualifiedLabel());
-			return true;
+			if (m_repository->InsertModule(GetQualifiedLabel()) != NULL)
+				return true;
 		}
 		return false;
 	}

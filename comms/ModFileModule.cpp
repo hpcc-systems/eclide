@@ -64,8 +64,6 @@ public:
 
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
 	{
-		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		ATLASSERT(excludeRoot == false);
 		return m_label;
 	}
 
