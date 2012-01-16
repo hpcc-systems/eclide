@@ -119,6 +119,7 @@ bool CBuilderDlg::DoFileSave(const CString & sPathName)
 	}
 
 	// Save file name for later
+	m_attribute = NULL;				//Attribute detaches on SaveAs (as user could be saving anywhere)
 	SetNamePath(newPath);	
 	m_view.SetSavePoint();
 
