@@ -2075,6 +2075,7 @@ void CMainFrame::DoLogout()
 {
 	EnableLocalRepository(TRI_BOOL_UNKNOWN);
 	EnableRemoteDaliEnabled(TRI_BOOL_UNKNOWN);
+	EnableRemoteQueueEnabled(TRI_BOOL_UNKNOWN);
 
 	m_supressSyncTOC = true;
 	KillTimer(TIMER_AUTOSAVE);

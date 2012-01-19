@@ -24,7 +24,6 @@ struct ContextState
 	bool CanRollback;
 	bool CanHistory;
 	bool CanInvoke;
-	bool CanInsertRootModule;
 	bool CanInsertModule;
 	bool CanRenameModule;
 	bool CanDeleteModule;
@@ -196,7 +195,7 @@ public:
 			GetIMainFrame()->ShowHistory(s.attrs.begin()->get());
 			break;
 		case ID_REPOSITORY_INSERTMODULE:
-			if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+			if (IsLocalRepositoryEnabled())
 			{
 				ATLASSERT((s.mods.size() + s.plugins.size()) == 1);
 				CString label;
@@ -337,15 +336,20 @@ public:
 		state.CanOpenInExplorer = (s.mods.size() + s.attrs.size() == 1);
 		state.CanPrint = false;
 		state.CanCopy = s.mods.size() == 0 && s.attrs.size() > 0;
-		state.CanPaste = HasClipboardText();
+		if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+			state.CanPaste = false;
+		else
+			state.CanPaste = HasClipboardText();
 		state.CanCheckin = false;
 		state.CanCheckout = RemoteRepository;
 		state.CanCheckSyntax = s.attrs.size() > 0;
 		state.CanRollback = false;
 		state.CanInvoke = s.attrs.size() == 1;
 		state.CanHistory = s.attrs.size() == 1;
-		state.CanInsertRootModule = true;
-		state.CanInsertModule = (s.mods.size() + s.plugins.size()) == 1 && s.attrs.size() == 0 && WRITEACCESS((s.mods.size() ? s.mods[0] : s.plugins[0]));
+		if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+			state.CanInsertModule = (s.mods.size() + s.plugins.size()) == 1 && s.attrs.size() == 0 && WRITEACCESS((s.mods.size() ? s.mods[0] : s.plugins[0]));
+		else
+			state.CanInsertModule = true;
 		state.CanRenameModule = s.mods.size() == 1 && s.attrs.size() == 0 && WRITEACCESS(s.mods[0]);
 		state.CanDeleteModule = s.mods.size() > 0 && s.attrs.size() == 0 && WRITEACCESS(s.mods[0]);
 		state.CanInsertAttribute = s.mods.size() == 1 && !s.mods[0]->IsPlugin() && WRITEACCESS(s.mods[0]) && s.attrs.size() == 0;

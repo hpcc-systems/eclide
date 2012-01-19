@@ -842,6 +842,7 @@
 #define ID_SYNTAX_COPY                  33083
 #define ID_SYNTAX_COPYALL               33084
 #define ID_EDIT_COPYALL                 33085
+#define ID_SYNTAX_LOCATEERROR           33086
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -870,7 +871,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61413
-#define _APS_NEXT_COMMAND_VALUE         33086
+#define _APS_NEXT_COMMAND_VALUE         33087
 #define _APS_NEXT_CONTROL_VALUE         527
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

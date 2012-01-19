@@ -54,5 +54,8 @@ COMMS_API TRI_BOOL IsLocalRepositoryEnabled();
 COMMS_API void EnableRemoteDaliEnabled(TRI_BOOL enable = TRI_BOOL_TRUE);
 COMMS_API TRI_BOOL IsRemoteDaliEnabled();
 
+COMMS_API void EnableRemoteQueueEnabled(TRI_BOOL enable = TRI_BOOL_TRUE);
+COMMS_API TRI_BOOL IsRemoteQueueEnabled();
+
 COMMS_API IEclCC * CreateIEclCC();	//  Instances not thread safe (also not a singleton)!!!
 

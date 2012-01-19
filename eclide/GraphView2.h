@@ -185,6 +185,7 @@ public:
 	{
 		CComVariant vaResult;
 		bool retVal = InvokeScript(_T("getVertices"), vaResult);
+		ATLASSERT(retVal);
 		CComSafeArray<VARIANT> vertices = vaResult.parray;
 		for(ULONG i = 0; i < vertices.GetCount(); ++i)
 			results->Add(CUniqueID(guidDefault, XGMML_CAT_EDGE, boost::lexical_cast<std::_tstring>(vertices.GetAt(i).lVal)));

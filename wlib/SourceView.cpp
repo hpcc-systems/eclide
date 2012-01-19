@@ -442,6 +442,12 @@ bool CSourceCtrl::IsWordCharForSelNoPeriod(char ch)
 	return (strchr(wordchars, ch) != NULL);
 }
 
+bool CSourceCtrl::IsWordCharForSelNoPeriodPlusHash(char ch) {
+	if (ch == '.')
+		return false;
+	return (strchr(wordchars, ch) != NULL || ch == '#');
+}
+
 const TCHAR * wildcardToRegex(const std::_tstring & wildcard, std::_tstring & regex)
 {
 	//regex = _T("^");

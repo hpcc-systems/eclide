@@ -5,7 +5,7 @@
 #pragma warning(disable:4503)
 #pragma warning(disable:4127)
 
-#define _COMMS_VER								68201
+#define _COMMS_VER								68200
 
 //  Leak Checking ---
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
