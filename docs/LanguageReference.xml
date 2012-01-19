@@ -2420,22 +2420,6 @@
 		<insertaftercursor>)</insertaftercursor>
 		<canbefollowedby></canbefollowedby>
 	</item>
-	<item>
-		<categoryid>6</categoryid>
-		<name>Integer Symbol Value</name>
-		<tooltip></tooltip>
-		<insertbeforecursor>%</insertbeforecursor>
-		<insertaftercursor>%</insertaftercursor>
-		<canbefollowedby></canbefollowedby>
-	</item>
-	<item>
-		<categoryid>6</categoryid>
-		<name>Text Symbol Value</name>
-		<tooltip></tooltip>
-		<insertbeforecursor>%&apos;</insertbeforecursor>
-		<insertaftercursor>&apos;%</insertaftercursor>
-		<canbefollowedby></canbefollowedby>
-	</item>
 </s>
 </boost_serialization>
 

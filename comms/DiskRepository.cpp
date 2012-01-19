@@ -141,6 +141,7 @@ protected:
 	fs::wpath m_amtRoot;
 	StringCMonitorFolderMap m_paths;
 	PathVector m_pathOrder;
+	mutable clib::recursive_mutex m_mutex;
 
 public:
 	IMPLEMENT_CUNKNOWN;
@@ -200,6 +201,7 @@ public:
 
 	virtual unsigned GetAllModules(IModuleVector & _modules, IModuleHierarchy & _moduleHierarchy, bool GetChecksum = false, bool noRefresh = true, bool noBroadcast = false) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		IModuleVector modules;
 		IModuleHierarchy moduleHierarchy;
 		for(PathVector::const_iterator itr = m_pathOrder.begin(); itr != m_pathOrder.end(); ++itr)
@@ -474,7 +476,7 @@ public:
 
 	bool GetRepositoryPath(std::_tstring & module, fs::wpath & path) const
 	{
-		if (!m_amtRoot.empty() && !algo::istarts_with(module, m_amtRoot.leaf()))
+		if (!m_amtRoot.empty() && !algo::istarts_with(module, (m_amtRoot.leaf() + _T("."))))
 			module = m_amtRoot.leaf() + _T(".") + module;
 
 		CModuleHelper modHelper(module);

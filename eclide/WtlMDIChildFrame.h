@@ -224,8 +224,10 @@ afx_msg LRESULT CWtlMDIChildFrame<ViewT>::OnGetTooltip(WPARAM wParam, LPARAM lPa
 {
 
 	std::_tstring * tooltip = (std::_tstring *)wParam;
-	if (tooltip)
-		*tooltip = m_view->GetPath();
+	if (tooltip) 
+	{
+		m_view->GetTabTip(*tooltip);
+	}
 	return 0;
 }
 
