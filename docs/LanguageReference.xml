@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
 <s class_id="0" tracking_level="0" version="0">
-	<count>276</count>
+	<count>302</count>
 	<item_version>0</item_version>
 	<item class_id="1" tracking_level="0" version="0">
 		<categoryid>1</categoryid>
@@ -2418,22 +2418,6 @@
 		<tooltip>#WORKUNIT()</tooltip>
 		<insertbeforecursor>#WORKUNIT(</insertbeforecursor>
 		<insertaftercursor>)</insertaftercursor>
-		<canbefollowedby></canbefollowedby>
-	</item>
-	<item>
-		<categoryid>6</categoryid>
-		<name>Integer Symbol Value</name>
-		<tooltip></tooltip>
-		<insertbeforecursor>%</insertbeforecursor>
-		<insertaftercursor>%</insertaftercursor>
-		<canbefollowedby></canbefollowedby>
-	</item>
-	<item>
-		<categoryid>6</categoryid>
-		<name>Text Symbol Value</name>
-		<tooltip></tooltip>
-		<insertbeforecursor>%&apos;</insertbeforecursor>
-		<insertaftercursor>&apos;%</insertaftercursor>
 		<canbefollowedby></canbefollowedby>
 	</item>
 </s>

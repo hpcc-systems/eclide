@@ -250,26 +250,9 @@ public:
 	void OnEclHelp(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 	{
 		CString message;
-		m_dlgview.GetWordAtCurPos(message);
+		m_dlgview.GetWordAtCurPosNoPeriodPlusHash(message);
 		if (message[0])
-		{
-			boost::filesystem::path appFolder;
-			GetProgramFolder(appFolder);
-			appFolder /= "ECLReference.chm";
-			std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
-
-			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
-			HH_AKLINK link = {0};
-			link.cbStruct =     sizeof(HH_AKLINK) ;
-			link.fReserved =    FALSE ;
-			link.pszKeywords =  (const TCHAR *)message;
-			link.pszUrl =       NULL ;
-			link.pszMsgText =   NULL ;
-			link.pszMsgTitle =  NULL ;
-			link.pszWindow =    NULL ;
-			link.fIndexOnFail = TRUE ;
-			HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_KEYWORD_LOOKUP, (DWORD)&link);
-		}
+			ShowHelp((const TCHAR *)message);
 	}
 
 	void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
@@ -398,6 +381,16 @@ public:
 	const TCHAR * GetPath()
 	{
 		return m_dlgview.GetPath();
+	}
+
+	const TCHAR * GetTabTip(std::_tstring & tabTip)
+	{
+		if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
+		{
+			tabTip = std::_tstring(_T("[")) + attr->GetQualifiedLabel() + _T("] ");
+		}
+		tabTip += GetPath();
+		return tabTip.c_str();
 	}
 
 	//  IResultSlot override  ---
@@ -771,6 +764,7 @@ void CBuilderFrame::UIUpdateTitle()
 
 bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 {
+	GetIMainFrame()->DisableAllMenuItems();
 	IResultViewer *pResult = ActiveResultsWindow();
 	if (pResult)
 	{
@@ -806,6 +800,8 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 			if (m_dlgview.m_archiveButton.IsWindowEnabled())
 				m_dlgview.m_archiveButton.EnableWindow(false);
 		}
+
+		UPDATEUI(cui, ID_ECL_SYNCTOC, m_dlgview.GetAttribute() != NULL);
 	}
 	return false;
 }
@@ -1071,6 +1067,8 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
 	{
 		pChild = new CChildBuilderFrm(workspaceItem);
 		CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
+		if (workspaceItem->GetAttribute())
+			pChild->m_view->SetReadOnly(workspaceItem->GetAttribute()->IsLocked());
 	}
 	return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
 }

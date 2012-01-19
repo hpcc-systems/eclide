@@ -41,6 +41,7 @@ public:
 		ATLASSERT(ParseVersion(_T("hpcc-100.10-betaX"), test4));
 		ATLASSERT(ParseVersion(_T("hpcc-100.10"), test5));
 		ATLASSERT(ParseVersion(_T("hpcc_3.0_beta4_63910"), test6));
+		//ATLASSERT(ParseVersion(_T("build_0702_40_gentoo64_linux"), test7)); 
 		//ATLASSERT(ParseVersion(_T("hpcc_100.10.1_betaX"), test2));
 		//ATLASSERT(ParseVersion(_T("build_200"), test3));
 		//ATLASSERT(ParseVersion(_T("build_200_2"), test4));
@@ -81,40 +82,8 @@ public:
 		else
 			m_CommsVer = parsedVersion.majorVersion * 100 + parsedVersion.minorVersion;
 
-		/*
-		m_CommsVer = 0;
-		m_id = m_url + _T("/") + m_rawversion.c_str();
-		boost::char_separator<TCHAR> sep(_T("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-		boost::_ttokenizer tokens(m_rawversion, sep);
-		boost::_ttokenizer::iterator tok_iter = tokens.begin(); 
-		std::_tstring commsVer;
-		if (tok_iter != tokens.end())
-		{
-			m_strversion = *tok_iter;
-			boost::algorithm::trim_left_if(m_strversion, boost::algorithm::is_any_of("0")); 
-			commsVer = m_strversion;
-			++tok_iter;
-		}
-		if (tok_iter != tokens.end())
-		{
-			m_strversion += _T(".");
-			m_strversion += *tok_iter;
-			commsVer += *tok_iter;
-			++tok_iter;
-		}
-		else	//  No suffix equates to 00
-		{
-			m_strversion += _T(".00");
-			commsVer += _T("00");
-		}
-		try
-		{
-			m_CommsVer = boost::lexical_cast<int>(commsVer);
-		}
-		catch(boost::bad_lexical_cast &)
-		{
-		}
-		*/
+		if (m_strversion.empty())
+			m_strversion = version;
 	}
 
 	//void Lock(CComPtr<clib::scoped_lock_ref_counted> & lock)

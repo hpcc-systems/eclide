@@ -1,4 +1,5 @@
 #define BOOST_LIB_DIAGNOSTIC
+#define BOOST_FILESYSTEM_VERSION 2
 #pragma warning(push)
 #pragma warning(disable:4003)
 #pragma warning(disable:4100)

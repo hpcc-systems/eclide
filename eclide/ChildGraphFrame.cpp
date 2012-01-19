@@ -108,9 +108,16 @@ public:
 			return true;
 		return false;
 	}
+
 	const TCHAR * GetPath()
 	{
 		return m_path.c_str();
+	}
+
+	const TCHAR * GetTabTip(std::_tstring & tabTip)
+	{
+		tabTip = GetPath();
+		return tabTip.c_str();
 	}
 
 	//  File Access  ---

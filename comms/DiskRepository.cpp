@@ -12,52 +12,142 @@ using namespace WsAttributes;
 #else
 #endif
 namespace fs = boost::filesystem;
+namespace algo = boost::algorithm;
 
 IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false);
-IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl);
+IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl, bool noBroadcast);
 IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed);
 IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path);
 //IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring & label, const ECLAttribute * data);
 void ClearDiskAttributeCache();
 void ClearDiskModuleCache();
 
-typedef std::map<std::_tstring, fs::wpath> StringPathMap;
+//  ===========================================================================
+class CDiskRepository;
+class CMonitorFolder : public CUnknown
+{
+public:
+	const fs::wpath m_path;
+	const std::_tstring m_leaf;
+
+private:
+	CDiskRepository * m_repository;
+	bool m_doMonitor;
+
+	static void thread_MonitorFolder1(CComPtr<CMonitorFolder> self)
+	{
+		HANDLE file = FindFirstChangeNotification(self->m_path.directory_string().c_str(), FALSE, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE);
+		while (self->m_doMonitor && WaitForSingleObject(file, 500) != WAIT_TIMEOUT) {
+			FindNextChangeNotification(file);
+		}
+	}
+
+	static void thread_MonitorFolder2(CComPtr<CMonitorFolder> self)	
+	{
+		USES_CONVERSION;
+
+		HANDLE hDir = CreateFile(self->m_path.directory_string().c_str(), FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
+
+		FILE_NOTIFY_INFORMATION Buffer[1024];
+		DWORD BytesReturned;
+		while( ReadDirectoryChangesW(
+			hDir,                                  // handle to directory
+			&Buffer,                                    // read results buffer
+			sizeof(Buffer),                                // length of buffer
+			TRUE,                                 // monitoring option
+			FILE_NOTIFY_CHANGE_SECURITY|
+			FILE_NOTIFY_CHANGE_CREATION|
+			FILE_NOTIFY_CHANGE_LAST_ACCESS|
+			FILE_NOTIFY_CHANGE_LAST_WRITE|
+			FILE_NOTIFY_CHANGE_SIZE|
+			FILE_NOTIFY_CHANGE_ATTRIBUTES|
+			FILE_NOTIFY_CHANGE_DIR_NAME|
+			FILE_NOTIFY_CHANGE_FILE_NAME,             // filter conditions
+			&BytesReturned,              // bytes returned
+			NULL,                          // overlapped buffer
+			NULL// completion routine
+			))
+		{
+			for (int i = 0; !Buffer[i].NextEntryOffset; ++i)
+			{
+				if (!self->m_doMonitor)
+					return;
+
+				CString helper_txt;
+				switch(Buffer[i].Action)
+				{
+				case FILE_ACTION_ADDED: 
+					helper_txt = "The file was added to the directory"; break; 
+				case FILE_ACTION_REMOVED: 
+					helper_txt = "The file was removed from the directory"; break; 
+				case FILE_ACTION_MODIFIED: 
+					helper_txt = "The file was modified. This can be a change in the time stamp or attributes."; break; 
+				case FILE_ACTION_RENAMED_OLD_NAME: 
+					helper_txt = "The file was renamed and this is the old name."; break; 
+				case FILE_ACTION_RENAMED_NEW_NAME: 
+					helper_txt = "The file was renamed and this is the new name."; break;
+				}
+
+				std::_tstring filename(Buffer[i].FileName, Buffer[i].FileNameLength / sizeof(_T(' ')));
+				if (algo::iends_with(filename, _T(".ecl")))
+				{
+					fs::wpath fullPath = self->m_path / filename;
+					fs::wpath relativePath = fs::wpath(self->m_path.filename()) / filename;
+					std::_tstring type = relativePath.extension();
+					std::_tstring moduleLabel = relativePath.parent_path().native_directory_string();
+					algo::replace_all(moduleLabel, _T("\\"), _T("."));
+					std::_tstring attrLabel = fs::basename(relativePath);
+					std::_tstring ecl;
+					CComPtr<IAttribute> attr = GetDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), 0, false);
+					if (attr)
+						attr->GetText();
+				}
+			}
+		}
+	}
+
+public:
+	CMonitorFolder(CDiskRepository * repository, const fs::wpath & path) : m_repository(repository), m_path(path), m_leaf(path.filename())
+	{
+		ATLASSERT(fs::exists(m_path) && fs::is_directory(m_path));
+		m_doMonitor = true;
+		clib::thread run(__FUNCTION__, boost::bind(&thread_MonitorFolder2, this));
+	}
+
+	~CMonitorFolder()
+	{
+	}
+
+	virtual ULONG STDMETHODCALLTYPE Release() throw()
+	{
+		ULONG refCount = CUnknown::Release();
+		if (refCount == 1)
+		{
+			m_doMonitor = false;
+			m_repository = NULL;
+			//  Touch the folder to trigger the clean exit of the monitor thread  ---
+			CAtlTemporaryFile temp;
+			temp.Create(m_path.native_directory_string().c_str());
+		}
+		return refCount;
+	}
+};
+//  ===========================================================================
+typedef std::map<std::_tstring, StlLinked<CMonitorFolder> > StringCMonitorFolderMap;
 typedef std::vector<fs::wpath> PathVector;
 class CDiskRepository : public CRepositoryBase
 {
 protected:
 	fs::wpath m_amtRoot;
-	StringPathMap m_paths;
+	StringCMonitorFolderMap m_paths;
 	PathVector m_pathOrder;
+	mutable clib::recursive_mutex m_mutex;
 
 public:
 	IMPLEMENT_CUNKNOWN;
 
 	CDiskRepository(const TCHAR* label) : CRepositoryBase(_T(""), _T(""), label, _T(""))
 	{
-		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-		{
-			for (int i = 0; i < eclcc->GetEclFolderCount(); ++i)
-			{
-				fs::wpath path = fs::wpath(eclcc->GetEclFolder(i), fs::native);
-				ATLASSERT(fs::exists(path));
-				m_paths[path.leaf()] = path;
-				m_pathOrder.push_back(path);
-			}
-		}
-		else
-		{
-			//  IDE Initalised repository with no folders.
-			ATLASSERT(false);
-		}
-	}
-
-	CDiskRepository(const TCHAR* url, const TCHAR* label) : CRepositoryBase(_T(""), _T(""), label, _T(""))
-	{
-		m_amtRoot = fs::wpath(url, fs::native);
-		ATLASSERT(fs::exists(m_amtRoot));
-		m_paths[m_amtRoot.leaf()] = m_amtRoot;
-		m_pathOrder.push_back(m_amtRoot);
 	}
 
 	~CDiskRepository()
@@ -86,20 +176,10 @@ public:
 
 	int GetAllModules(const fs::wpath & path, const std::_tstring & module, IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool noRefresh = true, bool noBroadcast = false) const
 	{
-		CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), path.native_file_string());
-		CachePoolAccessor<IModuleHierarchy> moduleHierarchyCache(m_cacheGetModulesHierarchy, GetCacheID(), path.native_file_string());
-
-		if (!modulesCache.needs_update(noRefresh) && !moduleHierarchyCache.needs_update(noRefresh))
-		{
-			modules = modulesCache.get();
-			moduleHierarchy = moduleHierarchyCache.get();
-			return modules.size();
-		}
-
 		if (fs::exists(path) && fs::is_directory(path))
 		{
 			std::_tstring leaf = path.leaf();
-			if (!boost::algorithm::starts_with(leaf, _T(".")))
+			if (!algo::starts_with(leaf, _T(".")))
 			{  
 				std::_tstring label = module;
 				if (!label.empty())
@@ -116,30 +196,29 @@ public:
 				}
 			}
 		}
-
-		if (noRefresh)
-		{
-			m_cacheGetAttributes.clear();	//Need to clear attr cache when mod cache is cleared
-			modulesCache.update(modules);
-			moduleHierarchyCache.update(moduleHierarchy);
-		}
 		return modules.size();
 	}
 
 	virtual unsigned GetAllModules(IModuleVector & _modules, IModuleHierarchy & _moduleHierarchy, bool GetChecksum = false, bool noRefresh = true, bool noBroadcast = false) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		IModuleVector modules;
 		IModuleHierarchy moduleHierarchy;
 		for(PathVector::const_iterator itr = m_pathOrder.begin(); itr != m_pathOrder.end(); ++itr)
 			GetAllModules(*itr, _T(""), modules, moduleHierarchy, noRefresh, noBroadcast);
 
-		if (!m_amtRoot.empty())
+		if (m_amtRoot.empty())
+		{
+			_modules = modules;
+			_moduleHierarchy = moduleHierarchy;
+		}
+		else
 		{
 			for (IModuleHierarchy::const_iterator itr = moduleHierarchy.begin(); itr != moduleHierarchy.end(); ++itr) 
 			{
 				if (itr->first.empty())
 					continue;
-				else if (boost::algorithm::equals(m_amtRoot.leaf(), itr->first))
+				else if (algo::equals(m_amtRoot.leaf(), itr->first))
 					_moduleHierarchy[_T("")] = itr->second;
 				else
 					_moduleHierarchy[itr->first] = itr->second;
@@ -168,10 +247,10 @@ public:
 			StdStringVector tokens;
 			modHelper.GetQualifiedLabel(tokens);
 			ATLASSERT(!tokens.empty());
-			StringPathMap::const_iterator found = m_paths.find(tokens[0]);
+			StringCMonitorFolderMap::const_iterator found = m_paths.find(tokens[0]);
 			if (found != m_paths.end())
 			{
-				boost::filesystem::wpath path = found->second.parent_path();
+				boost::filesystem::wpath path = found->second->m_path.parent_path();
 				for (unsigned int i = 0; i < tokens.size(); ++i)
 					path /= tokens[i];
 				IModule * module = CreateDiskModule(this, moduleName, path, true);
@@ -189,10 +268,10 @@ public:
 		StdStringVector tokens;
 		modHelper.GetQualifiedLabel(tokens);
 		ATLASSERT(!tokens.empty());
-		StringPathMap::const_iterator found = m_paths.find(tokens[0]);
+		StringCMonitorFolderMap::const_iterator found = m_paths.find(tokens[0]);
 		if (found != m_paths.end())
 		{
-			boost::filesystem::wpath path = found->second.parent_path();
+			boost::filesystem::wpath path = found->second->m_path.parent_path();
 			if (fs::exists(path))	//  Root repository folder
 			{
 				for (unsigned int i = 0; i < tokens.size(); ++i)
@@ -218,7 +297,7 @@ public:
 		std::string nameDirectory = m_path.native_directory_string();
 		nameDirectory.append("/");
 		std::_tstring module = moduleName;
-		boost::algorithm::replace_all(module, _T("."), _T("/"));
+		algo::replace_all(module, _T("."), _T("/"));
 		nameDirectory.append(CT2A(module.c_str()));
 		try
 		{
@@ -247,7 +326,7 @@ public:
 		{
 			CModuleHelper modHelper(moduleName + _T(".dummy"));
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
-			boost::algorithm::replace_all(module, _T("."), _T("/"));
+			algo::replace_all(module, _T("."), _T("/"));
 			fs::wpath path = repositoryPath / module;
 			if (fs::exists(path))
 			{
@@ -260,7 +339,7 @@ public:
 						std::_tstring type = fs::extension(*attr_itr).c_str();
 						if (IsValidExtension(type))
 						{
-							StlLinked<IAttribute> attribute = CreateDiskAttribute(this, moduleName, label, type, *attr_itr, _T(""));
+							StlLinked<IAttribute> attribute = CreateDiskAttribute(this, moduleName, label, type, *attr_itr, _T(""), noBroadcast);
 							if (attribute.isLinked())
 								attributes.push_back(attribute);
 						}
@@ -284,22 +363,24 @@ public:
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{
-			IModuleVector modules;
-			IModuleHierarchy moduleHierarchy;
-			for(StringPathMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
-				GetAllModules(itr->second, _T(""), modules, moduleHierarchy, true, true);
-
-			for (IModuleVector::const_iterator itr = modules.begin(); itr != modules.end(); ++itr)
+			for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr) 
 			{
-				if (module.empty() || boost::algorithm::iequals(module, itr->get()->GetQualifiedLabel()))
+				IModuleVector modules;
+				IModuleHierarchy moduleHierarchy;
+				GetAllModules(itr->second->m_path, _T(""), modules, moduleHierarchy, true, true);
+
+				for (IModuleVector::const_iterator m_itr = modules.begin(); m_itr != modules.end(); ++m_itr)
 				{
-					IAttributeVector attrs;
-					itr->get()->GetAttributes(attrs, true);
-					for (IAttributeVector::const_iterator a_itr = attrs.begin(); a_itr != attrs.end(); ++a_itr)
+					if (module.empty() || algo::iequals(module, m_itr->get()->GetQualifiedLabel()))
 					{
-						std::_tstring ecl = a_itr->get()->GetText(false, true);
-						if (boost::algorithm::icontains(ecl, searchText))
-							attributes.push_back(a_itr->get());
+						IAttributeVector attrs;
+						m_itr->get()->GetAttributes(attrs, true);
+						for (IAttributeVector::const_iterator a_itr = attrs.begin(); a_itr != attrs.end(); ++a_itr)
+						{
+							std::_tstring ecl = a_itr->get()->GetText(false, true);
+							if (algo::icontains(ecl, searchText))
+								attributes.push_back(a_itr->get());
+						}
 					}
 				}
 			}
@@ -344,12 +425,12 @@ public:
 		{
 			CModuleHelper fromHelper(moduleName + _T(".dummy"));
 			std::_tstring fromModule = fromHelper.GetModuleLabelNoRoot();
-			boost::algorithm::replace_all(fromModule, _T("."), _T("/"));
+			algo::replace_all(fromModule, _T("."), _T("/"));
 			fs::wpath fromPath = repositoryPath / fromModule;
 
 			CModuleHelper toHelper(std::_tstring(label) + _T(".dummy"));
 			std::_tstring toModule = toHelper.GetModuleLabelNoRoot();
-			boost::algorithm::replace_all(toModule, _T("."), _T("/"));
+			algo::replace_all(toModule, _T("."), _T("/"));
 			fs::wpath toPath = repositoryPath / toModule;
 			try
 			{
@@ -373,7 +454,7 @@ public:
 		{
 			CModuleHelper modHelper(moduleName + _T(".dummy"));
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
-			boost::algorithm::replace_all(module, _T("."), _T("/"));
+			algo::replace_all(module, _T("."), _T("/"));
 			fs::wpath path = repositoryPath / module;
 			if (fs::exists(path))
 			{
@@ -395,7 +476,7 @@ public:
 
 	bool GetRepositoryPath(std::_tstring & module, fs::wpath & path) const
 	{
-		if (!m_amtRoot.empty() && !boost::algorithm::istarts_with(module, m_amtRoot.leaf()))
+		if (!m_amtRoot.empty() && !algo::istarts_with(module, (m_amtRoot.leaf() + _T("."))))
 			module = m_amtRoot.leaf() + _T(".") + module;
 
 		CModuleHelper modHelper(module);
@@ -404,20 +485,20 @@ public:
 		if (tokens.empty())
 			return false;
 
-		StringPathMap::const_iterator found = m_paths.find(tokens[0]);
+		StringCMonitorFolderMap::const_iterator found = m_paths.find(tokens[0]);
 		if (found != m_paths.end())
 		{
-			path = found->second;
+			path = found->second->m_path;
 			if (fs::exists(path))
 				return true;
 		}
 		else
 		{
-			for(StringPathMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
+			for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
 			{
-				if (fs::exists(itr->second / tokens[0]))
+				if (fs::exists(itr->second->m_path / tokens[0]))
 				{
-					path = itr->second;
+					path = itr->second->m_path;
 					if (fs::exists(path))
 					{
 						module = itr->first + _T(".") + module;
@@ -436,7 +517,7 @@ public:
 		{
 			CModuleHelper modHelper(moduleName + _T(".") + attributeName);
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
-			boost::algorithm::replace_all(module, _T("."), _T("/"));
+			algo::replace_all(module, _T("."), _T("/"));
 			std::wstring attr = attributeName;
 			attr += _T(".");
 			attr += type->GetRepositoryCode();
@@ -468,7 +549,7 @@ public:
 				std::_tstring data;
 				file.Read(data);
 				file.Close();
-				result = ::CreateDiskAttribute(this, module, attribute, type->GetRepositoryCode(), path, data);
+				result = ::CreateDiskAttribute(this, module, attribute, type->GetRepositoryCode(), path, data, noBroadcast);
 				return result;
 			}
 		}
@@ -498,7 +579,7 @@ public:
 		{
 			CModuleHelper modHelper(moduleName + _T(".") + attributeName);
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
-			boost::algorithm::replace_all(module, _T("."), _T("/"));
+			algo::replace_all(module, _T("."), _T("/"));
 			std::_tstring fileName = attributeName + type->GetFileExtension();
 			fs::wpath path = repositoryPath / module / fileName;
 			if (!fs::exists(path))
@@ -513,11 +594,11 @@ public:
 	virtual IAttribute * GetAttributeFuzzy(const std::_tstring & moduleAttribute, const std::_tstring & module, IAttributeType * type, int version = 0, bool sandbox = true, bool text = true) const
 	{
 		std::_tstring modAttr = moduleAttribute;
-		if (boost::algorithm::iends_with(modAttr, _T(".ecl")))
+		if (algo::iends_with(modAttr, _T(".ecl")))
 			modAttr.resize(modAttr.size() - strlen(".ecl"));
-		else if (boost::algorithm::iends_with(modAttr, _T(".eclattr")))
+		else if (algo::iends_with(modAttr, _T(".eclattr")))
 			modAttr.resize(modAttr.size() - strlen(".eclattr"));
-		boost::algorithm::replace_all(modAttr, _T("\\"), _T("."));
+		algo::replace_all(modAttr, _T("\\"), _T("."));
 
 		IAttribute * retVal = __super::GetAttributeFuzzy(modAttr, module, type, version, sandbox, text);
 		ATLASSERT(retVal);  // Must check all fuzzies
@@ -539,10 +620,10 @@ public:
 		StdStringVector tokens;
 		modHelper.GetQualifiedLabel(tokens);
 		ATLASSERT(!tokens.empty());
-		StringPathMap::const_iterator found = m_paths.find(tokens[0]);
+		StringCMonitorFolderMap::const_iterator found = m_paths.find(tokens[0]);
 		if (found != m_paths.end())
 		{
-			boost::filesystem::wpath path = found->second.parent_path();
+			boost::filesystem::wpath path = found->second->m_path.parent_path();
 			if (fs::exists(path))	//  Root repository folder
 			{
 				for (unsigned int i = 0; i < tokens.size(); ++i)
@@ -640,7 +721,7 @@ public:
 				} catch (const std::exception & ex) {
 					_DBGLOG(LEVEL_WARNING, ex.what());
 				}
-				CComPtr<IAttribute> attribute = CreateDiskAttribute(this, toModule, itr->get()->GetLabel(), itr->get()->GetType()->GetRepositoryCode(), toPath, itr->get()->GetText());
+				CComPtr<IAttribute> attribute = CreateDiskAttribute(this, toModule, itr->get()->GetLabel(), itr->get()->GetType()->GetRepositoryCode(), toPath, itr->get()->GetText(), false);
 				attribute->Refresh(false, attribute);
 				return true;
 			}
@@ -666,10 +747,35 @@ public:
 		boost::filesystem::create_directories(path);
 		return path;
 	}
+
+	void Update(IEclCC * eclcc)
+	{
+		ATLASSERT(eclcc);
+		if (!eclcc)
+			return;
+
+		for (int i = 0; i < eclcc->GetEclFolderCount(); ++i)
+		{
+			fs::wpath path = fs::wpath(eclcc->GetEclFolder(i), fs::native);
+			if (fs::exists(path) && fs::is_directory(path))
+			{
+				m_paths[path.leaf()] = new CMonitorFolder(this, path);
+				m_pathOrder.push_back(path);
+			}
+		}
+	}
+
+	void Update(const TCHAR* url)
+	{
+		m_amtRoot = fs::wpath(url, fs::native);
+		ATLASSERT(fs::exists(m_amtRoot));
+		m_paths[m_amtRoot.leaf()] = new CMonitorFolder(this, m_amtRoot);
+		m_pathOrder.push_back(m_amtRoot);
+	}
+
 };
-
 static CacheT<std::_tstring, CDiskRepository> DiskRepositoryCache;
-
+//  ===========================================================================
 void ClearDiskRepositorySingletons()
 {
 	ClearDiskAttributeCache();
@@ -677,29 +783,30 @@ void ClearDiskRepositorySingletons()
 	DiskRepositoryCache.Clear();
 }
 
-COMMS_API IRepository * AttachDiskRepository(const TCHAR* url, const TCHAR * label, bool bClearCache)
-{
-	CDiskRepository *rep = new CDiskRepository(url, label);
-	if ( bClearCache )
-		DiskRepositoryCache.Clear(rep);
-	return DiskRepositoryCache.Get(rep);
-}
-
 COMMS_API IRepository * AttachDiskRepository(const TCHAR * label, bool bClearCache)
 {
-	if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+	CComPtr<CDiskRepository> rep = new CDiskRepository(label);
+	if ( bClearCache )
+		DiskRepositoryCache.Clear(rep);
+	CDiskRepository * retVal = DiskRepositoryCache.Exists(rep->GetCacheID());
+	if (!retVal)
 	{
-		std::_tstring url;
-		for (int i = 0; i < eclcc->GetEclFolderCount(); ++i)
-		{
-			url += eclcc->GetEclFolder(i);
-		}
-		CComPtr<CDiskRepository> rep = new CDiskRepository(url.c_str(), label);
-		if ( bClearCache )
-			DiskRepositoryCache.Clear(rep);
-		return DiskRepositoryCache.Get(rep);
+		retVal = DiskRepositoryCache.Get(rep);
+		retVal->Update(CreateIEclCC());
 	}
-	return NULL;
+	return retVal;
 }
 
-
+COMMS_API IRepository * AttachDiskRepository(const TCHAR* url, const TCHAR * label, bool bClearCache)
+{
+	CDiskRepository *rep = new CDiskRepository(label);
+	if ( bClearCache )
+		DiskRepositoryCache.Clear(rep);
+	CDiskRepository * retVal = DiskRepositoryCache.Exists(rep->GetCacheID());
+	if (!retVal)
+	{
+		retVal = DiskRepositoryCache.Get(rep);
+		retVal->Update(url);
+	}
+	return retVal;
+}
