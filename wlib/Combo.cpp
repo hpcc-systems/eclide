@@ -1,6 +1,6 @@
 #include "StdAfx.h"
-#include "combo.h"
 
+#include "combo.h"
 #include <topology.h>
 
 //=================================================================

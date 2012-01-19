@@ -62,7 +62,6 @@ public:
 	{
 		ATLASSERT(!boost::algorithm::contains(module, _T("\\")));
 		ATLASSERT(!boost::algorithm::contains(module, _T("/")));
-		ATLASSERT(boost::algorithm::contains(module, _T(".")));	
 		m_repository = const_cast<IRepository *>(rep);
 		m_path = path;
 		m_pathStr = path.native_file_string().c_str();
@@ -371,7 +370,7 @@ public:
 		return false;
 	}
 
-	void Update(const std::_tstring & moduleName, const std::_tstring & label, const std::_tstring & ecl)
+	void Update(const std::_tstring & moduleName, const std::_tstring & label, const std::_tstring & ecl, bool noBroadcast)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_moduleQualifiedLabel = moduleName.c_str();
@@ -384,14 +383,8 @@ public:
 		m_sandboxed = false;
 		m_locked = false;
 
-		{
-			HANDLE hFile = CreateFile(m_pathStr.c_str(),
-				GENERIC_READ | GENERIC_WRITE, 
-				0,
-				NULL,
-				OPEN_EXISTING,
-				FILE_ATTRIBUTE_NORMAL, NULL); 
-
+		{	//  Test for readonly - is there a betterway?
+			HANDLE hFile = CreateFile(m_pathStr.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); 
 			if (hFile == INVALID_HANDLE_VALUE) 
 				m_locked = true;
 			else
@@ -413,8 +406,11 @@ public:
 		m_modifiedDate = _T("");
 		m_modifiedBy = _T("");
 		UpdateID();
-		proc.unlock();
-		Refresh(eclChanged, NULL, false);
+		if (!noBroadcast)
+		{
+			proc.unlock();
+			Refresh(eclChanged, NULL, false);
+		}
 	}
 
 	int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
@@ -494,13 +490,13 @@ IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR*
 	return CreateDiskAttributeRaw(rep, module, label, type, path, 0, false);
 }
 
-IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl)
+IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl, bool noBroadcast)
 {
 	if (moduleLabel.empty() || label.empty())
 		return 0;
 
 	CDiskAttribute * attr = CreateDiskAttributeRaw(rep, moduleLabel.c_str(), label.c_str(), type.c_str(), path, 0, false);
 	ATLASSERT(attr);
-	attr->Update(moduleLabel, label, ecl);
+	attr->Update(moduleLabel, label, ecl, noBroadcast);
 	return attr;
 }

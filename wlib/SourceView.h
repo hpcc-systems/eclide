@@ -182,6 +182,7 @@ public:
 	void SetStyle(signed style, unsigned fore, unsigned back=0xffffff, const std::_tstring & font = _T(""), signed size=10, bool bold=false);
 	static bool IsWordCharForSelWithPreiod(char ch);
 	static bool IsWordCharForSelNoPeriod(char ch);
+	static bool IsWordCharForSelNoPeriodPlusHash(char ch);
 
 	void UpdateStatusBar(bool closing = false);
 
@@ -303,6 +304,14 @@ public:
 		int endPos = m_view.GetCurrentPos();
 		int lengthDoc = m_view.GetLength();
 		m_view.RangeExtendAndGrab(result, startPos, endPos, lengthDoc, m_view.IsWordCharForSelWithPreiod);
+	}
+
+	void GetWordAtCurPosNoPeriodPlusHash(CString & result)
+	{
+		int startPos = m_view.GetCurrentPos();
+		int endPos = m_view.GetCurrentPos();
+		int lengthDoc = m_view.GetLength();
+		m_view.RangeExtendAndGrab(result, startPos, endPos, lengthDoc, m_view.IsWordCharForSelNoPeriodPlusHash);
 	}
 
 	BEGIN_MSG_MAP(thisClass)

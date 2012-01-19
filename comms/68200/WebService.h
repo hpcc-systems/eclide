@@ -10,7 +10,6 @@
 //#include "WsAnalysis.h"
 
 #include "soapH.h"
-#include "WsAttributesServiceSoap.nsmap"
 #include "soapws_USCOREaccountServiceSoapProxy.h"
 #include "soapWsAttributesServiceSoapProxy.h"
 #include "soapWsDfuServiceSoapProxy.h"
