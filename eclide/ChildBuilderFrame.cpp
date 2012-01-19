@@ -383,6 +383,16 @@ public:
 		return m_dlgview.GetPath();
 	}
 
+	const TCHAR * GetTabTip(std::_tstring & tabTip)
+	{
+		if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
+		{
+			tabTip = std::_tstring(_T("[")) + attr->GetQualifiedLabel() + _T("] ");
+		}
+		tabTip += GetPath();
+		return tabTip.c_str();
+	}
+
 	//  IResultSlot override  ---
 	bool WorkunitUpdated(Dali::IWorkunit * workunit, bool bFirst)
 	{
@@ -754,6 +764,7 @@ void CBuilderFrame::UIUpdateTitle()
 
 bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 {
+	GetIMainFrame()->DisableAllMenuItems();
 	IResultViewer *pResult = ActiveResultsWindow();
 	if (pResult)
 	{
@@ -789,6 +800,8 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 			if (m_dlgview.m_archiveButton.IsWindowEnabled())
 				m_dlgview.m_archiveButton.EnableWindow(false);
 		}
+
+		UPDATEUI(cui, ID_ECL_SYNCTOC, m_dlgview.GetAttribute() != NULL);
 	}
 	return false;
 }
