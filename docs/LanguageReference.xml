@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
 <s class_id="0" tracking_level="0" version="0">
-	<count>302</count>
+	<count>303</count>
 	<item_version>0</item_version>
 	<item class_id="1" tracking_level="0" version="0">
 		<categoryid>1</categoryid>
@@ -1212,7 +1212,15 @@
 		<insertaftercursor></insertaftercursor>
 		<canbefollowedby></canbefollowedby>
 	</item>
-	<item>
+  <item>
+    <categoryid>3</categoryid>
+    <name>FROM</name>
+    <tooltip></tooltip>
+    <insertbeforecursor>FROM</insertbeforecursor>
+    <insertaftercursor></insertaftercursor>
+    <canbefollowedby></canbefollowedby>
+  </item>
+  <item>
 		<categoryid>3</categoryid>
 		<name>ATMOST</name>
 		<tooltip>ATMOST( n )</tooltip>
