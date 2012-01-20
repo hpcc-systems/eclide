@@ -90,6 +90,9 @@ set ( SRCS
 		../wtlex/file_ver.h
 		../wtlex/ColorButton.cpp
 		../wtlex/ColorButton.h
+
+		../docs/LanguageColor.xml
+		../docs/LanguageReference.xml
 	)
 
 include_directories (
