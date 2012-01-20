@@ -71,11 +71,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-#ifdef _TARGET_EE
 IDR_MAINFRAME_AMT       ICON                    "res\\AMTEE.ico"
-#else
-IDR_MAINFRAME_AMT       ICON                    "res\\AMT.ico"
-#endif
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
