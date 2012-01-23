@@ -333,7 +333,7 @@ public:
 
 	bool Drilldown(const CString &ecl)
 	{
-		ExecEcl(Dali::WUActionRun, ecl, false);
+		ExecEcl(Dali::WUActionRun, ecl, false, false, false, true);
 		return true;
 	}
 
@@ -351,7 +351,7 @@ public:
 		ExecEcl(Dali::WUActionRun, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled(), true);
 	}
 
-	void ExecEcl(Dali::WUAction action, const CString &ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false)
+	void ExecEcl(Dali::WUAction action, const CString &ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool isDrilldown=false)
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{
@@ -374,7 +374,7 @@ public:
 		m_results.insert(m_results.begin(), result);
 		result->Create(m_tabbedChildWindow);
 		m_tabbedChildWindow.AddTab(result->GetHwnd(), _T("Submitted"), 0, 1);
-		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, ecl, m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), m_dlgview.GetDebug(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), m_dlgview.GetDebug(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
 		PostStatus(_T(""));
 	}
 

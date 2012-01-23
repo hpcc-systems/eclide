@@ -29,8 +29,8 @@
 
 const TCHAR * COPY = _T("copy");
 const TCHAR * DRILLDOWN = _T("drilldown");
-const TCHAR * DRILLDOWN_ECL = _T("%s.%s(%s);");
-const TCHAR * DRILLDOWN_ECL2 = _T("%1%.%2%();");
+const TCHAR * DRILLDOWN_ECL = _T("import %1%;\n%2%.%3%(%4%);");
+const TCHAR * DRILLDOWN_ECL2 = _T("import %1%;\n%2%.%3%();");
 
 enum UM
 {
@@ -1169,21 +1169,21 @@ public:
 	LRESULT OnDrilldownSingle(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		ATLASSERT(IsDrilldownColumn(wParam));
-		DoDrilldownSingle(DRILLDOWN, m_data->GetColumn(wParam));
+		DoDrilldownSingle(DRILLDOWN, m_data->GetColumn(wParam), m_data->GetColumn(wParam));
 		return 0;
 	}
 
 	LRESULT OnDrilldown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		ATLASSERT(IsDrilldownColumn(wParam));
-		DoDrilldown(DRILLDOWN, m_data->GetColumn(wParam));
+		DoDrilldown(DRILLDOWN, m_data->GetColumn(wParam), m_data->GetColumn(wParam));
 		return 0;
 	}
 
 	LRESULT OnDrilldown2(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		ATLASSERT(IsDrilldownColumn(wParam));
-		DoDrilldown2(DRILLDOWN, m_data->GetColumn(wParam));
+		DoDrilldown2(DRILLDOWN, m_data->GetColumn(wParam), m_data->GetColumn(wParam));
 		return 0;
 	}
 
@@ -1193,7 +1193,7 @@ public:
 		CComPtr<IAttribute> attr;
 		if (IDOK == ::DoGetAttr(rep, attr, _T("Select File")))
 		{
-			DoDrilldownSingle(attr->GetModuleQualifiedLabel(), attr->GetLabel());
+			DoDrilldownSingle(attr->GetModuleQualifiedLabel(true), attr->GetModule()->GetLabel(), attr->GetLabel());
 		}
 	}
 
@@ -1203,7 +1203,7 @@ public:
 		CComPtr<IAttribute> attr;
 		if (IDOK == ::DoGetAttr(rep, attr, _T("Select File")))
 		{
-			DoDrilldown(attr->GetModuleQualifiedLabel(), attr->GetLabel());
+			DoDrilldown(attr->GetModuleQualifiedLabel(true), attr->GetModule()->GetLabel(), attr->GetLabel());
 		}
 	}
 
@@ -1213,7 +1213,7 @@ public:
 		CComPtr<IAttribute> attr;
 		if (IDOK == ::DoGetAttr(rep, attr, _T("Select File")))
 		{
-			DoDrilldown2(attr->GetModuleQualifiedLabel(), attr->GetLabel());
+			DoDrilldown2(attr->GetModuleQualifiedLabel(true), attr->GetModule()->GetLabel(), attr->GetLabel());
 		}
 	}
 
@@ -1945,7 +1945,7 @@ public:
 		return false;
 	}
 
-	bool DoDrilldownSingle(const CString & module, CString header)
+	bool DoDrilldownSingle(const CString & qualifiedModule, const CString & module, CString header)
 	{
 		CGridSelectionCollection::SelectionRows rows;
 		if (GetRowsWithSelection(rows))
@@ -1963,36 +1963,38 @@ public:
 			xml = _T("<root>") + xml + _T("</root>");
 			std::_tstring ecl_xml;
 			CString ecl;
-			ecl.Format(DRILLDOWN_ECL, module, header, ::EncodeForEcl(xml.c_str(), ecl_xml));
+			ecl = (boost::_tformat(DRILLDOWN_ECL) % static_cast<const TCHAR *>(qualifiedModule) % static_cast<const TCHAR *>(module) % static_cast<const TCHAR *>(header) % ::EncodeForEcl(xml.c_str(), ecl_xml)).str().c_str();
 			m_resultSlot->Drilldown(ecl);
 			return true;
 		}
 		return false;
 	}
 
-	void DoDrilldown(__int64 row, const CString & module, const CString & header, CString & ecl_result)
+	void DoDrilldown(__int64 row, const CString & qualifiedModule, const CString & module, const CString & header, CString & ecl_result)
 	{
 		std::_tstring xml;
 		m_data->GetXML(row, _T("root"), _T(""), xml, true);
 
 		std::_tstring ecl_xml;
 		CString ecl;
-		ecl.Format(DRILLDOWN_ECL, module, header, ::EncodeForEcl(xml.c_str(), ecl_xml));
+		ecl = (boost::_tformat(DRILLDOWN_ECL) % static_cast<const TCHAR *>(qualifiedModule) % static_cast<const TCHAR *>(module) % static_cast<const TCHAR *>(header) % ::EncodeForEcl(xml.c_str(), ecl_xml)).str().c_str();
+
 		ecl_result += ecl + _T("\r\n");
 	}
 
-	bool DoDrilldown(CString module, CString header)
+	bool DoDrilldown(const CString & qualifiedModule, const CString & module, const CString & _header)
 	{
 		CGridSelectionCollection::SelectionRows rows;
 		if (GetRowsWithSelection(rows))
 		{
+			CString header = _header;
 			if (header.Find(_T("__")) == 0)
 				header = header.Mid(2, header.GetLength() - 2);
 
 			CString ecl;
 			for(unsigned r = 0; r < rows.size(); r++)
 			{
-				DoDrilldown(rows[r], module, header, ecl);
+				DoDrilldown(rows[r], qualifiedModule, module, header, ecl);
 			}
 			m_resultSlot->Drilldown(ecl);
 			return true;
@@ -2000,11 +2002,11 @@ public:
 		return false;
 	}
 
-	bool DoDrilldown2(CString module, CString header)
+	bool DoDrilldown2(const CString & qualifiedModule, const CString & module, const CString & header)
 	{
 		std::_tstring ecl;
 		GetCopyAsEcl(true, ecl);
-		ecl += (boost::_tformat(DRILLDOWN_ECL2) % static_cast<const TCHAR *>(module) % static_cast<const TCHAR *>(header)).str();
+		ecl += (boost::_tformat(DRILLDOWN_ECL2) % static_cast<const TCHAR *>(qualifiedModule) % static_cast<const TCHAR *>(module) % static_cast<const TCHAR *>(header)).str();
 		m_resultSlot->Drilldown(ecl.c_str());
 		return true;
 	}
