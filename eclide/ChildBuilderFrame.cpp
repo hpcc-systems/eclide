@@ -375,6 +375,8 @@ public:
 		result->Create(m_tabbedChildWindow);
 		m_tabbedChildWindow.AddTab(result->GetHwnd(), _T("Submitted"), 0, 1);
 		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), m_dlgview.GetDebug(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
+		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
 		PostStatus(_T(""));
 	}
 
