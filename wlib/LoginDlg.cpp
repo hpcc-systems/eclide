@@ -182,7 +182,7 @@ public:
 
 		m_autoUpdateLink.ShowWindow(SW_HIDE);
 		CString accountServer = m_config->Get(GLOBAL_SERVER_ACCOUNT);
-		if (!m_verifyUser || accountServer.IsEmpty() || VerifyUser(m_config->Get(GLOBAL_SERVER_ACCOUNT), m_User, m_Password, retCode, retMsg))
+		if (!m_verifyUser || accountServer.IsEmpty() || VerifyUser(m_config, m_User, m_Password, retCode, retMsg))
 		{
 			UINT state = ::GetKeyState(VK_SHIFT);
 			bool shiftKeyDown = ((state & 0x8000) != 0);
@@ -444,9 +444,9 @@ public:
 	{
 		SetMsgHandled(false);
 	}
-	static void thread_VerifyUser(CString serverIP, CString user, CString password, int *pRetCode, CString *pRetMsg, bool *result)
+	static void thread_VerifyUser(IConfig * config, CString user, CString password, int *pRetCode, CString *pRetMsg, bool *result)
 	{
-		*result = VerifyUser(serverIP, user, password, *pRetCode, *pRetMsg);
+		*result = VerifyUser(config, user, password, *pRetCode, *pRetMsg);
 	}
 	void OnOk(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 	{
@@ -513,18 +513,18 @@ public:
 		bool RHSVerify = false;
 		if (m_modeLHS == MODE_REPOSITORY && m_modeRHS == MODE_REPOSITORY)
 		{
-			clib::thread lhs_run(__FUNCTION__, boost::bind(&thread_VerifyUser, m_configLHS->Get(GLOBAL_SERVER_ACCOUNT), m_UserLHS, m_PasswordLHS, &LHSRetCode, &LHSRetMsg, &LHSVerify));
-			clib::thread rhs_run(__FUNCTION__, boost::bind(&thread_VerifyUser, m_configRHS->Get(GLOBAL_SERVER_ACCOUNT), m_UserRHS, m_PasswordRHS, &RHSRetCode, &RHSRetMsg, &RHSVerify));
+			clib::thread lhs_run(__FUNCTION__, boost::bind(&thread_VerifyUser, m_configLHS, m_UserLHS, m_PasswordLHS, &LHSRetCode, &LHSRetMsg, &LHSVerify));
+			clib::thread rhs_run(__FUNCTION__, boost::bind(&thread_VerifyUser, m_configRHS, m_UserRHS, m_PasswordRHS, &RHSRetCode, &RHSRetMsg, &RHSVerify));
 			lhs_run.join();
 			rhs_run.join();
 		}
 		else if (m_modeLHS == MODE_REPOSITORY)
 		{
-			LHSVerify = VerifyUser(m_configLHS->Get(GLOBAL_SERVER_ACCOUNT), m_UserLHS, m_PasswordLHS, LHSRetCode, LHSRetMsg);
+			LHSVerify = VerifyUser(m_configLHS, m_UserLHS, m_PasswordLHS, LHSRetCode, LHSRetMsg);
 		}
 		else if (m_modeRHS == MODE_REPOSITORY)
 		{
-			RHSVerify = VerifyUser(m_configRHS->Get(GLOBAL_SERVER_ACCOUNT), m_UserRHS, m_PasswordRHS, RHSRetCode, RHSRetMsg);
+			RHSVerify = VerifyUser(m_configRHS, m_UserRHS, m_PasswordRHS, RHSRetCode, RHSRetMsg);
 		}
 
 		switch(m_modeLHS)
