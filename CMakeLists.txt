@@ -10,16 +10,7 @@ set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH
 set ( HPCC_MAJOR 6 )
 set ( HPCC_MINOR 0 )
 set ( HPCC_POINT 4 )
-
-if (EXISTS "${PROJECT_SOURCE_DIR}/BuildNumber.txt")
-	file (READ "${PROJECT_SOURCE_DIR}/BuildNumber.txt" HPCC_BUILD)
-endif()
-if ("${HPCC_BUILD}" STREQUAL "")
-	set ( HPCC_BUILD 1000 )
-endif()
-MATH(EXPR HPCC_BUILD "${HPCC_BUILD}+1")
-file (WRITE "${PROJECT_SOURCE_DIR}/BuildNumber.txt" ${HPCC_BUILD})
-
+set ( HPCC_BUILD 5 )
 set ( HPCC_VERSION ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}.${HPCC_SEQUENCE} )
 
 configure_file (
