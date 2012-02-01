@@ -1,14 +1,16 @@
 #include "StdAfx.h"
 
+#include "comms.h"
 #include "gSoapUtil.h"
 #include "thread.h"
 
 //  ===========================================================================
 typedef std::vector<SOAP_NMAC struct Namespace * > NamespaceVector;
+typedef std::map<std::_tstring, SOAP_NMAC struct Namespace * > URLNamespaceMap;
 
 clib::recursive_mutex g_namespaceMutex;
 NamespaceVector g_namespaces;
-SOAP_NMAC struct Namespace * g_workingNamespace = NULL;
+ URLNamespaceMap g_workingNamespace;
 //  ===========================================================================
 SOAP_NMAC struct Namespace namespacesOSS[] =
 {
@@ -40,10 +42,23 @@ SOAP_NMAC struct Namespace namespaces[] =
 	{NULL, NULL, NULL, NULL}
 };
 //  ===========================================================================
-void ResetNamespace()
+void SetNamespace(IConfig * config, SOAP_NMAC struct Namespace * ns)
 {
 	clib::recursive_mutex::scoped_lock proc(g_namespaceMutex);
-	g_workingNamespace = NULL;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_ATTRIBUTE))] = ns;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_TOPOLOGY))] = ns;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_WORKUNIT))] = ns;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_ACCOUNT))] = ns;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_SMC))] = ns;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_FILESPRAY))] = ns;	//  Not used?
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_DFU))] = ns;
+	g_workingNamespace[(const TCHAR *)CString(config->Get(GLOBAL_SERVER_ANALYSIS))] = ns;	//  Not used?
+}
+
+void ResetNamespace(IConfig * config)
+{
+	clib::recursive_mutex::scoped_lock proc(g_namespaceMutex);
+	SetNamespace(config, NULL);
 }
 
 bool testCall(const std::string & url, const std::string & user, const std::string & password, SOAP_NMAC struct Namespace * _namespace)
@@ -68,21 +83,16 @@ bool testCall(const std::string & url, const std::string & user, const std::stri
 	{
 	case 29:
 		return false;
-
 	case 0:
-	case 401:	//  401 Is invallid crentials and is returned before the namespace is tested...
-		g_workingNamespace = _namespace;
-		break;
+	case 401:
+		return true;
 	}
-	return true;
+	return false;
 }
 
-SOAP_NMAC struct Namespace * GetNamespace(const std::string & url, const std::string & user, const std::string & pw)
+void CalcNamespace(IConfig * config, const CString & _user, const CString & _pw)
 {
 	clib::recursive_mutex::scoped_lock proc(g_namespaceMutex);
-	if (g_workingNamespace)
-		return g_workingNamespace;
-
 	if (g_namespaces.empty())
 	{
 		g_namespaces.push_back(namespacesOSS);
@@ -91,14 +101,25 @@ SOAP_NMAC struct Namespace * GetNamespace(const std::string & url, const std::st
 
 	for(NamespaceVector::const_iterator itr = g_namespaces.begin(); itr != g_namespaces.end(); ++itr)
 	{
-		if (!testCall(url, user, pw, *itr))
-			break;
-
-		if (g_workingNamespace)
-			break;
+		CString cs_url = config->Get(GLOBAL_SERVER_ACCOUNT);
+		std::string url = CT2A(cs_url);
+		std::string user = CT2A(_user);
+		std::string pw = CT2A(_pw);
+		if (testCall(url, user, pw, *itr))
+		{
+			SetNamespace(config, *itr);
+			return;
+		}
 	}
+}
 
-	return g_workingNamespace;
+SOAP_NMAC struct Namespace * GetNamespace(const std::_tstring & url)
+{
+	clib::recursive_mutex::scoped_lock proc(g_namespaceMutex);
+	if (g_workingNamespace.find(url) != g_workingNamespace.end())
+		return g_workingNamespace.find(url)->second;
+
+	return NULL;
 }
 //  ===========================================================================
 #if _COMMS_VER == 68200

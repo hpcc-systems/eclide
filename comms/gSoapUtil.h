@@ -4,8 +4,9 @@
 #include "Global.h"
 
 //  ===========================================================================
-void ResetNamespace();
-SOAP_NMAC struct Namespace * GetNamespace(const std::string & url, const std::string & user, const std::string & pw);
+void ResetNamespace(IConfig * config);
+void CalcNamespace(IConfig * config, const CString & user, const CString & pw);
+SOAP_NMAC struct Namespace * GetNamespace(const std::_tstring & url);
 //  ===========================================================================
 #define RECV_TIMEOUT 3 * 60 
 template<typename T>
@@ -95,7 +96,7 @@ private:
 		userid = m_user.c_str();
 		passwd = m_password.c_str();
 
-		namespaces = GetNamespace(m_url, m_user, m_password);
+		namespaces = GetNamespace(url);
 	}
 
 	void Init(const CString & url, const CString & user, const CString & password, int _connect_timeout = 0, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT)
