@@ -13,7 +13,7 @@
 #include "LocalWorkunit.h"
 
 const SectionLabelDefault GLOBAL_SERVER_WORKUNIT(SectionLabel(_T("Server"), _T("Workunit")), _T(""));
-const SectionLabelDefault GLOBAL_CLUSTER(SectionLabel(_T("Server"), _T("Cluster")), _T("hthor"));
+const SectionLabelDefault GLOBAL_CLUSTER(SectionLabel(_T("Server"), _T("Cluster")), _T("thor"));
 const SectionLabelDefault GLOBAL_GROUP(SectionLabel(_T("Server"), _T("Group")), _T(""));
 const SectionLabelDefault GLOBAL_QUEUE(SectionLabel(_T("Server"), _T("Queue")), _T(""));
 const SectionLabelDefault GLOBAL_WORKUNIT_RESULTLIMIT(SectionLabel(_T("Workunit"), _T("ResultLimit")), 100);
