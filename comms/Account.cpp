@@ -36,7 +36,7 @@ COMMS_API bool ChangePassword(const CString &serverIP, const CString &user, cons
 	return false;
 }
 
-COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CString &password, int &retCode, CString &retMsg)
+COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &password, int &retCode, CString &retMsg)
 {
 	//if (user.GetLength() == 0)
 	//{
@@ -57,8 +57,9 @@ COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CS
 	//	}
 	//}
 
-	ResetNamespace();
-	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(serverIP, user, password);
+	ResetNamespace(config);
+	CalcNamespace(config, user, password);
+	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(config->Get(GLOBAL_SERVER_ACCOUNT), user, password);
 	if (server.namespaces == NULL)	//  No Server  ---
 	{
 		retCode = 1003;
@@ -82,14 +83,14 @@ COMMS_API bool VerifyUser(const CString &serverIP, const CString &user, const CS
 	}
 	else
 	{
-		_DBGLOG(serverIP, LEVEL_WARNING, server.GetClientErrorMsg());
+		_DBGLOG(config->Get(GLOBAL_SERVER_ACCOUNT), LEVEL_WARNING, server.GetClientErrorMsg());
 		retCode = server.GetClientErrorCode();
 		if (retCode == 401)
 			retMsg = _T("Invalid User ID/Password");	//Parse error _could_ mean bad password for Verify User
 		else
 			retMsg = server.GetClientErrorMsg();
 	}
-	ResetNamespace();
+	ResetNamespace(config);
 	return false;
 }
 #else
