@@ -72,7 +72,7 @@ public:
 	bool DoFileOpen(const CString & sPathName);
 	bool DoFileSave(const CString & sPathName);
 	bool DoFileSaveAs();
-	void SetNamePath(const CString & sPathName);
+	bool SetNamePath(const CString & sPathName);
 	const TCHAR * GetPath() const;
 
 	void SetQueueCluster(const CString & queue, const CString & cluster);

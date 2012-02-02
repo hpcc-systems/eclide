@@ -120,26 +120,30 @@ bool CBuilderDlg::DoFileSave(const CString & sPathName)
 	}
 
 	// Save file name for later
-	m_attribute = NULL;				//Attribute detaches on SaveAs (as user could be saving anywhere)
-	SetNamePath(newPath);	
+	if (SetNamePath(newPath))
+		m_attribute = NULL;				//Attribute detaches on SaveAs (as user could be saving anywhere).
+
 	m_view.SetSavePoint();
 
 	return TRUE;
 }
 
-void CBuilderDlg::SetNamePath(const CString & sPathName)
+bool CBuilderDlg::SetNamePath(const CString & sPathName)
 {	
-	CString pathName = sPathName;
-	TCHAR szTitle [_MAX_FNAME], szExt[_MAX_FNAME];
-	_tsplitpath(pathName.GetBuffer(_MAX_PATH), NULL, NULL, szTitle, szExt);
-	pathName.ReleaseBuffer();
-	lstrcat(szTitle, szExt);			
+	if (!boost::filesystem::equivalent(static_cast<const TCHAR *>(m_path), static_cast<const TCHAR *>(sPathName)))
+	{
+		CString pathName = sPathName;
+		TCHAR szTitle [_MAX_FNAME], szExt[_MAX_FNAME];
+		_tsplitpath(pathName.GetBuffer(_MAX_PATH), NULL, NULL, szTitle, szExt);
+		pathName.ReleaseBuffer();
+		lstrcat(szTitle, szExt);			
 
-	m_path = sPathName;
-	if (szTitle) 
-		m_name = szTitle;
-	
-	//ATLASSERT(!"TODO:  UIUpdateTitle()");
+		m_path = sPathName;
+		if (szTitle) 
+			m_name = szTitle;
+		return true;
+	}
+	return false;
 }
 
 const TCHAR * CBuilderDlg::GetPath() const
