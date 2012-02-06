@@ -36,6 +36,17 @@ IResult * CreateResult(const CString & url, const CString & wuid, const ns6__ECL
 IGraph * CreateGraph(const CString& url, const CString & wuid, const ns6__ECLGraph * data, int seq);
 #endif
 
+//  ===========================================================================
+const TCHAR * const CEclException::ECL_EXCEPTION_ERROR = _T("Error");
+const TCHAR * const CEclException::ECL_EXCEPTION_WARNING = _T("Warning");
+
+CEclException::CEclException()
+{
+	m_code = 0;
+	m_lineNo = -1;
+	m_column = -1;
+}
+//  ===========================================================================
 class CWorkunit : public IWorkunit, public clib::CLockableUnknown
 {
 protected:
