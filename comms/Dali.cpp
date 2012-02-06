@@ -811,10 +811,27 @@ public:
 		{
 			if (response.Errors)
 				processExceptions(*response.Errors, results);
+
+			if (response.Exceptions)
+			{
+				StlLinked<CEclException> e = new CEclException();
+				e->m_severity = CEclException::ECL_EXCEPTION_ERROR;
+				e->m_message = _T("ESP Exception(s).  See Warning window for more information...");
+				e->m_fileName = path;
+				results.push_back(e);
+			}
+
 			return true;
 		}
 		else
+		{
 			_DBGLOG(m_config.GetUrl(url), LEVEL_WARNING, server.GetClientErrorMsg());
+			StlLinked<CEclException> e = new CEclException();
+			e->m_severity = CEclException::ECL_EXCEPTION_ERROR;
+			e->m_message = CString(_T("Network Exception(s).  See Warning window for more information...")) + server.GetClientErrorMsg();
+			e->m_fileName = path;
+			results.push_back(e);
+		}
 		return false;
 	}
 

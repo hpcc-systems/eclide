@@ -236,10 +236,11 @@ public:
 	{
 		Dali::CEclExceptionVector errors;
 		StlLinked<Dali::IDali> dali = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
-		if (dali->CheckSyntax(cluster, GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), module, attr, path, ecl, -1, debugString, archive, noCommonPrivateAttributes, errors) && self->IsWindow())
-		{
+
+		//  Always send submit done (even on failure)  ---
+		dali->CheckSyntax(cluster, GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), module, attr, path, ecl, -1, debugString, archive, noCommonPrivateAttributes, errors);
+		if (self->IsWindow())
 			self->SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
-		}
 	}
 
 	void AnnotationClearAll()
@@ -570,7 +571,7 @@ public:
 		for (Dali::CEclExceptionVector::iterator itr = errors->begin(); itr != errors->end(); ++itr)
 		{
 			StlLinked<Dali::CEclException> e = itr->get();
-			if (e->m_severity == _T("Error"))
+			if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_ERROR)
 			{
 				m_ecl->SyntaxAdd(SYNTAX_ERROR, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 				err++;
@@ -579,7 +580,7 @@ public:
 		for (Dali::CEclExceptionVector::iterator itr = errors->begin(); itr != errors->end(); ++itr)
 		{
 			StlLinked<Dali::CEclException> e = itr->get();
-			if (e->m_severity == _T("Warning") && e->m_code != 1033)	//  Push sandboxed warnings to the end.
+			if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code != 1033)	//  Push sandboxed warnings to the end.
 			{
 				m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 				warn++;
@@ -588,7 +589,16 @@ public:
 		for (Dali::CEclExceptionVector::iterator itr = errors->begin(); itr != errors->end(); ++itr)
 		{
 			StlLinked<Dali::CEclException> e = itr->get();
-			if (e->m_severity == _T("Info"))
+			if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code == 1033)	//  Push sandboxed warnings to the end.
+			{
+				m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
+				warn++;
+			}
+		}
+		for (Dali::CEclExceptionVector::iterator itr = errors->begin(); itr != errors->end(); ++itr)
+		{
+			StlLinked<Dali::CEclException> e = itr->get();
+			if (e->m_severity != Dali::CEclException::ECL_EXCEPTION_ERROR && e->m_severity != Dali::CEclException::ECL_EXCEPTION_WARNING)
 			{
 				m_ecl->SyntaxAdd(SYNTAX_INFO, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 			}

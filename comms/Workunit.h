@@ -83,9 +83,11 @@ public:
 typedef StlLinked<CGraphTiming> CGraphTimingAdapt;
 typedef std::vector<CGraphTimingAdapt>CGraphTimingVector;
 
-struct CEclException : public CUnknown
+class COMMS_API CEclException : public CUnknown
 {
 public:
+	static const TCHAR * const ECL_EXCEPTION_ERROR;
+	static const TCHAR * const ECL_EXCEPTION_WARNING;
     CString m_severity;
     int m_code;
     CString m_message;
@@ -94,6 +96,8 @@ public:
     int m_column;
 
 	IMPLEMENT_CUNKNOWN;
+
+	CEclException();
 };
 
 typedef StlLinked<CEclException> CEclExceptionAdapt;
