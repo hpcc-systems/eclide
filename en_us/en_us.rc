@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+#include "../config.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -28,8 +29,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6,0,4,4
- PRODUCTVERSION 6,0,4,4
+ FILEVERSION HPCC_MAJOR, HPCC_MINOR, HPCC_POINT, HPCC_BUILD
+ PRODUCTVERSION HPCC_MAJOR, HPCC_MINOR, HPCC_POINT, HPCC_BUILD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -44,14 +45,14 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "6, 0, 4, 4"
-            VALUE "InternalName", "en_us.dll"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "CompanyName", "HPCC Systems"
+            VALUE "FileDescription", "en_us Module"
+            VALUE "FileVersion",  HPCC_VERSION
+            VALUE "InternalName", "en_us"
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
             VALUE "OriginalFilename", "en_us.dll"
-            VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "6, 0, 4, 4"
+            VALUE "ProductName", "AMT Module"
+            VALUE "ProductVersion", HPCC_VERSION
         END
     END
     BLOCK "VarFileInfo"
@@ -2680,4 +2681,8 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
+
+
+
 
