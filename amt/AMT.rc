@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+#include "../../config.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -30,8 +31,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 4, 4
- PRODUCTVERSION 6, 0, 4, 4
+ FILEVERSION HPCC_MAJOR, HPCC_MINOR, HPCC_POINT, HPCC_BUILD
+ PRODUCTVERSION HPCC_MAJOR, HPCC_MINOR, HPCC_POINT, HPCC_BUILD
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -49,12 +50,12 @@ BEGIN
             VALUE "Comments", "Attribute Migration Tool"
             VALUE "CompanyName", "HPCC Systems"
             VALUE "FileDescription", "AMT Module"
-            VALUE "FileVersion", "6, 0, 4, 4\0"
+            VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "AMT"
             VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
             VALUE "OriginalFilename", "AMT.exe"
             VALUE "ProductName", "AMT Module"
-            VALUE "ProductVersion", "6, 0, 4, 4\0"
+            VALUE "ProductVersion", HPCC_VERSION
         END
     END
     BLOCK "VarFileInfo"

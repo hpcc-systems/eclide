@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+#include "../config.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 4, 4
- PRODUCTVERSION 6, 0, 4, 4
+ FILEVERSION HPCC_MAJOR, HPCC_MINOR, HPCC_POINT, HPCC_BUILD
+ PRODUCTVERSION HPCC_MAJOR, HPCC_MINOR, HPCC_POINT, HPCC_BUILD
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -69,13 +70,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
+            VALUE "CompanyName", "HPCC Systems"
             VALUE "FileDescription", "clib Dynamic Link Library"
-            VALUE "FileVersion", "6, 0, 4, 4\0"
+            VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "clib"
-            VALUE "LegalCopyright", "Copyright (C) 2004"
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
             VALUE "OriginalFilename", "clib.dll"
             VALUE "ProductName", " clib Dynamic Link Library"
-            VALUE "ProductVersion", "6, 0, 4, 4\0"
+            VALUE "ProductVersion", HPCC_VERSION
         END
     END
     BLOCK "VarFileInfo"

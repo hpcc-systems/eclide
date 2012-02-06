@@ -3,6 +3,23 @@ cmake_minimum_required (VERSION 2.8)
 
 set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
+##################################################################
+
+# Build tag generation
+
+set ( HPCC_MAJOR 6 )
+set ( HPCC_MINOR 0 )
+set ( HPCC_POINT 4 )
+set ( HPCC_BUILD 5 )
+set ( HPCC_VERSION ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}.${HPCC_BUILD} )
+
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${PROJECT_SOURCE_DIR}/config.h"
+  )
+
+##################################################################
+
 IF ( WIN32 )
     SET ( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BIN files" )
     SET ( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB files" )
