@@ -40,7 +40,7 @@ public:
 
 	CSMC(const CString & url, const CString & label) : m_label(label), m_url(url)
 	{
-		m_unknown = CreateVersion(_T("http://www.seisint.com/"), _T("build_0_0"));
+		m_unknown = CreateVersion(_T("http://www.seisint.com/"), DEFAULT_VERSION);
 	}
 
 	~CSMC()
@@ -219,7 +219,7 @@ public:
 
 	CSMC(const CString & url, const CString & label) : m_label(label), m_url(url)
 	{
-		m_unknown = CreateVersion(_T("http://www.seisint.com/"), _T("build_0_0"));
+		m_unknown = CreateVersion(_T("http://www.seisint.com/"), DEFAULT_VERSION);
 	}
 
 	~CSMC()

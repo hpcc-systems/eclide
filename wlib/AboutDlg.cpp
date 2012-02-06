@@ -15,10 +15,13 @@ class CAboutDlg : public CDialogImpl<CAboutDlg>,
 	public CWinDataExchange<CAboutDlg>
 {
 protected:
-	CString m_warning;
 	CBevelLine m_ctlBevel;
 	std::_tstring m_title;
+	std::_tstring m_version;
+	std::_tstring m_server;
+	std::_tstring m_compiler;
 	CString m_product;
+	CString m_warning;
 	CIcon m_icon;
 
 public:
@@ -35,6 +38,7 @@ public:
 
 	BEGIN_MSG_MAP(CAboutDlg)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+		COMMAND_ID_HANDLER(ID_EDIT_COPY, OnCopy)
 		COMMAND_ID_HANDLER(IDOK, OnCloseCmd)
 		COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
 	END_MSG_MAP()
@@ -57,27 +61,34 @@ public:
 
 		CenterWindow(GetParent());
 
-		std::_tstring version = _T("Version:\t\t");
-		GetAboutVersion(version);
-		SetDlgItemText(IDC_STATIC_VERSION, version.c_str());
+		m_version = _T("Version:\t\t");
+		GetAboutVersion(m_version);
+		SetDlgItemText(IDC_STATIC_VERSION, m_version.c_str());
 
 		CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
 
-		std::_tstring server = _T("Server:\t\t");
+		m_server = _T("Server:\t\t");
 		CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
-		server += serverVersion->GetString();
-		SetDlgItemText(IDC_STATIC_SERVER, server.c_str());
+		m_server += serverVersion->GetString();
+		SetDlgItemText(IDC_STATIC_SERVER, m_server.c_str());
 
-		std::_tstring compiler = _T("Compiler:\t");
+		m_compiler = _T("Compiler:\t");
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-			compiler += eclcc->GetVersion();
+			m_compiler += eclcc->GetVersion();
 		else
-			compiler += _T("Unknown");
-		SetDlgItemText(IDC_STATIC_COMPILER, compiler.c_str());
+			m_compiler += _T("Unknown");
+		SetDlgItemText(IDC_STATIC_COMPILER, m_compiler.c_str());
 
 		CenterWindow(GetParent());
 		return TRUE;
 	}
+
+	LRESULT OnCopy(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		SetClipboard((boost::_tformat(_T("%1%\r\n%2%\r\n%3%\r\n")) % m_version % m_server % m_compiler).str());
+		return 0;
+	}
+
 	LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		EndDialog(wID);
