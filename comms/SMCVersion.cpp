@@ -82,7 +82,7 @@ public:
 		else
 			m_CommsVer = parsedVersion.majorVersion * 100 + parsedVersion.minorVersion;
 
-		if (m_strversion.empty())
+		if (m_strversion.empty() && !boost::algorithm::equals(static_cast<const TCHAR *>(version), DEFAULT_VERSION))
 			m_strversion = version;
 	}
 
