@@ -28,8 +28,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6, 0, 4, 4
- PRODUCTVERSION 6, 0, 4, 4
+ FILEVERSION 6,0,4,4
+ PRODUCTVERSION 6,0,4,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "TODO: <Company name>"
             VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "6, 0, 4, 4\0"
+            VALUE "FileVersion", "6, 0, 4, 4"
             VALUE "InternalName", "en_us.dll"
             VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
             VALUE "OriginalFilename", "en_us.dll"
             VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "6, 0, 4, 4\0"
+            VALUE "ProductVersion", "6, 0, 4, 4"
         END
     END
     BLOCK "VarFileInfo"
@@ -495,6 +495,7 @@ BEGIN
     LTEXT           "---------",IDC_STATIC_BEVEL,5,92,285,8
     LTEXT           "Warning: ",IDC_STATIC_WARNING,10,100,220,40
     DEFPUSHBUTTON   "OK",IDOK,235,100,50,14
+    PUSHBUTTON      "&Copy",ID_EDIT_COPY,236,76,50,14
 END
 
 IDD_LOGIN DIALOGEX 0, 0, 210, 97
@@ -2679,8 +2680,4 @@ LANGUAGE 9, 1
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
-
-
-
 
