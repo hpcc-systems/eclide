@@ -8,9 +8,9 @@ set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH
 # Build tag generation
 
 set ( HPCC_MAJOR 6 )
-set ( HPCC_MINOR 0 )
-set ( HPCC_POINT 4 )
-set ( HPCC_BUILD 5 )
+set ( HPCC_MINOR 7 )
+set ( HPCC_POINT 0 )
+set ( HPCC_BUILD 0 )
 set ( HPCC_VERSION ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}.${HPCC_BUILD} )
 
 configure_file (
