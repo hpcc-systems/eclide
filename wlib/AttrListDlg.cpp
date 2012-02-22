@@ -8,6 +8,8 @@
 #include "UnicodeFile.h"
 #include "Migration.h"
 #include "EclCC.h"
+#include "HListBox.h"
+#include <Logger.h>
 
 //  ===========================================================================
 class CAttrDlg : 
@@ -215,7 +217,7 @@ class CAttrImportDlg :
 public:
 	IRepositoryAdapt & m_rep;
 	const AttrMap & m_attrs;
-	CListBox m_listAttrs;
+	CHListBox m_listAttrs;
 	CComPtr<CComboModule> m_comboModuleCtrl;
 	IModuleAdapt m_targetModule;
 	CButton m_checkSandbox; 
@@ -310,7 +312,7 @@ public:
 	{
 		if (m_migrator->GetActiveMigrationCount() == 0)
 		{
-			EndDialog(IDOK);
+			GetDlgItem(IDCANCEL).EnableWindow(TRUE);
 		}
 	}
 
@@ -325,6 +327,8 @@ public:
 	void LogMsg(const std::_tstring & msg) 
 	{
 		m_listAttrs.AddString(msg.c_str());
+		if (boost::algorithm::istarts_with(msg, _T("Failed")))
+			_DBGLOG(LEVEL_WARNING, msg.c_str());
 	}
 	void PostStatus(const TCHAR* pStr) 
 	{
