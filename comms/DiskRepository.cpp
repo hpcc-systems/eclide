@@ -594,6 +594,17 @@ public:
 	virtual IAttribute * GetAttributeFuzzy(const std::_tstring & moduleAttribute, const std::_tstring & module, IAttributeType * type, int version = 0, bool sandbox = true, bool text = true) const
 	{
 		std::_tstring modAttr = moduleAttribute;
+		//  Check moduleAttribute contains full path
+		for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr) 
+		{
+			std::_tstring knownPath = itr->second->m_path.native_directory_string();
+			if (boost::algorithm::istarts_with(modAttr, knownPath))
+			{
+				modAttr = itr->first + modAttr.substr(knownPath.length());
+				break;
+			}
+		}
+		//  Convert moduleAttribute partial path to mod.attr
 		if (algo::iends_with(modAttr, _T(".ecl")))
 			modAttr.resize(modAttr.size() - strlen(".ecl"));
 		else if (algo::iends_with(modAttr, _T(".eclattr")))
