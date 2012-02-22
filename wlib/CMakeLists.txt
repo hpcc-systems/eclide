@@ -37,6 +37,7 @@ set ( SRCS
 		GotoDlg.cpp
 		GotoDlg.h
 		HtmlView.h
+		HListBox.h
 		#ImportRecordAnalyze.cpp
 		#ImportRecordAnalyze.h
 		#ImportRecordInfo.cpp
