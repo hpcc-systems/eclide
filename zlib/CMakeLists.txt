@@ -19,7 +19,7 @@ set ( SRCS
 		${ZLIB_INCLUDE_DIR}/src/zip.c
 		${ZLIB_INCLUDE_DIR}/src/zutil.c
 
-		${ZLIB_INCLUDE_DIR}/zlibvc.def
+		${ZLIB_INCLUDE_DIR}/zlib.def
 	)
 
 include_directories (
