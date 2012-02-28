@@ -312,6 +312,9 @@ public:
 	{
 		if (m_migrator->GetActiveMigrationCount() == 0)
 		{
+			GetDlgItem(IDC_STATIC_CAPTION).SetWindowText(_T("Finished."));	
+			GetDlgItem(IDOK).ShowWindow(SW_HIDE);
+			GetDlgItem(IDCANCEL).SetWindowText(_T("Cl&ose"));
 			GetDlgItem(IDCANCEL).EnableWindow(TRUE);
 		}
 	}
