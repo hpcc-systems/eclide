@@ -18,6 +18,11 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/config.h"
   )
 
+configure_file (
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat.in"
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat"
+  )
+
 ##################################################################
 
 IF ( WIN32 )
