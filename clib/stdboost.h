@@ -28,11 +28,8 @@
 #undef max
 #endif
 #include <boost/progress.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/exception.hpp>
+#define BOOST_FILESYSTEM_VERSION 2
+#include <boost/filesystem.hpp>
 #include <boost/format.hpp> 
 #include <boost/bind.hpp>
 #include <boost/tuple/tuple.hpp>
