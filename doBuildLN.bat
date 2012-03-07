@@ -3,7 +3,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
 set ROOT_DIR=D:\hpccsystems
 set SRC_DIR=%ROOT_DIR%\src
-set BUILD_DIR=%SRC_DIR%\build
+set BUILD_DIR=%ROOT_DIR%\build
 set EXTERNALS_DIR=%ROOT_DIR%\externals
 echo %SRC_DIR%
 echo %BUILD_DIR%
