@@ -1037,7 +1037,9 @@ bool CAggMemoryDC::DrawTransparent(
 	COLORREF color)
 {
 	ATLASSERT(width>0&&height>0);
-	m_mtx.transform(&x,&y);
+	double dx = x;
+	double dy = y;
+	m_mtx.transform(&dx,&dy);
 
 	CDC dcImage;
 	bool bOk=dcImage.CreateCompatibleDC(m_hDC) != NULL;
@@ -1119,7 +1121,9 @@ int CAggMemoryDC::SetDIBitsToDevice(
 	CONST BITMAPINFO* lpbmi, 
 	UINT uColorUse)
 {
-	m_mtx.transform(&x,&y);
+	double dx = x;
+	double dy = y;
+	m_mtx.transform(&dx,&dy);
 	return ::SetDIBitsToDevice(m_hDC, x, y, dwWidth, dwHeight, xSrc, ySrc, uStartScan, cScanLines, lpvBits, lpbmi, uColorUse);
 }
 //-----------------------------------------------------------------------------
