@@ -25,6 +25,8 @@ set ( SRCS
 		${BUGTRAP_INCLUDE_DIR}/CMapi.h
 		${BUGTRAP_INCLUDE_DIR}/ColHelper.cpp
 		${BUGTRAP_INCLUDE_DIR}/ColHelper.h
+		${BUGTRAP_INCLUDE_DIR}/DescribeErrorDlg.cpp
+		${BUGTRAP_INCLUDE_DIR}/DescribeErrorDlg.h
 		${BUGTRAP_INCLUDE_DIR}/Encoding.cpp
 		${BUGTRAP_INCLUDE_DIR}/Encoding.h
 		${BUGTRAP_INCLUDE_DIR}/EnumProcess.cpp
@@ -42,7 +44,6 @@ set ( SRCS
 		${BUGTRAP_INCLUDE_DIR}/ImageView.h
 		${BUGTRAP_INCLUDE_DIR}/InMemLogFile.cpp
 		${BUGTRAP_INCLUDE_DIR}/InMemLogFile.h
-		${BUGTRAP_INCLUDE_DIR}/InPlaceNew.h
 		${BUGTRAP_INCLUDE_DIR}/InputStream.cpp
 		${BUGTRAP_INCLUDE_DIR}/InputStream.h
 		${BUGTRAP_INCLUDE_DIR}/InterfacePtr.h
@@ -111,24 +112,40 @@ set ( SRCS
 		${BUGTRAP_INCLUDE_DIR}/XmlReader.h
 		${BUGTRAP_INCLUDE_DIR}/XmlWriter.cpp
 		${BUGTRAP_INCLUDE_DIR}/XmlWriter.h
+
+		${ZLIB_INCLUDE_DIR}/src/adler32.c
+		${ZLIB_INCLUDE_DIR}/src/compress.c
+		${ZLIB_INCLUDE_DIR}/src/crc32.c
+		${ZLIB_INCLUDE_DIR}/src/deflate.c
+		${ZLIB_INCLUDE_DIR}/src/gzio.c
+		${ZLIB_INCLUDE_DIR}/src/infback.c
+		${ZLIB_INCLUDE_DIR}/src/inffast.c
+		${ZLIB_INCLUDE_DIR}/src/inflate.c
+		${ZLIB_INCLUDE_DIR}/src/inftrees.c
+		${ZLIB_INCLUDE_DIR}/src/ioapi.c
+		${ZLIB_INCLUDE_DIR}/src/iowin32.c
+		${ZLIB_INCLUDE_DIR}/src/mztools.c
+		${ZLIB_INCLUDE_DIR}/src/trees.c
+		${ZLIB_INCLUDE_DIR}/src/uncompr.c
+		${ZLIB_INCLUDE_DIR}/src/unzip.c
+		${ZLIB_INCLUDE_DIR}/src/zip.c
+		${ZLIB_INCLUDE_DIR}/src/zutil.c
 	)
 
 include_directories (
 	${BUGTRAP_INCLUDE_DIR}
 	${ZLIB_INCLUDE_DIR}/Include
 	)
-add_definitions( -DSCI_LEXER )
-#ADD_MSVC_PRECOMPILED_HEADER("${BUGTRAP_INCLUDE_DIR}/StdAfx.h" "${BUGTRAP_INCLUDE_DIR}/stdafx.cpp" SRCS)
+
+set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:zlibSD.lib" )
+set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:zlibS.lib" )
+set( CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} /NODEFAULTLIB:zlibS.lib" )
+
 add_library ( BUGTRAP SHARED
 		${SRCS}
 	)
 
-add_dependencies ( BUGTRAP
-		ZLIB
-	)
-
 target_link_libraries( BUGTRAP
-		ZLIB
 		ws2_32
 		comctl32
 		shlwapi
