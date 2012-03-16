@@ -1,0 +1,33 @@
+set ROOT_DIR=D:\hpccsystems
+set SRC_DIR=%ROOT_DIR%\src
+set BUILD_DIR=%ROOT_DIR%\build
+
+set STAGE_DIR=%ROOT_DIR%\stage
+set PF_DIR=%STAGE_DIR%\PF
+set HPCC_DIR=%PF_DIR%\HPCC
+set PDB_DIR=%STAGE_DIR%\PDB\ver_@HPCC_MAJOR@_@HPCC_MINOR@_@HPCC_POINT@_@HPCC_BUILD@
+set IDE_DIR="%HPCC_DIR%\ECL IDE"
+set GC_DIR="%HPCC_DIR%\Graph Control"
+set GC64_DIR="%HPCC_DIR%\Graph Control x64"
+set IDE_PDB_DIR="%PDB_DIR%\ECL IDE"
+set GC_PDB_DIR="%PDB_DIR%\Graph Control"
+set GC64_PDB_DIR="%PDB_DIR%\Graph Control x64"
+
+mkdir %STAGE_DIR%
+mkdir %PF_DIR%
+mkdir %HPCC_DIR%
+mkdir %IDE_DIR%
+mkdir %GC_DIR%
+mkdir %GC64_DIR%
+mkdir %PDB_DIR%
+xcopy /yic "%SRC_DIR%\eclide\docs\*.chm" %IDE_DIR%
+xcopy /yic "%SRC_DIR%\eclide\docs\*.xml" %IDE_DIR%
+xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.exe" %IDE_DIR%
+xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.dll" %IDE_DIR%
+xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.psdb" %IDE_PDB_DIR%
+xcopy /yic "%BUILD_DIR%\GraphControl\bin\RelWithDebInfo\graphlayout.dll" %IDE_DIR%
+xcopy /yic "%BUILD_DIR%\GraphControl\bin\RelWithDebInfo\*.pdb" %IDE_PDB_DIR%
+xcopy /yic "%BUILD_DIR%\GraphControlStatic\bin\RelWithDebInfo\*.dll" %GC_DIR%
+xcopy /yic "%BUILD_DIR%\GraphControlStatic\bin\RelWithDebInfo\*.pdb" %GC_PDB_DIR%
+xcopy /yic "%BUILD_DIR%\GraphControlStatic64\bin\RelWithDebInfo\*.dll" %GC64_DIR%
+xcopy /yic "%BUILD_DIR%\GraphControlStatic64\bin\RelWithDebInfo\*.pdb" %GC64_PDB_DIR%

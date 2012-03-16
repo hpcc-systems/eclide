@@ -18,6 +18,11 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/config.h"
   )
 
+configure_file (
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat.in"
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat"
+  )
+
 ##################################################################
 
 IF ( WIN32 )
@@ -60,8 +65,6 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ADD_SUBDIRECTORY ( BugTrap )
 set_property(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
-ADD_SUBDIRECTORY ( zlib )
-set_property(TARGET ZLIB PROPERTY FOLDER "3rdParty")
 
 ADD_SUBDIRECTORY ( clib )
 ADD_SUBDIRECTORY ( comms )
