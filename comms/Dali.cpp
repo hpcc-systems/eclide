@@ -1502,7 +1502,7 @@ protected:
 			try {
 				if (boost::filesystem::remove(file))
 					return true;
-			} catch (const std::exception & ex) {
+			} catch (const boost::filesystem::filesystem_error & ex) {
 				_DBGLOG(LEVEL_WARNING, ex.what());
 				_DBGLOG(LEVEL_WARNING, file.native_file_string().c_str());
 			}

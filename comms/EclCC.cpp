@@ -136,7 +136,7 @@ public:
 			{
 				try {
 					boost::filesystem::create_directories(m_workingFolder);
-				} catch (const std::exception & ex) {
+				} catch (const boost::filesystem::filesystem_error &) {
 					warnings += (boost::_tformat(_T("Failed to create folder:  %1%")) % m_workingFolder).str() + _T("\r\n");
 				}
 

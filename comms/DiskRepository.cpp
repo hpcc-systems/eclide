@@ -279,7 +279,7 @@ public:
 					try {
 						if (!boost::filesystem::exists(path))
 							boost::filesystem::create_directories(path);
-					} catch (const std::exception & ex) {
+					} catch (const boost::filesystem::filesystem_error & ex) {
 						_DBGLOG(LEVEL_WARNING, ex.what());
 					}
 
@@ -639,8 +639,12 @@ public:
 				for (unsigned int i = 0; i < tokens.size(); ++i)
 				{
 					path /= tokens[i];
-					if (!boost::filesystem::exists(path))
-						boost::filesystem::create_directories(path);
+					try {
+						if (!boost::filesystem::exists(path))
+							boost::filesystem::create_directories(path);
+					} catch (const boost::filesystem::filesystem_error & ex) {
+						_DBGLOG(LEVEL_WARNING, ex.what());
+					}
 				}
 				std::_tstring filename = attribute;
 				filename += _T(".");
@@ -728,7 +732,7 @@ public:
 				try
 				{
 					boost::filesystem::rename(fromPath, toPath);
-				} catch (const std::exception & ex) {
+				} catch (const boost::filesystem::filesystem_error & ex) {
 					_DBGLOG(LEVEL_WARNING, ex.what());
 				}
 				CComPtr<IAttribute> attribute = CreateDiskAttribute(this, toModule, itr->get()->GetLabel(), itr->get()->GetType()->GetRepositoryCode(), toPath, itr->get()->GetText(), false);
@@ -754,7 +758,13 @@ public:
 			boost::filesystem::path userFolder;
 			path = GetUserFolder(userFolder, GetUserId());/*  GJS / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);*/
 		}
-		boost::filesystem::create_directories(path);
+
+		try {
+			boost::filesystem::create_directories(path);
+		} catch (const boost::filesystem::filesystem_error & ex) {
+			_DBGLOG(LEVEL_WARNING, ex.what());
+		}
+
 		return path;
 	}
 

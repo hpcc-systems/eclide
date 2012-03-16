@@ -321,7 +321,7 @@ public:
 		try
 		{
 			boost::filesystem::rename(m_path, newPath);
-		} catch (const std::exception & ex) {
+		} catch (const boost::filesystem::filesystem_error & ex) {
 			_DBGLOG(LEVEL_WARNING, ex.what());
 			return NULL;
 		}
@@ -343,7 +343,7 @@ public:
 				DiskAttributeCache.Clear(this);
 				return true;
 			}
-		} catch (const std::exception & ex) {
+		} catch (const boost::filesystem::filesystem_error & ex) {
 			_DBGLOG(LEVEL_WARNING, ex.what());
 			return false;
 		}
