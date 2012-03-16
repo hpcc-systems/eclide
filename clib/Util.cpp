@@ -128,7 +128,7 @@ const TCHAR * EncodeForCSV(const TCHAR *csv, std::_tstring &encoded)
 
 	//if the value has a comma, quote, or CR or LF then fix it
 	bool found = false;
-	for (int i = 0; i < encoded.length() && found == false; ++i)
+	for (std::_tstring::size_type i = 0; i < encoded.length() && found == false; ++i)
 	{
 		switch(encoded[i])
 		{

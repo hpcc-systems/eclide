@@ -106,7 +106,7 @@ public:
 			count = m_result->GetRowCount() - start;
 		for(__int64 i = start; i < start + count; ++i)
 		{
-			for (int j = 0; j < m_result->GetColumnCount(); ++j)
+			for (unsigned int j = 0; j < m_result->GetColumnCount(); ++j)
 			{
 				int newCol = result->FindColumn(m_result->GetColumn(j), true, m_result->GetColumnType(j));
 				if (newCol >= 0)

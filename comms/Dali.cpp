@@ -20,8 +20,6 @@ const SectionLabelDefault GLOBAL_WORKUNIT_RESULTLIMIT(SectionLabel(_T("Workunit"
 
 namespace Dali
 {
-namespace fs = boost::filesystem;
-
 void ClearWorkunitCache(const std::_tstring & id);
 void ClearWorkunitCache();
 void ClearLocalWorkunitCache();
@@ -510,7 +508,7 @@ public:
 		CComPtr<IEclCC> eclcc = CreateIEclCC();
 		if (eclcc)
 		{
-			fs::wpath path = eclcc->GetWorkingFolder();
+			boost::filesystem::wpath path = eclcc->GetWorkingFolder();
 		}
 
 		retVal = GetWorkunit(m_config, wuid, noBroadcast);
@@ -946,13 +944,13 @@ protected:
 		CComPtr<IEclCC> eclcc = CreateIEclCC();
 		if (eclcc)
 		{
-			fs::wpath path = eclcc->GetWorkingFolder();
-			if (fs::exists(path))
+			boost::filesystem::wpath path = eclcc->GetWorkingFolder();
+			if (boost::filesystem::exists(path))
 			{
-				fs::wdirectory_iterator attr_itr_end;
-				for (fs::wdirectory_iterator attr_itr(path); attr_itr != attr_itr_end; ++attr_itr)
+				boost::filesystem::wdirectory_iterator attr_itr_end;
+				for (boost::filesystem::wdirectory_iterator attr_itr(path); attr_itr != attr_itr_end; ++attr_itr)
 				{
-					if (!fs::is_directory(*attr_itr))
+					if (!boost::filesystem::is_directory(*attr_itr))
 					{  
 						std::_tstring fromWU = fromUTC;
 						std::_tstring toWU = toUTC;
@@ -964,8 +962,8 @@ protected:
 						boost::algorithm::replace_all(toWU, _T("T"), _T("-"));
 						boost::algorithm::replace_all(toWU, _T("Z"), _T(""));
 						toWU = _T("L") + toWU;
-						std::_tstring basename = fs::basename(*attr_itr).c_str();
-						std::_tstring extension = fs::extension(*attr_itr).c_str();
+						std::_tstring basename = boost::filesystem::basename(*attr_itr).c_str();
+						std::_tstring extension = boost::filesystem::extension(*attr_itr).c_str();
 						if (boost::algorithm::iequals(extension, _T(".exe")))
 						{
 							if (wuid.IsEmpty() || boost::algorithm::iequals(basename, (const TCHAR *)wuid))
@@ -1051,9 +1049,9 @@ protected:
 			CComPtr<IEclCC> eclcc = CreateIEclCC();
 			if (eclcc)
 			{
-				fs::wpath path = eclcc->GetWorkingFolder();
+				boost::filesystem::wpath path = eclcc->GetWorkingFolder();
 				path /= (const TCHAR *)(wuid + _T(".exe"));
-				if (fs::exists(path))
+				if (boost::filesystem::exists(path))
 				{
 					IWorkunitAdapt wu = CreateLocalWorkunit(eclcc->GetWorkingFolder(), wuid);
 					if (wu->GetGraphCount() == 0)
@@ -1505,7 +1503,7 @@ protected:
 			try {
 				if (boost::filesystem::remove(file))
 					return true;
-			} catch (const std::exception & ex) {
+			} catch (const boost::filesystem::filesystem_error & ex) {
 				_DBGLOG(LEVEL_WARNING, ex.what());
 				_DBGLOG(LEVEL_WARNING, file.native_file_string().c_str());
 			}
