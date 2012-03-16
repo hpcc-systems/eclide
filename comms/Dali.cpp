@@ -1239,7 +1239,7 @@ protected:
 			}
 		}
 
-		if (!boost::algorithm::iequals(static_cast<const TCHAR *>(cluster), _T("Local")))
+		if (!isXml && !boost::algorithm::iequals(static_cast<const TCHAR *>(cluster), _T("Local")))
 		{
 			CComPtr<IEclCC> eclcc = CreateIEclCC();
 			if (_action != WUActionExecuteExisting && eclcc)
@@ -1324,8 +1324,9 @@ protected:
 						request.Action = &action;
 						request.Jobname = stringPool.Create(queryName);
 					}
+					else
+						request.QueryText = stringPool.Create(ecl);
 
-					request.QueryText = stringPool.Create(ecl);
 					_ns6__WUUpdateResponse response;
 					ESP_EXCEPTION_LOG3(response.Exceptions);
 					if (server.WUUpdate(&request, &response) == SOAP_OK)
