@@ -335,7 +335,7 @@ unsigned int GetWorkspaces(IRepository * repository, IWorkspaceVector * results,
 			}
 		}
 	}
-	catch (boost::filesystem::filesystem_error  & e)
+	catch (boost::filesystem::filesystem_error &)
 	{
 		ATLASSERT(false);	//  Path doesn't exist!
 	}

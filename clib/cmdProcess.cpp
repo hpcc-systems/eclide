@@ -212,7 +212,6 @@ public:
 	{
 		LPVOID lpvMessageBuffer;
 		TCHAR szPrintBuffer[512];
-		DWORD nCharsWritten;
 
 		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
@@ -223,10 +222,8 @@ public:
 		wsprintf(szPrintBuffer,_T("ERROR: API    = %s.\n   error code = %d.\n   message    = %s.\n"), pszAPI, GetLastError(), (TCHAR *)lpvMessageBuffer);
 
 		_DBGLOG(LEVEL_WARNING, szPrintBuffer);
-//		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE),szPrintBuffer, lstrlen(szPrintBuffer),&nCharsWritten,NULL);
 
 		LocalFree(lpvMessageBuffer);
-		//ExitProcess(GetLastError());
 	}
 
 	static DWORD WINAPI ReadAndHandleOutput(LPVOID lpvThreadParam)

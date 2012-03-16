@@ -231,11 +231,11 @@ protected:
 			}
 #ifndef _DEBUG
 		}
-		catch(std::exception & e)
+		catch (std::exception & e)
 		{
 			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  %3%.")) % modAttr.first % modAttr.second % e.what()).str());
 		}
-		catch(...)
+		catch (...)
 		{
 			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  Unknown.")) % modAttr.first % modAttr.second).str());
 		}
@@ -278,11 +278,11 @@ protected:
 			}
 #ifndef _DEBUG
 		}
-		catch(std::exception & e)
+		catch (std::exception & e)
 		{
 			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%):  %2%.")) % fromWorkspace->GetLabel() % e.what()).str());
 		}
-		catch(...)
+		catch (...)
 		{
 			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%):  Unknown.")) % fromWorkspace->GetLabel()).str());
 		}
@@ -345,7 +345,7 @@ public:
 		split_vector_type SplitVec; 
 		boost::algorithm::split(SplitVec, modAttrLabel, boost::algorithm::is_any_of("."), boost::algorithm::token_compress_on);
 		std::_tstring modLabel, attrLabel;
-		for (int i = 0; i < SplitVec.size(); ++i)
+		for (split_vector_type::size_type i = 0; i < SplitVec.size(); ++i)
 		{
 			if (i == SplitVec.size() - 1)
 				attrLabel = SplitVec[i];
