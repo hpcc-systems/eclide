@@ -79,11 +79,11 @@ set ( SRCS
 		${SCINTILLA_INCLUDE_DIR}/LexLib/WordList.cxx
 		${SCINTILLA_INCLUDE_DIR}/LexLib/WordList.h
 		
-		${SCINTILLA_INCLUDE_DIR}/Win32/PlatformRes.h
+#		${SCINTILLA_INCLUDE_DIR}/Win32/PlatformRes.h
 		${SCINTILLA_INCLUDE_DIR}/Win32/PlatWin.cxx
 		${SCINTILLA_INCLUDE_DIR}/Win32/ScintillaWin.cxx
 		
-		${SCINTILLA_INCLUDE_DIR}/vcbuild/SciLexer.rc
+		${SCINTILLA_INCLUDE_DIR}/Win32/ScintRes.rc
 	)
 
 include_directories (

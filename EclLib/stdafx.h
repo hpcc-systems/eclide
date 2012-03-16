@@ -76,11 +76,8 @@ namespace std
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/exception.hpp>
+#define BOOST_FILESYSTEM_VERSION 2
+#include <boost/filesystem.hpp>
 namespace boost
 {
 #ifdef _UNICODE
