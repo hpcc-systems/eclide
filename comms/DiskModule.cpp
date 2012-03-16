@@ -8,7 +8,6 @@
 #include <Aclapi.h>
 #include <authz.h>
 
-namespace fs = boost::filesystem;
 //  ===========================================================================
 class CFileAccess
 {
@@ -292,7 +291,7 @@ class CDiskModule : public IModule, public clib::CLockableUnknown
 protected:
 	IRepository * m_repository;
 	CComPtr<IModule> m_parent;
-	fs::wpath m_path;
+	boost::filesystem::wpath m_path;
 	std::_tstring m_pathStr;
 	CString m_url;
 	CString m_qualifiedLabel;
@@ -308,7 +307,7 @@ protected:
 public:
 	IMPLEMENT_CLOCKABLEUNKNOWN;
 
-	CDiskModule(const IRepository *rep, const IModule * parent, const fs::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_qualifiedLabel(label.c_str()), m_labelLeaf(labelLeaf.c_str())
+	CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_qualifiedLabel(label.c_str()), m_labelLeaf(labelLeaf.c_str())
 	{
 		m_repository = const_cast<IRepository *>(rep);
 		m_parent = const_cast<IModule *>(parent);
@@ -441,7 +440,7 @@ public:
 	bool Exists() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		return fs::exists(m_path);
+		return boost::filesystem::exists(m_path);
 	}
 
 	bool Create()
@@ -458,17 +457,17 @@ public:
 
 	bool HasChildren() const
 	{
-		if (!fs::exists(m_path))
+		if (!boost::filesystem::exists(m_path))
 			return false;
 
-		fs::wdirectory_iterator end_itr;
-		for (fs::wdirectory_iterator itr(m_path); itr != end_itr; ++itr)
+		boost::filesystem::wdirectory_iterator end_itr;
+		for (boost::filesystem::wdirectory_iterator itr(m_path); itr != end_itr; ++itr)
 		{
-			if (fs::is_directory(*itr))
+			if (boost::filesystem::is_directory(*itr))
 				return true;
 			else
 			{
-				std::_tstring type = fs::extension(*itr).c_str();
+				std::_tstring type = boost::filesystem::extension(*itr).c_str();
 				if (IsValidExtension(type))
 					return true;
 			}
@@ -523,12 +522,12 @@ void ClearDiskModuleCache()
 	DiskModuleCache.Clear();
 }
 
-CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, fs::wpath path)
+CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, boost::filesystem::wpath path)
 {
 	CModuleHelper modHelper(label);
 	StdStringVector tokens;
 	modHelper.GetQualifiedLabel(tokens);
-	for(int i = 0; i < tokens.size(); ++i)
+	for(StdStringVector::size_type i = 0; i < tokens.size(); ++i)
 		path = path.parent_path();
 
 	CDiskModule * retVal = NULL;
@@ -544,7 +543,7 @@ CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & 
 	return retVal;
 }
 
-IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const fs::wpath & path, bool noBroadcast = false)
+IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false)
 {
 	CDiskModule * mod = CreateDiskModuleRaw(rep, label, path);
 	ATLASSERT(mod);

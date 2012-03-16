@@ -11,7 +11,6 @@
 using namespace WsAttributes;
 #else
 #endif
-namespace fs = boost::filesystem;
 namespace algo = boost::algorithm;
 
 IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false);
@@ -27,7 +26,7 @@ class CDiskRepository;
 class CMonitorFolder : public CUnknown
 {
 public:
-	const fs::wpath m_path;
+	const boost::filesystem::wpath m_path;
 	const std::_tstring m_leaf;
 
 private:
@@ -91,12 +90,12 @@ private:
 				std::_tstring filename(Buffer[i].FileName, Buffer[i].FileNameLength / sizeof(_T(' ')));
 				if (algo::iends_with(filename, _T(".ecl")))
 				{
-					fs::wpath fullPath = self->m_path / filename;
-					fs::wpath relativePath = fs::wpath(self->m_path.filename()) / filename;
+					boost::filesystem::wpath fullPath = self->m_path / filename;
+					boost::filesystem::wpath relativePath = boost::filesystem::wpath(self->m_path.filename()) / filename;
 					std::_tstring type = relativePath.extension();
 					std::_tstring moduleLabel = relativePath.parent_path().native_directory_string();
 					algo::replace_all(moduleLabel, _T("\\"), _T("."));
-					std::_tstring attrLabel = fs::basename(relativePath);
+					std::_tstring attrLabel = boost::filesystem::basename(relativePath);
 					std::_tstring ecl;
 					CComPtr<IAttribute> attr = GetDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), 0, false);
 					if (attr)
@@ -107,9 +106,9 @@ private:
 	}
 
 public:
-	CMonitorFolder(CDiskRepository * repository, const fs::wpath & path) : m_repository(repository), m_path(path), m_leaf(path.filename())
+	CMonitorFolder(CDiskRepository * repository, const boost::filesystem::wpath & path) : m_repository(repository), m_path(path), m_leaf(path.filename())
 	{
-		ATLASSERT(fs::exists(m_path) && fs::is_directory(m_path));
+		ATLASSERT(boost::filesystem::exists(m_path) && boost::filesystem::is_directory(m_path));
 		m_doMonitor = true;
 		clib::thread run(__FUNCTION__, boost::bind(&thread_MonitorFolder2, this));
 	}
@@ -134,11 +133,11 @@ public:
 };
 //  ===========================================================================
 typedef std::map<std::_tstring, StlLinked<CMonitorFolder> > StringCMonitorFolderMap;
-typedef std::vector<fs::wpath> PathVector;
+typedef std::vector<boost::filesystem::wpath> PathVector;
 class CDiskRepository : public CRepositoryBase
 {
 protected:
-	fs::wpath m_amtRoot;
+	boost::filesystem::wpath m_amtRoot;
 	StringCMonitorFolderMap m_paths;
 	PathVector m_pathOrder;
 	mutable clib::recursive_mutex m_mutex;
@@ -174,9 +173,9 @@ public:
 		return 0;
 	}
 
-	int GetAllModules(const fs::wpath & path, const std::_tstring & module, IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool noRefresh = true, bool noBroadcast = false) const
+	int GetAllModules(const boost::filesystem::wpath & path, const std::_tstring & module, IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool noRefresh = true, bool noBroadcast = false) const
 	{
-		if (fs::exists(path) && fs::is_directory(path))
+		if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
 		{
 			std::_tstring leaf = path.leaf();
 			if (!algo::contains(leaf, _T(".")))
@@ -189,8 +188,8 @@ public:
 				modules.push_back(mod);
 				moduleHierarchy[module].push_back(mod);
 
-				fs::wdirectory_iterator end_itr; // default construction yields past-the-end
-				for (fs::wdirectory_iterator itr(path); itr != end_itr; ++itr)
+				boost::filesystem::wdirectory_iterator end_itr; // default construction yields past-the-end
+				for (boost::filesystem::wdirectory_iterator itr(path); itr != end_itr; ++itr)
 				{
 					GetAllModules(*itr, label, modules, moduleHierarchy, false, noBroadcast);
 				}
@@ -239,7 +238,7 @@ public:
 
 	IModule * GetModulePlaceholder(const TCHAR* _moduleName) const
 	{
-		fs::wpath repositoryPath;
+		boost::filesystem::wpath repositoryPath;
 		std::_tstring moduleName = _moduleName;
 		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
@@ -272,19 +271,19 @@ public:
 		if (found != m_paths.end())
 		{
 			boost::filesystem::wpath path = found->second->m_path.parent_path();
-			if (fs::exists(path))	//  Root repository folder
+			if (boost::filesystem::exists(path))	//  Root repository folder
 			{
 				for (unsigned int i = 0; i < tokens.size(); ++i)
 				{
 					path /= tokens[i];
 					try {
-						if (!fs::exists(path))
-							fs::create_directories(path);
+						if (!boost::filesystem::exists(path))
+							boost::filesystem::create_directories(path);
 					} catch (const std::exception & ex) {
 						_DBGLOG(LEVEL_WARNING, ex.what());
 					}
 
-					if (fs::exists(path))
+					if (boost::filesystem::exists(path))
 					{
 						result = CreateDiskModule(this, moduleName, path);
 						CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), m_repositoryLabel);
@@ -301,9 +300,9 @@ public:
 		nameDirectory.append(CT2A(module.c_str()));
 		try
 		{
-			fs::path pathDirectory(nameDirectory.c_str(), fs::native);
-			fs::create_directories(pathDirectory);
-			if (fs::exists(pathDirectory))
+			boost::filesystem::path pathDirectory(nameDirectory.c_str(), boost::filesystem::native);
+			boost::filesystem::create_directories(pathDirectory);
+			if (boost::filesystem::exists(pathDirectory))
 			{
 				result = CreateDiskModule(this, moduleName);
 				CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), m_repositoryLabel);
@@ -320,23 +319,23 @@ public:
 
 	virtual unsigned GetAttributes(const std::_tstring & _moduleName, const IAttributeTypeVector & types, IAttributeVector & attributes, bool noRefresh=false, bool noBroadcast=false) const
 	{
-		fs::wpath repositoryPath;
+		boost::filesystem::wpath repositoryPath;
 		std::_tstring moduleName = _moduleName;
 		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
 			CModuleHelper modHelper(moduleName + _T(".dummy"));
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
 			algo::replace_all(module, _T("."), _T("/"));
-			fs::wpath path = repositoryPath / module;
-			if (fs::exists(path))
+			boost::filesystem::wpath path = repositoryPath / module;
+			if (boost::filesystem::exists(path))
 			{
-				fs::wdirectory_iterator attr_itr_end;
-				for (fs::wdirectory_iterator attr_itr(path); attr_itr != attr_itr_end; attr_itr++)
+				boost::filesystem::wdirectory_iterator attr_itr_end;
+				for (boost::filesystem::wdirectory_iterator attr_itr(path); attr_itr != attr_itr_end; attr_itr++)
 				{
-					if (!fs::is_directory(*attr_itr))
+					if (!boost::filesystem::is_directory(*attr_itr))
 					{  
-						std::_tstring label = fs::basename(*attr_itr).c_str();
-						std::_tstring type = fs::extension(*attr_itr).c_str();
+						std::_tstring label = boost::filesystem::basename(*attr_itr).c_str();
+						std::_tstring type = boost::filesystem::extension(*attr_itr).c_str();
 						if (IsValidExtension(type))
 						{
 							StlLinked<IAttribute> attribute = CreateDiskAttribute(this, moduleName, label, type, *attr_itr, _T(""), noBroadcast);
@@ -419,23 +418,23 @@ public:
 
 	virtual IModule * RenameModule(const TCHAR* _moduleName, const TCHAR* label) const
 	{
-		fs::wpath repositoryPath;
+		boost::filesystem::wpath repositoryPath;
 		std::_tstring moduleName = _moduleName;
 		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
 			CModuleHelper fromHelper(moduleName + _T(".dummy"));
 			std::_tstring fromModule = fromHelper.GetModuleLabelNoRoot();
 			algo::replace_all(fromModule, _T("."), _T("/"));
-			fs::wpath fromPath = repositoryPath / fromModule;
+			boost::filesystem::wpath fromPath = repositoryPath / fromModule;
 
 			CModuleHelper toHelper(std::_tstring(label) + _T(".dummy"));
 			std::_tstring toModule = toHelper.GetModuleLabelNoRoot();
 			algo::replace_all(toModule, _T("."), _T("/"));
-			fs::wpath toPath = repositoryPath / toModule;
+			boost::filesystem::wpath toPath = repositoryPath / toModule;
 			try
 			{
 				boost::filesystem::rename(fromPath, toPath);
-			} catch (const std::exception & ex) {
+			} catch (const boost::filesystem::filesystem_error & ex) {
 				_DBGLOG(LEVEL_WARNING, ex.what());
 				return NULL;
 			}
@@ -448,15 +447,15 @@ public:
 
 	virtual bool DeleteModule(const TCHAR* _moduleName) const
 	{
-		fs::wpath repositoryPath;
+		boost::filesystem::wpath repositoryPath;
 		std::_tstring moduleName = _moduleName;
 		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
 			CModuleHelper modHelper(moduleName + _T(".dummy"));
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
 			algo::replace_all(module, _T("."), _T("/"));
-			fs::wpath path = repositoryPath / module;
-			if (fs::exists(path))
+			boost::filesystem::wpath path = repositoryPath / module;
+			if (boost::filesystem::exists(path))
 			{
 				try {
 					int retVal = MoveToRecycleBin(path.native_directory_string());
@@ -474,7 +473,7 @@ public:
 		return false;
 	}
 
-	bool GetRepositoryPath(std::_tstring & module, fs::wpath & path) const
+	bool GetRepositoryPath(std::_tstring & module, boost::filesystem::wpath & path) const
 	{
 		if (!m_amtRoot.empty() && !algo::istarts_with(module, (m_amtRoot.leaf() + _T("."))))
 			module = m_amtRoot.leaf() + _T(".") + module;
@@ -489,17 +488,17 @@ public:
 		if (found != m_paths.end())
 		{
 			path = found->second->m_path;
-			if (fs::exists(path))
+			if (boost::filesystem::exists(path))
 				return true;
 		}
 		else
 		{
 			for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
 			{
-				if (fs::exists(itr->second->m_path / tokens[0]))
+				if (boost::filesystem::exists(itr->second->m_path / tokens[0]))
 				{
 					path = itr->second->m_path;
-					if (fs::exists(path))
+					if (boost::filesystem::exists(path))
 					{
 						module = itr->first + _T(".") + module;
 						return true;
@@ -510,9 +509,9 @@ public:
 		return false;
 	}
 
-	bool GetPath(std::_tstring & moduleName, const std::_tstring & attributeName, IAttributeType * type, fs::wpath & path) const
+	bool GetPath(std::_tstring & moduleName, const std::_tstring & attributeName, IAttributeType * type, boost::filesystem::wpath & path) const
 	{
-		fs::wpath repositoryPath;
+		boost::filesystem::wpath repositoryPath;
 		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
 			CModuleHelper modHelper(moduleName + _T(".") + attributeName);
@@ -522,7 +521,7 @@ public:
 			attr += _T(".");
 			attr += type->GetRepositoryCode();
 			path = repositoryPath / module / attr;
-			if (fs::exists(path))
+			if (boost::filesystem::exists(path))
 				return true;
 		}
 		return false;
@@ -535,12 +534,12 @@ public:
 		if (0 == attribute)
 			return result;
 
-		fs::wpath path;
+		boost::filesystem::wpath path;
 		std::_tstring module = _module;
 		if (!GetPath(module, attribute, type, path))
 			return result;
 
-		if (fs::exists(path))
+		if (boost::filesystem::exists(path))
 		{
 			CUnicodeFile file;
 			file.Open(path.native_file_string().c_str());
@@ -573,7 +572,7 @@ public:
 
 	virtual IAttribute * GetAttributePlaceholder(const std::_tstring & _moduleName, const std::_tstring & attributeName, IAttributeType * type) const
 	{
-		fs::wpath repositoryPath;
+		boost::filesystem::wpath repositoryPath;
 		std::_tstring moduleName = _moduleName;
 		if (GetRepositoryPath(moduleName, repositoryPath))
 		{
@@ -581,8 +580,8 @@ public:
 			std::_tstring module = modHelper.GetModuleLabelNoRoot();
 			algo::replace_all(module, _T("."), _T("/"));
 			std::_tstring fileName = attributeName + type->GetFileExtension();
-			fs::wpath path = repositoryPath / module / fileName;
-			if (!fs::exists(path))
+			boost::filesystem::wpath path = repositoryPath / module / fileName;
+			if (!boost::filesystem::exists(path))
 			{
 				IAttribute * attribute = CreateDiskAttributePlaceholder(this, moduleName.c_str(), attributeName.c_str(), type->GetRepositoryCode(), path);
 				return attribute;
@@ -635,13 +634,13 @@ public:
 		if (found != m_paths.end())
 		{
 			boost::filesystem::wpath path = found->second->m_path.parent_path();
-			if (fs::exists(path))	//  Root repository folder
+			if (boost::filesystem::exists(path))	//  Root repository folder
 			{
 				for (unsigned int i = 0; i < tokens.size(); ++i)
 				{
 					path /= tokens[i];
-					if (!fs::exists(path))
-						fs::create_directories(path);
+					if (!boost::filesystem::exists(path))
+						boost::filesystem::create_directories(path);
 				}
 				std::_tstring filename = attribute;
 				filename += _T(".");
@@ -718,17 +717,17 @@ public:
 	{
 		for(IAttributeVector::const_iterator itr = attributes.begin(); itr != attributes.end(); ++itr)
 		{
-			fs::wpath fromPath;
+			boost::filesystem::wpath fromPath;
 			std::_tstring fromModule = itr->get()->GetModuleQualifiedLabel();
 			GetPath(fromModule, itr->get()->GetLabel(), itr->get()->GetType(), fromPath);
-			if (fs::exists(fromPath))
+			if (boost::filesystem::exists(fromPath))
 			{
-				fs::wpath toPath;
+				boost::filesystem::wpath toPath;
 				std::_tstring toModule = module;
 				GetPath(toModule, itr->get()->GetLabel(), itr->get()->GetType(), toPath);
 				try
 				{
-					fs::rename(fromPath, toPath);
+					boost::filesystem::rename(fromPath, toPath);
 				} catch (const std::exception & ex) {
 					_DBGLOG(LEVEL_WARNING, ex.what());
 				}
@@ -767,8 +766,8 @@ public:
 
 		for (int i = 0; i < eclcc->GetEclFolderCount(); ++i)
 		{
-			fs::wpath path = fs::wpath(eclcc->GetEclFolder(i), fs::native);
-			if (fs::exists(path) && fs::is_directory(path))
+			boost::filesystem::wpath path = boost::filesystem::wpath(eclcc->GetEclFolder(i), boost::filesystem::native);
+			if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
 			{
 				m_paths[path.leaf()] = new CMonitorFolder(this, path);
 				m_pathOrder.push_back(path);
@@ -778,8 +777,8 @@ public:
 
 	void Update(const TCHAR* url)
 	{
-		m_amtRoot = fs::wpath(url, fs::native);
-		ATLASSERT(fs::exists(m_amtRoot));
+		m_amtRoot = boost::filesystem::wpath(url, boost::filesystem::native);
+		ATLASSERT(boost::filesystem::exists(m_amtRoot));
 		m_paths[m_amtRoot.leaf()] = new CMonitorFolder(this, m_amtRoot);
 		m_pathOrder.push_back(m_amtRoot);
 	}
