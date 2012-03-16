@@ -900,7 +900,13 @@ public:
 	{
 		boost::filesystem::path userFolder;
 		path = GetUserFolder(userFolder, GetUserId()) / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);
-		boost::filesystem::create_directories(path);
+
+		try {
+			boost::filesystem::create_directories(path);
+		} catch (const boost::filesystem::filesystem_error & ex) {
+			_DBGLOG(LEVEL_WARNING, ex.what());
+		}
+
 		return path;
 	}
 };

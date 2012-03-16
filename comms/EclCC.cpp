@@ -7,7 +7,6 @@
 #include <EclErrorParser.h>
 #include "Repository.h"
 
-namespace fs = boost::filesystem;
 namespace algo = boost::algorithm;
 
 typedef std::pair<std::_tstring, bool> StringBoolPair;	//  Path, include in -I options
@@ -22,13 +21,13 @@ class CEclCC : public IEclCC, public CUnknown
 protected:
 	CComPtr<IConfig> m_config;
 	std::_tstring m_compilerFile;
-	fs::wpath m_compilerFilePath;
-	fs::wpath m_compilerFolderPath;
+	boost::filesystem::wpath m_compilerFilePath;
+	boost::filesystem::wpath m_compilerFolderPath;
 
 	std::_tstring m_arguments;
 
 	std::_tstring m_workingFolder;
-	fs::wpath m_workingFolderPath;
+	boost::filesystem::wpath m_workingFolderPath;
 
 	WPathVector m_eclFolders;
 
@@ -43,20 +42,20 @@ public:
 		m_config = GetIConfig(QUERYBUILDER_CFG);
 		ATLASSERT(m_config);
 		m_compilerFile = CString(m_config->Get(GLOBAL_COMPILER_LOCATION));
-		m_compilerFilePath = fs::wpath(m_compilerFile, fs::native);
+		m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
 		m_compilerFolderPath = m_compilerFilePath.parent_path();
 
 		m_arguments = CString(m_config->Get(GLOBAL_COMPILER_ARGUMENTS));
 
 		m_workingFolder = CString(m_config->Get(GLOBAL_COMPILER_ECLWORKINGFOLDER));
-		m_workingFolderPath = fs::wpath(m_workingFolder, fs::native);
+		m_workingFolderPath = boost::filesystem::wpath(m_workingFolder, boost::filesystem::native);
 
 			//{
 			//	const TCHAR * hpccbin = _tgetenv(_T("HPCCBIN"));
 			//	if (hpccbin)
 			//	{
-		fs::wpath stdLibPath = m_compilerFolderPath / _T("ecllibrary");
-		if (fs::exists(stdLibPath))
+		boost::filesystem::wpath stdLibPath = m_compilerFolderPath / _T("ecllibrary");
+		if (boost::filesystem::exists(stdLibPath))
 			m_eclFolders.push_back(std::make_pair(stdLibPath.directory_string(), false));
 		for (int i = 0; i < 10; ++i)
 		{
@@ -94,7 +93,7 @@ public:
 				text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER09);
 				break;
 			}
-			if (text.GetLength() > 0 && fs::exists(static_cast<const TCHAR *>(text)) && fs::is_directory(static_cast<const TCHAR *>(text)))
+			if (text.GetLength() > 0 && boost::filesystem::exists(static_cast<const TCHAR *>(text)) && boost::filesystem::is_directory(static_cast<const TCHAR *>(text)))
 				m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
 		}
 	}
@@ -125,19 +124,19 @@ public:
 
 	const TCHAR * GetPrefWarnings(std::_tstring & warnings) const
 	{
-		if (!fs::exists(m_compilerFilePath))
+		if (!boost::filesystem::exists(m_compilerFilePath))
 			warnings = (boost::_tformat(_T("Compiler path invalid:  %1%")) % m_compilerFile).str() + _T("\r\n");
-		else if (fs::is_directory(m_compilerFilePath))
+		else if (boost::filesystem::is_directory(m_compilerFilePath))
 			warnings = (boost::_tformat(_T("Compiler path does not specify eclcc.exe:  %1%")) % m_compilerFile).str() + _T("\r\n");
 
-		if (!m_workingFolder.empty() && !fs::exists(m_workingFolder))
+		if (!m_workingFolder.empty() && !boost::filesystem::exists(m_workingFolder))
 		{
 			std::_tstring error_msg = (boost::_tformat(_T("Working folder invalid:  %1%")) % m_workingFolder).str() + _T("\r\nCreate?");
 			if (::MessageBox(NULL, error_msg.c_str(), _T("ECL IDE"), MB_ICONASTERISK | MB_YESNO) == IDYES)
 			{
 				try {
-					fs::create_directories(m_workingFolder);
-				} catch (const std::exception & ex) {
+					boost::filesystem::create_directories(m_workingFolder);
+				} catch (const boost::filesystem::filesystem_error &) {
 					warnings += (boost::_tformat(_T("Failed to create folder:  %1%")) % m_workingFolder).str() + _T("\r\n");
 				}
 
@@ -296,7 +295,7 @@ public:
 	const TCHAR * GetWorkunitXML(const std::_tstring & wuid, std::_tstring & wuXml) const
 	{
 		std::_tstring filePath = (m_workingFolderPath / (wuid + _T(".xml"))).native_file_string();
-		if (!fs::exists(filePath))
+		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring command = _T("wuget.exe \"");
 			command += (m_workingFolderPath / (wuid + _T(".exe"))).native_file_string();
@@ -319,7 +318,7 @@ public:
 	const TCHAR * SaveWorkunitXML(const std::_tstring & wuid, std::_tstring & filePath) const
 	{
 		filePath = (m_workingFolderPath / (wuid + _T(".xml"))).native_file_string();
-		if (!fs::exists(filePath))
+		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring wuXml;
 			GetWorkunitXML(wuid, wuXml);
@@ -335,9 +334,9 @@ public:
 
 	const TCHAR * GetWorkunitResults(const std::_tstring & wuid, bool compileOnly, std::_tstring & results, bool & hasErrors, Dali::CEclExceptionVector & errors) const
 	{
-		fs::wpath resultPath = m_workingFolderPath / (wuid + _T("-result.xml"));
-		fs::wpath exePath = m_workingFolderPath / (wuid + _T(".exe"));
-		if (fs::exists(exePath) && !fs::exists(resultPath))
+		boost::filesystem::wpath resultPath = m_workingFolderPath / (wuid + _T("-result.xml"));
+		boost::filesystem::wpath exePath = m_workingFolderPath / (wuid + _T(".exe"));
+		if (boost::filesystem::exists(exePath) && !boost::filesystem::exists(resultPath))
 		{
 			if (compileOnly)
 			{
@@ -357,7 +356,7 @@ public:
 			file.Create(resultPath.native_file_string().c_str());
 			file.Write(results);
 		}
-		else if (fs::exists(resultPath))
+		else if (boost::filesystem::exists(resultPath))
 		{
 			CUnicodeFile file;
 			file.Open(resultPath.native_file_string().c_str());

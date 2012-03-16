@@ -4120,7 +4120,7 @@ public:
 		}
 		else
 		{
-			ATLASSERT(!"Unknown type:  %i, %s", i->value.id(), rule_names[ecl_grammar::numericLiteralID]);
+			ATLASSERT(!"Unknown type.");
 		}
 	}
 

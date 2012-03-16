@@ -10,7 +10,6 @@
 using namespace WsAttributes;
 #else
 #endif
-namespace fs = boost::filesystem;
 
 IModule * CreateModFileModule(const IRepository *rep, const std::_tstring &label, bool noBroadcast = false);
 IModule * CreateModFileModulePlaceholder(const IRepository *rep, const std::_tstring &label);
@@ -29,7 +28,7 @@ class CModFileRepository : public IRepository, public clib::CLockableUnknown
 protected:
 	CString m_url;
 	CString m_label;
-	fs::path m_path;
+	boost::filesystem::path m_path;
 	std::_tstring m_modFile;
 
 public:
@@ -38,7 +37,7 @@ public:
 
 	CModFileRepository(const TCHAR* url, const TCHAR* label) : m_label(label), m_url(url)
 	{
-		m_path = fs::path(CT2A(url), fs::native);
+		m_path = boost::filesystem::path(CT2A(url), boost::filesystem::native);
 
 		CUnicodeFile file;
 		if (file.Open(static_cast<const TCHAR *>(CA2T(m_path.native_file_string().c_str()))))

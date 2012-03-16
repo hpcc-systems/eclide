@@ -107,7 +107,7 @@ public:
 				m_error = "Response returned with status code ";
 				try {
 					m_error += boost::lexical_cast<std::string>(status_code);
-				} catch(const boost::bad_lexical_cast & ex) {
+				} catch (const boost::bad_lexical_cast &) {
 					m_error += "\n";
 				}
 				return;
