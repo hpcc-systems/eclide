@@ -6,6 +6,7 @@
 #include "global.h"
 #include "repository.h"
 #include "md5.hpp"
+#include "logger.h"
 
 const TCHAR * const DEFAULT_LABEL = _T("Default");
 
@@ -41,10 +42,24 @@ void save(const T &s, const char * filename)
 				prevBakFilepath.replace_extension((boost::format("bak00%1%") % (i - 1)).str());
 
 			if (boost::filesystem::exists(bakFilepath))
-				boost::filesystem::remove(bakFilepath);
+			{
+				try {
+					boost::filesystem::remove(bakFilepath);
+				} catch (const boost::filesystem::filesystem_error & ex) {
+					_DBGLOG(LEVEL_WARNING, ex.what());
+					_DBGLOG(LEVEL_WARNING, bakFilepath.native_file_string().c_str());
+				}
+			}
 
 			if (boost::filesystem::exists(prevBakFilepath))
-				boost::filesystem::rename(prevBakFilepath, bakFilepath);
+			{
+				try
+				{
+					boost::filesystem::rename(prevBakFilepath, bakFilepath);
+				} catch (const boost::filesystem::filesystem_error & ex) {
+					_DBGLOG(LEVEL_WARNING, ex.what());
+				}
+			}
 		}
 	}
 	// make an archive
@@ -68,7 +83,7 @@ void restore(T &s, const char * filename)
 		// restore the schedule from the archive
 		ia >> BOOST_SERIALIZATION_NVP(s);
 	}
-	catch(boost::archive::archive_exception &)
+	catch (boost::archive::archive_exception &)
 	{
 		ATLASSERT(false);
 //		boost::filesystem::remove();
@@ -335,7 +350,7 @@ unsigned int GetWorkspaces(IRepository * repository, IWorkspaceVector * results,
 			}
 		}
 	}
-	catch (boost::filesystem::filesystem_error  & e)
+	catch (boost::filesystem::filesystem_error &)
 	{
 		ATLASSERT(false);	//  Path doesn't exist!
 	}
@@ -371,9 +386,14 @@ bool RemoveWorkspace(IRepository * repository, const std::_tstring & label)
 		{
 			if (boost::algorithm::iequals(itr->path().stem(), label))
 			{
-				boost::filesystem::remove(*itr);
-				CWorkspaceCache.erase(label);
-				retVal = true;
+				try {
+					boost::filesystem::remove(*itr);
+					CWorkspaceCache.erase(label);
+					retVal = true;
+				} catch (const boost::filesystem::filesystem_error & ex) {
+					_DBGLOG(LEVEL_WARNING, ex.what());
+					_DBGLOG(LEVEL_WARNING, itr->path().native_file_string().c_str());
+				}
 			}
 		}
 	}
