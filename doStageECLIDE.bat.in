@@ -24,7 +24,7 @@ xcopy /yic "%SRC_DIR%\eclide\docs\*.chm" %IDE_DIR%
 xcopy /yic "%SRC_DIR%\eclide\docs\*.xml" %IDE_DIR%
 xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.exe" %IDE_DIR%
 xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.dll" %IDE_DIR%
-xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.psdb" %IDE_PDB_DIR%
+xcopy /yic "%BUILD_DIR%\eclide\bin\RelWithDebInfo\*.pdb" %IDE_PDB_DIR%
 xcopy /yic "%BUILD_DIR%\GraphControl\bin\RelWithDebInfo\graphlayout.dll" %IDE_DIR%
 xcopy /yic "%BUILD_DIR%\GraphControl\bin\RelWithDebInfo\*.pdb" %IDE_PDB_DIR%
 xcopy /yic "%BUILD_DIR%\GraphControlStatic\bin\RelWithDebInfo\*.dll" %GC_DIR%
