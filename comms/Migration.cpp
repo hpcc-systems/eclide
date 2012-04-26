@@ -146,7 +146,7 @@ protected:
 		{
 #endif
 			if (module)
-				modAttr.first = module->GetLabel() + std::_tstring(_T(".")) + modAttr.first;
+				modAttr.first = module->GetQualifiedLabel() + std::_tstring(_T(".")) + modAttr.first;
 			self->m_caller->LogMsg((boost::_tformat(_T("%1%.%2%:  Migration Start")) % modAttr.first % modAttr.second).str());
 			IModuleAdapt toMod = GetModule(self->m_targetRep, modAttr.first.c_str());
 			if (!toMod)
@@ -289,9 +289,9 @@ protected:
 #endif
 	}
 
-	static void thread_AddToRep(CComPtr<CMigration> self, IAttributeHistoryAdapt fromAttr, const std::_tstring comment, bool sandbox)
+	static void thread_AddToRep(CComPtr<CMigration> self, IModuleAdapt targetModule, IAttributeHistoryAdapt fromAttr, const std::_tstring comment, bool sandbox)
 	{
-		thread_AddEclToModule(self, NULL, ModAttrPair(fromAttr->GetModuleQualifiedLabel(true), fromAttr->GetLabel()), fromAttr->GetType(), comment, GetText(fromAttr), fromAttr->GetModifiedBy(), fromAttr->GetModifiedDate(), sandbox);
+		thread_AddEclToModule(self, targetModule, ModAttrPair(fromAttr->GetModuleQualifiedLabel(true), fromAttr->GetLabel()), fromAttr->GetType(), comment, GetText(fromAttr), fromAttr->GetModifiedBy(), fromAttr->GetModifiedDate(), sandbox);
 	}
 
 
@@ -316,9 +316,9 @@ public:
 		m_threads.Append(__FUNCTION__, boost::bind(&thread_AddWsToRep, this, fromWorkspace));
 	}
 
-	void AddToRep(IAttributeHistoryAdapt fromAttr, const std::_tstring & comment, bool sandbox)
+	void AddToRep(IModuleAdapt targetModule, IAttributeHistoryAdapt fromAttr, const std::_tstring & comment, bool sandbox)
 	{
-		m_threads.Append(__FUNCTION__, boost::bind(&thread_AddToRep, this, fromAttr, comment, sandbox));
+		m_threads.Append(__FUNCTION__, boost::bind(&thread_AddToRep, this, targetModule, fromAttr, comment, sandbox));
 	}
 
 	void AddEclToRep(const std::_tstring & modLabel, const std::_tstring & attrLabel, IAttributeType * type, const std::_tstring & comment, const std::_tstring & ecl, const std::_tstring & by, bool sandbox)

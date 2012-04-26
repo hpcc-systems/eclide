@@ -86,6 +86,11 @@ public:
 		return m_access;
 	}
 
+	IModule * GetRootModule() const
+	{
+		return NULL;
+	}
+
 	IModule * GetParentModule() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);

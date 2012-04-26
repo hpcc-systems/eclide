@@ -82,7 +82,7 @@ public:
 			errorFile.HandsOff();
 			
 			std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7%")) % 
-				batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel() % GetLabel() % 
+				batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel(true) % GetLabel() % 
 				inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName()).str();
 
 			//_DBGLOG(m_url, LEVEL_INFO, cmd.c_str());

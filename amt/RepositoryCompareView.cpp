@@ -606,7 +606,7 @@ bool CRepositoryCompareView::DoMigration()
 						m_migrator->AddToRep(*i);
 				}
 				for (IAttributeHistoryVector::const_iterator i = attrs.begin(); i != attrs.end(); ++i)
-					m_migrator->AddToRep(*i, _T(""), sandbox);
+					m_migrator->AddToRep(NULL, *i, _T(""), sandbox);
 				m_migrator->Start();
 				m_sel.Clear();
 			}
