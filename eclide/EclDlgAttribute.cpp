@@ -59,7 +59,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 				m_migrator = CreateIMigration(::AttachRepository());
 			m_migrator->Stop();
 			for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
-				m_migrator->AddToRep(itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
+				m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
 			m_migrator->Start();
 			m_migrator->Join();
 			SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);

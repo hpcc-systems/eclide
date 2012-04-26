@@ -21,6 +21,7 @@ __interface IModule : public clib::ILockableUnknown
 	const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const;
 	const TCHAR *GetPath() const;
 	const SecAccessFlags GetAccess() const;
+	IModule * GetRootModule() const;	//  Will be NULL for non local repositories...
 	IModule * GetParentModule() const;
 	unsigned GetModules(IModuleVector & modules, bool noRefresh=false) const;
 	unsigned GetAttributes(IAttributeVector & attributes, bool noRefresh=false) const;
