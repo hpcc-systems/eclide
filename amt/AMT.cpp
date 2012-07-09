@@ -52,7 +52,7 @@ BOOL CAMTApp::InitInstance()
 	// Setup exception handler
 	BT_SetAppName(_T("Attribute Migration Tool"));
 	BT_SetSupportEMail(_T("gsmith@seisint.com"));
-	BT_SetFlags(BTF_DETAILEDMODE | BTF_EDITMAIL | BTF_ATTACHREPORT| BTF_SCREENCAPTURE);
+	BT_SetFlags(BTF_DETAILEDMODE | BTF_EDITMAIL | BTF_ATTACHREPORT);
     BT_SetSupportURL(_T("http://hpccsystems.com/support"));
 
 
