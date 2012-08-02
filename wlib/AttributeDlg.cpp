@@ -11,8 +11,7 @@
 
 //  ===========================================================================
 class CSelAttrDlg : 
-	public CDialogImpl<CSelAttrDlg>, 
-	public CWinDataExchange<CSelAttrDlg>,
+	public CDialogImpl<CSelAttrDlg>,
 	public CRepositorySlotImpl
 {
 	typedef CSelAttrDlg thisClass;
@@ -84,12 +83,6 @@ public:
 		COMMAND_ID_HANDLER_EX(IDC_CREATE_ATTR, OnCreateAttr )
 	END_MSG_MAP()
 
-	BEGIN_DDX_MAP(thisClass)
-//		DDX_TEXT(IDC_EDIT_USER, m_User)
-//		DDX_TEXT(IDC_EDIT_PASSWORD, m_Password)
-//		DDX_TEXT(IDC_COMBO_CONFIG, m_Config)
-	END_DDX_MAP()
-
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
 	{
 		CWaitCursor cursor;
@@ -100,19 +93,20 @@ public:
 			SetWindowText(m_prompt);
 		}
 
+		CWindow wndPlaceholder = GetDlgItem(IDC_STATIC_PLACEHOLDER);
 		CRect rc;
-		DWORD styles;
-		FindDialogControlPlaceholder(m_hWnd,IDC_STATIC_PLACEHOLDER,rc,styles);
+		wndPlaceholder.GetWindowRect(rc);
+		ScreenToClient(rc);
+		wndPlaceholder.DestroyWindow();
 		m_view.Create(*this, rc);
 		m_view.SetDlgCtrlID(IDC_STATIC_PLACEHOLDER);
 		m_view.SetWindowPos(HWND_TOP, rc, 0);
 		m_view.SendMessage(CWM_RESET);
 		m_view.Select(m_attr);
+		m_view.Invalidate();
 		m_view.SetFocus();
 
-		DoDataExchange();
-
-		return FALSE;
+		return TRUE;
 	}
 
 	void OnClose()
