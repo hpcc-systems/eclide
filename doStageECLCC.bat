@@ -54,7 +54,8 @@ robocopy /S %TEMP%\release\eclcc "%VER_3_6_DIR%"
 copy "%cmakedir%\bin\release\ecl.exe" "%VER_3_6_DIR%\ecl.exe"
 
 if not %LN%==1 rmdir /Q /S "%VER_3_6_DIR%\ecllibrary\ln"
-robocopy /S "%TEMP%\release\plugins\metaphone" "%VER_3_6_DIR%\plugins"
+if %LN%==1 robocopy /S "%TEMP%\release\plugins\metaphone" "%VER_3_6_DIR%\plugins"
+if %LN%==1 robocopy /S "%TEMP%\release\plugins\saltlib" "%VER_3_6_DIR%\plugins"
 copy "%build_lndir%\bin\release\ecl-package.exe" "%VER_3_6_DIR%\ecl-package.exe"
 copy "%build_lndir%\bin\release\ecl-queries.exe" "%VER_3_6_DIR%\ecl-queries.exe"
 
