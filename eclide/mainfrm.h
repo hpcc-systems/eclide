@@ -506,7 +506,7 @@ public:
 
 	bool UIUpdateMenuItems();
 	void DoLogout();
-	void DoLogin(bool SkipLoginWindow = false);
+	void DoLogin(bool SkipLoginWindow = false, const CString & previousPassword = _T(""));
 	void RestoreState();
 	void PostSelectRibbon(RIBBON ribbon);
 	void DoPopupFileNew(LPNMTOOLBAR /*lpnmtb*/);
