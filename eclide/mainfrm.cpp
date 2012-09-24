@@ -2086,6 +2086,7 @@ void CMainFrame::DoLogout()
 	CString title;
 	title.LoadString(IDR_MAINFRAME);
 	SetTitle(title);
+	UpdateFrameTitleForDocument(NULL);
 
 	DoWorkspaceSave();
 	EnumChildWindows(GetSafeHwnd(), ChildEnumProc, CWM_CLOSEALL);
@@ -2167,6 +2168,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 	environment += _T(" - ");
 	environment += title;
 	SetTitle(environment.c_str());
+	UpdateFrameTitleForDocument(NULL);
 
 	std::_tstring version;
 	GetAboutVersion(version);
