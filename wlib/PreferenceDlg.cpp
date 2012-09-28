@@ -238,6 +238,16 @@ public:
 		m_config->Set(GLOBAL_SERVER_IP, m_ServerIP);
 	}
 
+	bool DoValidate()
+	{
+		if (!ValidateIPServer())
+		{
+			SendMessage(WM_NEXTDLGCTL, (WPARAM)(HWND)GetDlgItem(IDC_EDIT_IPADDRESS), TRUE);
+			return false;
+		}
+		return true;
+	}
+
 	void DoApply(bool bMakeGlobal)
 	{
 		DoDataExchange(true);
@@ -382,23 +392,31 @@ public:
 		BYTE *bytes = (BYTE *)&nAddr;
 		addr.Format(_T("%u.%u.%u.%u"), bytes[3], bytes[2], bytes[1], bytes[0] );
 	}
-	LRESULT OnIpFieldChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	bool ValidateIPServer()
 	{
 		CString serverIP = m_ServerIP;
 		DoDataExchange(true);
 		if (boost::algorithm::contains(static_cast<const TCHAR *>(m_ServerIP), _T(":")) || boost::algorithm::contains(static_cast<const TCHAR *>(m_ServerIP), _T("/")))
 		{
-			::MessageBox(NULL, _T("Server should not contain ':' or '/'."), _T("ECL IDE"), MB_ICONEXCLAMATION);
+			::MessageBox(NULL, _T("\"Server\" should consist of only the IP address or machine name (no port or http prefix)."), _T("ECL IDE"), MB_ICONEXCLAMATION);
 			m_ServerIP = serverIP;
 			DoDataExchange(false);
+			return false;
 		}
-		else
+		DoChanged();
+		if ( !m_Advanced )
 		{
-			DoChanged();
-			if ( !m_Advanced )
-			{
-				UpdateServerFields();
-			}
+			UpdateServerFields();
+		}
+		return true;
+	}
+	LRESULT OnIpFieldChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoDataExchange(true);
+		DoChanged();
+		if ( !m_Advanced )
+		{
+			UpdateServerFields();
 		}
 		return 0;
 	}
@@ -1831,8 +1849,14 @@ public:
 		m_otherPref.DoChanged(changed);
 	}
 
-	void DoApply(bool bMakeGlobal)
+	bool DoApply(bool bMakeGlobal)
 	{
+		if (!m_serverPref.DoValidate()) 
+		{
+			m_tabView.SetActivePage(m_tabView.PageIndexFromHwnd(m_serverPref));
+			return false;
+		}
+
 		if ( !bMakeGlobal )
 		{
 			//if this is the same as the global one, then update the global one
@@ -1852,6 +1876,7 @@ public:
 		m_resultPref.DoApply(bMakeGlobal);
 		m_compilerPref.DoApply(bMakeGlobal);
 		m_otherPref.DoApply(bMakeGlobal);
+		return true;
 	}
 
 	BEGIN_MSG_MAP(thisClass)
@@ -2020,8 +2045,10 @@ tryagain:
 
 	void OnOk(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 	{
-		DoApply(true);
-		EndDialog(nID);
+		if (DoApply(true))
+		{
+			EndDialog(nID);
+		}
 	}
 
 	void OnCancel(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
