@@ -2086,6 +2086,7 @@ void CMainFrame::DoLogout()
 	CString title;
 	title.LoadString(IDR_MAINFRAME);
 	SetTitle(title);
+	UpdateFrameTitleForDocument(NULL);
 
 	DoWorkspaceSave();
 	EnumChildWindows(GetSafeHwnd(), ChildEnumProc, CWM_CLOSEALL);
@@ -2117,7 +2118,7 @@ void CMainFrame::DoLogout()
 	m_wndRibbonBar.SendMessage(WM_IDLEUPDATECMDUI, true);
 }
 
-void CMainFrame::DoLogin(bool SkipLoginWindow)
+void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 {
 	if (!SkipLoginWindow)
 	{
@@ -2137,6 +2138,10 @@ void CMainFrame::DoLogin(bool SkipLoginWindow)
 		MessageBox(_T("Only one instance of ECL IDE is permitted with the same \"Configuration\" and \"Login ID\"."), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
 		DoLogin();
 		return;
+	}
+	if (SkipLoginWindow)
+	{
+		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_PASSWORD, previousPassword);
 	}
 	if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 	{
@@ -2163,6 +2168,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow)
 	environment += _T(" - ");
 	environment += title;
 	SetTitle(environment.c_str());
+	UpdateFrameTitleForDocument(NULL);
 
 	std::_tstring version;
 	GetAboutVersion(version);
@@ -3340,6 +3346,8 @@ bool CMainFrame::ShowConfigPreference(IConfig *config)
 
 void CMainFrame::OnFilePreferences()
 {
+	CString previousPassword = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD);
+
 	DoLogout();
 
 	if (::ShowPreferencesDlg(GetIConfig(QUERYBUILDER_CFG), true))
@@ -3348,7 +3356,7 @@ void CMainFrame::OnFilePreferences()
 		::SetDefaultConfig(m_iniFile, ::GetIConfig(QUERYBUILDER_CFG)->GetLabel());
 	}
 
-	DoLogin(true);
+	DoLogin(true, previousPassword);
 }
 
 void CMainFrame::OnFileLogin()

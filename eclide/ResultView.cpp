@@ -1169,21 +1169,21 @@ public:
 	LRESULT OnDrilldownSingle(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		ATLASSERT(IsDrilldownColumn(wParam));
-		DoDrilldownSingle(DRILLDOWN, m_data->GetColumn(wParam), m_data->GetColumn(wParam));
+		DoDrilldownSingle(DRILLDOWN, DRILLDOWN, m_data->GetColumn(wParam));
 		return 0;
 	}
 
 	LRESULT OnDrilldown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		ATLASSERT(IsDrilldownColumn(wParam));
-		DoDrilldown(DRILLDOWN, m_data->GetColumn(wParam), m_data->GetColumn(wParam));
+		DoDrilldown(DRILLDOWN, DRILLDOWN, m_data->GetColumn(wParam));
 		return 0;
 	}
 
 	LRESULT OnDrilldown2(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		ATLASSERT(IsDrilldownColumn(wParam));
-		DoDrilldown2(DRILLDOWN, m_data->GetColumn(wParam), m_data->GetColumn(wParam));
+		DoDrilldown2(DRILLDOWN, DRILLDOWN, m_data->GetColumn(wParam));
 		return 0;
 	}
 
