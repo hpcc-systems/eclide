@@ -601,15 +601,27 @@ void CHistoryView::UIUpdateTitle()
 {
 }
 
-
 bool CHistoryView::UIUpdateMenuItems(CCmdUI * cui)
 {
 	m_FocusOnEcl = false;
 	m_FocusOnDiff = false;
 
-	if ( m_ecl.IsWindowVisible() )
+	if ( m_HistoryListFocus.HasFocus() )
+	{
+		UPDATEUI(cui, ID_EDIT_SELECT_ALL, true);
+		UPDATEUI(cui, ID_EDIT_COPY, true);
+	}
+	else if ( m_ecl.IsWindowVisible() )
 	{
 		m_FocusOnEcl = true;
+	}
+	else 
+	{
+		m_FocusOnDiff = true;
+	}
+
+	if ( m_ecl.IsWindowVisible() )
+	{
 		if (baseClassEclCmd::UIUpdateMenuItems(cui))
 			return true;
 		UPDATEUI(cui, ID_ECL_CHECKSYNTAX, false);
@@ -621,20 +633,12 @@ bool CHistoryView::UIUpdateMenuItems(CCmdUI * cui)
 		UPDATEUI(cui, ID_ECL_GOTOSYNCTOC, false);
 		UPDATEUI(cui, ID_ECL_GOTO, false);
 	}
-	else
+	else 
 	{
-		if ( m_HistoryListFocus.HasFocus() )
-		{
-			UPDATEUI(cui, ID_EDIT_SELECT_ALL, true);
-			UPDATEUI(cui, ID_EDIT_COPY, true);
-		}
-		else
-		{
-			m_FocusOnDiff = true;
-		}
 		UPDATEUI(cui, ID_DIFFERENCES_PREVIOUS, m_diffView.GetDiffPrevious() >= 0);
 		UPDATEUI(cui, ID_DIFFERENCES_NEXT, m_diffView.GetDiffNext() >= 0);
 	}
+
 	return false;
 }
 
