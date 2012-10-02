@@ -15,4 +15,4 @@ set STAGE_DIR=%ROOT_DIR%\stage
 %strSignCode% sign /f "%SETUP_DIR%\hpcc_code_signing.pfx" /p %pw% /t %strTimeStampUrl% "%STAGE_DIR%\PF\HPCC\ECL IDE\*.exe" 
 %strSignCode% sign /f "%SETUP_DIR%\hpcc_code_signing.pfx" /p %pw% /t %strTimeStampUrl% "%STAGE_DIR%\PF\HPCC\ECL IDE\*.dll" 
 %strSignCode% sign /f "%SETUP_DIR%\hpcc_code_signing.pfx" /p %pw% /t %strTimeStampUrl% "%STAGE_DIR%\PF\HPCC\Graph Control\*.dll" 
-%strSignCode% sign /f "%SETUP_DIR%\hpcc_code_signing.pfx" /p %pw% /t %strTimeStampUrl% "%STAGE_DIR%\PF\HPCC\Graph Control x64\*.dll" 
+REM %strSignCode% sign /f "%SETUP_DIR%\hpcc_code_signing.pfx" /p %pw% /t %strTimeStampUrl% "%STAGE_DIR%\PF\HPCC\Graph Control x64\*.dll" 
