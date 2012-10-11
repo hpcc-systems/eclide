@@ -688,19 +688,19 @@ public:
 		return localfiles.size();
 	}
 
-	IWorkunit* Submit(const CString &cluster, const CString & queue, WUAction action, const CString & ecl, const CString & path, const CString & label, int resultLimit, const CString & debugSettings, bool archive, int maxRunTime, bool debug)
+	IWorkunit* Submit(const CString &cluster, const CString & queue, WUAction action, const CString & attrQualifiedLabel, const CString & ecl, const CString & path, const CString & label, int resultLimit, const CString & debugSettings, bool archive, int maxRunTime, bool debug)
 	{
 		CComInitialize com;
 		StlLinked<IWorkunit> resultWu;
-		SubmitEcl(cluster, queue, action, ecl, path, label, resultLimit, resultWu, debugSettings, archive, false, maxRunTime, debug);
+		SubmitEcl(cluster, queue, action, attrQualifiedLabel, ecl, path, label, resultLimit, resultWu, debugSettings, archive, false, maxRunTime, debug);
 		return resultWu.get();
 	}
 
-	IWorkunit* Schedule(const CString &cluster, const CString & queue, const CString & ecl, const CString &when, const CString & label, int resultLimit, const CString & debugSettings, bool archive)
+	IWorkunit* Schedule(const CString &cluster, const CString & queue, const CString & attrQualifiedLabel, const CString & ecl, const CString &when, const CString & label, int resultLimit, const CString & debugSettings, bool archive)
 	{
 		CComInitialize com;
 		StlLinked<IWorkunit> resultWu;
-		ScheduleEcl(cluster, queue, ecl, when, label, resultLimit, resultWu, debugSettings, archive);
+		ScheduleEcl(cluster, queue, attrQualifiedLabel, ecl, when, label, resultLimit, resultWu, debugSettings, archive);
 		return resultWu.get();
 	}
 
@@ -1100,11 +1100,11 @@ protected:
 		return retVal.get();
 	}
 
-	bool BlockingSubmitEcl( const CString &cluster, const CString & queue, WUAction action, const CString & ecl, const CString & path, const CString &label, int resultLimit, const CString & debugSettings, bool archive, bool noCommonPrivateAttributes, StlLinked<IWorkunit> &resultWu, bool deleteAfter, int maxRunTime, bool debug)
+	bool BlockingSubmitEcl( const CString &cluster, const CString & queue, WUAction action, const CString & attrQualifiedLabel, const CString & ecl, const CString & path, const CString &label, int resultLimit, const CString & debugSettings, bool archive, bool noCommonPrivateAttributes, StlLinked<IWorkunit> &resultWu, bool deleteAfter, int maxRunTime, bool debug)
 	{
 		CComInitialize com;
 		bool retVal = false;
-		if (SubmitEcl(cluster, queue, action, ecl, path, label, resultLimit, resultWu, debugSettings, archive, noCommonPrivateAttributes, maxRunTime, debug))
+		if (SubmitEcl(cluster, queue, action, attrQualifiedLabel, ecl, path, label, resultLimit, resultWu, debugSettings, archive, noCommonPrivateAttributes, maxRunTime, debug))
 		{
 			retVal = BlockUntilComplete(m_config, resultWu->GetWuid());
 
@@ -1115,7 +1115,7 @@ protected:
 		return retVal;
 	}
 
-	bool ScheduleEcl(const CString &cluster, const CString & queue, const CString & ecl, const CString & when, const CString & label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive)
+	bool ScheduleEcl(const CString &cluster, const CString & queue, const CString & attrQualifiedLabel, const CString & ecl, const CString & when, const CString & label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive)
 	{
 		bool retVal = false;
 		CString url, user, password;
@@ -1156,6 +1156,11 @@ protected:
 					applicationValue.Application = stringPool.Create(APP_DATA_APPNAME);
 					applicationValue.Name = stringPool.Create(APP_DATA_VERSION);
 					applicationValue.Value = stringPool.Create(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_APP_VERSION)));
+
+#if _COMMS_VER < 300800
+#else
+					request.QueryMainDefinition = stringPool.Create(attrQualifiedLabel);
+#endif
 
 					_ns6__WUUpdateResponse response;
 					ESP_EXCEPTION_LOG3(response.Exceptions);
@@ -1211,7 +1216,7 @@ protected:
 		}
 	}
 
-	bool SubmitEcl(const CString &cluster, const CString & queue, WUAction _action, const CString & _ecl, const CString & path, const CString label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive, bool noCommonPrivateAttributes, int maxRunTime, bool debug)
+	bool SubmitEcl(const CString &cluster, const CString & queue, WUAction _action, const CString & attrQualifiedLabel, const CString & _ecl, const CString & path, const CString label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive, bool noCommonPrivateAttributes, int maxRunTime, bool debug)
 	{
 		bool isXml = false;
 		CString ecl = _ecl;
@@ -1324,6 +1329,11 @@ protected:
 					}
 					else
 						request.QueryText = stringPool.Create(ecl);
+
+#if _COMMS_VER < 300800
+#else
+					request.QueryMainDefinition = stringPool.Create(attrQualifiedLabel);
+#endif
 
 					_ns6__WUUpdateResponse response;
 					ESP_EXCEPTION_LOG3(response.Exceptions);
@@ -1580,7 +1590,7 @@ protected:
 	}
 };
 #else
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 using namespace WsWorkunits;
 //  ===========================================================================
 template <typename TClient = CSoapSocketClientT<> >
@@ -1759,7 +1769,7 @@ IWorkunit * CreateWorkunit(const CServerConfig& config, const CString & wuid, EC
 IGraph * CreateGraph(const CString& url, const CString & wuid, const ECLGraphEx * data);
 
 #if _COMMS_VER < 54400
-#elif  _COMMS_VER < 70000
+#elif  _COMMS_VER < 700000
 typedef WUECLAttribute ECLAttribute;
 #else
 typedef ECLWUECLAttribute ECLAttribute;
@@ -1772,7 +1782,7 @@ typedef ECLWUException ECLException;
 #endif
 
 #if _COMMS_VER < 58800
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 ILocalFile * CreateLocalFile(const CString & url, const CString & wuid, const LogicalFileUpload * localfile);
 #endif
 IWorkunit * CreateWorkunit(const CServerConfig& config, const ECLWorkunit * data, bool resultsFetched, bool noBroadcast);
@@ -1918,7 +1928,7 @@ signed GetResultData(const CServerConfig& config, const CString & pWuid, int seq
 	CComBSTR resultName = CT2W(_T(""));
 	ESP_EXCEPTION_LOG(EspException);
 	if (server.WUResult(&wuid, &sequence, resultName, &logicalName, &cluster, &start, &count, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), &name, &requested, &total, &datasetXML) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	int requested = 0;
 	CComBSTR resultName = CT2W(_T(""));
 	ESP_EXCEPTION_LOG2(EspException);
@@ -2014,7 +2024,7 @@ int ParseDebugString(const CString & debugString, bool archive, bool noCommonPri
 		debugValues.SetBSTR(debugValues.GetItem(i)->Value, rhs);
 		lhs = APP_DATA_DEBUG + lhs;
 		appValues.SetBSTR(appValues.GetItem(i)->Application, APP_DATA_APPNAME);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		appValues.SetBSTR(appValues.GetItem(i)->Name, lhs);
 		appValues.SetBSTR(appValues.GetItem(i)->Value, rhs);
 #else
@@ -2082,7 +2092,7 @@ bool UpdateWU(const CServerConfig& config, ECLWorkunit &wu, WUState state, const
 	debugValues.SetBSTR(debugValues.GetItem(i)->Value, _T(""));
 	appValues.SetBSTR(appValues.GetItem(i)->Application, APP_DATA_APPNAME);
 
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	appValues.SetBSTR(appValues.GetItem(i)->Name, APP_DATA_VERSION);
 	appValues.SetBSTR(appValues.GetItem(i)->Value, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_APP_VERSION))));
 #else
@@ -2243,7 +2253,7 @@ bool UpdateWU(const CServerConfig& config, ECLWorkunit &wu, WUState state, const
 		) == S_OK)
 	{
 		AtlCleanupValueEx(&outWorkunit, &crtHeap);
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	ECLWorkunit outWorkunit;
 	int StateOrig = 0;
 	CComBSTR Jobname = wu.Jobname;
@@ -2407,7 +2417,7 @@ bool ProtectWorkunits(const CString & url, IWorkunitVector *workunits, bool prot
 	CStructArrayOut<WUActionResult> actionResults;
 	ESP_EXCEPTION_LOG(EspException);
 	if (server.WUProtect(arr, workunits->size(), protect, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), actionResults.GetArrayAddress(), actionResults.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	CStructArrayOut<WUActionResult> actionResults;
 	ESP_EXCEPTION_LOG2(EspException);
 	if (server.WUProtect(arr, workunits->size(), protect, exceptions, actionResults.GetArrayAddress(), actionResults.GetCountAddress()) == S_OK)
@@ -2482,7 +2492,7 @@ bool FollowupWorkunits(const CString & url, IWorkunitVector *workunits, bool fol
 			&outWorkunit) == S_OK)
 		{
 			AtlCleanupValueEx(&outWorkunit, &crtHeap);
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		WsWorkunits::ECLWorkunit outWorkunit;
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUUpdate2(
@@ -2546,7 +2556,7 @@ bool AbortWorkunits(const CString &url, IWorkunitVector *workunits)
 	CStructArrayOut<WUActionResult> actionResults;
 	ESP_EXCEPTION_LOG(EspException);
 	if (server.WUAbort(arr, workunits->size(), BlockTillFinishTimer, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), actionResults.GetArrayAddress(), actionResults.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	int BlockTillFinishTimer = false;
 	CStructArrayOut<WUActionResult> actionResults;
 	ESP_EXCEPTION_LOG2(EspException);
@@ -2584,7 +2594,7 @@ bool ResubmitWorkunits(const CString &url, IWorkunitVector *workunits)
 	int BlockTillFinishTimer = 0;
 	ESP_EXCEPTION_LOG(EspException);
 	if (server.WUResubmit(arr, workunits->size(), Recompile, BlockTillFinishTimer, exceptions.GetArrayAddress(), exceptions.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	int BlockTillFinishTimer = 0;
 	ESP_EXCEPTION_LOG2(EspException);
 	if (server.WUResubmit(arr, workunits->size(), Recompile, BlockTillFinishTimer, exceptions) == S_OK)
@@ -2737,7 +2747,7 @@ public:
 		CComBSTR bstrGraphName = CT2W(graphName, CP_UTF8);
 		ESP_EXCEPTION_LOG(EspException);
 		if (server.WUGetGraph(wuid, bstrGraphName, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), results.GetArrayAddress(), results.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		CComBSTR bstrGraphName = CT2W(graphName, CP_UTF8);
 		CComBSTR bstrSubGraphId = CT2W(_T(""), CP_UTF8);
 		ESP_EXCEPTION_LOG2(EspException);
@@ -2783,7 +2793,7 @@ public:
 		int autoRefresh = 0;
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUInfo(wuid, bstrType, false, true, false, false, false, false, false, false, false, true, exceptions, &wu, &autoRefresh, &canCompile) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		bool canCompile = false;
 		CComBSTR bstrType = _T("");
 		CComBSTR thorSlaveIP = _T("");
@@ -2818,7 +2828,7 @@ public:
 #if _COMMS_VER < 67205
 		ESP_EXCEPTION_LOG(EspException);
 		if (server.WUGraphTiming(wuid, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), &workunit) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUGraphTiming(wuid, exceptions, &workunit) == S_OK)
 #else
@@ -2907,7 +2917,7 @@ public:
 			_DBGLOG(config.GetUrl(url), LEVEL_WARNING, server.GetClientError());
 
 		return results.GetCount();
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		CComBSTR wuid = CT2W(pWuid, CP_UTF8);
 		ESP_EXCEPTION_LOG2(EspException);
 		CStructArrayOut<LogicalFileUpload> results;
@@ -3005,7 +3015,7 @@ public:
 		for(int i = 0; i < errors.GetCount(); ++i)
 		{
 			StlLinked<CEclException> e = new CEclException();
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 			e->m_lineNo = errors.GetItem(i)->LineNo;
 			e->m_code = errors.GetItem(i)->Code;
 			e->m_message = errors.GetItem(i)->Message;
@@ -3049,7 +3059,7 @@ public:
 #elif _COMMS_VER < 67205
 		ESP_EXCEPTION_LOG(EspException);
 		if (server.WUSyntaxCheckECL(bsEcl, bsModule, bsAttribute, bsQueue, bsCluster, SnapShot, timeToWait, debugValues.GetArray(), debugValues.GetCount(), exceptions.GetArrayAddress(), exceptions.GetCountAddress(), errors.GetArrayAddress(), errors.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUSyntaxCheckECL(bsEcl, bsModule, bsAttribute, bsQueue, bsCluster, SnapShot, timeToWait, debugValues.GetArray(), debugValues.GetCount(), exceptions, errors.GetArrayAddress(), errors.GetCountAddress()) == S_OK)
 #else
@@ -3181,7 +3191,7 @@ protected:
 			int autoRefresh = 0;
 			ESP_EXCEPTION_LOG2(EspException);
 			if (server.WUInfo(_wuid, Type, true, true, true, true, true, true, true, true, true, true, exceptions, &wu, &autoRefresh, &canCompile) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 			bool canCompile = false;
 			CComBSTR Type = _T("");
 			CComBSTR thorSlaveIP = _T("");
@@ -3194,7 +3204,7 @@ protected:
 			if (server.GetWorkunitDetail(_wuid, ArchivedOnly, &status.m_statusCode, &status.m_statusMessage, &wu) == S_OK)
 #endif
 			{
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 				retVal = UpdateWU(config, wu, state, wu.Cluster, wu.Queue, static_cast<WUAction>(wu.Action), wu.Query.Text, 100, _T(""), false, false, false) != NULL;
 #else
 				retVal = UpdateWU(config, wu, state, wu.Attributes.Cluster, wu.Attributes.Queue, WUActionUnknown, wu.Query.ECLText, 100, _T(""), false, false) != NULL;
@@ -3202,7 +3212,7 @@ protected:
 				if (retVal)
 				{
 					//why?
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 					IWorkunitAdapt _wu = GetWorkunit(config, wu.Wuid, false);
 #else
 					IWorkunitAdapt _wu = GetWorkunit(config, wu.WUID, false);
@@ -3373,7 +3383,7 @@ protected:
 			&NextPage,
 			&LastPage,
 			&numWUs, &boolFirst, &bstrBasicQuery, &bstrFilters, results.GetArrayAddress(), results.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		CComBSTR outRoxieCluster = _T("");
 		CComBSTR Type = _T("");
 		CComBSTR outECL = _T("");
@@ -3510,7 +3520,7 @@ protected:
 		if (server.WUInfo(_wuid, Type, true, true, true, true, true, true, true, true, true, true, exceptions, &result, &autoRefresh, &canCompile) == S_OK)
 		{
 			if ( result.Wuid )
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		CComBSTR Type = _T("");
 		CComBSTR thorSlaveIP = _T("");
 		int autoRefresh = 0;
@@ -3569,7 +3579,7 @@ protected:
 		{
 			if (wu.Wuid)
 			{
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUCreate(exceptions, &wu) == S_OK)
 		{
@@ -3602,7 +3612,7 @@ protected:
 					if (server.WUSchedule(wu.Wuid, clusterStr, queueStr, snapshotStr, whenStr, 0, exceptions.GetArrayAddress(), exceptions.GetCountAddress()) == S_OK)
 					{
 						resultWu = GetWorkunit(m_config, wu.Wuid, false);
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 					CComBSTR snapshotStr = label;
 					ESP_EXCEPTION_LOG2(EspException);
 					if (server.WUSchedule(wu.Wuid, clusterStr, queueStr, snapshotStr, whenStr, 0, exceptions) == S_OK)
@@ -3646,7 +3656,7 @@ protected:
 		{
 			if (wu.Wuid)
 			{
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUCreate(exceptions, &wu) == S_OK)
 		{
@@ -3694,7 +3704,7 @@ protected:
 					if (server.WUSubmit(wu.Wuid, clusterStr, queueStr, SnapShot, maxRunTime, BlockTillFinishTimer, syntaxCheck, exceptions.GetArrayAddress(), exceptions.GetCountAddress()) == S_OK)
 					{
 						resultWu = GetWorkunit(m_config, wu.Wuid, false);
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 					CComBSTR SnapShot = label;
 					int BlockTillFinishTimer = 0;
 					bool syntaxCheck = false;
@@ -3741,7 +3751,7 @@ protected:
 #elif _COMMS_VER < 67205
 		ESP_EXCEPTION_LOG(EspException);
 		if (server.WUCompileECL(ecl, module, attribute, queue, cluster, snapshot, includeDependancies, includeComplexity, timeToWait, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), &outComplexity, errors.GetArrayAddress(), errors.GetCountAddress(), dependancies.GetArrayAddress(), dependancies.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		ESP_EXCEPTION_LOG2(EspException);
 		if (server.WUCompileECL(ecl, module, attribute, queue, cluster, snapshot, includeDependancies, includeComplexity, timeToWait, exceptions, &outComplexity, errors.GetArrayAddress(), errors.GetCountAddress(), dependancies.GetArrayAddress(), dependancies.GetCountAddress()) == S_OK)
 #else
@@ -3908,7 +3918,7 @@ protected:
 		CStructArrayOut<WUActionResult> actionResults;
 		ESP_EXCEPTION_LOG(EspException);
 		if (server.WUDelete(arr, units, BlockTillFinishTimer, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), actionResults.GetArrayAddress(), actionResults.GetCountAddress()) == S_OK)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		int BlockTillFinishTimer = false;
 		CStructArrayOut<WUActionResult> actionResults;
 		ESP_EXCEPTION_LOG2(EspException);

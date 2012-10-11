@@ -7,7 +7,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsSMC;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsECLWorkunits;
 using namespace WsEnvironment;
@@ -18,7 +18,7 @@ namespace Dali
 {
 #if _COMMS_VER < 68200
 	IWorkunit * CreateWorkunit(const CString & url, const CString & daliLabel, const ActiveWorkunit *data, bool noBroadcast = false);
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	IWorkunit * CreateWorkunit(const CString & url, const CString & daliLabel, const ns4__ActiveWorkunit *data, bool noBroadcast = false);
 #endif
 }
@@ -109,7 +109,7 @@ public:
 		m_status = thorCluster->QueueStatus;
 		for(int i = 0; i < running.GetCount(); ++i)
 		{
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 			if (m_cluster.CompareNoCase(CW2T(running.GetItem(i)->Instance, CP_UTF8)) == 0)
 #else
 			if (m_cluster.CompareNoCase(CW2T(running.GetItem(i)->ServerInstance, CP_UTF8)) == 0)
@@ -123,7 +123,7 @@ public:
 		}
 #endif
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	void Update(const std::_tstring &cluster, const std::_tstring &status, const std::vector<ns4__ActiveWorkunit *> &running)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -171,7 +171,7 @@ ICluster * CreateCluster(const CString & url, ThorCluster *thorCluster, CStructA
 	retVal->Update(thorCluster, running);
 	return retVal;
 }
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 ICluster * CreateCluster(const CString & url, const std::_tstring & cluster, const std::_tstring & status, const std::vector<ns4__ActiveWorkunit *> &running)
 {
 	CCluster * retVal = CreateClusterRaw(url, cluster.c_str());

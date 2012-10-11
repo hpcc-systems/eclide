@@ -16,7 +16,7 @@ const SectionLabelDefault GLOBAL_SERVER_TOPOLOGY(SectionLabel(_T("Server"), _T("
 #if _COMMS_VER < 68200
 using namespace WsTopology;
 typedef CWsTopologyT<CCustomActionSecureSoapSocketClient> ServerT;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 typedef WsTopology::CWsTopologyT<CCustomActionSecureSoapSocketClient> ServerOldT;
 using namespace WsEnvironment;
@@ -34,7 +34,7 @@ ICluster * CreateCluster(const CString & url, const TpCluster * data);
 IDropZone * CreateDropZone(const CString & url, const TpDropZone * data);
 IDfuServer * CreateDfuServer(const CString & url, const TpDfuServer * data);
 IEclServer * CreateEclServer(const CString & url, const TpEclServer * data);
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 ICluster * CreateCluster(const CString & url, const ns5__TpLogicalCluster * data);
 ICluster * CreateCluster(const CString & url, const ns5__TpCluster * data);
 IDropZone * CreateDropZone(const CString & url, const ns5__TpDropZone * data);
@@ -416,7 +416,7 @@ unsigned GetClusters(const CString & url, const std::_tstring & queueFilter, ICl
 			}
 		}
 	}
-#elif  _COMMS_VER < 70000
+#elif  _COMMS_VER < 700000
 	CStructArrayOut<TpLogicalCluster> results;
 	ESP_EXCEPTION_LOG2(EspException);
 	//CString csQueue = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE);
@@ -486,7 +486,7 @@ unsigned GetGroups(const CString & url, IGroupVector * groups)
 			groups->push_back(group);
 		}
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	CStructArrayOut<TpGroup> results;
 	ESP_EXCEPTION_LOG2(EspException);
 	if (server.TpGroupQuery(exceptions, results.GetArrayAddress(), results.GetCountAddress()) == S_OK)
@@ -531,7 +531,7 @@ unsigned GetEclServers(const CString & url, IEclServerVector * eclservers)
     int CpuThreshold = 0;
     CComBSTR MemThresholdType = _T("");
     CComBSTR DiskThresholdType = _T("");
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 #if _COMMS_VER < 58800
 	TpServices results;
 	ESP_EXCEPTION_LOG(EspException);
@@ -599,7 +599,7 @@ unsigned GetClustersX(const TCHAR* url, const TCHAR *pType, IClusterVector * clu
 			clusters->push_back(cluster);
 		}
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	CStructArrayOut<TpCluster> results;
 	_bstr_t type(pType);
 	ESP_EXCEPTION_LOG2(EspException);
@@ -659,7 +659,7 @@ unsigned GetDropZones(const CString & url, IDropZoneVector * dropZones)
     CComBSTR MemThresholdType = _T("");
     CComBSTR DiskThresholdType = _T("");
 
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CStructOut<TpServices> results;
 #if _COMMS_VER < 58800
 	ESP_EXCEPTION_LOG(EspException);
@@ -722,7 +722,7 @@ unsigned GetDfuServers(const CString & url, IDfuServerVector * servers)
     int CpuThreshold = 0;
     CComBSTR MemThresholdType = _T("");
     CComBSTR DiskThresholdType = _T("");
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CStructOut<TpServices> results;
 #if _COMMS_VER < 58800
 	ESP_EXCEPTION_LOG(EspException);

@@ -77,8 +77,24 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
 	if (server.VerifyUser(&request, &response) == SOAP_OK)
 	{
 		SAFE_ASSIGN(retCode, response.retcode);
+#if _COMMS_VER < 300800
 		if (response.message)
 			retMsg = response.message->c_str();
+#else
+		if (response.Exceptions)
+		{
+			for (unsigned int i = 0; i < response.Exceptions->Exception.size(); ++i)
+			{
+				if (response.Exceptions->Exception[i]->Message)
+				{
+					if (!retMsg.IsEmpty())
+						retMsg += _T("\r\n");
+
+					retMsg += response.Exceptions->Exception[i]->Message->c_str();
+				}
+			}
+		}
+#endif
 		return true;
 	}
 	else
@@ -95,7 +111,7 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
 }
 #else
 #if _COMMS_VER < 491
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 using namespace ws_account;
 typedef Cws_accountT<CCustomActionSecureSoapSocketClient> ServerOldT;
 typedef Cws_accountT<CCustomActionSecureSoapSocketClient> ServerT;
@@ -133,7 +149,7 @@ COMMS_API bool ChangePassword(const CString &serverIP, const CString &user, cons
 		pRetMsg = retMsg;
 		return true;
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	ESP_EXCEPTION_LOG2(EspException);
 	if (server.UpdateUser(userID, oldPW, newPW, confirmPW, exceptions, &retCode, &retMsg) == S_OK)
 	{

@@ -3,7 +3,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsTopology;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsEnvironment;
 #endif
@@ -102,7 +102,7 @@ public:
 		}
 		Refresh();
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	void Update(const ns5__TpMachine * c)
 	{
 		if ( c )
