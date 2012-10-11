@@ -31,8 +31,7 @@ class CDebug : public IDebug, public CUnknown
 {
 public:
 	std::_tstring m_roxieCall;
-	typedef std::map<std::_tstring, std::_tstring> StringStringMap;
-	StringStringMap m_attrs;
+	Element::StringStringMap m_attrs;
 
 	bool m_hasData;
 	bool m_finalData;
