@@ -78,7 +78,7 @@ CDebug::~CDebug()
 
 bool CDebug::HasState() const
 {
-	StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_STATE);
+	Element::StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_STATE);
 	if (itr != m_attrs.end())
 		return true;
 	return false;
@@ -86,7 +86,7 @@ bool CDebug::HasState() const
 
 const TCHAR * CDebug::GetState() const
 {
-	StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_STATE);
+	Element::StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_STATE);
 	if (itr != m_attrs.end())
 		return itr->second.c_str();
 	return _T("");
@@ -94,19 +94,19 @@ const TCHAR * CDebug::GetState() const
 
 CUniqueID CDebug::GetActiveID() const
 {
-	StringStringMap::const_iterator findMode = m_attrs.find(DEBUG_ATTR_MODE);
-	StringStringMap::const_iterator findId = m_attrs.find(DEBUG_ATTR_ID);
+	Element::StringStringMap::const_iterator findMode = m_attrs.find(DEBUG_ATTR_MODE);
+	Element::StringStringMap::const_iterator findId = m_attrs.find(DEBUG_ATTR_ID);
 	if (findMode != m_attrs.end() && findId != m_attrs.end())
 	{
 		return CreateUniqueID(findMode->second, findId->second);
 	}
-	StringStringMap::const_iterator findEdgeId = m_attrs.find(DEBUG_ATTR_EDGEID);
+	Element::StringStringMap::const_iterator findEdgeId = m_attrs.find(DEBUG_ATTR_EDGEID);
 	if (findEdgeId != m_attrs.end())
 		return CUniqueID(guidDefault, XGMML_CAT_EDGE, findEdgeId->second);
-	StringStringMap::const_iterator findNodeId = m_attrs.find(DEBUG_ATTR_NODEID);
+	Element::StringStringMap::const_iterator findNodeId = m_attrs.find(DEBUG_ATTR_NODEID);
 	if (findNodeId != m_attrs.end())
 		return CUniqueID(guidDefault, XGMML_CAT_VERTEX, findNodeId->second);
-	StringStringMap::const_iterator findGraphId = m_attrs.find(DEBUG_ATTR_GRAPHID);
+	Element::StringStringMap::const_iterator findGraphId = m_attrs.find(DEBUG_ATTR_GRAPHID);
 	if (findGraphId != m_attrs.end())
 		return CUniqueID(guidDefault, XGMML_CAT_SUBGRAPH, findGraphId->second);
 	return CUniqueID();
@@ -142,7 +142,7 @@ const TCHAR * CDebug::GetGraph() const
 
 int CDebug::GetSequence() const
 {
-	StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_SEQUENCE);
+	Element::StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_SEQUENCE);
 	if (itr != m_attrs.end())
 	{
 		try
@@ -158,7 +158,7 @@ int CDebug::GetSequence() const
 
 int CDebug::GetGraphSequenceNum() const
 {
-	StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_GRAPHSEQUENCENUM);
+	Element::StringStringMap::const_iterator itr = m_attrs.find(DEBUG_ATTR_GRAPHSEQUENCENUM);
 	if (itr != m_attrs.end())
 	{
 		try
