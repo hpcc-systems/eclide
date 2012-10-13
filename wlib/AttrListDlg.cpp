@@ -295,7 +295,7 @@ public:
 		m_targetModule = GetTargetModule();
 
 		CComPtr<IRepository> rep = AttachRepository();
-		m_migrator = CreateIMigration(rep, this);
+		m_migrator = CreateIMigration(rep, false, this);
 		m_migrator->Stop();
 		for(AttrMap::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
 			m_migrator->AddEclToModule(m_targetModule, itr->first.first, itr->first.second, itr->second.first, itr->second.second, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))), m_checkSandbox.GetCheck() != 0);
