@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
 <s class_id="0" tracking_level="0" version="0">
-	<count>303</count>
+	<count>305</count>
 	<item_version>0</item_version>
 	<item class_id="1" tracking_level="0" version="0">
 		<categoryid>1</categoryid>
