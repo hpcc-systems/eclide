@@ -188,13 +188,13 @@ protected:
 			if (!toMod->Exists())
 			{
 				if (!toMod->Create())
-					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create Folder Failed - See Warning Tab")) % params.moduleLabel % params.attrLabel).str());
+					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create Folder Failed")) % params.moduleLabel % params.attrLabel).str());
 			}
 
 			if (!toAttr->Exists())
 			{
 				if (!toAttr->Create())
-					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create File Failed - See Warning Tab")) % params.moduleLabel % params.attrLabel).str());
+					self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Create File Failed")) % params.moduleLabel % params.attrLabel).str());
 			}
 
 			if (toAttr)
@@ -213,20 +213,20 @@ protected:
 						{
 							result = Checkout(toAttr);
 							if (!result)
-								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkout Target File - See Warning Tab")) % params.moduleLabel % params.attrLabel).str());
+								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkout Target File")) % params.moduleLabel % params.attrLabel).str());
 						}
 						if (result)
 						{
 							result = SetText(toAttr, params.ecl.c_str(), params.setTextNoBroadcast);
 							if (!result)
-								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Save Target ECL - See Warning Tab")) % params.moduleLabel % params.attrLabel).str());
+								self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Save Target ECL")) % params.moduleLabel % params.attrLabel).str());
 						}
 					}
 					if (!params.sandbox && toAttr->IsCheckedOut())
 					{
 						result = Checkin(toAttr, params.comment.c_str());
 						if (!result)
-							self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkin Target File - See Warning Tab")) % params.moduleLabel % params.attrLabel).str());
+							self->m_caller->LogMsg((boost::_tformat(_T("Failed (%1%.%2%):  Unable To Checkin Target File")) % params.moduleLabel % params.attrLabel).str());
 					}
 				}
 			}
