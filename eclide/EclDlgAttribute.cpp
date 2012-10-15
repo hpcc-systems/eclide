@@ -56,7 +56,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 		if (attrs.size())
 		{
 			if (!m_migrator)
-				m_migrator = CreateIMigration(::AttachRepository());
+				m_migrator = CreateIMigration(::AttachRepository(), false);
 			m_migrator->Stop();
 			for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
 				m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);

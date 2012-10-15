@@ -36,4 +36,4 @@ __interface IMigration : public IUnknown
 //	While(GetActiveMigrationCount() > 0)
 //		::Sleep(1000);
 
-COMMS_API IMigration * CreateIMigration(IRepository * targetRep, IMigrationCallback * caller = NULL);
+COMMS_API IMigration * CreateIMigration(IRepository * targetRep, bool setTextNoBroadcast, IMigrationCallback * caller = NULL);
