@@ -360,14 +360,12 @@ public:
 	bool Create()
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		if (!Exists())	
-		{
-			proc.unlock();
-			if (m_repository->InsertAttribute(GetModuleQualifiedLabel(), GetLabel(), m_type) != NULL)
-			{
-				return true;
-			}
-		}
+		if (Exists())	
+			return true;
+
+		if (m_repository->InsertAttribute(GetModuleQualifiedLabel(), GetLabel(), m_type) != NULL)
+			return true;
+
 		return false;
 	}
 
