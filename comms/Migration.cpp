@@ -249,11 +249,11 @@ protected:
 		}
 		catch (std::exception & e)
 		{
-			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  %3%.")) % modAttr.first % modAttr.second % e.what()).str());
+			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  %3%.")) % params.moduleLabel % params.attrLabel % e.what()).str());
 		}
 		catch (...)
 		{
-			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  Unknown.")) % modAttr.first % modAttr.second).str());
+			self->m_caller->LogMsg((boost::_tformat(_T("Exception(%1%.%2%):  Unknown.")) % params.moduleLabel % params.attrLabel).str());
 		}
 #endif
 	}
