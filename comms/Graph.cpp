@@ -8,7 +8,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsWorkunits;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsECLWorkunits;
 typedef ECLWUGraph ECLGraphEx;
@@ -157,7 +157,7 @@ public:
 		if (m_name.Compare(CW2T(c->Name, CP_UTF8)) != 0 ||
 			m_label.Compare(CW2T(c->Label, CP_UTF8)) != 0 ||
 			m_type.Compare(CW2T(c->Type, CP_UTF8)) != 0 ||
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 			m_running != c->Running ||
 			m_runningId != c->RunningId)
 #else
@@ -171,7 +171,7 @@ public:
 		m_name = CW2T(c->Name, CP_UTF8);
 		m_label = CW2T(c->Label, CP_UTF8);
 		m_type = CW2T(c->Type, CP_UTF8);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_running = c->Running;
 		m_complete = c->Complete;
 		m_failed = c->Failed;
@@ -194,7 +194,7 @@ public:
 		if (m_name.Compare(CW2T(c->Name, CP_UTF8)) != 0 ||
 			m_label.Compare(CW2T(c->Label, CP_UTF8)) != 0 ||
 			m_type.Compare(CW2T(c->Type, CP_UTF8)) != 0 ||
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 			m_graph.Compare(CW2T(c->Graph, CP_UTF8)) != 0 ||
 			m_running != c->Running ||
 			m_runningId != c->RunningId)
@@ -209,7 +209,7 @@ public:
 		m_name = CW2T(c->Name, CP_UTF8);
 		m_label = CW2T(c->Label, CP_UTF8);
 		m_type = CW2T(c->Type, CP_UTF8);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_graph = CW2T(c->Graph, CP_UTF8);
 		m_running = c->Running;
 		m_runningId = c->RunningId;
@@ -290,7 +290,7 @@ public:
 #endif
 	void Update(const std::_tstring & xgmml)
 	{
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_graph = xgmml.c_str();
 		m_running = false;
 		m_runningId = false;

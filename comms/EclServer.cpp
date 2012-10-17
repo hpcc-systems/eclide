@@ -8,7 +8,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsTopology;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsEnvironment;
 #endif
@@ -97,7 +97,7 @@ IEclServer * CreateEclServer(const CString & url, const TpEclServer * data)
 	attr->Update(data);
 	return attr;
 }
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 IEclServer * CreateEclServer(const CString & url, const ns5__TpEclServer * data)
 {
 	CEclServer * attr = CreateEclServerRaw(url, data->Name->c_str());

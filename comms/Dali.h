@@ -78,8 +78,8 @@ __interface IDali : public IUnknown
 	IWorkunit *GetXGMMLWorkunit(const CString &filePath) const;
 	signed GetResultData(const CString & wuid, int sequence, __int64 start, int count, ITable * result, __int64 &total) const;
 	void MonitorState(const CString & wuid) const;	//Notifications come thru "IWorkunit.on_refresh_connect"
-	IWorkunit * Submit(const CString &cluster, const CString & queue, WUAction action, const CString & ecl, const CString & path, const CString & label, int resultLimit, const CString & debugSettings, bool archive, int maxRunTime, bool debug);
-	IWorkunit * Schedule(const CString &cluster, const CString & queue, const CString & ecl, const CString & when, const CString & label, int resultLimit, const CString & debugSettings, bool archive);
+	IWorkunit * Submit(const CString &cluster, const CString & queue, WUAction action, const CString & attrQualifiedLabel, const CString & ecl, const CString & path, const CString & label, int resultLimit, const CString & debugSettings, bool archive, int maxRunTime, bool debug);
+	IWorkunit * Schedule(const CString &cluster, const CString & queue, const CString & attrQualifiedLabel, const CString & ecl, const CString & when, const CString & label, int resultLimit, const CString & debugSettings, bool archive);
 	bool CheckComplexity(const CString &cluster, const CString & queue, const CString & ecl, const CString &module, const CString &attribute, std::_tstring & result, CEclExceptionVector & errorResults);
 	void GetDependancies(const CString &cluster, const CString & queue, const CString & ecl, const CString &module, const CString &attribute, AttributeVector & results, CEclExceptionVector & errorResults);
 	bool GetDependanciesTree(const std::_tstring & cluster, const std::_tstring & queue, const std::_tstring & snapshot, const std::_tstring & items, std::_tstring & xmlDepends, CEclExceptionVector & outExceptions);

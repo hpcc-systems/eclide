@@ -380,13 +380,11 @@ public:
 		result->Create(m_tabbedChildWindow);
 		m_tabbedChildWindow.AddTab(result->GetHwnd(), _T("Submitted"), 0, 1);
 		std::_tstring debugStr = m_dlgview.GetDebug();
+		std::_tstring attrQualifiedLabel;
 		if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
-		{
-			if (!debugStr.empty())
-				debugStr += _T("\n");
-			debugStr += std::_tstring(_T("eclcc-main=")) + attr->GetQualifiedLabel(true);
-		}
-		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+			attrQualifiedLabel = attr->GetQualifiedLabel(true);
+
+		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
 		PostStatus(_T(""));

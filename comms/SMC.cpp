@@ -10,7 +10,7 @@
 #if _COMMS_VER < 68200
 using namespace WsSMC;
 typedef CWsSMCT<CCustomActionSecureSoapSocketClient> ServerT;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsECLWorkunits;
 using namespace WsEnvironment;
@@ -282,7 +282,7 @@ public:
 			for(int i = 0; i < running.GetCount(); ++i)
 			{
 				CComBSTR thorClusterName = running.GetItem(i)->Instance;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		CComBSTR build;
 		CStructArrayOut<ThorCluster> thorClusters;
 		CStructArrayOut<HoleCluster> holeClusters;
@@ -346,7 +346,7 @@ public:
 		HRESULT result;
 #if _COMMS_VER < 67205 
 		ESP_EXCEPTION_LOG(EspException);
-#elif _COMMS_VER < 70000 
+#elif _COMMS_VER < 700000 
 		ESP_EXCEPTION_LOG2(EspException);
 #else
 		ESP_STATUS_LOG;
@@ -359,7 +359,7 @@ public:
 				result = server.MoveJobUp(inCluster, inWuid);
 #elif _COMMS_VER < 67205
 				result = server.MoveJobUp(inCluster, inWuid, exceptions.GetArrayAddress(), exceptions.GetCountAddress());
-#elif _COMMS_VER < 70000 
+#elif _COMMS_VER < 700000 
 				result = server.MoveJobUp(inCluster, inWuid, exceptions);
 #else
 				CComBSTR position = _T("up");
@@ -373,7 +373,7 @@ public:
 				result = server.MoveJobDown(inCluster, inWuid);
 #elif _COMMS_VER < 67205
 				result = server.MoveJobDown(inCluster, inWuid, exceptions.GetArrayAddress(), exceptions.GetCountAddress());
-#elif _COMMS_VER < 70000 
+#elif _COMMS_VER < 700000 
 				result = server.MoveJobDown(inCluster, inWuid, exceptions);
 #else
 				CComBSTR position = _T("down");
@@ -387,7 +387,7 @@ public:
 				result = server.MoveJobFront(inCluster, inWuid);
 #elif _COMMS_VER < 67205
 				result = server.MoveJobFront(inCluster, inWuid, exceptions.GetArrayAddress(), exceptions.GetCountAddress());
-#elif _COMMS_VER < 70000 
+#elif _COMMS_VER < 700000 
 				result = server.MoveJobFront(inCluster, inWuid, exceptions);
 #else
 				CComBSTR position = _T("front");
@@ -401,7 +401,7 @@ public:
 				result = server.MoveJobBack(inCluster, inWuid);
 #elif _COMMS_VER < 67205
 				result = server.MoveJobBack(inCluster, inWuid, exceptions.GetArrayAddress(), exceptions.GetCountAddress());
-#elif _COMMS_VER < 70000 
+#elif _COMMS_VER < 700000 
 				result = server.MoveJobBack(inCluster, inWuid, exceptions);
 #else
 				CComBSTR position = _T("end");
