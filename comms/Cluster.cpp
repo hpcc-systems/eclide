@@ -8,7 +8,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsTopology;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsEnvironment;
 #endif
@@ -105,7 +105,7 @@ public:
 		m_DataModel = CW2T(c->DataModel, CP_UTF8);
 		Refresh();
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	void Update(const ns5__TpLogicalCluster * c)
 	{
 		SAFE_ASSIGN(m_Name, c->Name);
@@ -162,7 +162,7 @@ ICluster * CreateCluster(const CString & url, const TpCluster * data)
 	//attr->Update(data);
 	return NULL;//attr;
 }
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 ICluster * CreateCluster(const CString & url, const ns5__TpLogicalCluster * data)
 {
 	CCluster * attr = CreateClusterRaw(url, data->Name->c_str());

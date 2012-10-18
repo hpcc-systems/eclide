@@ -12,7 +12,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsRepository;
 #endif
@@ -368,7 +368,7 @@ public:
 		m_label = CW2T(c->Name, CP_UTF8);
 		m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
 #if _COMMS_VER < 64801
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		if (c->Type)
 		{
 			ATLASSERT(m_type == CreateIAttributeType((const TCHAR *)CW2T(c->Type ? c->Type : L"", CP_UTF8)));
@@ -390,7 +390,7 @@ public:
 		m_description = CW2T(c->Description, CP_UTF8);
 		m_lockedby = CW2T(c->LockedBy, CP_UTF8);
 		m_version = c->Version;
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_modifiedDate = CW2T(c->ModifiedDate, CP_UTF8);
 #else
 		ATLASSERT(!_T("TODO"));
@@ -448,7 +448,7 @@ public:
 	}
 #endif
 
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 #else
 	void Update(const SaveAttributeRequest * data)
 	{
@@ -699,7 +699,7 @@ IAttribute * CreateAttribute(const IRepository *rep, const ns2__ECLAttribute * d
 }
 #endif
 
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 #else
 IAttribute * CreateAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const SaveAttributeRequest * data)
 {

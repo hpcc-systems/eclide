@@ -9,7 +9,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsRepository;
 #endif
@@ -213,7 +213,7 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		m_placeholder = false;
 		m_label = CW2T(c->Name, CP_UTF8);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_access = static_cast<SecAccessFlags>(c->Access);
 #else
 		ATLASSERT(!_T("Todo"));

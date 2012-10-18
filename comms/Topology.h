@@ -37,7 +37,7 @@ __interface IMachine : public IUnknown
 	const TCHAR *GetType(std::_tstring &type) const;
 	const TCHAR *GetPath(std::_tstring &path) const;
 	int GetPort() const;
-#if _COMMS_VER < 70000 
+#if _COMMS_VER < 700000 
 	int GetOSType() const;
 #else
 	const TCHAR *GetOS(std::_tstring &os) const;

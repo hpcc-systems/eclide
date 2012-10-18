@@ -10,7 +10,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsRepository;
 #endif
@@ -142,7 +142,7 @@ public:
 		if (SysStringLen(c->Text))
 			m_ecl = CW2T(c->Text, CP_UTF8);
 		m_description = CW2T(c->Description, CP_UTF8);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_modifiedDate = CW2T(c->ModifiedDate, CP_UTF8);
 #else
 		ATLASSERT(!_T("ToDo"));

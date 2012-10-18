@@ -339,7 +339,7 @@ public:
 		m_label = CW2T(c->Name, CP_UTF8);
 		m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
 #if _COMMS_VER < 64801
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		m_type = CreateIAttributeType((const TCHAR *)CW2T(c->Type, CP_UTF8));
 #else
 #endif
