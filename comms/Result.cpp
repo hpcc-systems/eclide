@@ -8,7 +8,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsWorkunits;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsECLWorkunits;
 typedef ECLWUResult ECLResult;
@@ -111,7 +111,7 @@ public:
 	void Update(const ECLResult * c)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_name = CW2T(c->Name, CP_UTF8);
 		m_sequence = c->Sequence;
 		m_value = CW2T(c->Value, CP_UTF8);
@@ -163,7 +163,7 @@ IResult * CreateResult(const CString & url, const CString & wuid, int sequence)
 #if _COMMS_VER < 68200
 IResult * CreateResult(const CString & url, const CString & wuid, const ECLResult * result)
 {
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CComPtr<CResult> attr = CreateResultRaw(url, wuid, result->Sequence);
 #else
 	CComPtr<CResult> attr = CreateResultRaw(url, wuid, result->SequenceNumber);

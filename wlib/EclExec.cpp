@@ -5,22 +5,22 @@
 #include <RecursiveMutex.h> //clib
 #include "Thread.h" //clib
 
-void CEclExec::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugSettings, bool archive, int maxRunTime, bool debug)
+void CEclExec::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugSettings, bool archive, int maxRunTime, bool debug)
 {
 	if (scheduled && scheduled[0])
 	{
-		clib::thread run(__FUNCTION__, boost::bind(&EclSchedule, this, std::make_pair(clusterName, queueName), action, std::make_pair(eclSource, scheduled), label, resultLimit, debugSettings, archive, maxRunTime));
+		clib::thread run(__FUNCTION__, boost::bind(&EclSchedule, this, std::make_pair(clusterName, queueName), std::make_pair(action, attrQualifiedLabel), std::make_pair(eclSource, scheduled), label, resultLimit, debugSettings, archive, maxRunTime));
 	}
 	else
 	{
 		BindLimitStruct bls = {archive, maxRunTime, debug};
-		clib::thread run(__FUNCTION__, boost::bind(&EclGo, this, std::make_pair(clusterName, queueName), action, eclSource, eclPath, label, resultLimit, debugSettings, bls));
+		clib::thread run(__FUNCTION__, boost::bind(&EclGo, this, std::make_pair(clusterName, queueName), std::make_pair(action, attrQualifiedLabel), eclSource, eclPath, label, resultLimit, debugSettings, bls));
 	}
 }
 
-void CEclExec::ExecEclNoRefCount(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *eclSource, const TCHAR *eclPath)
+void CEclExec::ExecEclNoRefCount(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath)
 {
-	clib::thread run(__FUNCTION__, boost::bind(&EclGoNoRefCount, this, clusterName, queueName, action, eclSource, eclPath));
+	clib::thread run(__FUNCTION__, boost::bind(&EclGoNoRefCount, this, clusterName, queueName, action, attrQualifiedLabel, eclSource, eclPath));
 }
 
 void CEclExec::WorkunitDelete(Dali::IWorkunit* wu)
@@ -80,11 +80,11 @@ void CEclExec::DeleteWorkunit(Dali::IWorkunit * workunit)
 }
 
 //static 
-void CEclExec::EclGo(CComPtr<CEclExec> t, std::pair<std::_tstring, std::_tstring> clusterQueue, Dali::WUAction action, CString ecl, CString path, CString label, int resultLimit, CString debugSettings, BindLimitStruct bls)
+void CEclExec::EclGo(CComPtr<CEclExec> t, std::pair<std::_tstring, std::_tstring> clusterQueue, std::pair<Dali::WUAction, std::_tstring> actionAttrQualifiedLabel, CString ecl, CString path, CString label, int resultLimit, CString debugSettings, BindLimitStruct bls)
 {
 	CString wuid;
 	StlLinked<Dali::IDali> server = Dali::AttachDali();
-	StlLinked<Dali::IWorkunit> workunit = server->Submit(clusterQueue.first.c_str(), clusterQueue.second.c_str(), action, ecl, path, label, resultLimit, debugSettings, bls.archive, bls.maxRunTime, bls.debug);
+	StlLinked<Dali::IWorkunit> workunit = server->Submit(clusterQueue.first.c_str(), clusterQueue.second.c_str(), actionAttrQualifiedLabel.first, actionAttrQualifiedLabel.second.c_str(), ecl, path, label, resultLimit, debugSettings, bls.archive, bls.maxRunTime, bls.debug);
 	if ( workunit.isLinked() )
 	{
 		UpdateDefaultCluster(clusterQueue.first.c_str());
@@ -96,11 +96,11 @@ void CEclExec::EclGo(CComPtr<CEclExec> t, std::pair<std::_tstring, std::_tstring
 }
 
 //static 
-void CEclExec::EclGoNoRefCount(CEclExec * t, CString cluster, CString queue, Dali::WUAction action, CString ecl, CString path)
+void CEclExec::EclGoNoRefCount(CEclExec * t, CString cluster, CString queue, Dali::WUAction action, CString attrQualifiedLabel, CString ecl, CString path)
 {
 	CString wuid;
 	StlLinked<Dali::IDali> server = Dali::AttachDali();
-	StlLinked<Dali::IWorkunit> workunit = server->Submit(cluster, queue, action, ecl, path, _T(""), 0, _T(""), false, 0, false);
+	StlLinked<Dali::IWorkunit> workunit = server->Submit(cluster, queue, action, attrQualifiedLabel, ecl, path, _T(""), 0, _T(""), false, 0, false);
 	if ( workunit.isLinked() )
 	{
 		UpdateDefaultCluster(cluster);
@@ -112,11 +112,11 @@ void CEclExec::EclGoNoRefCount(CEclExec * t, CString cluster, CString queue, Dal
 }
 
 //static 
-void CEclExec::EclSchedule(CComPtr<CEclExec> t, std::pair<std::_tstring, std::_tstring> clusterQueue, Dali::WUAction action, std::pair<std::_tstring, std::_tstring> eclWhen, CString label, int resultLimit, CString debugSettings, bool archive, int maxRunTime)
+void CEclExec::EclSchedule(CComPtr<CEclExec> t, std::pair<std::_tstring, std::_tstring> clusterQueue, std::pair<Dali::WUAction, std::_tstring> actionAttrQualifiedLabel, std::pair<std::_tstring, std::_tstring> eclWhen, CString label, int resultLimit, CString debugSettings, bool archive, int maxRunTime)
 {
 	CString wuid;
 	StlLinked<Dali::IDali> server = Dali::AttachDali();
-	StlLinked<Dali::IWorkunit> workunit = server->Schedule(clusterQueue.first.c_str(), clusterQueue.second.c_str(), eclWhen.first.c_str(), eclWhen.second.c_str(), label, resultLimit, debugSettings, archive);
+	StlLinked<Dali::IWorkunit> workunit = server->Schedule(clusterQueue.first.c_str(), clusterQueue.second.c_str(), actionAttrQualifiedLabel.second.c_str(), eclWhen.first.c_str(), eclWhen.second.c_str(), label, resultLimit, debugSettings, archive);
 	if ( workunit.isLinked() )
 	{
 		UpdateDefaultCluster(clusterQueue.first.c_str());

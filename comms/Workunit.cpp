@@ -14,7 +14,7 @@
 #if _COMMS_VER < 68200
 using namespace WsWorkunits;
 using namespace WsSMC;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsECLWorkunits;
 using namespace WsEnvironment;
@@ -512,7 +512,7 @@ public:
 	void Update(const ECLWorkunit * c, bool resultsFetched, bool noBroadcast)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 		m_jobName = CW2T(c->Jobname, CP_UTF8);
 		m_wuid = CW2T(c->Wuid, CP_UTF8);
 		m_owner = CW2T(c->Owner, CP_UTF8);
@@ -586,7 +586,7 @@ public:
 			error->m_fileName = CW2T(ECLException0[i].FileName, CP_UTF8);
 #endif
 			error->m_severity = CW2T(ECLException0[i].Severity, CP_UTF8);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 			error->m_code = ECLException0[i].Code;
 			error->m_message = CW2T(ECLException0[i].Message, CP_UTF8);
 			error->m_lineNo = ECLException0[i].LineNo;
@@ -609,7 +609,7 @@ public:
 		for(int i = 0; i < __ApplicationValue6_nSizeIs; ++i)
 		{
 			std::_tstring app = CW2T(ApplicationValue6[i].Application, CP_UTF8);
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 			std::_tstring key = CW2T(ApplicationValue6[i].Name, CP_UTF8);
 			std::_tstring val = CW2T(ApplicationValue6[i].Value, CP_UTF8);
 #else
@@ -812,7 +812,7 @@ public:
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 #if (_COMMS_VER < 53306)
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 		m_jobName = CW2T(c->Jobname, CP_UTF8);
 		m_wuid = CW2T(c->Wuid, CP_UTF8);
 		m_stateID = static_cast<WUState>(c->StateID);
@@ -991,7 +991,7 @@ CWorkunit * CreateWorkunitRaw(const CServerConfig& config, const CString & wuid)
 #if _COMMS_VER < 68200
 IWorkunit * CreateWorkunit(const CServerConfig& config, const ECLWorkunit * data, bool resultsFetched, bool noBroadcast)
 {
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CWorkunit * wu = CreateWorkunitRaw(config, data->Wuid);
 #else
 	CWorkunit * wu = CreateWorkunitRaw(config, data->WUID);
@@ -1002,7 +1002,7 @@ IWorkunit * CreateWorkunit(const CServerConfig& config, const ECLWorkunit * data
 }
 IWorkunit * CreateWorkunit(const CServerConfig& config, const CString & wuid, ECLTimingData *TimingData, int __TimingData_nSizeIs)
 {
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CWorkunit * wu = CreateWorkunitRaw(config, wuid);
 #else
 	CWorkunit * wu = CreateWorkunitRaw(config, wuid);
@@ -1013,7 +1013,7 @@ IWorkunit * CreateWorkunit(const CServerConfig& config, const CString & wuid, EC
 }
 IWorkunit * CreateWorkunit(const CServerConfig& config, const CString & wuid, ECLGraph *Graphs, int __Graphs_nSizeIs)
 {
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CWorkunit * wu = CreateWorkunitRaw(config, wuid);
 #else
 	CWorkunit * wu = CreateWorkunitRaw(config, wuid);
@@ -1024,7 +1024,7 @@ IWorkunit * CreateWorkunit(const CServerConfig& config, const CString & wuid, EC
 }
 IWorkunit * CreateWorkunit(const CString & url, const CString & daliLabel, const ActiveWorkunit *data, bool noBroadcast)
 {
-#if _COMMS_VER < 70000
+#if _COMMS_VER < 700000
 	CWorkunit *wu = WorkunitCache.Get(new CWorkunit(url, daliLabel, data->Wuid));
 #else
 	CWorkunit *wu = WorkunitCache.Get(new CWorkunit(url, daliLabel, data->WUID));

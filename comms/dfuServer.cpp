@@ -9,7 +9,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsTopology;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsEnvironment;
 #endif
@@ -99,7 +99,7 @@ public: //IDfuServer
 #endif
 		Refresh();
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	void Update(const ns5__TpDfuServer * c)
 	{
 		SAFE_ASSIGN(m_Name, c->Name);
@@ -147,7 +147,7 @@ IDfuServer * CreateDfuServer(const CString & url, const TpDfuServer * data)
 	server->Update(data);
 	return server;
 }
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 IDfuServer * CreateDfuServer(const CString & url, const ns5__TpDfuServer * data)
 {
 	CDfuServer * server = CreateDfuServerRaw(url, data->Name->c_str());

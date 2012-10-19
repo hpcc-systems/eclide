@@ -10,7 +10,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsTopology;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsEnvironment;
 #endif
@@ -88,7 +88,7 @@ public: //IDropZone
 #endif
 		Refresh();
 	}
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 	void Update(const ns5__TpDropZone * c)
 	{
 		SAFE_ASSIGN(m_Name, c->Name);
@@ -136,7 +136,7 @@ IDropZone * CreateDropZone(const CString & url, const TpDropZone * data)
 	zone->Update(data);
 	return zone;
 }
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 IDropZone * CreateDropZone(const CString & url, const ns5__TpDropZone * data)
 {
 	CDropZone * zone = CreateDropZoneRaw(url, data->Name->c_str(), data->Path->c_str());
