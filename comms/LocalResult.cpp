@@ -8,7 +8,7 @@
 
 #if _COMMS_VER < 68200
 using namespace WsWorkunits;
-#elif _COMMS_VER < 70000
+#elif _COMMS_VER < 700000
 #else
 using namespace WsECLWorkunits;
 typedef ECLWUResult ECLResult;

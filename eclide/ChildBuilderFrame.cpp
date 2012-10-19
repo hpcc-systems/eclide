@@ -157,6 +157,11 @@ public:
 			activeWnd.SetFocus();
 	}
 
+	void SetAttribute(IAttribute *attribute)
+	{
+		m_dlgview.SetAttribute(attribute);
+	}
+
 	void SetEcl(const CString & ecl, bool resetSavePoint)
 	{
 		m_dlgview.SetSource(ecl, resetSavePoint, true);
@@ -374,7 +379,12 @@ public:
 		m_results.insert(m_results.begin(), result);
 		result->Create(m_tabbedChildWindow);
 		m_tabbedChildWindow.AddTab(result->GetHwnd(), _T("Submitted"), 0, 1);
-		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), m_dlgview.GetDebug(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+		std::_tstring debugStr = m_dlgview.GetDebug();
+		std::_tstring attrQualifiedLabel;
+		if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
+			attrQualifiedLabel = attr->GetQualifiedLabel(true);
+
+		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
 		PostStatus(_T(""));
@@ -1082,6 +1092,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
 	{
 		pChild = new CChildBuilderFrm(workspaceItem);
 		CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
+		pChild->m_view->SetAttribute(src);
 		pChild->m_view->SetEcl(src->GetText(), true);
 	}
 	return ((CMDIChildWnd *)pChild)->GetSafeHwnd();

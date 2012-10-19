@@ -67,7 +67,7 @@ bool CBuilderDlg::DoSave(bool attrOnly)
 		if (attrs.size())
 		{
 			if (!m_migrator)
-				m_migrator = CreateIMigration(::AttachRepository());
+				m_migrator = CreateIMigration(::AttachRepository(), false);
 			m_migrator->Stop();
 
 			for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
@@ -120,26 +120,30 @@ bool CBuilderDlg::DoFileSave(const CString & sPathName)
 	}
 
 	// Save file name for later
-	m_attribute = NULL;				//Attribute detaches on SaveAs (as user could be saving anywhere)
-	SetNamePath(newPath);	
+	if (SetNamePath(newPath))
+		m_attribute = NULL;				//Attribute detaches on SaveAs (as user could be saving anywhere).
+
 	m_view.SetSavePoint();
 
 	return TRUE;
 }
 
-void CBuilderDlg::SetNamePath(const CString & sPathName)
+bool CBuilderDlg::SetNamePath(const CString & sPathName)
 {	
-	CString pathName = sPathName;
-	TCHAR szTitle [_MAX_FNAME], szExt[_MAX_FNAME];
-	_tsplitpath(pathName.GetBuffer(_MAX_PATH), NULL, NULL, szTitle, szExt);
-	pathName.ReleaseBuffer();
-	lstrcat(szTitle, szExt);			
+	if (!boost::filesystem::equivalent(static_cast<const TCHAR *>(m_path), static_cast<const TCHAR *>(sPathName)))
+	{
+		CString pathName = sPathName;
+		TCHAR szTitle [_MAX_FNAME], szExt[_MAX_FNAME];
+		_tsplitpath(pathName.GetBuffer(_MAX_PATH), NULL, NULL, szTitle, szExt);
+		pathName.ReleaseBuffer();
+		lstrcat(szTitle, szExt);			
 
-	m_path = sPathName;
-	if (szTitle) 
-		m_name = szTitle;
-	
-	//ATLASSERT(!"TODO:  UIUpdateTitle()");
+		m_path = sPathName;
+		if (szTitle) 
+			m_name = szTitle;
+		return true;
+	}
+	return false;
 }
 
 const TCHAR * CBuilderDlg::GetPath() const
@@ -693,7 +697,14 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
 		{
 			CString message = m_name + _T("\r\n\r\n") + _T("This file has been modified outside of the source editor.\r\nDo you want to reload it and lose the changes made in the source editor?");
 			if (MessageBox(message, CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with ChildBduilderFrame.cpp
+			{
 				m_view.SetText(attr->GetText(false));
+				ResetSavePoint();
+			}
+			else
+			{
+				m_view.SetText(ecl);  // Force dirty flag
+			}
 		}
 	}
 	//TODO handle renamed and deleted.

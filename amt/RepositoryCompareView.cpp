@@ -121,7 +121,7 @@ void CRepositoryCompareView::Init(IRepository * repLHS, IRepository * repRHS, co
 
 	m_daliLHS = dali;
 
-	m_migrator = CreateIMigration(m_repRHS, this);
+	m_migrator = CreateIMigration(m_repRHS, true, this);
 
 #ifndef _XXXDEBUG
 	Load(NULL, false);

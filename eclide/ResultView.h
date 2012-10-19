@@ -87,7 +87,7 @@ __interface IResultViewer :	public ISearchable, public IUnknown
 	bool ToggleHexColumnDisplay(int column=-1);
 	void RenameColumn(unsigned col, const std::_tstring& newname);
 	bool UpdateUI(CCmdUI * cui);
-	void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugString, bool archive, int maxRuntime, bool debug);
+	void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *qualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugString, bool archive, int maxRuntime, bool debug);
 	void SetDeleteWorkunit(bool bDelete=true);
 	void PostSelectRibbon();
 };
