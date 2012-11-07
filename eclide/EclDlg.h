@@ -7,6 +7,7 @@
 #include <findReplace.h>
 #include "MainFrm.h"
 #include "Combo.h"
+#include <EclCC.h>
 
 //  ===========================================================================
 __interface IAttribute;
@@ -148,7 +149,9 @@ public:
 			m_eclSlot->PostStatus(_T("Checking..."));
 
 		GetIMainFrame()->Send_RefreshSyntax(NULL, 0, false);
-		GetIMainFrame()->DoFileSaveAll(true);
+		if (IsLocalRepositoryEnabled())
+			GetIMainFrame()->DoFileSaveAll(true);
+
 		pT->DoCheckSyntax();
 	}
 
