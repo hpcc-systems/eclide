@@ -10,7 +10,7 @@ set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH
 set ( HPCC_MAJOR 6 )
 set ( HPCC_MINOR 8 )
 set ( HPCC_POINT 6 )
-set ( HPCC_BUILD 1001 )
+set ( HPCC_BUILD 1002 )
 set ( HPCC_VERSION ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}.${HPCC_BUILD} )
 
 configure_file (
