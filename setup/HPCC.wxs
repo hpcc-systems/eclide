@@ -15,6 +15,7 @@
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND' Minimum='6.0.0' IncludeMinimum='yes' Maximum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMaximum='no' />
     </Upgrade>
 
+    <!-- Disable Downgrade Checking
     <Upgrade Id='$(var.GraphControlUpgradeCode)'>
       <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMinimum='yes' Maximum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMaximum='yes' />
       <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMinimum='no' />
@@ -24,6 +25,7 @@
     <CustomAction Id='AlreadyUpdated' Error='[ProductName] is already installed.' />
     <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
     <CustomAction Id="SetProgramFolder" Return="check" Property="ProgramMenuDir" Value="[ProgramMenuFolder][WIX_GROUP]"></CustomAction>
+    -->
 
     <PropertyRef Id='WIX_DIR_COMMON_DOCUMENTS' />
     <Property Id='WIX_GROUP' Value='HPCC Systems'>

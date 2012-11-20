@@ -9,6 +9,7 @@
     <Package Id='*' Description='$(var.Description)' Manufacturer='$(var.Manufacturer)' InstallerVersion='300' Compressed='yes' InstallScope='perMachine'/>
     <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
 
+    <!-- Disable Downgrade Checking
     <Upgrade Id='$(var.GraphControl64UpgradeCode)'>
       <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMinimum='yes' Maximum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMaximum='yes' />
       <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMinimum='no' />
@@ -18,7 +19,7 @@
     <CustomAction Id='AlreadyUpdated' Error='[ProductName] is already installed.' />
     <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
     <CustomAction Id="SetProgramFolder" Return="check" Property="ProgramMenuDir" Value="[ProgramMenuFolder][WIX_GROUP]"></CustomAction>
-
+    -->
     <!-- Directory Structure -->
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFiles64Folder' Name='PFiles'>
@@ -78,6 +79,6 @@
 
     <!--<Icon Id="Foobar10.exe" SourceFile="FoobarAppl10.exe" />-->
     <!--<Icon Id='ECLIDE.exe' SourceFile='eclide.exe' />-->
-  
+
 </Product>
 </Wix>
