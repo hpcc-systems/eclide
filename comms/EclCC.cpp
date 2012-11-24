@@ -171,6 +171,8 @@ public:
 		algo::split(SplitVec, _err, algo::is_any_of("\r\n"), algo::token_compress_on);
 		for(split_vector_type::iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
 		{
+			if (itr->empty())
+				continue;
 			ParsedEclError err;
 			if (ParseEclError(*itr, err))
 			{
