@@ -52,7 +52,11 @@ struct ecl_parser : public boost::spirit::classic::grammar<ecl_parser, ecl_closu
 
 			first =
 				(
-				def_string	= location_str >> confix_p('(', row_col, ')') >> ':' >> type_str >> alpha_p >> code_num >> ":" >> message_str,
+				def_string		= def_string_1 | def_string_2,
+
+				def_string_1	= location_str >> !confix_p('(', row_col, ')') >> ':' >> type_str >> alpha_p >> code_num >> ":" >> message_str,
+
+				def_string_2	= type_str >> ":" >> message_str [ASSIGN(location, _T(""))],
 
 				location_str = identifier2 [ASSIGNSTR(location, arg1, arg2)],
 
@@ -99,16 +103,18 @@ struct ecl_parser : public boost::spirit::classic::grammar<ecl_parser, ecl_closu
 #undef ASSIGN
 		}
 		boost::spirit::classic::subrule<0> def_string;
-		boost::spirit::classic::subrule<1> location_str;
-		boost::spirit::classic::subrule<2> row_col;
-		boost::spirit::classic::subrule<3> row_num;
-		boost::spirit::classic::subrule<4> col_num;
-		boost::spirit::classic::subrule<5> message_str;
-		boost::spirit::classic::subrule<6> type_str;
-		boost::spirit::classic::subrule<7> code_num;
-		boost::spirit::classic::subrule<8> identifier1;
-		boost::spirit::classic::subrule<9> identifier2;
-		boost::spirit::classic::subrule<10> identifier3;
+		boost::spirit::classic::subrule<1> def_string_1;
+		boost::spirit::classic::subrule<2> def_string_2;
+		boost::spirit::classic::subrule<3> location_str;
+		boost::spirit::classic::subrule<4> row_col;
+		boost::spirit::classic::subrule<5> row_num;
+		boost::spirit::classic::subrule<6> col_num;
+		boost::spirit::classic::subrule<7> message_str;
+		boost::spirit::classic::subrule<8> type_str;
+		boost::spirit::classic::subrule<9> code_num;
+		boost::spirit::classic::subrule<10> identifier1;
+		boost::spirit::classic::subrule<11> identifier2;
+		boost::spirit::classic::subrule<12> identifier3;
 		boost::spirit::classic::rule<scannerT> first;
 		const boost::spirit::classic::rule<scannerT>& start() const
 		{
@@ -119,6 +125,9 @@ struct ecl_parser : public boost::spirit::classic::grammar<ecl_parser, ecl_closu
 
 bool ParseEclError(const std::_tstring & def_string, ParsedEclError & result)
 {
+	if (def_string.empty()) {
+		return false;
+	}
 	using namespace std;
 	using namespace boost::spirit::classic;
 	using namespace phoenix;
