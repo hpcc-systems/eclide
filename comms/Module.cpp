@@ -16,6 +16,9 @@ using namespace WsRepository;
 
 std::_tstring modEmptyString;
 
+//  ===========================================================================
+class CModule;
+void DeleteModule(CModule * module);
 class CModule : public IModule, public clib::CLockableUnknown
 {
 protected:
@@ -173,7 +176,17 @@ public:
 		for(IModuleVector::iterator itr = children.begin(); itr != children.end(); ++itr)
 			itr->get()->Delete();
 
-		return m_repository->DeleteModule(GetQualifiedLabel());
+		IAttributeVector childAttrs;
+		GetAttributes(childAttrs, true);
+		for(IAttributeVector::iterator itr = childAttrs.begin(); itr != childAttrs.end(); ++itr)
+			itr->get()->Refresh(false, NULL, true);
+
+		if (m_repository->DeleteModule(GetQualifiedLabel()))
+		{
+			DeleteModule(this);
+			return true;
+		}
+		return false;
 	}
 
 	bool Exists() const
@@ -263,12 +276,18 @@ public:
 	}
 };
 
-CacheT<std::_tstring, CModule> ModuleCache;
+//  ===========================================================================
+static CacheT<std::_tstring, CModule> ModuleCache;
 
 void ClearModuleCache()
 {
 	ATLTRACE(_T("Module cache before clearing(size=%u)\r\n"), ModuleCache.Size());
 	ModuleCache.Clear();
+}
+
+void DeleteModule(CModule * module)
+{
+	ModuleCache.Clear(module->GetCacheID());
 }
 
 CModule * CreateModuleRaw(const IRepository *rep, const std::_tstring & label, bool placeholder)
