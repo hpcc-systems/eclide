@@ -283,8 +283,9 @@ using namespace WsAttributes;
 #else
 #endif
 
+//  ===========================================================================
 class CDiskModule;
-static CacheT<std::_tstring, CDiskModule> DiskModuleCache;
+void DeleteModule(CDiskModule * module);
 
 class CDiskModule : public IModule, public clib::CLockableUnknown
 {
@@ -439,9 +440,15 @@ public:
 		GetModules(children);
 		for(IModuleVector::iterator itr = children.begin(); itr != children.end(); ++itr)
 			itr->get()->Delete();
+
+		IAttributeVector childAttrs;
+		GetAttributes(childAttrs, true);
+		for(IAttributeVector::iterator itr = childAttrs.begin(); itr != childAttrs.end(); ++itr)
+			itr->get()->Refresh(false, NULL, true);
+
 		if (m_repository->DeleteModule(GetQualifiedLabel()))
 		{
-			DiskModuleCache.Clear(this);
+			DeleteModule(this);
 			return true;
 		}
 		return false;
@@ -526,10 +533,17 @@ public:
 	}
 };
 
+//  ===========================================================================
+static CacheT<std::_tstring, CDiskModule> DiskModuleCache;
 void ClearDiskModuleCache()
 {
 	ATLTRACE(_T("Module cache before clearing(size=%u)\r\n"), DiskModuleCache.Size());
 	DiskModuleCache.Clear();
+}
+
+void DeleteModule(CDiskModule * module)
+{
+	DiskModuleCache.Clear(module->GetCacheID());
 }
 
 CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, boost::filesystem::wpath path)
