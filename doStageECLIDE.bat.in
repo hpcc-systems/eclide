@@ -12,6 +12,7 @@ set IDE_PDB_DIR="%PDB_DIR%\ECL IDE"
 set GC_PDB_DIR="%PDB_DIR%\Graph Control"
 set GC64_PDB_DIR="%PDB_DIR%\Graph Control x64"
 
+rmdir /S /Q %STAGE_DIR%
 mkdir %STAGE_DIR%
 mkdir %PF_DIR%
 mkdir %HPCC_DIR%

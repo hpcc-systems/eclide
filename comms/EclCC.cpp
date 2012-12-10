@@ -43,6 +43,13 @@ public:
 		ATLASSERT(m_config);
 		m_compilerFile = CString(m_config->Get(GLOBAL_COMPILER_LOCATION));
 		m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
+
+		//  Patch for 3.10 temporary weirdness (directory structure changes).
+		if (!boost::filesystem::exists(m_compilerFilePath) && boost::algorithm::icontains(m_compilerFile, "\\bin\\ver_3_6")) 
+		{
+			boost::algorithm::replace_all(m_compilerFile, "\\bin\\ver_3_6", "\\ver_3_6\\bin");
+			m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
+		}
 		m_compilerFolderPath = m_compilerFilePath.parent_path();
 
 		m_arguments = CString(m_config->Get(GLOBAL_COMPILER_ARGUMENTS));
@@ -50,11 +57,12 @@ public:
 		m_workingFolder = CString(m_config->Get(GLOBAL_COMPILER_ECLWORKINGFOLDER));
 		m_workingFolderPath = boost::filesystem::wpath(m_workingFolder, boost::filesystem::native);
 
-			//{
-			//	const TCHAR * hpccbin = _tgetenv(_T("HPCCBIN"));
-			//	if (hpccbin)
-			//	{
 		boost::filesystem::wpath stdLibPath = m_compilerFolderPath / _T("ecllibrary");
+
+		//  Patch for 3.10 temporary weirdness (directory structure changes).
+		if (!boost::filesystem::exists(stdLibPath))
+			stdLibPath = m_compilerFolderPath.parent_path() / _T("share") / _T("ecllibrary");
+
 		if (boost::filesystem::exists(stdLibPath))
 			m_eclFolders.push_back(std::make_pair(stdLibPath.directory_string(), false));
 		for (int i = 0; i < 10; ++i)
