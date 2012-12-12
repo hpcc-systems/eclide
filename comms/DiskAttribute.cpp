@@ -17,9 +17,9 @@ using namespace WsAttributes;
 #else
 #endif
 
+//  ===========================================================================
 class CDiskAttribute;
-static CacheT<std::_tstring, CDiskAttribute> DiskAttributeCache;
-
+void DeleteAttribute(CDiskAttribute * attr);
 class CDiskAttribute : public CAttributeBase, public IDiskAttribute, public IAttributeHistory
 {
 protected:
@@ -341,7 +341,6 @@ public:
 				if (retVal != 0)
 					throw std::exception("Unknown Error During Folder Delete.", retVal);
 				Refresh(false, NULL, true);
-				DiskAttributeCache.Clear(this);
 				return true;
 			}
 		} catch (const boost::filesystem::filesystem_error & ex) {
@@ -425,6 +424,9 @@ public:
 
 	void Refresh(bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
 	{
+		if (deleted) 
+			DeleteAttribute(this);
+
 		on_refresh(this, eclChanged, newAttrAsOldOneMoved, deleted);
 	}
 
@@ -462,6 +464,8 @@ public:
 	}
 };
 
+//  ===========================================================================
+static CacheT<std::_tstring, CDiskAttribute> DiskAttributeCache;
 void ClearDiskAttributeCache()
 {
 	ATLTRACE(_T("File cache before clearing(size=%u)\r\n"), DiskAttributeCache.Size());
@@ -472,6 +476,11 @@ IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const
 {
 	CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::wpath(), version, sandboxed);
 	return DiskAttributeCache.Exists(attr->GetCacheID());
+}
+
+void DeleteAttribute(CDiskAttribute * attr)
+{
+	DiskAttributeCache.Clear(attr->GetCacheID());
 }
 
 CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed)
