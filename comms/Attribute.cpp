@@ -24,6 +24,8 @@ COMMS_API const TCHAR *GetAttrStateLabel(int nIndex)
 	return ATTRSTATELABEL[nIndex];
 }
 //  ===========================================================================
+class CAttribute;
+void DeleteAttribute(CAttribute * attr);
 class CAttribute : public CAttributeBase, public IAttribute, public IAttributeHistory
 {
 private:
@@ -601,6 +603,9 @@ public:
 
 	void Refresh(bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
 	{
+		if (deleted) 
+			DeleteAttribute(this);
+
 		on_refresh(this, eclChanged, newAttrAsOldOneMoved, deleted);
 	}
 
@@ -646,6 +651,11 @@ IAttribute * GetAttribute(const IRepository *rep, const TCHAR* module, const TCH
 {
 	CComPtr<CAttribute> attr = new CAttribute(rep, module, label, type, version, sandboxed, placeholder);
 	return AttributeCache.Exists(attr->GetCacheID());
+}
+
+void DeleteAttribute(CAttribute * attr)
+{
+	AttributeCache.Clear(attr->GetCacheID());
 }
 
 CAttribute * CreateAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed, bool placeholder)

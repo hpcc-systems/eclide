@@ -14,6 +14,8 @@ struct ParsedEclError
 	ParsedEclError()
 	{
 		row = 0;
+		col = 0;
+		code = 0;
 	}
 };
 
