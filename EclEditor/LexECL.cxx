@@ -65,8 +65,6 @@ static void ColouriseEclDoc(unsigned int startPos, int length, int initStyle, Wo
 	WordList cplusplus;
 	cplusplus.Set("beginc endc");
 
-	bool stylingWithinPreprocessor = false;
-
 	CharacterSet setOKBeforeRE(CharacterSet::setNone, "(=,");
 	CharacterSet setDoxygen(CharacterSet::setLower, "$@\\&<>#{}[]");
 	CharacterSet setWordStart(CharacterSet::setAlpha, "_", 0x80, true);
@@ -185,14 +183,8 @@ static void ColouriseEclDoc(unsigned int startPos, int length, int initStyle, Wo
 			case SCE_ECL_PREPROCESSOR:
 				if (sc.atLineStart && !continuationLine) {
 					sc.SetState(SCE_ECL_DEFAULT);
-				} else if (stylingWithinPreprocessor) {
-					if (IsASpace(sc.ch)) {
-						sc.SetState(SCE_ECL_DEFAULT);
-					}
-				} else {
-					if (sc.Match('/', '*') || sc.Match('/', '/')) {
-						sc.SetState(SCE_ECL_DEFAULT);
-					}
+				} else if (!setWord.Contains(sc.ch)) {
+					sc.SetState(SCE_ECL_DEFAULT);
 				}
 				break;
 			case SCE_ECL_COMMENT:
