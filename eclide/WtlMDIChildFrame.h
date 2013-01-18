@@ -222,7 +222,6 @@ afx_msg LRESULT CWtlMDIChildFrame<ViewT>::OnCloseAllClearAutoSave(WPARAM wParam,
 template<typename ViewT>
 afx_msg LRESULT CWtlMDIChildFrame<ViewT>::OnGetTooltip(WPARAM wParam, LPARAM lParam)
 {
-
 	std::_tstring * tooltip = (std::_tstring *)wParam;
 	if (tooltip) 
 	{
