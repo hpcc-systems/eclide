@@ -5,7 +5,7 @@
   <?define Name='HPCC Graph Control' ?>
   <?define Description='HPCC Graph Control Installer' ?>
 
-  <Product Id='$(var.ProductCode)' UpgradeCode='$(var.GraphControlUpgradeCode)' Name='$(var.Name)' Language='1033' Version='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' Manufacturer='$(var.Manufacturer)'>
+  <Product Id='$(var.ProductCode)' UpgradeCode='$(var.GraphControlUpgradeCode)' Name='$(var.Name)' Language='1033' Version='$(var.ProductVersion)' Manufacturer='$(var.Manufacturer)'>
     <Package Id='*' Description='$(var.Description)' Manufacturer='$(var.Manufacturer)' InstallerVersion='300' Compressed='yes' InstallScope='perMachine'/>
     <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
 
