@@ -64,6 +64,7 @@ bool CBuilderDlg::DoSave(bool attrOnly)
 		IAttributeVector attrs;
 		Dali::CEclExceptionVector errors;
 		m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, errors);
+		SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
 		if (attrs.size())
 		{
 			if (!m_migrator)
@@ -73,10 +74,7 @@ bool CBuilderDlg::DoSave(bool attrOnly)
 			for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
 				m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
 			m_migrator->Start();
-			m_migrator->Join();
-			SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
-			GetIMainFrame()->Send_RefreshRepositoryWindow(m_attribute->GetModule());
-			GetIMainFrame()->SyncTOC(m_attribute->GetQualifiedLabel(), m_attribute->GetType());
+			SetTimer(0, 200);
 		}
 		return true;
 	}
@@ -87,6 +85,15 @@ bool CBuilderDlg::DoSave(bool attrOnly)
 	return false;
 }
 
+void CBuilderDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (m_migrator->GetActiveMigrationCount() == 0)
+	{
+		KillTimer(0);
+		GetIMainFrame()->Send_RefreshRepositoryWindow(m_attribute->GetModule());
+		GetIMainFrame()->SyncTOC(m_attribute->GetQualifiedLabel(), m_attribute->GetType());
+	}
+}
 bool CBuilderDlg::DoFileSaveAs() 
 {
 	CFileDialogEx wndFileDialog(FALSE, _T(".ecl"), m_path, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szEclSaveFilter, m_hWnd);

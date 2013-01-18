@@ -5,7 +5,7 @@
   <?define Name='HPCC Client Tools' ?>
   <?define Description='HPCC Client Tools Installer' ?>
 
-  <Product Id='$(var.ProductCode)' UpgradeCode='$(var.UpgradeCode)' Name='$(var.Name)' Language='1033' Version='!(bind.FileVersion.ECLIDE.exe_File)' Manufacturer='$(var.Manufacturer)'>
+  <Product Id='$(var.ProductCode)' UpgradeCode='$(var.UpgradeCode)' Name='$(var.Name)' Language='1033' Version='$(var.ProductVersion)' Manufacturer='$(var.Manufacturer)'>
     <Package Id='*' Description='$(var.Description)' Manufacturer='$(var.Manufacturer)' InstallerVersion='300' Compressed='yes' InstallScope='perMachine'/>
     <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
 

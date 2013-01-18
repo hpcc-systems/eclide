@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
-  <?define ProductVersion='6.00.0405' ?>
+  <?define ProductVersion='@MSI_VERSION@' ?>
   <?define Sku='' ?>
   <?define Manufacturer='HPCC Systems' ?>
   <?define ProductCode='*' ?>
