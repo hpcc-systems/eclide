@@ -160,7 +160,10 @@ public:
 
 	const TCHAR * GetTabTip(std::_tstring & tabTip)
 	{
-		tabTip = GetPath();
+		if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
+		{
+			tabTip = attr->GetQualifiedLabel();
+		}
 		return tabTip.c_str();
 	}
 
