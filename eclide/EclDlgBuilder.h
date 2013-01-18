@@ -130,6 +130,7 @@ public:
 		MESSAGE_HANDLER_EX(CWM_INITIALIZE, OnInitialize)
 		MSG_WM_DESTROY(OnDestroy)
 		MSG_WM_SIZE(OnSize)
+		MSG_WM_TIMER(OnTimer)
 
 		MESSAGE_HANDLER_EX(BUM_REFRESHQUEUECLUSTER, OnRefreshQueueCluster)
 
@@ -180,6 +181,7 @@ public:
 	LRESULT OnInitialize(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void OnDestroy();
 	void OnSize(UINT nType, CSize size);
+	void OnTimer(UINT_PTR nIDEvent);
 	LRESULT OnRefreshQueueCluster(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	void OnFileSaveAs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);

@@ -39,6 +39,7 @@ public:
 	BEGIN_MSG_MAP(thisClass)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MESSAGE_HANDLER_EX(CWM_INITIALIZE, OnInitialize)
+		MSG_WM_TIMER(OnTimer)
 
 		COMMAND_ID_HANDLER_EX(ID_ECL_SYNCTOC, OnEclSyncToc)
 		COMMAND_ID_HANDLER_EX(ID_ECL_GOTO, OnEclGoto)
@@ -58,6 +59,7 @@ public:
 
 	LRESULT OnInitDialog(HWND hWnd, LPARAM lParam);
 	LRESULT OnInitialize(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void OnTimer(UINT_PTR nIDEvent);
 	void OnEclSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 	void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 	void OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
