@@ -11,9 +11,9 @@
 
     <!-- Disable Downgrade Checking
     <Upgrade Id='$(var.GraphControlUpgradeCode)'>
-      <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMinimum='yes' Maximum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMaximum='yes' />
-      <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMinimum='no' />
-      <UpgradeVersion OnlyDetect='no' Property='GC_PREVIOUSFOUND' Minimum='1.0.0' IncludeMinimum='yes' Maximum='!(bind.FileVersion.npHPCCSystemsGraphViewControl)' IncludeMaximum='no' />
+      <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='no' />
+      <UpgradeVersion OnlyDetect='no' Property='GC_PREVIOUSFOUND' Minimum='1.0.0' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='no' />
     </Upgrade>
     
     <CustomAction Id='AlreadyUpdated' Error='[ProductName] is already installed.' />
