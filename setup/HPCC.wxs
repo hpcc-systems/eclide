@@ -10,16 +10,16 @@
     <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
 
     <Upgrade Id='$(var.UpgradeCode)'>
-      <UpgradeVersion OnlyDetect='yes' Property='SELFFOUND' Minimum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMinimum='yes' Maximum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMaximum='yes' />
-      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMinimum='no' />
-      <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND' Minimum='6.0.0' IncludeMinimum='yes' Maximum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMaximum='no' />
+      <UpgradeVersion OnlyDetect='yes' Property='SELFFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='no' />
+      <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND' Minimum='6.0.0' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='no' />
     </Upgrade>
 
     <!-- Disable Downgrade Checking
     <Upgrade Id='$(var.GraphControlUpgradeCode)'>
-      <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMinimum='yes' Maximum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMaximum='yes' />
-      <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMinimum='no' />
-      <UpgradeVersion OnlyDetect='no' Property='GC_PREVIOUSFOUND' Minimum='1.0.0' IncludeMinimum='yes' Maximum='!(bind.FileVersion.ECLIDE.exe_File)' IncludeMaximum='no' />
+      <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='no' />
+      <UpgradeVersion OnlyDetect='no' Property='GC_PREVIOUSFOUND' Minimum='1.0.0' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='no' />
     </Upgrade>
     -->
 
