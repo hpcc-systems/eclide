@@ -21,6 +21,8 @@
     <CustomAction Id="SetProgramFolder" Return="check" Property="ProgramMenuDir" Value="[ProgramMenuFolder][WIX_GROUP]"></CustomAction>
     -->
 
+    <UIRef Id='MyWixUI_Minimal' />
+
     <!-- Directory Structure -->
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
@@ -68,12 +70,17 @@
       </Component>
     </DirectoryRef>
 
+    <util:RestartResource Id="RestartIE" ProcessName="iexplore.exe" />
+    <util:RestartResource Id="RestartChrome" ProcessName="chrome.exe" />
+    <util:RestartResource Id="RestartFirefox" ProcessName="firefox.exe" />
+
     <Feature Id='ProductFeature' AllowAdvertise='no' Title='SetupProject' Level='1'>
       <ComponentRef Id='RegisterAX_Component' />
       <ComponentRef Id='RegisterPlugin_Component' />
 
       <ComponentGroupRef Id='Product.Generated' />
     </Feature>
+
     <InstallExecuteSequence>
       <RemoveExistingProducts Before='InstallInitialize' />
     </InstallExecuteSequence>
