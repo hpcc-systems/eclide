@@ -64,11 +64,22 @@ void save(const T &s, const char * filename)
 	}
 	// make an archive
 	std::_tofstream ofs(filename);
-	assert(ofs.good());
-	boost::archive::xml__toarchive oa(ofs);
-	oa << BOOST_SERIALIZATION_NVP(s);
-	ofs.flush();
-	ofs.close();
+	if (ofs.good()) {
+		try {
+			boost::archive::xml__toarchive oa(ofs);
+			oa << BOOST_SERIALIZATION_NVP(s);
+		} catch (boost::archive::archive_exception & e) {
+			_DBGLOG(LEVEL_WARNING, e.what());
+			ATLASSERT(false);  //  TODO:  Why is there an infrequent exception.
+		} catch (std::exception & e) {
+			_DBGLOG(LEVEL_WARNING, e.what());
+			ATLASSERT(false);  //  TODO:  Why is there an infrequent exception.
+		}
+		ofs.flush();
+		ofs.close();
+	} else {
+		_DBGLOG(LEVEL_WARNING, (boost::format("Faileed to open %1% for writing.") % filename).str().c_str());
+	}
 }
 
 template<typename T>
@@ -76,19 +87,23 @@ void restore(T &s, const char * filename)
 {
 	// open the archive
 	std::_tifstream ifs(filename);
-	assert(ifs.good());
-	try
-	{
-		boost::archive::xml__tiarchive ia(ifs);
-		// restore the schedule from the archive
-		ia >> BOOST_SERIALIZATION_NVP(s);
+	if (ifs.good()) {
+		try {
+			boost::archive::xml__tiarchive ia(ifs);
+			// restore the schedule from the archive
+			ia >> BOOST_SERIALIZATION_NVP(s);
+			s.UpdateID();
+		} catch (boost::archive::archive_exception & e) {
+			_DBGLOG(LEVEL_WARNING, e.what());
+			ATLASSERT(false);
+			//boost::filesystem::remove();
+		} catch (std::exception & e) {
+			_DBGLOG(LEVEL_WARNING, e.what());
+			ATLASSERT(false);
+		}
+	} else {
+		_DBGLOG(LEVEL_WARNING, (boost::format("Faileed to open %1% for reading.") % filename).str().c_str());
 	}
-	catch (boost::archive::archive_exception &)
-	{
-		ATLASSERT(false);
-//		boost::filesystem::remove();
-	}
-	s.UpdateID();
 }
 //  ===========================================================================
 typedef std::vector<std::_tstring> WorkspaceVector;
@@ -285,21 +300,29 @@ public:
 
 
 	friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+	{
 		std::_tstring id = m_id;
 		std::_tstring folder = m_folder;
-        ar	& BOOST_SERIALIZATION_NVP(m_id)
-			& BOOST_SERIALIZATION_NVP(m_folder)
-			& BOOST_SERIALIZATION_NVP(m_label)
-			& BOOST_SERIALIZATION_NVP(m_childWorkspaces)
-			& BOOST_SERIALIZATION_NVP(m_windows)
-			& BOOST_SERIALIZATION_NVP(m_showInRoot)
-			;
+		try {
+			ar	& BOOST_SERIALIZATION_NVP(m_id)
+				& BOOST_SERIALIZATION_NVP(m_folder)
+				& BOOST_SERIALIZATION_NVP(m_label)
+				& BOOST_SERIALIZATION_NVP(m_childWorkspaces)
+				& BOOST_SERIALIZATION_NVP(m_windows)
+				& BOOST_SERIALIZATION_NVP(m_showInRoot)
+				;
+		} catch (boost::archive::archive_exception & e) {
+			_DBGLOG(LEVEL_WARNING, e.what());
+			ATLASSERT(false);  //  TODO:  Why is there an infrequent exception.
+		} catch (std::exception & e) {
+			_DBGLOG(LEVEL_WARNING, e.what());
+			ATLASSERT(false);  //  TODO:  Why is there an infrequent exception.
+		}
 		m_id = id;
 		m_folder = folder;
-    }
+	}
 };
 BOOST_CLASS_VERSION(CWorkspace, 0)
 //  ===========================================================================
