@@ -77,11 +77,12 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
 	if (server.VerifyUser(&request, &response) == SOAP_OK)
 	{
 		SAFE_ASSIGN(retCode, response.retcode);
+		CString responseMessage;
 #if _COMMS_VER < 300800
 		if (response.message)
-			retMsg = response.message->c_str();
-#else
-		if (response.Exceptions)
+			responseMessage = response.message->c_str();
+#endif
+		if (responseMessage.IsEmpty() && response.Exceptions)
 		{
 			for (unsigned int i = 0; i < response.Exceptions->Exception.size(); ++i)
 			{
@@ -94,7 +95,6 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
 				}
 			}
 		}
-#endif
 		return true;
 	}
 	else
