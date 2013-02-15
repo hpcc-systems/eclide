@@ -233,28 +233,27 @@ public:
 
 		for (split_vector_type::const_iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
 		{
-			std::_tstring line = *itr;
-			boost::algorithm::trim(line);
-			if (boost::algorithm::istarts_with(line, IMPORT_MARKER))
+			std::_tstring trimmedLine = *itr;
+			boost::algorithm::trim(trimmedLine);
+			if (boost::algorithm::istarts_with(trimmedLine, IMPORT_MARKER))
 			{
 				if (attributeLabel.length() && attributeEcl.length())
 				{
 					attrs[attributeLabel] = CommentEclPair(attributeComment, attributeEcl);
 				}
-				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
-				boost::algorithm::trim(line);
-				attributeLabel = line;
+				boost::algorithm::ireplace_first(trimmedLine, IMPORT_MARKER, _T(""));
+				attributeLabel = trimmedLine;
 				attributeComment.clear();
 				attributeEcl.clear();
 			}
-			else if (boost::algorithm::istarts_with(line, COMMENT_MARKER))
+			else if (boost::algorithm::istarts_with(trimmedLine, COMMENT_MARKER))
 			{
-				boost::algorithm::ireplace_first(line, COMMENT_MARKER, _T(""));
-				attributeComment += line + _T("\r\n");
+				boost::algorithm::ireplace_first(trimmedLine, COMMENT_MARKER, _T(""));
+				attributeComment += trimmedLine + _T("\r\n");
 			}
 			else
 			{
-				attributeEcl += line + _T("\r\n");
+				attributeEcl += *itr + _T("\r\n");
 			}
 		}
 		if (attributeLabel.length() && attributeEcl.length())
