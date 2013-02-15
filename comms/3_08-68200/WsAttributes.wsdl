@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:hpccsystems:ws:wsattributes" targetNamespace="urn:hpccsystems:ws:wsattributes"><types><xsd:schema elementFormDefault="qualified" targetNamespace="urn:hpccsystems:ws:wsattributes" >
+<xsd:complexType name="EspException"><xsd:all><xsd:element name="Code" type="xsd:string"  minOccurs="0"/><xsd:element name="Audience" type="xsd:string" minOccurs="0"/><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Message" type="xsd:string" minOccurs="0"/></xsd:all></xsd:complexType>
+<xsd:complexType name="ArrayOfEspException"><xsd:sequence><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Exception" type="tns:EspException" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+<xsd:element name="Exceptions" type="tns:ArrayOfEspException"/>
+<xsd:complexType name="RenameAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NewModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NewAttributeName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ImportAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Flags" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResultType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Text" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="RollbackAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="CheckinAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="CheckoutAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLLabel">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModifiedDate" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLModule">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Flags" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Access" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Timestamp" type="xsd:long"/>
+<xsd:element minOccurs="0" name="IsPlugin" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Rank" type="xsd:int"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileCRC" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Version" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Checksum" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLAttribute">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Version" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LatestVersion" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SandboxVersion" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Flags" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Access" type="xsd:int"/>
+<xsd:element minOccurs="0" name="IsLocked" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsCheckedOut" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsSandbox" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsOrphaned" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ResultType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LockedBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModifiedBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModifiedDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Checksum" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Text" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MatchedLines">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Line" type="tns:ECLTextLine"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLTextLine">
+<xsd:all><xsd:element minOccurs="0" name="LineNumber" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LineText" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="CheckinAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfCheckinAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfCheckinAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="CheckinAttributeRequest" type="tns:CheckinAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="UpdateAttributesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outAttributes" type="tns:ArrayOfECLAttribute"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfECLAttribute">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLAttribute" type="tns:ECLAttribute"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="CheckoutAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfCheckoutAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfCheckoutAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="CheckoutAttributeRequest" type="tns:CheckoutAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="CreateAttribute"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="CreateAttributeResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="AttributeInfo" type="tns:ECLAttribute"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="CreateLabel"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="CreateLabelResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="CreateModule"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="CreateModuleResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ModuleInfo" type="tns:ECLModule"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DeleteAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfDeleteAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="DeleteAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDeleteAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DeleteAttributeRequest" type="tns:DeleteAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="DeleteLabel"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DeleteLabelResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DeleteModule"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DeleteModuleResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="FindAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="UserName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Pattern" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Regexp" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ChangedSince" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TypeList" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" default="false" name="Sandboxed" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="Locked" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="CheckedOut" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="Orphaned" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="GetText" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="GetMatchedLines" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeHistory" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="EspStringArray"><xsd:sequence><xsd:element name="Item" type="xsd:string"  minOccurs="0" maxOccurs="unbounded" /></xsd:sequence></xsd:complexType>
+<xsd:element name="FindAttributesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outAttributes" type="tns:ArrayOfECLAttribute"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttribute"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Version" type="xsd:int"/>
+<xsd:element minOccurs="0" default="true" name="GetSandbox" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="GetText" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Label" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="SandboxForLabel" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttributeResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outAttribute" type="tns:ECLAttribute"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttributeHistory"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FromDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ToDate" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttributeHistoryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outAttributes" type="tns:ArrayOfECLAttribute"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttributeLabels"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttributeLabelsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Labels" type="tns:ArrayOfECLAttributeLabel"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ECLAttributeLabel">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeVersion" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LabelName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModifiedDate" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLAttributeLabel">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLAttributeLabel" type="tns:ECLAttributeLabel"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="GetAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TypeList" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="Label" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetAttributesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outAttributes" type="tns:ArrayOfECLAttribute"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetLabels"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetLabelsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outLabels" type="tns:ArrayOfECLLabel"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfECLLabel">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLLabel" type="tns:ECLLabel"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="GetModules"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModifiedSince" type="xsd:long"/>
+<xsd:element minOccurs="0" default="false" name="IncludeDeleted" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="GetChecksum" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EarMark" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetModulesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="outModules" type="tns:ArrayOfECLModule"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfECLModule">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLModule" type="tns:ECLModule"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="ImportAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfImportAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfImportAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ImportAttributeRequest" type="tns:ImportAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="ListAttributeTypes"><xsd:complexType>
+</xsd:complexType></xsd:element>
+<xsd:element name="ListAttributeTypesResponse"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Types">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Type" type="tns:AttributeType"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="AttributeType">
+<xsd:all><xsd:element minOccurs="0" name="ID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="RenameAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfRenameAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfRenameAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="RenameAttributeRequest" type="tns:RenameAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="RenameModule"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NewModuleName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="RenameModuleResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ModuleInfo" type="tns:ECLModule"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="RollbackAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfRollbackAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfRollbackAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="RollbackAttributeRequest" type="tns:RollbackAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="SaveAttributes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Attributes" type="tns:ArrayOfSaveAttributeRequest"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="SaveAttributeRequest">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Flags" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResultType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Text" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfSaveAttributeRequest">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="SaveAttributeRequest" type="tns:SaveAttributeRequest"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="SupportsEarMark"><xsd:complexType>
+</xsd:complexType></xsd:element>
+<xsd:element name="SupportsEarMarkResponse"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" default="false" name="Support" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="UpdateLabel"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AtributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttrbuteVersion" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="UpdateLabelResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="string" nillable="true" type="xsd:string" />
+</xsd:schema></types><message name="CheckinAttributesSoapIn"><part name="parameters" element="tns:CheckinAttributes"/></message><message name="CheckinAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="CheckoutAttributesSoapIn"><part name="parameters" element="tns:CheckoutAttributes"/></message><message name="CheckoutAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="CreateAttributeSoapIn"><part name="parameters" element="tns:CreateAttribute"/></message><message name="CreateAttributeSoapOut"><part name="parameters" element="tns:CreateAttributeResponse"/></message><message name="CreateLabelSoapIn"><part name="parameters" element="tns:CreateLabel"/></message><message name="CreateLabelSoapOut"><part name="parameters" element="tns:CreateLabelResponse"/></message><message name="CreateModuleSoapIn"><part name="parameters" element="tns:CreateModule"/></message><message name="CreateModuleSoapOut"><part name="parameters" element="tns:CreateModuleResponse"/></message><message name="DeleteAttributesSoapIn"><part name="parameters" element="tns:DeleteAttributes"/></message><message name="DeleteAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="DeleteLabelSoapIn"><part name="parameters" element="tns:DeleteLabel"/></message><message name="DeleteLabelSoapOut"><part name="parameters" element="tns:DeleteLabelResponse"/></message><message name="DeleteModuleSoapIn"><part name="parameters" element="tns:DeleteModule"/></message><message name="DeleteModuleSoapOut"><part name="parameters" element="tns:DeleteModuleResponse"/></message><message name="FindAttributesSoapIn"><part name="parameters" element="tns:FindAttributes"/></message><message name="FindAttributesSoapOut"><part name="parameters" element="tns:FindAttributesResponse"/></message><message name="GetAttributeSoapIn"><part name="parameters" element="tns:GetAttribute"/></message><message name="GetAttributeSoapOut"><part name="parameters" element="tns:GetAttributeResponse"/></message><message name="GetAttributeHistorySoapIn"><part name="parameters" element="tns:GetAttributeHistory"/></message><message name="GetAttributeHistorySoapOut"><part name="parameters" element="tns:GetAttributeHistoryResponse"/></message><message name="GetAttributeLabelsSoapIn"><part name="parameters" element="tns:GetAttributeLabels"/></message><message name="GetAttributeLabelsSoapOut"><part name="parameters" element="tns:GetAttributeLabelsResponse"/></message><message name="GetAttributesSoapIn"><part name="parameters" element="tns:GetAttributes"/></message><message name="GetAttributesSoapOut"><part name="parameters" element="tns:GetAttributesResponse"/></message><message name="GetLabelsSoapIn"><part name="parameters" element="tns:GetLabels"/></message><message name="GetLabelsSoapOut"><part name="parameters" element="tns:GetLabelsResponse"/></message><message name="GetModulesSoapIn"><part name="parameters" element="tns:GetModules"/></message><message name="GetModulesSoapOut"><part name="parameters" element="tns:GetModulesResponse"/></message><message name="ImportAttributesSoapIn"><part name="parameters" element="tns:ImportAttributes"/></message><message name="ImportAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="ListAttributeTypesSoapIn"><part name="parameters" element="tns:ListAttributeTypes"/></message><message name="ListAttributeTypesSoapOut"><part name="parameters" element="tns:ListAttributeTypesResponse"/></message><message name="RenameAttributesSoapIn"><part name="parameters" element="tns:RenameAttributes"/></message><message name="RenameAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="RenameModuleSoapIn"><part name="parameters" element="tns:RenameModule"/></message><message name="RenameModuleSoapOut"><part name="parameters" element="tns:RenameModuleResponse"/></message><message name="RollbackAttributesSoapIn"><part name="parameters" element="tns:RollbackAttributes"/></message><message name="RollbackAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="SaveAttributesSoapIn"><part name="parameters" element="tns:SaveAttributes"/></message><message name="SaveAttributesSoapOut"><part name="parameters" element="tns:UpdateAttributesResponse"/></message><message name="SupportsEarMarkSoapIn"><part name="parameters" element="tns:SupportsEarMark"/></message><message name="SupportsEarMarkSoapOut"><part name="parameters" element="tns:SupportsEarMarkResponse"/></message><message name="UpdateLabelSoapIn"><part name="parameters" element="tns:UpdateLabel"/></message><message name="UpdateLabelSoapOut"><part name="parameters" element="tns:UpdateLabelResponse"/></message><message name="EspSoapFault"><part name="parameters" element="tns:Exceptions"/></message><portType name="WsAttributesServiceSoap"><operation name="CheckinAttributes"><input message="tns:CheckinAttributesSoapIn"/><output message="tns:CheckinAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="CheckoutAttributes"><input message="tns:CheckoutAttributesSoapIn"/><output message="tns:CheckoutAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="CreateAttribute"><input message="tns:CreateAttributeSoapIn"/><output message="tns:CreateAttributeSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="CreateLabel"><input message="tns:CreateLabelSoapIn"/><output message="tns:CreateLabelSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="CreateModule"><input message="tns:CreateModuleSoapIn"/><output message="tns:CreateModuleSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DeleteAttributes"><input message="tns:DeleteAttributesSoapIn"/><output message="tns:DeleteAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DeleteLabel"><input message="tns:DeleteLabelSoapIn"/><output message="tns:DeleteLabelSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DeleteModule"><input message="tns:DeleteModuleSoapIn"/><output message="tns:DeleteModuleSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="FindAttributes"><input message="tns:FindAttributesSoapIn"/><output message="tns:FindAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetAttribute"><input message="tns:GetAttributeSoapIn"/><output message="tns:GetAttributeSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetAttributeHistory"><input message="tns:GetAttributeHistorySoapIn"/><output message="tns:GetAttributeHistorySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetAttributeLabels"><input message="tns:GetAttributeLabelsSoapIn"/><output message="tns:GetAttributeLabelsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetAttributes"><input message="tns:GetAttributesSoapIn"/><output message="tns:GetAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetLabels"><input message="tns:GetLabelsSoapIn"/><output message="tns:GetLabelsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetModules"><input message="tns:GetModulesSoapIn"/><output message="tns:GetModulesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="ImportAttributes"><input message="tns:ImportAttributesSoapIn"/><output message="tns:ImportAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="ListAttributeTypes"><input message="tns:ListAttributeTypesSoapIn"/><output message="tns:ListAttributeTypesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="RenameAttributes"><input message="tns:RenameAttributesSoapIn"/><output message="tns:RenameAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="RenameModule"><input message="tns:RenameModuleSoapIn"/><output message="tns:RenameModuleSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="RollbackAttributes"><input message="tns:RollbackAttributesSoapIn"/><output message="tns:RollbackAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="SaveAttributes"><input message="tns:SaveAttributesSoapIn"/><output message="tns:SaveAttributesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="SupportsEarMark"><input message="tns:SupportsEarMarkSoapIn"/><output message="tns:SupportsEarMarkSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="UpdateLabel"><input message="tns:UpdateLabelSoapIn"/><output message="tns:UpdateLabelSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation></portType><binding name="WsAttributesServiceSoap" type="tns:WsAttributesServiceSoap"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/><operation name="CheckinAttributes"><soap:operation soapAction="WsAttributes/CheckinAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="CheckoutAttributes"><soap:operation soapAction="WsAttributes/CheckoutAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="CreateAttribute"><soap:operation soapAction="WsAttributes/CreateAttribute?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="CreateLabel"><soap:operation soapAction="WsAttributes/CreateLabel?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="CreateModule"><soap:operation soapAction="WsAttributes/CreateModule?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DeleteAttributes"><soap:operation soapAction="WsAttributes/DeleteAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DeleteLabel"><soap:operation soapAction="WsAttributes/DeleteLabel?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DeleteModule"><soap:operation soapAction="WsAttributes/DeleteModule?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="FindAttributes"><soap:operation soapAction="WsAttributes/FindAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetAttribute"><soap:operation soapAction="WsAttributes/GetAttribute?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetAttributeHistory"><soap:operation soapAction="WsAttributes/GetAttributeHistory?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetAttributeLabels"><soap:operation soapAction="WsAttributes/GetAttributeLabels?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetAttributes"><soap:operation soapAction="WsAttributes/GetAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetLabels"><soap:operation soapAction="WsAttributes/GetLabels?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetModules"><soap:operation soapAction="WsAttributes/GetModules?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="ImportAttributes"><soap:operation soapAction="WsAttributes/ImportAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="ListAttributeTypes"><soap:operation soapAction="WsAttributes/ListAttributeTypes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="RenameAttributes"><soap:operation soapAction="WsAttributes/RenameAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="RenameModule"><soap:operation soapAction="WsAttributes/RenameModule?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="RollbackAttributes"><soap:operation soapAction="WsAttributes/RollbackAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="SaveAttributes"><soap:operation soapAction="WsAttributes/SaveAttributes?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="SupportsEarMark"><soap:operation soapAction="WsAttributes/SupportsEarMark?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="UpdateLabel"><soap:operation soapAction="WsAttributes/UpdateLabel?ver_=1.2" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation></binding><service name="WsAttributes"><port name="WsAttributesServiceSoap" binding="tns:WsAttributesServiceSoap"><soap:address location="http://10.241.3.241:8145/WsAttributes?ver_=1.2"/></port></service></definitions>

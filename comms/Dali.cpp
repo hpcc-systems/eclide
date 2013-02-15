@@ -1157,7 +1157,7 @@ protected:
 					applicationValue.Name = stringPool.Create(APP_DATA_VERSION);
 					applicationValue.Value = stringPool.Create(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_APP_VERSION)));
 
-#if _COMMS_VER < 300800
+#if _COMMS_VER < 300682
 #else
 					request.QueryMainDefinition = stringPool.Create(attrQualifiedLabel);
 #endif
@@ -1330,7 +1330,7 @@ protected:
 					else
 						request.QueryText = stringPool.Create(ecl);
 
-#if _COMMS_VER < 300800
+#if _COMMS_VER < 300682
 #else
 					request.QueryMainDefinition = stringPool.Create(attrQualifiedLabel);
 #endif

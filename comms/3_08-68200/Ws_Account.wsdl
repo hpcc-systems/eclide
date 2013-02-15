@@ -1,0 +1,40 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://webservices.seisint.com/ws_account" targetNamespace="http://webservices.seisint.com/ws_account"><types><xsd:schema elementFormDefault="qualified" targetNamespace="http://webservices.seisint.com/ws_account" >
+<xsd:complexType name="EspException"><xsd:all><xsd:element name="Code" type="xsd:string"  minOccurs="0"/><xsd:element name="Audience" type="xsd:string" minOccurs="0"/><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Message" type="xsd:string" minOccurs="0"/></xsd:all></xsd:complexType>
+<xsd:complexType name="ArrayOfEspException"><xsd:sequence><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Exception" type="tns:EspException" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+<xsd:element name="Exceptions" type="tns:ArrayOfEspException"/>
+<xsd:element name="UpdateUserRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="username" type="xsd:string"/>
+<xsd:element minOccurs="0" name="oldpass" type="xsd:string"/>
+<xsd:element minOccurs="0" name="newpass1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="newpass2" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="UpdateUserResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="retcode" type="xsd:int"/>
+<xsd:element minOccurs="0" name="message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="UpdateUserInputRequest"><xsd:complexType>
+</xsd:complexType></xsd:element>
+<xsd:element name="UpdateUserInputResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="username" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="VerifyUserRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="application" type="xsd:string"/>
+<xsd:element minOccurs="0" name="version" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="VerifyUserResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="retcode" type="xsd:int"/>
+<xsd:element minOccurs="0" name="message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WhoAmIRequest"><xsd:complexType>
+</xsd:complexType></xsd:element>
+<xsd:element name="WhoAmIResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="username" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="string" nillable="true" type="xsd:string" />
+</xsd:schema></types><message name="UpdateUserSoapIn"><part name="parameters" element="tns:UpdateUserRequest"/></message><message name="UpdateUserSoapOut"><part name="parameters" element="tns:UpdateUserResponse"/></message><message name="UpdateUserInputSoapIn"><part name="parameters" element="tns:UpdateUserInputRequest"/></message><message name="UpdateUserInputSoapOut"><part name="parameters" element="tns:UpdateUserInputResponse"/></message><message name="VerifyUserSoapIn"><part name="parameters" element="tns:VerifyUserRequest"/></message><message name="VerifyUserSoapOut"><part name="parameters" element="tns:VerifyUserResponse"/></message><message name="WhoAmISoapIn"><part name="parameters" element="tns:WhoAmIRequest"/></message><message name="WhoAmISoapOut"><part name="parameters" element="tns:WhoAmIResponse"/></message><message name="EspSoapFault"><part name="parameters" element="tns:Exceptions"/></message><portType name="ws_accountServiceSoap"><operation name="UpdateUser"><input message="tns:UpdateUserSoapIn"/><output message="tns:UpdateUserSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="UpdateUserInput"><input message="tns:UpdateUserInputSoapIn"/><output message="tns:UpdateUserInputSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="VerifyUser"><input message="tns:VerifyUserSoapIn"/><output message="tns:VerifyUserSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WhoAmI"><input message="tns:WhoAmISoapIn"/><output message="tns:WhoAmISoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation></portType><binding name="ws_accountServiceSoap" type="tns:ws_accountServiceSoap"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/><operation name="UpdateUser"><soap:operation soapAction="ws_account/UpdateUser?ver_=0" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="UpdateUserInput"><soap:operation soapAction="ws_account/UpdateUserInput?ver_=0" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="VerifyUser"><soap:operation soapAction="ws_account/VerifyUser?ver_=0" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WhoAmI"><soap:operation soapAction="ws_account/WhoAmI?ver_=0" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation></binding><service name="ws_account"><port name="ws_accountServiceSoap" binding="tns:ws_accountServiceSoap"><soap:address location="http://10.194.12.2:8010/ws_account?ver_=0"/></port></service></definitions>
