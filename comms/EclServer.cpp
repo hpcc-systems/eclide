@@ -56,7 +56,7 @@ public:
 		m_Queue = CW2T(c->Queue, CP_UTF8);
 		Refresh();
 	}
-#elif _COMMS_VER < 68201
+#elif _COMMS_VER < 308000
 	void Update(const ns5__TpEclServer * c)
 	{
 		SAFE_ASSIGN(m_Name, c->Name);
