@@ -14,8 +14,13 @@
 
 #define MAX_CONNECTIONS 50
 
+LONG g_CommsInitializeCount = 0;
+
 void CommsInitialize()
 {
+	if (::InterlockedIncrement(&g_CommsInitializeCount) > 1)
+		return;
+
 	DWORD dwData = 0;
 	DWORD dwSize = sizeof(dwData);
 
@@ -28,39 +33,6 @@ void CommsInitialize()
 
 	dwData = MAX_CONNECTIONS;
 	didit = InternetSetOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER, &dwData, sizeof(dwData));
-
-#ifdef _DEBUG
-	#ifdef _ATLSOAP_TRACE_XML
-		CUnicodeFile file;
-		if (file.Create(_T("c:\\temp\\comms.xml"), GENERIC_WRITE, OPEN_ALWAYS, CUnicodeFile::ENCODING_UTF_8))
-		{
-			file.Append();
-			std::_tstring now;
-			file.Write(_T("<comms time=\""));
-			file.Write(::CurrentDateTimeString(now));
-			file.Write(_T("\">"));
-			::SetStdHandle(STD_OUTPUT_HANDLE, file.Detach());
-			file.Close();
-		}
-	#endif
-#endif
-}
-
-void CommsFinalize()
-{
-#ifdef _DEBUG
-	#ifdef _ATLSOAP_TRACE_XML
-		CUnicodeFile file;
-		if (file.Open(_T("c:\\temp\\comms.xml"), GENERIC_WRITE))
-		{
-			file.Append();
-			std::_tstring now;
-			file.Write(_T("</comms>"));
-			::SetStdHandle(STD_OUTPUT_HANDLE, file.Detach());
-			file.Close();
-		}
-	#endif
-#endif
 }
 
 #ifndef SEISINT_LIBEXPORTS
@@ -82,13 +54,7 @@ BOOL APIENTRY DllMain( HANDLE /*hModule*/, DWORD  ul_reason_for_call, LPVOID lpR
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		CommsInitialize();
-		break;
-
 	case DLL_PROCESS_DETACH:
-		CommsFinalize();
-		break;
-
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 		break;
