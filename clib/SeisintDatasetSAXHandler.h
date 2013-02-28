@@ -224,6 +224,12 @@ public:
 						int col = EnsureColumnExists(table, _T("##"));
 						//table->SetCell(m_row, col, _T(""));
 					}
+					for (Element::StringStringMap::const_iterator itr = e.m_attr.begin(); itr != e.m_attr.end(); ++itr)
+					{
+						std::_tstring columnLabel = _T("@") + itr->first;
+						int col = EnsureColumnExists(table, columnLabel);
+						table->SetCell(m_row, col, itr->second);
+					}
 					if (boost::algorithm::iequals(e.m_attr[_T("eog")], _T("true")))
 					{
 						int col = EnsureColumnExists(table, _T("##"));
