@@ -38,24 +38,7 @@ COMMS_API bool ChangePassword(const CString &serverIP, const CString &user, cons
 
 COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &password, int &retCode, CString &retMsg)
 {
-	//if (user.GetLength() == 0)
-	//{
-	//	retCode = 1001;
-	//	retMsg = _T("User ID cannot be blank.");
-	//	return false;
-	//}
-	//if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-	//{
-	//}
-	//else
-	//{
-	//	if (password.GetLength() == 0)
-	//	{
-	//		retCode = 1002;
-	//		retMsg = _T("Password cannot be blank.");
-	//		return false;
-	//	}
-	//}
+	CommsInitialize();
 
 	ResetNamespace(config);
 	CalcNamespace(config, user, password);
