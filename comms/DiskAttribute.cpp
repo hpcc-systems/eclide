@@ -381,6 +381,11 @@ public:
 		m_sandboxed = false;
 		m_locked = false;
 
+		if (m_type->IsReadOnly())
+		{
+			m_locked = true;
+		}
+		else
 		{	//  Test for readonly - is there a betterway?
 			HANDLE hFile = CreateFile(m_pathStr.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); 
 			if (hFile == INVALID_HANDLE_VALUE) 
