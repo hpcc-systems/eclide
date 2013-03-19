@@ -1,11 +1,15 @@
 #include "StdAfx.h"
 
+#include <Wildcard.h>
 #include "AttributeType.h"
 #include "cache.h"
 
 //  ===========================================================================
 #define ATTRIBUTE_TYPE_ECL _T("ecl")
 #define ATTRIBUTE_TYPE_ECLMOD _T("eclmod")
+#define ATTRIBUTE_TYPE_ECLLIB _T("ecllib")
+#define ATTRIBUTE_TYPE_ECLOTHER _T("ecl*")
+#define ATTRIBUTE_TYPE_PLUGIN _T("dll")
 #define ATTRIBUTE_TYPE_ESDL _T("esdl")
 #define ATTRIBUTE_TYPE_SALT _T("salt")
 #define ATTRIBUTE_TYPE_XSLT _T("xslt")
@@ -23,8 +27,10 @@ public:
 	CAttributeType(const std::_tstring & repositoryCode) : m_repositoryCode(repositoryCode)
 	{
 		boost::algorithm::trim_left_if(m_repositoryCode, boost::algorithm::is_any_of(_T(".")));
-		if (m_repositoryCode.empty() || boost::algorithm::iequals(m_repositoryCode, ATTRIBUTE_TYPE_ECLMOD))
+		if (m_repositoryCode.empty()) 
+		{
 			m_repositoryCode = ATTRIBUTE_TYPE_ECL;
+		}
 	}
 
 	BEGIN_CUNKNOWN
@@ -79,6 +85,12 @@ public:
 
 		return m_defaultText.c_str();
 	}
+	bool IsReadOnly()
+	{
+		if (boost::algorithm::iends_with(m_repositoryCode, ATTRIBUTE_TYPE_PLUGIN))
+			return true;
+		return false;
+	}
 
 	void Update(const std::_tstring & description)
 	{
@@ -86,6 +98,7 @@ public:
 			m_description = description;
 	}
 };
+
 //  ===========================================================================
 static CacheT<std::_tstring, CAttributeType> AttributeTypeCache;
 
@@ -119,9 +132,19 @@ bool IsValidExtension(const std::_tstring & ext)
 		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECLMOD))
 		return true;
+	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECLLIB))
+		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
 		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_SALT))
 		return true;
+	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_PLUGIN))
+		return true;
+	else if (WildMatch(ext, std::_tstring(_T(".")) + ATTRIBUTE_TYPE_ECLOTHER, true))
+		return true;
 	return false;
+}
+COMMS_API bool HasValidExtension(const std::_tstring & filename)
+{
+	return IsValidExtension(boost::filesystem::extension(filename));
 }
