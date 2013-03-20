@@ -667,13 +667,29 @@ bool CSourceCtrl::SaveFile(const CString & filename)
 
 bool CSourceCtrl::OpenFile(const CString & filename)
 {
-	std::_tstring text;
-	CUnicodeFile file;
-	if (file.Open(filename))
+	if (boost::algorithm::iends_with(static_cast<const TCHAR *>(filename), _T(".dll")))
 	{
-		file.Read(text);
-		SetText(text.c_str());
-		return true;
+		std::_tstring ecl;
+		if (GetPluginECL(static_cast<const TCHAR *>(filename), ecl))
+		{
+			SetText(ecl.c_str());
+			return true;
+		}
+		else
+		{
+			SetText(_T("Unable to extract ECL definition."));
+		}
+	}
+	else 
+	{
+		std::_tstring text;
+		CUnicodeFile file;
+		if (file.Open(filename))
+		{
+			file.Read(text);
+			SetText(text.c_str());
+			return true;
+		}
 	}
 	return false;
 }

@@ -67,3 +67,11 @@ CLIB_API bool WildMatch(const std::string & src, const std::string & pat, bool n
 Normal:
 	return WildMatchN(src.c_str(),src.length(),0,pat.c_str(),pat.length(),0,nocase);
 }
+
+CLIB_API bool WildMatch(const std::_tstring & _src, const std::_tstring & _pat, bool nocase)
+{
+	std::string src = CT2A(_src.c_str(), CP_UTF8);
+	std::string pat = CT2A(_pat.c_str(), CP_UTF8);
+	return WildMatch(src, pat, nocase);
+}
+

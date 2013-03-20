@@ -30,6 +30,7 @@ __interface IAttributeType : public IUnknown
 	const TCHAR * GetFileExtension();
 	const TCHAR * GetDescription();
 	const TCHAR * GetDefaultText(const std::_tstring & attrLabel);
+	bool IsReadOnly();
 };
 typedef StlLinked<IAttributeType> IAttributeTypeAdapt;
 typedef std::vector<IAttributeTypeAdapt> IAttributeTypeVector;
@@ -38,3 +39,4 @@ COMMS_API IAttributeType * CreateIAttributeESDLType();
 COMMS_API IAttributeType * CreateIAttributeSALTType();
 COMMS_API IAttributeType * CreateIAttributeType(const std::_tstring & repositoryType, const std::_tstring & description = _T(""));
 COMMS_API bool IsValidExtension(const std::_tstring & ext);
+COMMS_API bool HasValidExtension(const std::_tstring & filename);
