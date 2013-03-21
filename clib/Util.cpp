@@ -797,6 +797,7 @@ bool GetPluginECL(const std::_tstring & pluginPath, std::_tstring & ecl)
 				if (p(&info))
 				{
 					ecl = CA2T(info.ECL, CP_UTF8);
+					TidyCRLF(ecl);
 					retVal = true;
 				}
 			}
