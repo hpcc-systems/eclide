@@ -88,7 +88,7 @@ private:
 				}
 
 				std::_tstring filename(Buffer[i].FileName, Buffer[i].FileNameLength / sizeof(_T(' ')));
-				if (algo::iends_with(filename, _T(".ecl")))
+				if (HasValidExtension(filename))
 				{
 					boost::filesystem::wpath fullPath = self->m_path / filename;
 					boost::filesystem::wpath relativePath = boost::filesystem::wpath(self->m_path.filename()) / filename;

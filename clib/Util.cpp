@@ -764,6 +764,53 @@ const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & f
 	return folder.c_str();
 }
 
+bool GetPluginECL(const std::_tstring & pluginPath, std::_tstring & ecl)
+{
+	struct ECLPluginDefinitionBlock
+	{
+		unsigned size;			  // Size of passed in structure, filled in by caller
+		unsigned magicVersion;	  // Filled in by plugin - must be PLUGIN_VERSION
+		const char *moduleName;
+		const char *ECL;
+		unsigned flags;
+		const char *version;
+		const char *description;
+	};
+	typedef bool (*EclPluginDefinition) (ECLPluginDefinitionBlock *);
+
+	//	DONT_RESOLVE_DLL_REFERENCES:  dllmain is not called and dependent dlls are not loaded.
+	//	This is dangerous and will crash if getECLPluginDefinition does anything fancy.
+	//	Note:	We can't use LoadLibrary as there is no way to specify additional dll folders (like bin)
+	//			without requiring XP + SP1 (and even then you can only call SetDllDirectory, which is no 
+	//			help if dependent DLLs are in bin and plugin folder).
+	HMODULE hMod = LoadLibraryEx(pluginPath.c_str(), NULL, DONT_RESOLVE_DLL_REFERENCES);  
+	if (hMod != NULL) 
+	{
+		bool retVal = false;
+		try
+		{
+			EclPluginDefinition p = (EclPluginDefinition) GetProcAddress(hMod,"getECLPluginDefinition");
+			if (p)
+			{
+				ECLPluginDefinitionBlock info = { 0 };
+				info.size = sizeof(ECLPluginDefinitionBlock);
+				if (p(&info))
+				{
+					ecl = CA2T(info.ECL, CP_UTF8);
+					TidyCRLF(ecl);
+					retVal = true;
+				}
+			}
+		}
+		catch (...)
+		{
+		}
+		FreeLibrary(hMod);
+		return retVal;
+	}
+	return false;
+}
+
 void InsertSeparator(CMenu &menu)
 {
 	CMenuItemInfo item;
