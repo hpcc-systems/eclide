@@ -51,6 +51,14 @@ CLIB_API const boost::filesystem::path & GetAppDataFolder(boost::filesystem::pat
 	boost::filesystem::create_directories(path);
 	return path;
 }
+CLIB_API const boost::filesystem::path & GetDocumentsFolder(boost::filesystem::path & path)
+{
+	TCHAR appDataPath[_MAX_PATH];
+	SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_COMMON_DOCUMENTS, true); 
+	path = boost::filesystem::path(CT2A(appDataPath), boost::filesystem::native);
+	boost::filesystem::create_directories(path);
+	return path;
+}
 CLIB_API const boost::filesystem::path & GetMyDocumentsFolder(boost::filesystem::path & path)
 {
 	TCHAR appDataPath[_MAX_PATH];
