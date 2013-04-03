@@ -19,7 +19,7 @@ endif ( )
 
 set ( GRAPHLAYOUT_ROOT "${CMAKE_SOURCE_DIR}/../GraphControl" )
 find_package( GRAPHLAYOUT )
-if ( GRAPHLAYOUT )
+if ( GRAPHLAYOUT_FOUND )
 else ( )
     MESSAGE( "GRAPHLAYOUT not found:  " ${GRAPHLAYOUT})
 endif ( )

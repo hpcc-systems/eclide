@@ -25,8 +25,18 @@ struct ParsedVersion
 
 	bool operator < (const ParsedVersion & other)
 	{
-		// Specifically for IDE version numbers
-		if (majorVersion == other.majorVersion)
+		/*  Note:  ECL IDE Major version was brought in line with HPCC Platform for version 4.
+			The new version order is (in historic order):
+			QueryBuilder 3
+			QueryBuilder 4
+			QueryBuilder/eclide 5 (eclide was only released internally)
+			eclide 6
+			eclide 4
+		*/
+
+		int thisMajorVersion = majorVersion == 4 ? 14 : majorVersion;
+		int otherMajorVersion = other.majorVersion == 4 ? 14 : other.majorVersion;
+		if (thisMajorVersion == otherMajorVersion)
 		{
 			if (minorVersion == other.minorVersion)
 			{
@@ -36,7 +46,7 @@ struct ParsedVersion
 			}
 			return minorVersion < other.minorVersion;
 		}
-		return majorVersion < other.majorVersion;
+		return thisMajorVersion < otherMajorVersion;
 	}
 };
 

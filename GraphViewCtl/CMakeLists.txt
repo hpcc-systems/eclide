@@ -250,7 +250,7 @@ target_link_libraries( GRAPHVIEWCTL
 		CLIB
 		COMMS
 		
-		${GRAPHLAYOUT_LIBRARY_DIRS}
+		${GRAPHLAYOUT_LIBRARIES}
 	)
 
 install ( TARGETS 
@@ -258,5 +258,5 @@ install ( TARGETS
 			RUNTIME DESTINATION bin )
 
 install ( PROGRAMS 
-			${GRAPHLAYOUT_LIBRARY_DIRS}/graphlayout.dll 
+			${GRAPHLAYOUT_DLL}
 			DESTINATION bin )
