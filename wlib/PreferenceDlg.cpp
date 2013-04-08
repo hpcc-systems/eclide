@@ -965,6 +965,21 @@ public:
 		if (IDOK == dlg.DoModal())
 		{
 			std::_tstring folder = dlg.GetFolderPath();
+			boost::filesystem::wpath path = folder;
+
+			for (int i = 0; i < m_listFolders.GetCount(); ++i) 
+			{
+				CString otherFolder;
+				m_listFolders.GetText(i, otherFolder);
+				boost::filesystem::wpath otherPath = static_cast<const TCHAR *>(otherFolder);
+				if (boost::algorithm::iequals(path.leaf(), otherPath.leaf())) 
+				{
+					std::_tstring msg = _T("ECL folders must have unique name.  \"") + otherPath.leaf() + _T("\" is already used.");
+					MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
+					return 0;
+				}
+			}
+
 			m_listFolders.AddString(folder.c_str());
 			DoChanged();
 		}
