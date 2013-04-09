@@ -348,6 +348,10 @@ public:
 			attr = GetAttribute(moduleHelper.GetModuleLabel(), moduleHelper.GetAttributeLabel(), type, version, sandbox, text);
 			if (attr.get() == NULL && currModule.length() > 0)
 			{
+				attr = GetAttribute((currModule + _T(".") + _modAttrLabel).c_str(), type, version, sandbox, text);  //$.module.attr
+			}
+			if (attr.get() == NULL && currModule.length() > 0)
+			{
 				std::_tstring attrLabelIfDataset;
 				attr = GetAttribute(currModule.c_str(), moduleHelper.GetAttributeLabelIfDataset(attrLabelIfDataset), type, version, sandbox, text);		//currModule.dataset.field (with no module)
 			}
