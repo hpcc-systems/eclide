@@ -276,6 +276,11 @@ public:
 		m_view.SetSavePoint();
 	}
 
+	bool IsDirty() 
+	{
+		return m_view.IsDirty();
+	}
+
 	void ShowLastError(const CString & sMessage, DWORD dwError)
 	{
 		ATLTRACE( _T("Entering : ShowLastError ( %s, 0x%x )\n" ), sMessage, dwError);
