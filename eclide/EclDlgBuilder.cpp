@@ -407,7 +407,7 @@ void CBuilderDlg::DoCheckSyntax()
 	CString cluster(GetCluster());
 	if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 	{
-		if (!m_path.IsEmpty()) 
+		if (!m_path.IsEmpty() && IsDirty()) 
 			DoFileSave(m_path);
 	}
 	clib::thread run(__FUNCTION__, boost::bind(&EclCheckSyntax, this, ecl, cluster, CString(), CString(), m_path, m_debug, false, m_noCommonPrivateAttributes));

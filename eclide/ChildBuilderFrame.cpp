@@ -361,9 +361,12 @@ public:
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{
 			GetIMainFrame()->DoFileSaveAll(true);
-			CString path = m_dlgview.GetPath();
-			if (!path.IsEmpty()) 
-				m_dlgview.DoFileSave(path);
+			if (m_dlgview.IsDirty())
+			{
+				CString path = m_dlgview.GetPath();
+				if (!path.IsEmpty()) 
+					m_dlgview.DoFileSave(path);
+			}
 		}
 		m_dlgview.SyntaxClearAll();
 		PostStatus(_T("Submitting..."));
