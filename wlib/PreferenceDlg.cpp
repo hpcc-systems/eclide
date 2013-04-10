@@ -696,36 +696,67 @@ public:
 	{
 		m_Arguments = _T("");
 		m_WUArguments = _T("");
-		const TCHAR * hpccbin = _tgetenv(_T("HPCCBIN"));
-		if (hpccbin)
-		{
-			boost::filesystem::wpath eclccPath = hpccbin;
-			eclccPath /= _T("eclcc.exe");
-			if (boost::filesystem::exists(eclccPath))
-				m_Location = eclccPath.native_file_string().c_str();
-		}
+		m_listFolders.ResetContent();
+		
+		boost::filesystem::path clientToolsPath;
+		GetProgramFolder(clientToolsPath);
+		if (!clientToolsPath.empty())
+			clientToolsPath = clientToolsPath.parent_path();
 
-		const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
-		if (hpccEcl)
+		if (!clientToolsPath.empty())
+			clientToolsPath = clientToolsPath.parent_path();
+
+		clientToolsPath /= "clienttools";
+		boost::filesystem::path eclccPath = clientToolsPath / "bin" / "eclcc.exe";
+
+		if (boost::filesystem::exists(eclccPath)) 
 		{
-			boost::filesystem::wpath wuFolder = hpccEcl;
-			wuFolder /= _T("wu");
+			m_Location = eclccPath.native_file_string().c_str();
+
+			boost::filesystem::path docsFolder;
+			GetDocumentsFolder(docsFolder);
+
+			docsFolder = docsFolder / "HPCC Systems" / "ECL";
+
+			boost::filesystem::path wuFolder = docsFolder / "wu" / CT2A(m_config->GetLabel(), CP_UTF8);
 			boost::filesystem::create_directories(wuFolder);
 			m_EclWorkingFolder = wuFolder.native_file_string().c_str();
 
-			m_listFolders.ResetContent();
-			boost::filesystem::wpath samplesPath = hpccEcl;
-			samplesPath = samplesPath.parent_path();
-			samplesPath /= _T("Samples");
-			if (boost::filesystem::exists(samplesPath))
-				m_listFolders.AddString(samplesPath.native_file_string().c_str());
-
-			boost::filesystem::wpath repositoryPath = hpccEcl;
-			repositoryPath = repositoryPath .parent_path();
-			repositoryPath /= _T("My Files");
+			boost::filesystem::path repositoryPath = docsFolder / "My Files";
 			boost::filesystem::create_directories(repositoryPath);
-			m_listFolders.AddString(repositoryPath.native_file_string().c_str());
+			m_listFolders.AddString(CA2T(repositoryPath.native_file_string().c_str(), CP_UTF8));
+
+			boost::filesystem::path samplesPath = clientToolsPath / "examples";
+			if (boost::filesystem::exists(samplesPath))
+				m_listFolders.AddString(CA2T(samplesPath.native_file_string().c_str(), CP_UTF8));
 		}
+		else
+		{
+			const TCHAR * hpccbin = _tgetenv(_T("HPCCBIN"));
+			if (hpccbin)
+			{
+				boost::filesystem::wpath eclccPath = hpccbin;
+				eclccPath /= _T("eclcc.exe");
+				if (boost::filesystem::exists(eclccPath))
+					m_Location = eclccPath.native_file_string().c_str();
+			}
+
+			const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
+			if (hpccEcl)
+			{
+				boost::filesystem::wpath wuFolder = hpccEcl;
+				wuFolder /= _T("wu");
+				boost::filesystem::create_directories(wuFolder);
+				m_EclWorkingFolder = wuFolder.native_file_string().c_str();
+
+				boost::filesystem::wpath repositoryPath = hpccEcl;
+				repositoryPath = repositoryPath.parent_path();
+				repositoryPath /= _T("My Files");
+				boost::filesystem::create_directories(repositoryPath);
+				m_listFolders.AddString(repositoryPath.native_file_string().c_str());
+			}
+		}
+
 		DoDataExchange();
 		SaveToConfig();
 	}
