@@ -10,6 +10,7 @@ set BIN_DIR=%HPCC_DIR%\bin
 set VER_3_0_SRCDIR=%ECLIDE_DIR%\ver_3_0
 set VER_3_0_DIR=%BIN_DIR%\ver_3_0
 set VER_3_6_DIR=%HPCC_DIR%\ver_3_6
+set VER_4_0_DIR=%HPCC_DIR%\ver_4_0
 
 set CD_DIR=%STAGE_DIR%\CD
 set CD_ECL_DIR=%CD_DIR%\ECL
@@ -46,24 +47,24 @@ set cmakedir=%build_hpccdir%
 call %lndir%\build\windows\release_eclcc.bat
 call %lndir%\build\windows\release_dfu.bat
 
-robocopy /S "%VER_3_0_SRCDIR%" "%VER_3_0_DIR%"
-robocopy /S %TEMP%\release\bin "%VER_3_6_DIR%\bin"
-robocopy /S %TEMP%\release\libs "%VER_3_6_DIR%\bin"
-robocopy /S %TEMP%\release\dfuplus "%VER_3_6_DIR%\bin"
-robocopy /S %TEMP%\release\eclcc "%VER_3_6_DIR%\bin"
-copy "%cmakedir%\bin\release\ecl.exe" "%VER_3_6_DIR%\bin\ecl.exe"
+rem robocopy /S "%VER_3_0_SRCDIR%" "%VER_3_0_DIR%"
+robocopy /S %TEMP%\release\bin "%VER_4_0_DIR%\bin"
+robocopy /S %TEMP%\release\libs "%VER_4_0_DIR%\bin"
+robocopy /S %TEMP%\release\dfuplus "%VER_4_0_DIR%\bin"
+robocopy /S %TEMP%\release\eclcc "%VER_4_0_DIR%\bin"
+copy "%cmakedir%\bin\release\ecl.exe" "%VER_4_0_DIR%\bin\ecl.exe"
 
-if not %LN%==1 rmdir /Q /S "%VER_3_6_DIR%\ecllibrary\ln"
-if %LN%==1 robocopy /S "%TEMP%\release\plugins\metaphone" "%VER_3_6_DIR%\plugins"
-if %LN%==1 robocopy /S "%TEMP%\release\plugins\saltlib" "%VER_3_6_DIR%\plugins"
-copy "%build_lndir%\bin\release\ecl-package.exe" "%VER_3_6_DIR%\bin\ecl-package.exe"
-copy "%build_lndir%\bin\release\ecl-queries.exe" "%VER_3_6_DIR%\bin\ecl-queries.exe"
+if not %LN%==1 rmdir /Q /S "%VER_4_0_DIR%\ecllibrary\ln"
+if %LN%==1 robocopy /S "%TEMP%\release\plugins\metaphone" "%VER_4_0_DIR%\plugins"
+if %LN%==1 robocopy /S "%TEMP%\release\plugins\saltlib" "%VER_4_0_DIR%\plugins"
+copy "%build_lndir%\bin\release\ecl-package.exe" "%VER_4_0_DIR%\bin\ecl-package.exe"
+copy "%build_lndir%\bin\release\ecl-queries.exe" "%VER_4_0_DIR%\bin\ecl-queries.exe"
 
-robocopy /S /MOVE "%VER_3_6_DIR%\bin\cl" "%VER_3_6_DIR%\componentfiles\cl"
-robocopy /S /MOVE "%VER_3_6_DIR%\bin\ecllibrary" "%VER_3_6_DIR%\share\ecllibrary"
-robocopy /S /MOVE "%VER_3_6_DIR%\bin\plugins" "%VER_3_6_DIR%\plugins"
-move /Y "%VER_3_6_DIR%\bin\*.?pp" "%VER_3_6_DIR%\componentfiles"
-rmdir /S /Q "%VER_3_6_DIR%\bin\vc2008"
+robocopy /S /MOVE "%VER_4_0_DIR%\bin\cl" "%VER_4_0_DIR%\componentfiles\cl"
+robocopy /S /MOVE "%VER_4_0_DIR%\bin\ecllibrary" "%VER_4_0_DIR%\share\ecllibrary"
+robocopy /S /MOVE "%VER_4_0_DIR%\bin\plugins" "%VER_4_0_DIR%\plugins"
+move /Y "%VER_4_0_DIR%\bin\*.?pp" "%VER_4_0_DIR%\componentfiles"
+rmdir /S /Q "%VER_4_0_DIR%\bin\vc2008"
 
 robocopy "%HPCC_SAMPLES_DIR%" "%SAMPLES_DIR%" *.ecl /S 
 robocopy "%HPCC_GITSAMPLES_DIR%" "%SAMPLES_DIR%" *.* /S /xd ".git" 
