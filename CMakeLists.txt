@@ -55,6 +55,7 @@ ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 include ( "${CMAKE_SOURCE_DIR}/cmake/Modules/Externals.cmake" )
 
 if (WIN32)
+    string ( REPLACE "/Zm1000" "/Zm500" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
     ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE )
 	SET(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
 	SET(CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
@@ -77,3 +78,140 @@ ADD_SUBDIRECTORY ( sgrid )
 ADD_SUBDIRECTORY ( wlib )
 ADD_SUBDIRECTORY ( eclide )
 ADD_SUBDIRECTORY ( amt )
+set ( DOC_FILES 
+    ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm
+    ${PROJECT_SOURCE_DIR}/docs/LanguageColor.xml
+    ${PROJECT_SOURCE_DIR}/docs/LanguageReference.xml
+  )
+install ( FILES ${DOC_FILES} DESTINATION bin )
+Install ( FILES ${PROJECT_SOURCE_DIR}/License.txt DESTINATION "." )
+
+##############################################
+# Build tag generation
+
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set ( ARCH64BIT 1 )
+else ()
+    set ( ARCH64BIT 0 )
+endif ()
+message ("-- 64bit architecture is ${ARCH64BIT}")
+
+set(projname ${HPCC_PROJECT})
+set(majorver ${HPCC_MAJOR})
+set(minorver ${HPCC_MINOR})
+set(point ${HPCC_POINT})
+if ( "${HPCC_MATURITY}" STREQUAL "release" )
+    set(stagever "${HPCC_SEQUENCE}")
+else()
+    set(stagever "${HPCC_MATURITY}${HPCC_SEQUENCE}")
+endif()
+set(version ${majorver}.${minorver}.${point})
+
+IF ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set( stagever "${stagever}-Debug" )
+ENDIF ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+##############################################
+
+####  CPACK  ####
+INCLUDE(InstallRequiredSystemLibraries)
+
+set ( CPACK_PACKAGE_VENDOR "HPCC Systems" )
+set ( CPACK_PACKAGE_NAME "hpccsystems-eclide" )
+set ( CPACK_PACKAGE_VERSION_MAJOR ${majorver})
+set ( CPACK_PACKAGE_VERSION_MINOR ${minorver})
+set ( CPACK_PACKAGE_VERSION_PATCH ${point}${stagever})
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "HPCC Systems ECL IDE." )
+
+set ( CPACK_PACKAGE_CONTACT "HPCCSystems <ossdevelopment@lexisnexis.com>" )
+
+set ( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/License.txt" )
+set ( CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/CPackReadMe.txt" )
+
+set ( CPACK_RPM_PACKAGE_VERSION "${projname}" )
+if ( ${ARCH64BIT} EQUAL 1 )
+    set ( CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+else( ${ARCH64BIT} EQUAL 1 )
+    set ( CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
+endif ( ${ARCH64BIT} EQUAL 1 )
+set ( CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CPACK_RPM_PACKAGE_ARCHITECTURE}")
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    set ( CPACK_STRIP_FILES TRUE)
+endif()
+set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_RPM_PACKAGE_VERSION}-${version}-${stagever}${CPACK_SYSTEM_NAME}" )
+MESSAGE ("-- Current release version is ${CPACK_PACKAGE_FILE_NAME}")
+
+set(CLIENTTOOLS_PACKAGE_FILE_NAME "hpccsystems-clienttools_${CPACK_RPM_PACKAGE_VERSION}-${version}-${stagever}${CPACK_SYSTEM_NAME}.exe")
+find_file(CLIENTTOOLS_PACKAGE_FILE ${CLIENTTOOLS_PACKAGE_FILE_NAME} HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform )
+install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
+list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
+    ExecWait '$INSTDIR\\\\tmp\\\\${CLIENTTOOLS_PACKAGE_FILE_NAME} /S /D=$INSTDIR\\\\..\\\\clienttools'
+")
+
+###
+## Run file configuration to set build tag along with install lines for generated
+## config files.
+###
+set( BUILD_TAG "${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}")
+if (USE_GIT_DESCRIBE OR CHECK_GIT_TAG)
+    FETCH_GIT_TAG (${CMAKE_SOURCE_DIR} ${CPACK_RPM_PACKAGE_VERSION}_${version} GIT_BUILD_TAG)
+    message ("-- Git tag is '${GIT_BUILD_TAG}'")
+    if (NOT "${GIT_BUILD_TAG}" STREQUAL "${BUILD_TAG}")
+        if (CHECK_GIT_TAG)
+            message(FATAL_ERROR "Git tag '${GIT_BUILD_TAG}' does not match source version '${BUILD_TAG}'" )
+        else()
+            if(NOT "${GIT_BUILD_TAG}" STREQUAL "") # probably means being built from a tarball...
+                set( BUILD_TAG "${BUILD_TAG}[${GIT_BUILD_TAG}]")
+            endif()
+        endif()
+    endif()
+endif()
+message ("-- Build tag is '${BUILD_TAG}'")
+if (NOT "${BASE_BUILD_TAG}" STREQUAL "")
+    set(BASE_BUILD_TAG "${BUILD_TAG}")
+endif()
+message ("-- Base build tag is '${BASE_BUILD_TAG}'")
+
+if ( WIN32 )
+    set( DIR_NAME "HPCCSystems" )
+    set( version ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT} )
+    set ( CPACK_PACKAGE_INSTALL_DIRECTORY "${DIR_NAME}\\\\${version}\\\\eclide" )
+    set ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${DIR_NAME}\\\\${version}\\\\eclide" )
+    set ( CPACK_PACKAGE_INSTALL_PLUGINFILE "bin\\\\npHPCCSystemsGraphViewControl.dll")
+    if ( "${FB_PLATFORM_ARCH_NAME}" EQUAL "x86_64" )
+        SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE x64" )
+        list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
+            ExecWait '\\\"$SYSDIR\\\\regsvr32.exe\\\" /s \\\"$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}\\\"'
+        " )
+        list ( APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "  
+            ExecWait '\\\"$SYSDIR\\\\regsvr32.exe\\\" /s /u \\\"$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}\\\"'
+        " )
+    else ()
+        SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE" )
+        list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
+            RegDLL '$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}'
+        " )
+        list ( APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "  
+            UnRegDLL '$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}'
+        " )
+    endif ()
+    set(CPACK_NSIS_CREATE_ICONS "
+        CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL IDE.lnk' '\$INSTDIR\\\\bin\\\\eclide.exe'
+        CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL Reference Help.lnk' '\$INSTDIR\\\\bin\\\\ECLReference.chm'
+    ")
+    set ( CPACK_NSIS_DEFINES "
+        !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"${CPACK_PACKAGE_VENDOR}\\\\${CPACK_NSIS_DISPLAY_NAME}\\\"
+        !define MUI_FINISHPAGE_NOAUTOCLOSE
+    ")
+
+    file(STRINGS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt" PFX_PASSWORD LIMIT_COUNT 1)
+
+    add_custom_target(SIGN 
+        COMMAND signtool sign /f "${PROJECT_SOURCE_DIR}/../sign/hpcc_code_signing.pfx" /p "${PFX_PASSWORD}" /t "http://timestamp.verisign.com/scripts/timstamp.dll" "${CMAKE_BINARY_DIR}/${CPACK_PACKAGE_NAME}*.exe"
+        COMMENT "Digital Signature"
+    )
+    add_dependencies(SIGN PACKAGE)
+    set_property(TARGET SIGN PROPERTY FOLDER "CMakePredefinedTargets")
+endif ( )
+
+include ( CPack )
+####  #####  ####
