@@ -113,7 +113,18 @@ ENDIF ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 ##############################################
 
 ####  CPACK  ####
-INCLUDE(InstallRequiredSystemLibraries)
+set ( CMAKE_INSTALL_MFC_LIBRARIES TRUE )
+set ( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE )
+include ( InstallRequiredSystemLibraries )
+foreach ( CMAKE_INSTALL_SYSTEM_RUNTIME_LIB ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} )
+    ##  Skip non unicode version of MFC libs (big)  ##
+    string(REGEX MATCH ".*mfc.*0\\.dll" SKIP_FILE "${CMAKE_INSTALL_SYSTEM_RUNTIME_LIB}" )
+    if ( SKIP_FILE )
+        message("Skipping non unicode MFC install:  ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIB}")
+    else ( SKIP_FILE )
+        install ( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIB} DESTINATION bin )
+    endif ( SKIP_FILE)
+endforeach ( CMAKE_INSTALL_SYSTEM_RUNTIME_LIB )
 
 set ( CPACK_PACKAGE_VENDOR "HPCC Systems" )
 set ( CPACK_PACKAGE_NAME "hpccsystems-eclide" )
