@@ -186,7 +186,11 @@ if ( WIN32 )
     set( DIR_NAME "HPCCSystems" )
     set( version ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT} )
     set ( CPACK_PACKAGE_INSTALL_DIRECTORY "${DIR_NAME}\\\\${version}\\\\eclide" )
-    set ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${DIR_NAME}\\\\${version}\\\\eclide" )
+    set ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "eclide_${version}" )
+    set ( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON" )
+    set ( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\hpccsystems.com" )
+    set ( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\eclide.exe" )
+    set ( CPACK_NSIS_CONTACT ${CPACK_PACKAGE_CONTACT} )
     set ( CPACK_PACKAGE_INSTALL_PLUGINFILE "bin\\\\npHPCCSystemsGraphViewControl.dll")
     if ( "${FB_PLATFORM_ARCH_NAME}" EQUAL "x86_64" )
         SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE x64" )
@@ -205,12 +209,16 @@ if ( WIN32 )
             UnRegDLL '$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}'
         " )
     endif ()
-    set(CPACK_NSIS_CREATE_ICONS "
-        CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL IDE.lnk' '\$INSTDIR\\\\bin\\\\eclide.exe'
-        CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL Reference Help.lnk' '\$INSTDIR\\\\bin\\\\ECLReference.chm'
+    list ( APPEND CPACK_NSIS_CREATE_ICONS_EXTRA "  
+        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL IDE.lnk\\\" \\\"$INSTDIR\\\\bin\\\\eclide.exe\\\"
+        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL Reference Help.lnk\\\" \\\"\$INSTDIR\\\\bin\\\\ECLReference.chm\\\"
+    ")
+    list ( APPEND CPACK_NSIS_DELETE_ICONS_EXTRA "  
+        Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\ECL IDE.lnk\\\"
+        Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\ECL Reference Help.lnk\\\"
     ")
     set ( CPACK_NSIS_DEFINES "
-        !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"${CPACK_PACKAGE_VENDOR}\\\\${CPACK_NSIS_DISPLAY_NAME}\\\"
+        !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"${CPACK_PACKAGE_VENDOR}\\\\${version}\\\\${CPACK_NSIS_DISPLAY_NAME}\\\"
         !define MUI_FINISHPAGE_NOAUTOCLOSE
     ")
 
