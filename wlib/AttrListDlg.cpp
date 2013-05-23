@@ -10,6 +10,7 @@
 #include "EclCC.h"
 #include "HListBox.h"
 #include <Logger.h>
+#include <UtilFilesystem.h>
 
 //  ===========================================================================
 class CAttrDlg : 
@@ -347,7 +348,7 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 #define COMMENT_MARKER _T("//Comment:")
 	std::_tstring module;
 	CUnicodeFile file;
-	if (file.Open(path.wstring()))
+	if (file.Open(pathToWString(path).c_str()))
 	{
 		file.Read(module);
 		file.Close();
