@@ -1,3 +1,4 @@
+#define _WTL_USE_VSSYM32
 #include <atlframe.h>
 #include <atlctrls.h>
 #include <atlctrlw.h>

@@ -87,7 +87,7 @@ public:
 		if (!m_eclFetched || refresh)
 		{
 			CUnicodeFile file;
-			file.Open(CString(CA2T(m_path.native_file_string().c_str())));
+			file.Open(m_path.wstring());
 			std::_tstring ecl;
 			file.Read(ecl);
 			file.Close();
@@ -136,7 +136,7 @@ public:
 	void Update()
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		m_description = CA2T(m_path.native_file_string().c_str());
+		m_description = m_path.wstring().c_str();
 		m_modifiedDate = CA2T(boost::filesystem::basename(m_path).c_str());
 		m_modifiedDate.Replace(_T("_"), _T(":"));
 		m_modifiedBy = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
@@ -151,7 +151,7 @@ public:
 
 	void UpdateId()
 	{
-		m_id = CA2T(m_path.native_file_string().c_str());
+		m_id = m_path.string().c_str();
 	}
 };
 

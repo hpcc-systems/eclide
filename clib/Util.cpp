@@ -106,11 +106,11 @@ const TCHAR * CheckExtension(const std::_tstring & path, const std::string & def
 {
 	try
 	{
-		boost::filesystem::path p(CT2A(path.c_str()), boost::filesystem::native);
+		boost::filesystem::path p(path, boost::filesystem::native);
 		std::string d = extension(p);
 		if (extension(p).length() == 0)
 			p = change_extension(p, defaultExt);
-		ext = CA2T(p.native_file_string().c_str());
+		ext = p.wstring();
 		return ext.c_str();
 	}
 	catch (std::exception const& /*e*/)
@@ -491,7 +491,7 @@ void ShowHelp(const std::_tstring word)
 #else
 	appFolder /= "ECLReference.chm";
 #endif
-	std::_tstring helpPath = CA2T(appFolder.native_file_string().c_str());
+	std::_tstring helpPath = appFolder.wstring();
 
 	HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
 	HH_AKLINK link = {0};
@@ -758,9 +758,9 @@ const TCHAR * GetActiveXDLLPath(const std::_tstring & clsID, std::_tstring & pat
 
 const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & folder)
 {
-	boost::filesystem::path dllPath(CT2A(GetActiveXDLLPath(clsID, folder)), boost::filesystem::native), dllFolder;
+	boost::filesystem::path dllPath(GetActiveXDLLPath(clsID, folder), boost::filesystem::native), dllFolder;
 	dllFolder = dllPath.branch_path();
-	folder = CA2T(dllFolder.native_file_string().c_str());
+	folder = dllFolder.wstring();
 	return folder.c_str();
 }
 

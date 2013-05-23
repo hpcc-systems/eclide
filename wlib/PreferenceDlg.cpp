@@ -711,24 +711,24 @@ public:
 
 		if (boost::filesystem::exists(eclccPath)) 
 		{
-			m_Location = eclccPath.native_file_string().c_str();
+			m_Location = eclccPath.wstring().c_str();
 
 			boost::filesystem::path docsFolder;
 			GetDocumentsFolder(docsFolder);
 
 			docsFolder = docsFolder / "HPCC Systems" / "ECL";
 
-			boost::filesystem::path wuFolder = docsFolder / "wu" / CT2A(m_config->GetLabel(), CP_UTF8);
+			boost::filesystem::path wuFolder = docsFolder / _T("wu") / m_config->GetLabel();
 			boost::filesystem::create_directories(wuFolder);
-			m_EclWorkingFolder = wuFolder.native_file_string().c_str();
+			m_EclWorkingFolder = wuFolder.wstring().c_str();
 
 			boost::filesystem::path repositoryPath = docsFolder / "My Files";
 			boost::filesystem::create_directories(repositoryPath);
-			m_listFolders.AddString(CA2T(repositoryPath.native_file_string().c_str(), CP_UTF8));
+			m_listFolders.AddString(repositoryPath.wstring().c_str());
 
 			boost::filesystem::path samplesPath = clientToolsPath / "examples";
 			if (boost::filesystem::exists(samplesPath))
-				m_listFolders.AddString(CA2T(samplesPath.native_file_string().c_str(), CP_UTF8));
+				m_listFolders.AddString(samplesPath.wstring().c_str());
 		}
 		else
 		{
@@ -738,7 +738,7 @@ public:
 				boost::filesystem::wpath eclccPath = hpccbin;
 				eclccPath /= _T("eclcc.exe");
 				if (boost::filesystem::exists(eclccPath))
-					m_Location = eclccPath.native_file_string().c_str();
+					m_Location = eclccPath.wstring().c_str();
 			}
 
 			const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
@@ -747,13 +747,13 @@ public:
 				boost::filesystem::wpath wuFolder = hpccEcl;
 				wuFolder /= _T("wu");
 				boost::filesystem::create_directories(wuFolder);
-				m_EclWorkingFolder = wuFolder.native_file_string().c_str();
+				m_EclWorkingFolder = wuFolder.wstring().c_str();
 
 				boost::filesystem::wpath repositoryPath = hpccEcl;
 				repositoryPath = repositoryPath.parent_path();
 				repositoryPath /= _T("My Files");
 				boost::filesystem::create_directories(repositoryPath);
-				m_listFolders.AddString(repositoryPath.native_file_string().c_str());
+				m_listFolders.AddString(repositoryPath.wstring().c_str());
 			}
 		}
 
@@ -2012,7 +2012,7 @@ public:
 	{
 		boost::filesystem::path path;
 		GetApplicationFolder(path);
-		std::_tstring native_path = CA2T(path.native_file_string().c_str());
+		std::_tstring native_path = path.wstring();
 		::ShellExecute(m_hWnd, _T("open"), native_path.c_str(), _T(""), native_path.c_str(), SW_SHOW);
 		return 0;
 	}

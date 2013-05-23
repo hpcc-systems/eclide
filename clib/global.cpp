@@ -30,10 +30,10 @@ CLIB_API const boost::filesystem::path & GetProgramPath(boost::filesystem::path 
 {
 	TCHAR programPath[_MAX_PATH];
 	::GetModuleFileName(0, programPath, _MAX_PATH);
-	path = boost::filesystem::path(CT2A(programPath), boost::filesystem::native);
+	path = boost::filesystem::path(programPath, boost::filesystem::native);
 	if(!g_appName.empty())
 	{
-		path = path.branch_path() / boost::filesystem::path(CT2A(g_appName.c_str()), boost::filesystem::native);
+		path = path.branch_path() / boost::filesystem::path(g_appName, boost::filesystem::native);
 	}
 	return path;
 }
@@ -47,7 +47,7 @@ CLIB_API const boost::filesystem::path & GetAppDataFolder(boost::filesystem::pat
 {
 	TCHAR appDataPath[_MAX_PATH];
 	SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_APPDATA, true); 
-	path = boost::filesystem::path(CT2A(appDataPath), boost::filesystem::native);
+	path = boost::filesystem::path(appDataPath, boost::filesystem::native);
 	boost::filesystem::create_directories(path);
 	return path;
 }
@@ -55,7 +55,7 @@ CLIB_API const boost::filesystem::path & GetDocumentsFolder(boost::filesystem::p
 {
 	TCHAR appDataPath[_MAX_PATH];
 	SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_COMMON_DOCUMENTS, true); 
-	path = boost::filesystem::path(CT2A(appDataPath), boost::filesystem::native);
+	path = boost::filesystem::path(appDataPath, boost::filesystem::native);
 	boost::filesystem::create_directories(path);
 	return path;
 }
@@ -63,14 +63,14 @@ CLIB_API const boost::filesystem::path & GetMyDocumentsFolder(boost::filesystem:
 {
 	TCHAR appDataPath[_MAX_PATH];
 	SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_MYDOCUMENTS, true); 
-	path = boost::filesystem::path(CT2A(appDataPath), boost::filesystem::native);
+	path = boost::filesystem::path(appDataPath, boost::filesystem::native);
 	boost::filesystem::create_directories(path);
 	return path;
 }
 CLIB_API const boost::filesystem::path & GetCompanyFolder(boost::filesystem::path & path)
 {
 	boost::filesystem::path p;
-	path = GetAppDataFolder(p) / boost::filesystem::path(CT2A(COMPANY), boost::filesystem::native);
+	path = GetAppDataFolder(p) / boost::filesystem::path(COMPANY, boost::filesystem::native);
 	boost::filesystem::create_directories(path);
 	return path;
 }
@@ -80,17 +80,17 @@ CLIB_API const boost::filesystem::path & GetApplicationFolder(boost::filesystem:
 	if (parser.HasKey(_T("WF")))
 	{
 		std::_tstring workspace = parser.GetVal(_T("WF"));
-		path = boost::filesystem::path(CT2A(workspace.c_str()), boost::filesystem::native);
+		path = boost::filesystem::path(workspace, boost::filesystem::native);
 	}
 	else
 	{
 		boost::filesystem::path programPath;
-		std::string leaf = GetProgramPath(programPath).leaf();
+		std::string leaf = GetProgramPath(programPath).leaf().string();
 		TCHAR szFileName[_MAX_FNAME];
 		TCHAR szExt[_MAX_FNAME];
 		_tsplitpath(CA2T(leaf.c_str()), NULL, NULL, szFileName, szExt);		
 		boost::filesystem::path companyFolder;
-		path = GetCompanyFolder(companyFolder) / boost::filesystem::path(CT2A(szFileName), boost::filesystem::native);
+		path = GetCompanyFolder(companyFolder) / boost::filesystem::path(szFileName, boost::filesystem::native);
 	}
 	boost::filesystem::create_directories(path);
 	return path;
@@ -98,14 +98,14 @@ CLIB_API const boost::filesystem::path & GetApplicationFolder(boost::filesystem:
 CLIB_API const boost::filesystem::path & GetUserFolder(boost::filesystem::path & path, const std::_tstring & user)
 {
 	boost::filesystem::path applicationFolder;
-	path = GetApplicationFolder(applicationFolder) / boost::filesystem::path(CT2A(user.c_str()), boost::filesystem::native);
+	path = GetApplicationFolder(applicationFolder) / boost::filesystem::path(user, boost::filesystem::native);
 	boost::filesystem::create_directories(path);
 	return path;
 }
 CLIB_API const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path, const std::_tstring & user, const std::_tstring & environment)
 {
 	boost::filesystem::path userFolder;
-	path = GetUserFolder(userFolder, user) / boost::filesystem::path(CT2A(environment.c_str()), boost::filesystem::native);
+	path = GetUserFolder(userFolder, user) / boost::filesystem::path(environment, boost::filesystem::native);
 	boost::filesystem::create_directories(path);
 	return path;
 }
@@ -118,13 +118,13 @@ CLIB_API const boost::filesystem::path & GetConfigPath(const std::_tstring & env
 		CfgFileName += _T(".");
 		CfgFileName += CFG;
 	}
-	path = GetApplicationFolder(applicationFolder) / boost::filesystem::path(CT2A(CfgFileName.c_str()), boost::filesystem::native);
+	path = GetApplicationFolder(applicationFolder) / boost::filesystem::path(CfgFileName, boost::filesystem::native);
 	return path;
 }
 CLIB_API const boost::filesystem::path & GetIniPath(boost::filesystem::path & path)
 {
 	boost::filesystem::path programPath;
-	std::string leaf = GetProgramPath(programPath).leaf();
+	std::string leaf = GetProgramPath(programPath).leaf().string();
 	TCHAR szFileName[_MAX_FNAME];
 	TCHAR szExt[_MAX_FNAME];
 	_tsplitpath(CA2T(leaf.c_str()), NULL, NULL, szFileName, szExt);
@@ -132,7 +132,7 @@ CLIB_API const boost::filesystem::path & GetIniPath(boost::filesystem::path & pa
 	iniName += _T(".");
 	iniName += INI;
 	boost::filesystem::path appFolder;
-	path = GetApplicationFolder(appFolder) / boost::filesystem::path(CT2A(iniName.c_str()), boost::filesystem::native);
+	path = GetApplicationFolder(appFolder) / boost::filesystem::path(iniName, boost::filesystem::native);
 	return path;
 }
 
@@ -166,7 +166,7 @@ public:
 	{
 		TCHAR szFileName[_MAX_FNAME];
 		TCHAR szExt[_MAX_FNAME];
-		_tsplitpath(CA2T(m_CfgPath.native_file_string().c_str()), NULL, NULL, szFileName, szExt);
+		_tsplitpath(m_CfgPath.wstring().c_str(), NULL, NULL, szFileName, szExt);
 		if (szExt[0] == '.')
 		{
 			InitConfigPath(szFileName, &szExt[1]);
@@ -197,8 +197,8 @@ public:
 		cfgNameExt += _T(".");
 		cfgNameExt += ext;
 		boost::filesystem::path appFolder;
-		m_CfgPath = GetApplicationFolder(appFolder) / boost::filesystem::path(CT2A(cfgNameExt.c_str()), boost::filesystem::native);
-		m_Cfg.SetFilename(CA2T(m_CfgPath.native_file_string().c_str()));
+		m_CfgPath = GetApplicationFolder(appFolder) / boost::filesystem::path(cfgNameExt, boost::filesystem::native);
+		m_Cfg.SetFilename(m_CfgPath.wstring().c_str());
 	}
 	/*
 	void InitUserFolder(const std::_tstring & user)
@@ -549,7 +549,7 @@ CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesyst
 	CConfig * retVal = ConfigCache.Get(new CConfig(id, path));
 	TCHAR szFileName[_MAX_FNAME];
 	TCHAR szExt[_MAX_FNAME];
-	_tsplitpath(CA2T(path.leaf().c_str()), NULL, NULL, szFileName, szExt);		
+	_tsplitpath(path.leaf().wstring().c_str(), NULL, NULL, szFileName, szExt);		
 	if (szExt[0] == '.')
 		retVal->InitConfigPath(szFileName, &szExt[1]);
 	else

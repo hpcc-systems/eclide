@@ -88,7 +88,7 @@ bool CPersistMap::deserialize(const std::_tstring & path)
 
 bool CPersistMap::deserialize(const std::_tstring & xml_path, bool isPath)
 {
-	if (isPath && !boost::filesystem::exists(boost::filesystem::path(CT2A(xml_path.c_str()), boost::filesystem::native)))
+	if (isPath && !boost::filesystem::exists(boost::filesystem::path(xml_path, boost::filesystem::native)))
 		return false;
 
 	CComInitialize com;
@@ -160,7 +160,7 @@ void CPersistWindow::SetPath(const std::string & path, const boost::filesystem::
 	else
 	{
 		m_filePath = boost::filesystem::path(path, boost::filesystem::native);
-		if (!(boost::filesystem::exists(m_filePath) && m_file.Open(CA2T(m_filePath.native_file_string().c_str()), GENERIC_WRITE)))
+		if (!(boost::filesystem::exists(m_filePath) && m_file.Open(m_filePath.string().c_str(), GENERIC_WRITE)))
 			GenerateTmpFile(folder);
 	}
 	//ATLASSERT(boost::filesystem::exists(m_filePath));
@@ -195,7 +195,7 @@ void CPersistWindow::Restore()
 	clib::recursive_mutex::scoped_lock lock(m_mutex);
 	CPersistMap persistInfo;
 	m_file.Close();
-	if (persistInfo.deserialize(std::_tstring(CA2T(m_filePath.native_file_string().c_str()))))
+	if (persistInfo.deserialize(m_filePath.wstring()))
 	{
 		WINDOWPLACEMENT placement;
 		std::string encodedStr = CT2A(persistInfo.Get(PERSIST_PLACEMENT));
@@ -221,7 +221,7 @@ void CPersistWindow::Restore()
 		}
 		m_owner->RestorePersistInfo(persistInfo);
 	}
-	m_file.Open(CA2T(m_filePath.native_file_string().c_str()), GENERIC_WRITE);
+	m_file.Open(m_filePath.string().c_str(), GENERIC_WRITE);
 }
 
 void CPersistWindow::Remove()
