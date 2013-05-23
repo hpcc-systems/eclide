@@ -6,6 +6,7 @@
 #include "UnicodeFile.h"
 #include "md5.hpp"
 #include "EclCC.h"
+#include <UtilFilesystem.h>
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
@@ -35,7 +36,7 @@ private:
 
 	static void thread_MonitorFolder1(CComPtr<CMonitorFolder> self)
 	{
-		HANDLE file = FindFirstChangeNotification(self->m_path.wstring().c_str(), FALSE, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE);
+		HANDLE file = FindFirstChangeNotification(pathToWString(self->m_path).c_str(), FALSE, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE);
 		while (self->m_doMonitor && WaitForSingleObject(file, 500) != WAIT_TIMEOUT) {
 			FindNextChangeNotification(file);
 		}
@@ -45,7 +46,7 @@ private:
 	{
 		USES_CONVERSION;
 
-		HANDLE hDir = CreateFile(self->m_path.wstring().c_str(), FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
+		HANDLE hDir = CreateFile(pathToWString(self->m_path).c_str(), FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
 
 		FILE_NOTIFY_INFORMATION Buffer[1024];
 		DWORD BytesReturned;
@@ -92,10 +93,10 @@ private:
 				{
 					boost::filesystem::wpath fullPath = self->m_path / filename;
 					boost::filesystem::wpath relativePath = boost::filesystem::wpath(self->m_path.filename()) / filename;
-					std::_tstring type = relativePath.extension().wstring();
-					std::_tstring moduleLabel = relativePath.parent_path().wstring();
+					std::_tstring type = pathToWString(relativePath.extension());
+					std::_tstring moduleLabel = pathToWString(relativePath.parent_path());
 					algo::replace_all(moduleLabel, _T("\\"), _T("."));
-					std::_tstring attrLabel = CA2T(boost::filesystem::basename(relativePath).c_str());
+					std::_tstring attrLabel = stringToWString(boost::filesystem::basename(relativePath)).c_str();
 					std::_tstring ecl;
 					CComPtr<IAttribute> attr = GetDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), 0, false);
 					if (attr)
@@ -106,7 +107,7 @@ private:
 	}
 
 public:
-	CMonitorFolder(CDiskRepository * repository, const boost::filesystem::path & path) : m_repository(repository), m_path(path), m_leaf(path.filename().wstring())
+	CMonitorFolder(CDiskRepository * repository, const boost::filesystem::path & path) : m_repository(repository), m_path(pathToWPath(path)), m_leaf(pathToWString(path.filename()))
 	{
 		ATLASSERT(boost::filesystem::exists(m_path) && boost::filesystem::is_directory(m_path));
 		m_doMonitor = true;
@@ -126,7 +127,7 @@ public:
 			m_repository = NULL;
 			//  Touch the folder to trigger the clean exit of the monitor thread  ---
 			CAtlTemporaryFile temp;
-			temp.Create(m_path.wstring().c_str());
+			temp.Create(pathToWString(m_path).c_str());
 		}
 		return refCount;
 	}
@@ -177,7 +178,7 @@ public:
 	{
 		if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
 		{
-			std::_tstring leaf = path.leaf().wstring();
+			std::_tstring leaf = pathToWString(path.leaf());
 			if (!algo::contains(leaf, _T(".")))
 			{  
 				std::_tstring label = module;
@@ -189,9 +190,9 @@ public:
 				moduleHierarchy[module].push_back(mod);
 
 				boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
-				for (boost::filesystem::directory_iterator itr(path); itr != end_itr; ++itr)
+				for (boost::filesystem::directory_iterator itr(wpathToPath(path)); itr != end_itr; ++itr)
 				{
-					GetAllModules(*itr, label, modules, moduleHierarchy, false, noBroadcast);
+					GetAllModules(pathToWString(*itr), label, modules, moduleHierarchy, false, noBroadcast);
 				}
 			}
 		}
@@ -217,7 +218,7 @@ public:
 			{
 				if (itr->first.empty())
 					continue;
-				else if (algo::equals(m_amtRoot.leaf().wstring(), itr->first))
+				else if (algo::equals(pathToWString(m_amtRoot.leaf()), itr->first))
 					_moduleHierarchy[_T("")] = itr->second;
 				else
 					_moduleHierarchy[itr->first] = itr->second;
@@ -330,7 +331,7 @@ public:
 			if (boost::filesystem::exists(path))
 			{
 				boost::filesystem::directory_iterator attr_itr_end;
-				for (boost::filesystem::directory_iterator attr_itr(path); attr_itr != attr_itr_end; attr_itr++)
+				for (boost::filesystem::directory_iterator attr_itr(wpathToPath(path)); attr_itr != attr_itr_end; attr_itr++)
 				{
 					if (!boost::filesystem::is_directory(*attr_itr))
 					{  
@@ -338,7 +339,7 @@ public:
 						std::_tstring type = CA2T(boost::filesystem::extension(*attr_itr).c_str());
 						if (IsValidExtension(type))
 						{
-							StlLinked<IAttribute> attribute = CreateDiskAttribute(this, moduleName, label, type, *attr_itr, _T(""), noBroadcast);
+							StlLinked<IAttribute> attribute = CreateDiskAttribute(this, moduleName, label, type, pathToWPath(*attr_itr), _T(""), noBroadcast);
 							if (attribute.isLinked())
 								attributes.push_back(attribute);
 						}
@@ -458,7 +459,7 @@ public:
 			if (boost::filesystem::exists(path))
 			{
 				try {
-					int retVal = MoveToRecycleBin(path.wstring());
+					int retVal = MoveToRecycleBin(pathToWString(path));
 					if (retVal != 0)
 						throw std::exception("Unknown Error During Folder Delete.", retVal);
 				} catch (const std::exception & ex) {
@@ -475,8 +476,8 @@ public:
 
 	bool GetRepositoryPath(std::_tstring & module, boost::filesystem::wpath & path) const
 	{
-		if (!m_amtRoot.empty() && !algo::istarts_with(module, (m_amtRoot.leaf().wstring() + _T("."))))
-			module = m_amtRoot.leaf().wstring() + _T(".") + module;
+		if (!m_amtRoot.empty() && !algo::istarts_with(module, (pathToWString(m_amtRoot.leaf()) + _T("."))))
+			module = pathToWString(m_amtRoot.leaf()) + _T(".") + module;
 
 		CModuleHelper modHelper(module);
 		StdStringVector tokens;
@@ -542,7 +543,7 @@ public:
 		if (boost::filesystem::exists(path))
 		{
 			CUnicodeFile file;
-			file.Open(path.wstring());
+			file.Open(pathToWString(path).c_str());
 			if (file.IsOpen())
 			{
 				std::_tstring data;
@@ -596,7 +597,7 @@ public:
 		//  Check moduleAttribute contains full path
 		for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr) 
 		{
-			std::_tstring knownPath = itr->second->m_path.wstring();
+			std::_tstring knownPath = pathToWString(itr->second->m_path);
 			if (boost::algorithm::istarts_with(modAttr, knownPath))
 			{
 				modAttr = itr->first + modAttr.substr(knownPath.length());
@@ -652,7 +653,7 @@ public:
 				path /= filename;
 
 				CUnicodeFile file;
-				file.Create(path.wstring(),GENERIC_WRITE,CREATE_ALWAYS,CUnicodeFile::ENCODING_ANSI);
+				file.Create(pathToWString(path).c_str(),GENERIC_WRITE,CREATE_ALWAYS,CUnicodeFile::ENCODING_ANSI);
 				file.Close();
 			}
 		}
@@ -752,7 +753,7 @@ public:
 	virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-			path = eclcc->GetWorkingFolder();
+			path = stringToPath(eclcc->GetWorkingFolder());
 		else
 		{		
 			boost::filesystem::path userFolder;
@@ -779,7 +780,7 @@ public:
 			boost::filesystem::wpath path = boost::filesystem::wpath(eclcc->GetEclFolder(i), boost::filesystem::native);
 			if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
 			{
-				m_paths[path.leaf().wstring()] = new CMonitorFolder(this, path);
+				m_paths[pathToWString(path.leaf())] = new CMonitorFolder(this, wpathToPath(path));
 				m_pathOrder.push_back(path);
 			}
 		}
@@ -789,7 +790,7 @@ public:
 	{
 		m_amtRoot = boost::filesystem::wpath(url, boost::filesystem::native);
 		ATLASSERT(boost::filesystem::exists(m_amtRoot));
-		m_paths[m_amtRoot.leaf().wstring()] = new CMonitorFolder(this, m_amtRoot);
+		m_paths[pathToWString(m_amtRoot.leaf())] = new CMonitorFolder(this, wpathToPath(m_amtRoot));
 		m_pathOrder.push_back(m_amtRoot);
 	}
 

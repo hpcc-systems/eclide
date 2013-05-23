@@ -11,6 +11,7 @@
 #include "UnicodeFile.h"
 #include "md5.hpp"
 #include "ModuleHelper.h"
+#include <UtilFilesystem.h>
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
@@ -64,7 +65,7 @@ public:
 		ATLASSERT(!boost::algorithm::contains(module, _T("/")));
 		m_repository = const_cast<IRepository *>(rep);
 		m_path = path;
-		m_pathStr = path.wstring();
+		m_pathStr = pathToWString(path);
 		m_checkedOut = false;
 		m_locked = false;
 		m_orphaned = false;
@@ -211,7 +212,7 @@ public:
 		ATLASSERT(ecl);
 
 		CUnicodeFile file;
-		file.Create(m_path.string(), GENERIC_WRITE, CREATE_ALWAYS, CUnicodeFile::ENCODING_ANSI);
+		file.Create(pathToWString(m_path).c_str(), GENERIC_WRITE, CREATE_ALWAYS, CUnicodeFile::ENCODING_ANSI);
 		if(file.IsOpen())
 		{
 			m_eclSet = true;
@@ -337,7 +338,7 @@ public:
 			if (boost::filesystem::exists(m_path))
 			{
 				SetText(_T(""), true);
-				int retVal = MoveToRecycleBin(m_path.wstring());
+				int retVal = MoveToRecycleBin(pathToWString(m_path));
 				if (retVal != 0)
 					throw std::exception("Unknown Error During Folder Delete.", retVal);
 				Refresh(false, NULL, true);

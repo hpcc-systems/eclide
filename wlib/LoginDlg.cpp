@@ -11,6 +11,7 @@
 #include "EclCC.h"
 #include <CustomMessages.h>
 #include <AutoUpdate.h>
+#include <UtilFilesystem.h>
 
 static const SectionLabelDefault GLOBAL_LASTCONFIG(SectionLabel(_T("General"), _T("LastConfig")), _T("default"));
 static const SectionLabelDefault GLOBAL_LASTCONFIG_LHS(SectionLabel(_T("General"), _T("LastConfigLHS")), _T("default"));
@@ -754,7 +755,7 @@ public:
 	void CheckForModuleFolders(std::_tstring & path)
 	{
 		bool hasChildFolder = false;
-		boost::filesystem::path folder(path, boost::filesystem::native);
+		boost::filesystem::path folder = stringToPath(path);
 		try
 		{
 			boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
@@ -773,8 +774,8 @@ public:
 
 		if (!hasChildFolder)
 		{
-			if (MessageBox((boost::_tformat(_T("The selected folder contains no \"Child\" folders, use %1% instead?")) % folder.parent_path().wstring()).str().c_str(), _T("AMT"), MB_YESNO) == IDYES)
-				path = folder.parent_path().wstring();
+			if (MessageBox((boost::_tformat(_T("The selected folder contains no \"Child\" folders, use %1% instead?")) % pathToWString(folder.parent_path())).str().c_str(), _T("AMT"), MB_YESNO) == IDYES)
+				path = pathToWString(folder.parent_path());
 		}
 	}
 
@@ -876,9 +877,9 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().extension().wstring(), _T(".cfg")))
+			if (boost::algorithm::iequals(pathToString(itr->path().extension()), _T(".cfg")))
 			{
-				std::string s = itr->path().leaf().string();
+				std::string s = pathToString(itr->path().leaf());
 				std::_tstring label = CA2T(s.substr(0, s.length() - 4).c_str());
 				int id = configCombo.AddString(label.c_str());
 				if (defaultValue.length() && defaultValue == label)
