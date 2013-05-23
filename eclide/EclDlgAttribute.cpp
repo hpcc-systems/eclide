@@ -6,6 +6,7 @@
 #include "utilDateTime.h"
 #include "Logger.h"
 #include <EclCC.h>
+#include <UtilFilesystem.h>
 
 //  ===========================================================================
 CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_attribute(attribute), baseClass(owner)
@@ -34,17 +35,17 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 		//  Save local item for history  ---
 		boost::filesystem::path path;
 		GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
-		path /= m_attribute->GetModuleQualifiedLabel();
+		path /= stringToPath(m_attribute->GetModuleQualifiedLabel());
 		boost::filesystem::create_directories(path);
-		path /= m_attribute->GetLabel();
+		path /= stringToPath(m_attribute->GetLabel());
 		boost::filesystem::create_directories(path);
 
 		CTime t = CTime::GetCurrentTime();
 		std::_tstring now = t.FormatGmt(_T("%Y-%m-%dT%H_%M_%SZ.ecl"));
-		path /= now;
+		path /= stringToPath(now);
 
 		CUnicodeFile file;
-		file.Create(path.wstring());
+		file.Create(pathToWString(path).c_str());
 		file.Write(ecl);
 		file.Close();
 		//  ---  ---  ---
