@@ -1805,7 +1805,9 @@ protected:
 	CComPtr<ILayout> m_layout_spring1;
 	CComPtr<ILayout> m_layout_circle;
 	CComPtr<ILayout> m_layout_timeline;
+#ifdef LAYOUT_LEE
 	CComPtr<ILayout> m_layout_lee;
+#endif
 	CComPtr<ILayout> m_layout_neato;
 	CComPtr<ILayout> m_layout_fdp;
 	CComPtr<ILayout> m_layout_twopi;

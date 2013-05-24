@@ -17,7 +17,7 @@ const TCHAR * const LEVEL_TEXT[] =
 Logger::Logger(const char * filePath, int line) : m_line(line)
 {
 	boost::filesystem::path path(filePath, boost::filesystem::native);
-	m_file = path.leaf();
+	m_file = path.leaf().string();
 }
 
 void Logger::operator()(LEVEL l)

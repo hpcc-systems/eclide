@@ -28,7 +28,7 @@
 #undef max
 #endif
 #include <boost/progress.hpp>
-#define BOOST_FILESYSTEM_VERSION 2
+#define BOOST_FILESYSTEM_VERSION 3
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp> 
 #include <boost/bind.hpp>

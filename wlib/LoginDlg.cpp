@@ -754,7 +754,7 @@ public:
 	void CheckForModuleFolders(std::_tstring & path)
 	{
 		bool hasChildFolder = false;
-		boost::filesystem::path folder(CT2A(path.c_str()), boost::filesystem::native);
+		boost::filesystem::path folder(path, boost::filesystem::native);
 		try
 		{
 			boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
@@ -773,8 +773,8 @@ public:
 
 		if (!hasChildFolder)
 		{
-			if (MessageBox((boost::_tformat(_T("The selected folder contains no \"Child\" folders, use %1% instead?")) % folder.parent_path().native_file_string().c_str()).str().c_str(), _T("AMT"), MB_YESNO) == IDYES)
-				path = CA2T(folder.parent_path().native_file_string().c_str());
+			if (MessageBox((boost::_tformat(_T("The selected folder contains no \"Child\" folders, use %1% instead?")) % folder.parent_path().wstring()).str().c_str(), _T("AMT"), MB_YESNO) == IDYES)
+				path = folder.parent_path().wstring();
 		}
 	}
 
@@ -876,9 +876,9 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().extension(), _T(".cfg")))
+			if (boost::algorithm::iequals(itr->path().extension().wstring(), _T(".cfg")))
 			{
-				std::string s = itr->path().leaf();
+				std::string s = itr->path().leaf().string();
 				std::_tstring label = CA2T(s.substr(0, s.length() - 4).c_str());
 				int id = configCombo.AddString(label.c_str());
 				if (defaultValue.length() && defaultValue == label)

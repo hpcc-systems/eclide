@@ -37,7 +37,7 @@ bool CUnicodeFile::Create(const TCHAR * filePath, int readWriteMode, int createM
 
 bool CUnicodeFile::Create(const boost::filesystem::path & filePath, int readWriteMode, int createMode, ENCODING encoding)
 {
-	std::_tstring _tfilePath = CA2T(filePath.native_file_string().c_str());
+	std::_tstring _tfilePath = filePath.wstring();
 	return Create(_tfilePath.c_str(), readWriteMode, createMode, encoding);
 }
 
@@ -74,7 +74,7 @@ bool CUnicodeFile::Create(int readWriteMode, int createMode, ENCODING encoding)
 
 bool CUnicodeFile::Open(const boost::filesystem::path & filePath, int readWriteMode)
 {
-	std::_tstring _tfilePath = CA2T(filePath.native_file_string().c_str());
+	std::_tstring _tfilePath = filePath.wstring();
 	return Open(_tfilePath.c_str(), readWriteMode);
 }
 

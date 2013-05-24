@@ -2132,7 +2132,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 	boost::filesystem::path path;
 	GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
 	m_singleInstance = NULL;	//kills the previous mutex...
-	m_singleInstance = new CLimitSingleInstance(std::_tstring(CA2T(path.native_file_string().c_str())));
+	m_singleInstance = new CLimitSingleInstance(path.wstring());
 	if (m_singleInstance->IsAnotherInstanceRunning())
 	{
 		MessageBox(_T("Only one instance of ECL IDE is permitted with the same \"Configuration\" and \"Login ID\"."), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
@@ -2230,8 +2230,8 @@ void CMainFrame::RestoreState()
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().extension(), _T(".xml")))
-				m_persistedWindows.push_back(new CPersistedItem(this, itr->path().native_file_string()));
+			if (boost::algorithm::iequals(itr->path().extension().wstring(), _T(".xml")))
+				m_persistedWindows.push_back(new CPersistedItem(this, itr->path().string()));
 		}
 	}
 	std::sort(m_persistedWindows.begin(), m_persistedWindows.end(), CPersistedItemCompare());
@@ -2495,8 +2495,8 @@ bool CMainFrame::UIUpdateMenuItems()
 
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 {
-	boost::filesystem::path path(CT2A(sPathName), boost::filesystem::native);
-	std::_tstring filename = CA2T(path.leaf().c_str());
+	boost::filesystem::path path(static_cast<const TCHAR *>(sPathName), boost::filesystem::native);
+	std::_tstring filename = path.leaf().wstring();
 	if (boost::algorithm::iequals(boost::filesystem::extension(path), ".xgmml"))
 	{
 		CComPtr<IRepository> rep = AttachRepository();
