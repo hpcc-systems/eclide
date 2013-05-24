@@ -473,7 +473,7 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_T
 		fileName += ".ecl";
 		wideFileName = CA2T(fileName.c_str());
 		filePath = envFolder / fileName;
-		wideFilePath = CA2T(filePath.native_file_string().c_str());
+		wideFilePath = filePath.wstring();
 		if (!CWorkspaceItemCache.Exists(wideFilePath))
 			break;
 	}

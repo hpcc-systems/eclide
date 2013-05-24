@@ -3,6 +3,7 @@
 #include "Canvas.h"
 #include "Lee.h"
 
+#ifdef LEE_LAYOUT
 #ifdef _DEBUG
 #include "UnicodeFile.h"
 #endif
@@ -631,4 +632,4 @@ void LeeRoutePlannerImpl::Dump()
 #endif
 
 //-----------------------------------------------------------------------------
-
+#endif

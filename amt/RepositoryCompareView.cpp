@@ -142,10 +142,10 @@ void thread_GetWorkspaces(IRepository * rep, IWorkspaceVector * workspaces)
 {
 	boost::filesystem::path envFolder;
 	rep->GetEnvironmentFolder(envFolder);
-	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - Start")) % envFolder.native_file_string().c_str()).str());
+	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - Start")) % envFolder.wstring()).str());
 	ATLASSERT(workspaces->size() == 0);
 	rep->GetWorkspaces(workspaces, true);
-	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - End")) % envFolder.native_file_string().c_str()).str());
+	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - End")) % envFolder.wstring()).str());
 }
 
 void thread_GetModules(IRepository * rep, std::_tstring parentLabel, IModuleVector * modules, bool checksum, bool noRefresh)
@@ -247,7 +247,7 @@ void loadModules(CRepositoryCompareView * self, const std::_tstring & parentLabe
 			if (!lhs->IsPlugin() && !rhs->IsPlugin() && !lhs->IsTrash() && !rhs->IsTrash())
 			{
 				if (CanShow(self->m_filter, lhs, rhs))
-					sortedModules.push_back(std::make_pair(lhs, rhs));
+					sortedModules.push_back(std::make_pair(lhs.p, rhs.p));
 			}
 		}
 		LogMsg((boost::_tformat(_T("Merging Folders - After:  %1% folders")) % mergedMods.size()).str());
@@ -379,7 +379,7 @@ void loadAttributes(CRepositoryCompareView * self, IModule * mod_lhs, IModule * 
 			lhs = self->m_repLHS->GetAttributePlaceholder(mod_lhs->GetQualifiedLabel(true), itr->first.c_str(), rhs->GetType());  // Should this be mod_rhs???
 		if (!rhs)
 			rhs = self->m_repRHS->GetAttributePlaceholder(mod_lhs->GetQualifiedLabel(true), itr->first.c_str(), lhs->GetType());  
-		sortedAttributes.push_back(std::make_pair(lhs, rhs));
+		sortedAttributes.push_back(std::make_pair(lhs.p, rhs.p));
 	}
 	std::sort(sortedAttributes.begin(), sortedAttributes.end(), AttrAttrPairCompare());
 	for(std::vector<AttrAttrPair>::const_iterator itr = sortedAttributes.begin(); itr != sortedAttributes.end(); ++itr)

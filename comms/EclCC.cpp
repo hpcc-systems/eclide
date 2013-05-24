@@ -106,11 +106,11 @@ public:
 		if (!boost::filesystem::exists(stdLibPath))
 			stdLibPath = clientToolsFolderPath / _T("share") / _T("ecllibrary");
 		if (boost::filesystem::exists(stdLibPath))
-			m_eclFolders.push_back(std::make_pair(stdLibPath.directory_string(), false));
+			m_eclFolders.push_back(std::make_pair(stdLibPath.wstring(), false));
 
 		boost::filesystem::wpath pluginsPath = clientToolsFolderPath / _T("plugins");
 		if (boost::filesystem::exists(pluginsPath))
-			m_eclFolders.push_back(std::make_pair(pluginsPath.directory_string(), false));
+			m_eclFolders.push_back(std::make_pair(pluginsPath.wstring(), false));
 	}
 
 	TRI_BOOL HasSettings() const
@@ -129,7 +129,7 @@ public:
 				command += m_arguments;
 			}
 			command += _T(" --version");
-			std::_tstring runPath = m_compilerFolderPath.directory_string().c_str();
+			std::_tstring runPath = m_compilerFolderPath.wstring().c_str();
 			std::_tstring in, out, err;
 			runProcess(command, runPath, _T(""), in, out, err);
 			m_version = out;
@@ -277,7 +277,7 @@ public:
 		command += _T(" \"");
 		command += sourcePath;
 		command += _T("\"");
-		std::_tstring runPath = m_compilerFolderPath.directory_string().c_str();
+		std::_tstring runPath = m_compilerFolderPath.wstring();
 		std::_tstring in = _T("");
 
 		std::_tstring folder = m_workingFolder;
@@ -311,14 +311,14 @@ public:
 
 	const TCHAR * GetWorkunitXML(const std::_tstring & wuid, std::_tstring & wuXml) const
 	{
-		std::_tstring filePath = (m_workingFolderPath / (wuid + _T(".xml"))).native_file_string();
+		std::_tstring filePath = (m_workingFolderPath / (wuid + _T(".xml"))).wstring();
 		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring command = _T("wuget.exe \"");
-			command += (m_workingFolderPath / (wuid + _T(".exe"))).native_file_string();
+			command += (m_workingFolderPath / (wuid + _T(".exe"))).wstring();
 			command += _T("\"");
 			std::_tstring err;
-			runProcess(command, m_workingFolder, m_compilerFolderPath.native_directory_string(), _T(""), wuXml, err);
+			runProcess(command, m_workingFolder, m_compilerFolderPath.wstring(), _T(""), wuXml, err);
 			CUnicodeFile file;
 			if (file.Create(filePath.c_str()))
 				file.Write(wuXml);
@@ -334,7 +334,7 @@ public:
 
 	const TCHAR * SaveWorkunitXML(const std::_tstring & wuid, std::_tstring & filePath) const
 	{
-		filePath = (m_workingFolderPath / (wuid + _T(".xml"))).native_file_string();
+		filePath = (m_workingFolderPath / (wuid + _T(".xml"))).wstring();
 		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring wuXml;
@@ -361,22 +361,22 @@ public:
 			}
 			else
 			{
-				std::_tstring command = exePath.native_file_string();
+				std::_tstring command = exePath.wstring();
 				command += _T(" ");
 				command += (const TCHAR *)CString(m_config->Get(GLOBAL_COMPILER_WUARGUMENTS));
 				command += _T(" -xml");
 				std::_tstring err;
-				runProcess(command, m_workingFolder, m_compilerFolderPath.native_directory_string(), _T(""), results, err);
+				runProcess(command, m_workingFolder, m_compilerFolderPath.wstring(), _T(""), results, err);
 				ParseErrors(_T("POIOIUPOIPOIPOIPOIPOIP"), err, hasErrors, errors, true);
 			}
 			CUnicodeFile file;
-			file.Create(resultPath.native_file_string().c_str());
+			file.Create(resultPath.wstring());
 			file.Write(results);
 		}
 		else if (boost::filesystem::exists(resultPath))
 		{
 			CUnicodeFile file;
-			file.Open(resultPath.native_file_string().c_str());
+			file.Open(resultPath.wstring());
 			file.Read(results);
 		}
 		return results.c_str();

@@ -360,11 +360,11 @@ public:
 		//  Check if this user has customized the colors
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / boost::filesystem::path(CT2A(LANGCOLFILE2), boost::filesystem::native);
+		boost::filesystem::path file = appFolder / boost::filesystem::path(LANGCOLFILE2, boost::filesystem::native);
 		if (boost::filesystem::exists(file))
 		{
 			CategoryLanguageColorMap userColors;
-			restore(userColors, file.native_file_string().c_str());
+			restore(userColors, file.string().c_str());
 			for(CategoryLanguageColorMap::iterator itr = userColors.begin(); itr != userColors.end(); ++itr)
 			{
 				m_color[itr->first] = itr->second;
@@ -378,12 +378,12 @@ public:
 		//  Check if this user has customized the colors
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path file = binFolder / boost::filesystem::path(CT2A(fileName), boost::filesystem::native);
+		boost::filesystem::path file = binFolder / boost::filesystem::path(fileName, boost::filesystem::native);
 		if (!boost::filesystem::exists(file))
 		{
 			return false;
 		}
-		restore(t, file.native_file_string().c_str());
+		restore(t, file.string().c_str());
 		return true;
 	}
 	void loadReference(const TCHAR * fileName)
@@ -396,12 +396,12 @@ public:
 		//  Check if this user has customized the colors
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path file = binFolder / boost::filesystem::path(CT2A(fileName), boost::filesystem::native);
+		boost::filesystem::path file = binFolder / boost::filesystem::path(fileName, boost::filesystem::native);
 		if (!boost::filesystem::exists(file))
 		{
 			ATLASSERT(!"Unable to locate LanguageReference.xml");
 		}
-		restore(t, file.native_file_string().c_str());
+		restore(t, file.string().c_str());
 		std::sort(t.begin(), t.end());
 		int row = 0;
 		for(CLanguageReferenceVector::iterator itr = m_lang.begin(); itr != m_lang.end(); ++itr)
@@ -420,7 +420,7 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / boost::filesystem::path(CT2A(LANGCOLFILE2), boost::filesystem::native);
+		boost::filesystem::path file = appFolder / boost::filesystem::path(LANGCOLFILE2, boost::filesystem::native);
 
 		CategoryLanguageColorMap defaultColors, diffColors;
 		loadDefaultColor(LANGCOLFILE, defaultColors);
@@ -433,7 +433,7 @@ public:
 			}
 		}
 
-		save(diffColors, file.native_file_string().c_str());
+		save(diffColors, file.string().c_str());
 	}
 
 	void Restore()
@@ -445,7 +445,7 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / boost::filesystem::path(CT2A(LANGCOLFILE2), boost::filesystem::native);
+		boost::filesystem::path file = appFolder / boost::filesystem::path(LANGCOLFILE2, boost::filesystem::native);
 		if (boost::filesystem::exists(file))
 			boost::filesystem::remove(file);
 		loadMergedColor();
@@ -666,9 +666,9 @@ public:
 	{
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path path = binFolder / boost::filesystem::path(CT2A(LANGREFFILE_CSV), boost::filesystem::native);
+		boost::filesystem::path path = binFolder / boost::filesystem::path(LANGREFFILE_CSV, boost::filesystem::native);
 
-		std::ofstream ofs(path.native_file_string().c_str());
+		std::ofstream ofs(path.string());
 		assert(ofs.good());
 
 		for(CLanguageReferenceVector::iterator itr = m_lang.begin(); itr != m_lang.end(); ++itr)
@@ -682,11 +682,11 @@ public:
 		m_lang.clear();
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path path = binFolder / boost::filesystem::path(CT2A(LANGREFFILE_CSV), boost::filesystem::native);
-		boost::filesystem::path xml_path = binFolder / boost::filesystem::path(CT2A(LANGREFFILE_XML), boost::filesystem::native);
+		boost::filesystem::path path = binFolder / boost::filesystem::path(LANGREFFILE_CSV, boost::filesystem::native);
+		boost::filesystem::path xml_path = binFolder / boost::filesystem::path(LANGREFFILE_XML, boost::filesystem::native);
 
 		CUnicodeFile file;
-		if (file.Open(CA2T(path.native_file_string().c_str())))
+		if (file.Open(path.wstring()))
 		{
 			std::_tstring data;
 			file.Read(data);
@@ -706,7 +706,7 @@ public:
 				}
 			}
 		}
-		save(m_lang, xml_path.native_file_string().c_str());
+		save(m_lang, xml_path.string().c_str());
 	}
 };
 
