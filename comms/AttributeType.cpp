@@ -146,5 +146,5 @@ bool IsValidExtension(const std::_tstring & ext)
 }
 COMMS_API bool HasValidExtension(const std::_tstring & filename)
 {
-	return IsValidExtension(boost::filesystem::extension(filename));
+	return IsValidExtension(std::_tstring(CA2T(boost::filesystem::extension(filename).c_str())));
 }

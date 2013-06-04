@@ -73,7 +73,9 @@ CGraphViewCanvas::CGraphViewCanvas() :
 	m_layout_spring1 = new CGraphTouchgraphLayoutImpl(m_graph,m_meta, m_canvas);
 	m_layout_circle = new CGraphCircularLayoutImpl(m_graph, m_meta, m_canvas);
 	m_layout_timeline = new CGraphTimelineLayoutImpl(m_graph, m_meta, m_canvas);
+#ifdef LAYOUT_LEE
 	m_layout_lee = new CGraphLeeLayoutImpl(m_graph, m_meta, m_canvas);
+#endif
 	m_layout_neato = new CGraphATTLayoutImpl(this, m_graph, m_canvas, m_meta, NEATO_MODE_NEATO);
 	m_layout_fdp = new CGraphATTLayoutImpl(this, m_graph, m_canvas, m_meta, NEATO_MODE_FDP);
 	m_layout_twopi = new CGraphATTLayoutImpl(this, m_graph, m_canvas, m_meta, NEATO_MODE_TWOPI);
@@ -471,9 +473,11 @@ void CGraphViewCanvas::SetLayout(SGV::LAYOUT layout)
 		m_layout = m_layout_circle;
 		break;
 
+#ifdef LAYOUT_LEE
 	case SGV::LAYOUT_LEE:
 		m_layout = m_layout_lee;
 		break;
+#endif
 
 	case SGV::LAYOUT_NEATO:
 		m_layout = m_layout_neato;
@@ -1907,7 +1911,9 @@ void CGraphViewCanvas::RemoveVertex(IGraphVertex * v)
 		m_layout_spring1->remove(v);
 		m_layout_circle->remove(v);
 		m_layout_timeline->remove(v);
+#ifdef LAYOUT_LEE
 		m_layout_lee->remove(v);
+#endif
 		m_layout_neato->remove(v);
 		m_layout_fdp->remove(v);
 		m_layout_twopi->remove(v);
@@ -1937,7 +1943,9 @@ IGraphEdge * CGraphViewCanvas::AddEdge(const CUniqueID& edge_id, const CUniqueID
 		m_layout_spring1->append(retVal);
 		m_layout_circle->append(retVal);
 		m_layout_timeline->append(retVal);
+#ifdef LAYOUT_LEE
 		m_layout_lee->append(retVal);
+#endif
 		m_layout_neato->append(retVal);
 		m_layout_fdp->append(retVal);
 		m_layout_twopi->append(retVal);
@@ -2005,7 +2013,9 @@ void CGraphViewCanvas::RemoveEdge(IGraphEdge * e)
 		m_layout_spring1->remove(e);
 		m_layout_circle->remove(e);
 		m_layout_timeline->remove(e);
+#ifdef LAYOUT_LEE
 		m_layout_lee->remove(e);
+#endif
 		m_layout_neato->remove(e);
 		m_layout_fdp->remove(e);
 		m_layout_twopi->remove(e);
@@ -2857,7 +2867,9 @@ const CUniqueID& CGraphViewCanvas::MergeIntoSubgraph(CUniqueID& retVal, IUniqueI
 		m_layout_spring1->append(isg, p);
 		m_layout_circle->append(isg, p);
 		m_layout_timeline->append(isg, p);
+#ifdef LAYOUT_LEE
 		m_layout_lee->append(isg, p);
+#endif
 		m_layout_neato->append(isg, p);
 		m_layout_fdp->append(isg, p);
 		m_layout_twopi->append(isg, p);
@@ -2907,7 +2919,9 @@ void CGraphViewCanvas::BreakSubgraph(IUniqueIDContainer* results, const CUniqueI
 	m_layout_spring1->remove(isg);
 	m_layout_circle->remove(isg);
 	m_layout_timeline->remove(isg);
+#ifdef LAYOUT_LEE
 	m_layout_lee->remove(isg);
+#endif
 	m_layout_neato->remove(isg);
 	m_layout_fdp->remove(isg);
 	m_layout_twopi->remove(isg);
@@ -5168,7 +5182,9 @@ void CGraphViewCanvas::InitExternalMaps(IGraphVertex * v, const PointF & default
 	m_layout_spring1->append(v, defaultPos);
 	m_layout_circle->append(v, defaultPos);
 	m_layout_timeline->append(v, defaultPos);
+#ifdef LAYOUT_LEE
 	m_layout_lee->append(v ,defaultPos);
+#endif
 	m_layout_neato->append(v, defaultPos);
 	m_layout_fdp->append(v, defaultPos);
 	m_layout_twopi->append(v, defaultPos);

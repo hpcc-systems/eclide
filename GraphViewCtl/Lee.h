@@ -2,8 +2,8 @@
 
 #include "layoutImpl.h"
 
+#ifdef LEE_LAYOUT
 //-----------------------------------------------------------------------------
-
 class CGraphLeeLayoutImpl : public CLayout
 {
 public:
@@ -45,3 +45,4 @@ public:
 		const GraphTypes::PointF& end,
 		GraphTypes::PointFVector& path )=0;
 };
+#endif

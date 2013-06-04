@@ -64,7 +64,7 @@ public:
 		ATLASSERT(!boost::algorithm::contains(module, _T("/")));
 		m_repository = const_cast<IRepository *>(rep);
 		m_path = path;
-		m_pathStr = path.native_file_string().c_str();
+		m_pathStr = path.wstring();
 		m_checkedOut = false;
 		m_locked = false;
 		m_orphaned = false;
@@ -211,7 +211,7 @@ public:
 		ATLASSERT(ecl);
 
 		CUnicodeFile file;
-		file.Create(m_path.native_file_string().c_str(), GENERIC_WRITE, CREATE_ALWAYS, CUnicodeFile::ENCODING_ANSI);
+		file.Create(m_path.string(), GENERIC_WRITE, CREATE_ALWAYS, CUnicodeFile::ENCODING_ANSI);
 		if(file.IsOpen())
 		{
 			m_eclSet = true;
@@ -337,7 +337,7 @@ public:
 			if (boost::filesystem::exists(m_path))
 			{
 				SetText(_T(""), true);
-				int retVal = MoveToRecycleBin(m_path.native_file_string());
+				int retVal = MoveToRecycleBin(m_path.wstring());
 				if (retVal != 0)
 					throw std::exception("Unknown Error During Folder Delete.", retVal);
 				Refresh(false, NULL, true);

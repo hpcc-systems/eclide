@@ -34,17 +34,17 @@ bool CAttributeDlg::DoSave(bool attrOnly)
 		//  Save local item for history  ---
 		boost::filesystem::path path;
 		GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
-		path /= CT2A(m_attribute->GetModuleQualifiedLabel());
+		path /= m_attribute->GetModuleQualifiedLabel();
 		boost::filesystem::create_directories(path);
-		path /= CT2A(m_attribute->GetLabel());
+		path /= m_attribute->GetLabel();
 		boost::filesystem::create_directories(path);
 
 		CTime t = CTime::GetCurrentTime();
 		std::_tstring now = t.FormatGmt(_T("%Y-%m-%dT%H_%M_%SZ.ecl"));
-		path /= CT2A(now.c_str());
+		path /= now;
 
 		CUnicodeFile file;
-		file.Create(CString(CA2T(path.native_file_string().c_str())));
+		file.Create(path.wstring());
 		file.Write(ecl);
 		file.Close();
 		//  ---  ---  ---

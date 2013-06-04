@@ -37,10 +37,10 @@ public:
 
 	CModFileRepository(const TCHAR* url, const TCHAR* label) : m_label(label), m_url(url)
 	{
-		m_path = boost::filesystem::path(CT2A(url), boost::filesystem::native);
+		m_path = boost::filesystem::path(url, boost::filesystem::native);
 
 		CUnicodeFile file;
-		if (file.Open(static_cast<const TCHAR *>(CA2T(m_path.native_file_string().c_str()))))
+		if (file.Open(m_path.wstring()))
 		{
 			file.Read(m_modFile);
 			file.Close();
@@ -446,7 +446,7 @@ public:
 		}
 
 		CUnicodeFile file;
-		if (file.Create(static_cast<const TCHAR *>(CA2T(m_path.native_file_string().c_str()))))
+		if (file.Create(m_path.wstring()))
 		{
 			file.Write(m_modFile);
 			file.Close();
