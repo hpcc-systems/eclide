@@ -972,9 +972,9 @@ public:
 				CString otherFolder;
 				m_listFolders.GetText(i, otherFolder);
 				boost::filesystem::wpath otherPath = static_cast<const TCHAR *>(otherFolder);
-				if (boost::algorithm::iequals(path.leaf(), otherPath.leaf())) 
+				if (boost::algorithm::iequals(path.leaf().string(), otherPath.leaf().string())) 
 				{
-					std::_tstring msg = _T("ECL folders must have unique name.  \"") + otherPath.leaf() + _T("\" is already used.");
+					std::_tstring msg = _T("ECL folders must have unique name.  \"") + otherPath.leaf().wstring() + _T("\" is already used.");
 					MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
 					return 0;
 				}
