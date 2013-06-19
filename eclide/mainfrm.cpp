@@ -2143,18 +2143,26 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 	{
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_PASSWORD, previousPassword);
 	}
+
+	m_Error->Send_Reset();
+
 	if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 	{
 		std::_tstring warnings;
 		eclcc->GetPrefWarnings(warnings);
 		if (!warnings.empty())
 		{
-			warnings = _T("Compiler options specified are invalid:\r\n\r\n") + warnings;
-			MessageBox(warnings.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
+			_DBGLOG(LEVEL_WARNING, warnings.c_str());
+		}
+
+		std::_tstring errors;
+		eclcc->GetPrefErrors(errors);
+		if (!errors.empty())
+		{
+			errors = _T("Compiler options specified are invalid:\r\n\r\n") + errors;
+			MessageBox(errors.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
 		}
 	}
-
-	m_Error->Post_Reset();
 
 	{	//  Following call triggers the fetching of queues / clusters which is slow on first call (threaded)
 		StlLinked<Topology::ITopology> server = AttachTopology(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_TOPOLOGY), _T("Topology"));
