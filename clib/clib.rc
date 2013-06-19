@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "clib Dynamic Link Library"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "clib"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "clib.dll"
             VALUE "ProductName", " clib Dynamic Link Library"
             VALUE "ProductVersion", HPCC_VERSION

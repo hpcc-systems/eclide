@@ -52,7 +52,7 @@ BEGIN
             VALUE "FileDescription", "AMT Module"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "AMT"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "AMT.exe"
             VALUE "ProductName", "AMT Module"
             VALUE "ProductVersion", HPCC_VERSION

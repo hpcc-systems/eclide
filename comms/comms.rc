@@ -74,7 +74,7 @@ BEGIN
             VALUE "CompanyName", "HPCC Systems"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "comms"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "comms.dll"
             VALUE "ProductName", " comms Dynamic Link Library"
             VALUE "ProductVersion", HPCC_VERSION
