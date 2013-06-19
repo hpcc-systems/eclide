@@ -9,21 +9,6 @@ set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH
 
 INCLUDE (  "${PROJECT_SOURCE_DIR}/version.cmake" )
 
-configure_file (
-  "${PROJECT_SOURCE_DIR}/config.h.in"
-  "${PROJECT_SOURCE_DIR}/config.h"
-  )
-
-configure_file (
-  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat.in"
-  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat"
-  )
-
-configure_file (
-  "${PROJECT_SOURCE_DIR}/setup/defines.wxi.in"
-  "${PROJECT_SOURCE_DIR}/setup/defines.wxi"
-  )
-
 ##################################################################
 
 IF ( WIN32 )
@@ -55,8 +40,9 @@ ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 include ( "${CMAKE_SOURCE_DIR}/cmake/Modules/Externals.cmake" )
 
 if (WIN32)
-    string ( REPLACE "/Zm1000" "/Zm500" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
-    ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE )
+	string(REGEX REPLACE "/Zm[0-9]+ *" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm500" CACHE STRING "" FORCE)
+	ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE )
 	SET(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
 	SET(CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
 	SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
@@ -177,10 +163,6 @@ if (USE_GIT_DESCRIBE OR CHECK_GIT_TAG)
     endif()
 endif()
 message ("-- Build tag is '${BUILD_TAG}'")
-if (NOT "${BASE_BUILD_TAG}" STREQUAL "")
-    set(BASE_BUILD_TAG "${BUILD_TAG}")
-endif()
-message ("-- Base build tag is '${BASE_BUILD_TAG}'")
 
 if ( WIN32 )
     set( DIR_NAME "HPCCSystems" )
@@ -234,3 +216,18 @@ endif ( )
 
 include ( CPack )
 ####  #####  ####
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${PROJECT_SOURCE_DIR}/config.h"
+  )
+
+configure_file (
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat.in"
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat"
+  )
+
+configure_file (
+  "${PROJECT_SOURCE_DIR}/setup/defines.wxi.in"
+  "${PROJECT_SOURCE_DIR}/setup/defines.wxi"
+  )
+
