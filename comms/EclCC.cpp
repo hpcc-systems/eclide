@@ -8,25 +8,9 @@
 #include <EclErrorParser.h>
 #include "Repository.h"
 #include "SMC.h"
+#include <UtilFilesystem.h>
 
 namespace algo = boost::algorithm;
-
-#if (BOOST_FILESYSTEM_VERSION == 3)
-std::wstring pathToString(const boost::filesystem::path & path)
-{
-	return path.wstring();
-}
-#else
-std::wstring pathToString(const boost::filesystem::path & path)
-{
-	return CA2T(path.native_file_string().c_str());
-}
-
-std::wstring pathToString(const boost::filesystem::wpath & path)
-{
-	return path.native_file_string();
-}
-#endif
 
 namespace SMC
 {
@@ -132,11 +116,11 @@ public:
 		if (!boost::filesystem::exists(stdLibPath))
 			stdLibPath = clientToolsFolderPath / _T("share") / _T("ecllibrary");
 		if (boost::filesystem::exists(stdLibPath))
-			m_eclFolders.push_back(std::make_pair(pathToString(stdLibPath), false));
+			m_eclFolders.push_back(std::make_pair(pathToWString(stdLibPath), false));
 
 		boost::filesystem::wpath pluginsPath = clientToolsFolderPath / _T("plugins");
 		if (boost::filesystem::exists(pluginsPath))
-			m_eclFolders.push_back(std::make_pair(pathToString(pluginsPath), false));
+			m_eclFolders.push_back(std::make_pair(pathToWString(pluginsPath), false));
 	}
 
 	const TCHAR * GetCacheID() const
@@ -157,7 +141,7 @@ public:
 				command += m_arguments;
 			}
 			command += _T(" --version");
-			std::_tstring runPath = pathToString(m_compilerFolderPath);
+			std::_tstring runPath = pathToWString(m_compilerFolderPath);
 			std::_tstring in, out, err;
 			runProcess(command, runPath, _T(""), in, out, err);
 			m_version = out;
@@ -329,7 +313,7 @@ public:
 		command += _T(" \"");
 		command += sourcePath;
 		command += _T("\"");
-		std::_tstring runPath = pathToString(m_compilerFolderPath);
+		std::_tstring runPath = pathToWString(m_compilerFolderPath);
 		std::_tstring in = _T("");
 
 		std::_tstring folder = m_workingFolder;
@@ -365,14 +349,14 @@ public:
 	const TCHAR * GetWorkunitXML(const std::_tstring & wuid, std::_tstring & wuXml) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		std::_tstring filePath = pathToString((m_workingFolderPath / (wuid + _T(".xml"))));
+		std::_tstring filePath = pathToWString((m_workingFolderPath / (wuid + _T(".xml"))));
 		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring command = _T("wuget.exe \"");
-			command += pathToString(m_workingFolderPath / (wuid + _T(".exe")));
+			command += pathToWString((m_workingFolderPath / (wuid + _T(".exe"))));
 			command += _T("\"");
 			std::_tstring err;
-			runProcess(command, m_workingFolder, pathToString(m_compilerFolderPath), _T(""), wuXml, err);
+			runProcess(command, m_workingFolder, pathToWString(m_compilerFolderPath), _T(""), wuXml, err);
 			CUnicodeFile file;
 			if (file.Create(filePath.c_str()))
 				file.Write(wuXml);
@@ -389,7 +373,7 @@ public:
 	const TCHAR * SaveWorkunitXML(const std::_tstring & wuid, std::_tstring & filePath) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		filePath = pathToString(m_workingFolderPath / (wuid + _T(".xml")));
+		filePath = pathToWString((m_workingFolderPath / (wuid + _T(".xml"))));
 		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring wuXml;
@@ -417,22 +401,22 @@ public:
 			}
 			else
 			{
-				std::_tstring command = pathToString(exePath);
+				std::_tstring command = pathToWString(exePath);
 				command += _T(" ");
 				command += (const TCHAR *)CString(m_config->Get(GLOBAL_COMPILER_WUARGUMENTS));
 				command += _T(" -xml");
 				std::_tstring err;
-				runProcess(command, m_workingFolder, pathToString(m_compilerFolderPath), _T(""), results, err);
+				runProcess(command, m_workingFolder, pathToWString(m_compilerFolderPath), _T(""), results, err);
 				ParseErrors(_T("POIOIUPOIPOIPOIPOIPOIP"), err, hasErrors, errors, true);
 			}
 			CUnicodeFile file;
-			file.Create(pathToString(resultPath).c_str());
+			file.Create(pathToWString(resultPath).c_str());
 			file.Write(results);
 		}
 		else if (boost::filesystem::exists(resultPath))
 		{
 			CUnicodeFile file;
-			file.Open(pathToString(resultPath).c_str());
+			file.Open(pathToWString(resultPath).c_str());
 			file.Read(results);
 		}
 		return results.c_str();
@@ -579,7 +563,7 @@ unsigned int FindAllCEclCC(CEclCCVector & results)
 				path eclccPath = itr->path() / "clienttools" / "bin" / "eclcc.exe";
 #endif
 				if (exists(eclccPath))
-					results.push_back(CreateEclCCRaw(config, pathToString(eclccPath)));
+					results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
 			}
 		}
 	}
@@ -596,7 +580,7 @@ unsigned int FindAllCEclCC(CEclCCVector & results)
 				path eclccPath = itr->path() / "eclcc.exe";
 #endif
 				if (exists(eclccPath))
-					results.push_back(CreateEclCCRaw(config, pathToString(eclccPath)));
+					results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
 			}
 		}
 	}
