@@ -4,6 +4,7 @@
 #include "CmdLine.h"
 #include "RecursiveMutex.h"
 #include "Cache.h"
+#include "UtilFilesystem.h"
 
 const TCHAR * const COMPANY = _T("HPCC Systems");
 const TCHAR * const CFG = _T("cfg");
@@ -41,6 +42,26 @@ CLIB_API const boost::filesystem::path & GetProgramFolder(boost::filesystem::pat
 {
 	boost::filesystem::path p;
 	path = GetProgramPath(p).branch_path();
+	return path;
+}
+CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesystem::path & path)
+{
+	TCHAR appDataPath[_MAX_PATH];
+	SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_PROGRAM_FILESX86, true); 
+	path = stringToPath(appDataPath);
+	boost::filesystem::create_directories(path);
+	return path;
+}
+CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesystem::path & path)
+{
+	TCHAR appDataPath[_MAX_PATH];
+	SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_PROGRAM_FILESX86, true); 
+#if (BOOST_FILESYSTEM_VERSION == 3)
+	path = boost::filesystem::path(appDataPath, boost::filesystem::native);
+#else
+	path = boost::filesystem::path(CT2A(appDataPath), boost::filesystem::native);
+#endif
+	boost::filesystem::create_directories(path);
 	return path;
 }
 CLIB_API const boost::filesystem::path & GetAppDataFolder(boost::filesystem::path & path)
