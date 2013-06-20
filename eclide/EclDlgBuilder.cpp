@@ -6,6 +6,7 @@
 #include <utilDateTime.h> //clib
 #include <util.h> //clib
 #include <EclCC.h> //commms
+#include <UtilFilesystem.h> //clib
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
 {
@@ -587,7 +588,7 @@ void CBuilderDlg::OnLocateFileInExplorer(UINT /*uNotifyCode*/, int /*nID*/, HWND
 {
 	boost::filesystem::wpath file = m_path;
 	boost::filesystem::wpath folder = file.parent_path();
-	::ShellExecute(m_hWnd, _T("open"), _T(""), _T(""), folder.wstring().c_str(), SW_SHOWNORMAL);
+	::ShellExecute(m_hWnd, _T("open"), _T(""), _T(""), pathToWString(folder).c_str(), SW_SHOWNORMAL);
 }
 
 void CBuilderDlg::OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)

@@ -17,6 +17,7 @@
 #include "BasicExcel.hpp"
 //#include "InvokeSprayWizard.h"
 #include "AttrListDlg.h"
+#include <UtilFilesystem.h>
 
 enum UM
 {
@@ -2132,7 +2133,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 	boost::filesystem::path path;
 	GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
 	m_singleInstance = NULL;	//kills the previous mutex...
-	m_singleInstance = new CLimitSingleInstance(path.wstring());
+	m_singleInstance = new CLimitSingleInstance(pathToWString(path));
 	if (m_singleInstance->IsAnotherInstanceRunning())
 	{
 		MessageBox(_T("Only one instance of ECL IDE is permitted with the same \"Configuration\" and \"Login ID\"."), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
@@ -2143,18 +2144,26 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 	{
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_PASSWORD, previousPassword);
 	}
+
+	m_Error->Send_Reset();
+
 	if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 	{
 		std::_tstring warnings;
 		eclcc->GetPrefWarnings(warnings);
 		if (!warnings.empty())
 		{
-			warnings = _T("Compiler options specified are invalid:\r\n\r\n") + warnings;
-			MessageBox(warnings.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
+			_DBGLOG(LEVEL_WARNING, warnings.c_str());
+		}
+
+		std::_tstring errors;
+		eclcc->GetPrefErrors(errors);
+		if (!errors.empty())
+		{
+			errors = _T("Compiler options specified are invalid:\r\n\r\n") + errors;
+			MessageBox(errors.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK | MB_ICONEXCLAMATION);
 		}
 	}
-
-	m_Error->Post_Reset();
 
 	{	//  Following call triggers the fetching of queues / clusters which is slow on first call (threaded)
 		StlLinked<Topology::ITopology> server = AttachTopology(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_TOPOLOGY), _T("Topology"));
@@ -2230,7 +2239,7 @@ void CMainFrame::RestoreState()
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().extension().wstring(), _T(".xml")))
+			if (boost::algorithm::iequals(pathToWString(itr->path().extension()), _T(".xml")))
 				m_persistedWindows.push_back(new CPersistedItem(this, itr->path().string()));
 		}
 	}
@@ -2495,8 +2504,8 @@ bool CMainFrame::UIUpdateMenuItems()
 
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 {
-	boost::filesystem::path path(static_cast<const TCHAR *>(sPathName), boost::filesystem::native);
-	std::_tstring filename = path.leaf().wstring();
+	boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
+	std::_tstring filename = pathToWString(path.leaf());
 	if (boost::algorithm::iequals(boost::filesystem::extension(path), ".xgmml"))
 	{
 		CComPtr<IRepository> rep = AttachRepository();

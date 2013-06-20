@@ -4,23 +4,12 @@
 
 using namespace BOOST_SPIRIT_CLASSIC_NS;
 
-struct ParsedVersionS : public ParsedVersion
-{
-	ParsedVersionS() 
-	{ 
-		majorVersion = 0;
-		minorVersion = 0;
-		pointVersion = 0;
-		build = 0;
-		ossFlag = false;
-	}
-};
-
-std::ostream& operator<< (std::ostream& os, const ParsedVersionS& def)
+std::ostream& operator<< (std::ostream& os, const ParsedVersion& def)
 {
 	std::string preffix = CT2A(def.preffix.c_str(), CP_UTF8);
 	std::string minorVersionAlpha = CT2A(def.minorVersionAlpha.c_str(), CP_UTF8);
-	std::string suffix = CT2A(def.suffix.c_str(), CP_UTF8);
+	std::string suffixStr = CT2A(def.suffixStr.c_str(), CP_UTF8);
+	std::string github = CT2A(def.github.c_str(), CP_UTF8);
 	std::string buildAlpha = CT2A(def.buildAlpha.c_str(), CP_UTF8);
 	os << "Version =\n"
 		<< "    {\n"
@@ -29,14 +18,16 @@ std::ostream& operator<< (std::ostream& os, const ParsedVersionS& def)
 		<< "    minor version = " << def.minorVersion << "\n"
 		<< "    minor version alpha = " << minorVersionAlpha << "\n"
 		<< "    point version = " << def.pointVersion << "\n"
-		<< "    suffix = " << suffix << "\n"
+		<< "    suffixStr = " << suffixStr << "\n"
+		<< "    suffixInt = " << def.suffixInt << "\n"
+		<< "    github = " << github << "\n"
 		<< "    build = " << def.build << "\n"
 		<< "    build alpha = " << buildAlpha << "\n"
 		<< "    }\n";
 	return os;
 }
 
-struct version_closure : boost::spirit::classic::closure<version_closure, ParsedVersionS>
+struct version_closure : boost::spirit::classic::closure<version_closure, ParsedVersion>
 {
 	member1 val;
 };
@@ -55,43 +46,38 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
 			using namespace boost::spirit::classic;
 			using namespace phoenix;
 
-#define ASSIGN(member, what) bind(&ParsedVersionS::member)(self.val) = what
-#define ASSIGNSTR(member, begin, end) bind(&ParsedVersionS::member)(self.val) = construct_<std::_tstring>(begin, end)
+#define ASSIGN(member, what) bind(&ParsedVersion::member)(self.val) = what
+#define ASSIGNSTR(member, begin, end) bind(&ParsedVersion::member)(self.val) = construct_<std::_tstring>(begin, end)
 
 			first =
 				(
-				def_string	= def_ide_str | def_oss_str | def_build_str, 
-				def_ide_str = majorVersion_num >> delim >> minorVersion_num >> delim >> pointVersion_num >> delim >> build_num,
-				def_oss_str = preffix_str >> delim >> majorVersion_num >> isOSS_bool >> minorVersion_num >> !(delim >> pointVersion_num) >> !(delim >> suffix_str) >> !(delim >> build_num),
-				def_build_str = preffix_str >> '_' >> majorVersion_num >> !('_' >> minorVersion_num) >> !('_' >> pointVersion_num),
+				def_string	= ( def_ide_str				[ASSIGN(type, ParsedVersion::ECLIDE)]
+							  | def_eclcc_str			[ASSIGN(type, ParsedVersion::ECLCC)]
+							  | def_oss_str				[ASSIGN(type, ParsedVersion::OSS)]
+							  | def_build_str			[ASSIGN(type, ParsedVersion::BUILD)] 
+							  ), 
+				def_ide_str = majorVersion_num >> '.' >> minorVersion_num >> '.' >> pointVersion_num >> '.' >> build_num,
+				def_eclcc_str = def_ecllang_str >> def_oss_str,
+				def_oss_str = preffix_str >> delim >> majorVersion_num >> delim >> minorVersion_num >> delim >> pointVersion_num >> delim >> suffix_str >> !github_str,
+				def_build_str = preffix_str >> '_' >> majorVersion_num >> !('_' >> minorVersion_num >> !('_' >> pointVersion_num)),
 
 				delim =				ch_p('_') | '-' | '.',
 
-				preffix_str	=		identifier1		[ASSIGNSTR(preffix, arg1, arg2)],
-				majorVersion_num =	uint_p			[ASSIGN(majorVersion, arg1)],
-				minorVersion_num =	uint_p			[ASSIGN(minorVersion, arg1)] >> !(alpha_p [ASSIGN(minorVersionAlpha, arg1)]),
-				pointVersion_num =	uint_p			[ASSIGN(pointVersion, arg1)],
-				suffix_str =		identifier1		[ASSIGNSTR(suffix, arg1, arg2)],
-				build_num =			uint_p			[ASSIGN(build, arg1)] >> !(alpha_p [ASSIGN(buildAlpha, arg1)]),
-				isOSS_bool =		ch_p('.')		[ASSIGN(ossFlag, true)],
+				def_ecllang_str =   uint_p				[ASSIGN(lang_MajorVersion, arg1)]
+									>> '.' >> uint_p	[ASSIGN(lang_MinorVersion, arg1)]
+									>> '.' >> uint_p	[ASSIGN(lang_PointVersion, arg1)],
 
-				identifier1 = 
-					nocase_d
-					[
-						lexeme_d
-						[
-							*(anychar_p - delim)
-						]
-					],
-
-				identifier2 = 
-					nocase_d
-					[
-						lexeme_d
-						[
-							*anychar_p
-						]
-					]
+				preffix_str	=		(+alnum_p)			[ASSIGNSTR(preffix, arg1, arg2)],
+				majorVersion_num =	uint_p				[ASSIGN(majorVersion, arg1)],
+				minorVersion_num =	uint_p				[ASSIGN(minorVersion, arg1)]		>> !(alpha_p)	[ASSIGN(minorVersionAlpha, arg1)],
+				pointVersion_num =	uint_p				[ASSIGN(pointVersion, arg1)],
+				suffix_str =		(+alpha_p)			[ASSIGNSTR(suffixStr, arg1, arg2)]	>> uint_p		[ASSIGN(suffixInt, arg1)]
+									| uint_p			[ASSIGN(suffixInt, arg1)]			>> (+alpha_p)	[ASSIGNSTR(suffixStr, arg1, arg2)]
+									| uint_p			[ASSIGN(suffixInt, arg1)],
+				github_str =		confix_p('[',
+									(+anychar_p)		[ASSIGNSTR(github, arg1, arg2)], 
+									']'),
+				build_num =			uint_p				[ASSIGN(build, arg1)]				>> !(alpha_p	[ASSIGN(buildAlpha, arg1)])
 				);
 #undef ASSIGN
 		}
@@ -99,16 +85,16 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
 		boost::spirit::classic::subrule<1> def_ide_str;
 		boost::spirit::classic::subrule<2> def_oss_str;
 		boost::spirit::classic::subrule<3> def_build_str;
-		boost::spirit::classic::subrule<4> preffix_str;
-		boost::spirit::classic::subrule<5> majorVersion_num;
-		boost::spirit::classic::subrule<6> minorVersion_num;
-		boost::spirit::classic::subrule<7> pointVersion_num;
-		boost::spirit::classic::subrule<8> suffix_str;
-		boost::spirit::classic::subrule<9> build_num;
-		boost::spirit::classic::subrule<10> delim;
-		boost::spirit::classic::subrule<11> isOSS_bool;
-		boost::spirit::classic::subrule<12> identifier1;
-		boost::spirit::classic::subrule<13> identifier2;
+		boost::spirit::classic::subrule<4> def_eclcc_str;
+		boost::spirit::classic::subrule<5> def_ecllang_str;
+		boost::spirit::classic::subrule<6> preffix_str;
+		boost::spirit::classic::subrule<7> majorVersion_num;
+		boost::spirit::classic::subrule<8> minorVersion_num;
+		boost::spirit::classic::subrule<9> pointVersion_num;
+		boost::spirit::classic::subrule<10> suffix_str;
+		boost::spirit::classic::subrule<11> github_str;
+		boost::spirit::classic::subrule<12> build_num;
+		boost::spirit::classic::subrule<13> delim;
 		boost::spirit::classic::rule<scannerT> first;
 		const boost::spirit::classic::rule<scannerT>& start() const
 		{
@@ -119,16 +105,25 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
 
 bool ParseVersion(const std::_tstring & version_string, ParsedVersion & result)
 {
+	std::_tstring trim_version_string = version_string;
+	boost::algorithm::trim(trim_version_string);
 	using namespace std;
 	using namespace boost::spirit::classic;
 	using namespace phoenix;
 
 	version_parser version_p;
-	ParsedVersionS result1;
-	if (boost::spirit::classic::parse(version_string.c_str(), version_p[phoenix::var(result1) = phoenix::arg1]).full)
+	ParsedVersion result1;
+	boost::spirit::classic::parse_info<std::_tstring::const_iterator> parse_result = boost::spirit::classic::parse(trim_version_string.begin(), trim_version_string.end(), version_p[phoenix::var(result1) = phoenix::arg1], space_p);
+	if (parse_result.full)
 	{
 		result = result1;
 		return true;
 	}
+#ifdef _DEBUG
+	else
+	{
+		std::_tstring parsed(trim_version_string.begin(), parse_result.stop);
+	}
+#endif
 	return false;
 }

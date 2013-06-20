@@ -6,6 +6,8 @@
 
 #include "MainFrm2.h"
 
+#include <UtilFilesystem.h>
+
 CMainFrame *g_MainFrame = 0;
 
 static const TCHAR RepLabel1[] = _T("Source Repository");
@@ -964,7 +966,7 @@ void CMainFrame::OnHelpClientTools()
 	boost::filesystem::path folder;
 	GetProgramFolder(folder);
 	boost::filesystem::path file = folder / boost::filesystem::path("ClientTools.pdf", boost::filesystem::native);
-	::ShellExecute(m_hWnd, _T("open"), file.wstring().c_str(), 0, folder.wstring().c_str(), SW_MAXIMIZE);
+	::ShellExecute(m_hWnd, _T("open"), pathToWString(file).c_str(), 0, pathToWString(folder).c_str(), SW_MAXIMIZE);
 }
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)

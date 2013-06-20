@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "wlib Dynamic Link Library"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "wlib"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "wlib.dll"
             VALUE "ProductName", " wlib Dynamic Link Library"
             VALUE "ProductVersion", HPCC_VERSION

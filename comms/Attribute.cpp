@@ -291,8 +291,8 @@ public:
 		//No lock needed - this is just a lazy way of calling into repository
 		boost::filesystem::path path;
 		GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
-		path /= GetModuleQualifiedLabel();
-		path /= GetLabel();
+		path /= stringToPath(GetModuleQualifiedLabel());
+		path /= stringToPath(GetLabel());
 		if (exists(path))
 		{
 			int version = 0;
@@ -550,7 +550,7 @@ public:
 			std::_tstring in;
 			std::_tstring out;
 			std::_tstring err;
-			int result = runProcess(cmd, folder.wstring(), _T(""), in, out, err);
+			int result = runProcess(cmd, pathToWString(folder), _T(""), in, out, err);
 			inputFile.HandsOn();
 
 			CComPtr<IRepository> rep = AttachModFileRepository(outputFile.TempFileName(), false);

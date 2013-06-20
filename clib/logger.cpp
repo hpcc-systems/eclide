@@ -2,6 +2,7 @@
 
 #include "logger.h"
 #include "SoapUtil.h"
+#include "UtilFilesystem.h"
 
 const TCHAR * const LEVEL_TEXT[] =
 {
@@ -17,7 +18,7 @@ const TCHAR * const LEVEL_TEXT[] =
 Logger::Logger(const char * filePath, int line) : m_line(line)
 {
 	boost::filesystem::path path(filePath, boost::filesystem::native);
-	m_file = path.leaf().string();
+	m_file = pathToString(path.leaf());
 }
 
 void Logger::operator()(LEVEL l)

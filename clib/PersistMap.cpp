@@ -3,6 +3,7 @@
 #include "persistmap.h"
 #include "logger.h"
 #include "util.h"
+#include "UtilFilesystem.h"
 
 static const TCHAR * const BlankString = _T("");
 
@@ -88,7 +89,7 @@ bool CPersistMap::deserialize(const std::_tstring & path)
 
 bool CPersistMap::deserialize(const std::_tstring & xml_path, bool isPath)
 {
-	if (isPath && !boost::filesystem::exists(boost::filesystem::path(xml_path, boost::filesystem::native)))
+	if (isPath && !boost::filesystem::exists(stringToPath(xml_path)))
 		return false;
 
 	CComInitialize com;
@@ -195,7 +196,7 @@ void CPersistWindow::Restore()
 	clib::recursive_mutex::scoped_lock lock(m_mutex);
 	CPersistMap persistInfo;
 	m_file.Close();
-	if (persistInfo.deserialize(m_filePath.wstring()))
+	if (persistInfo.deserialize(pathToWString(m_filePath)))
 	{
 		WINDOWPLACEMENT placement;
 		std::string encodedStr = CT2A(persistInfo.Get(PERSIST_PLACEMENT));
