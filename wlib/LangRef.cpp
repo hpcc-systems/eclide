@@ -7,6 +7,7 @@
 #include "util.h"
 #include "UnicodeFile.h"
 #include "Repository.h"
+#include <UtilFilesystem.h>
 
 const TCHAR * const LANGREFFILE_XML = _T("LanguageReference.xml");
 const TCHAR * const LANGREFFILE_CSV = _T("LanguageReference.csv");
@@ -360,7 +361,7 @@ public:
 		//  Check if this user has customized the colors
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / boost::filesystem::path(LANGCOLFILE2, boost::filesystem::native);
+		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
 		if (boost::filesystem::exists(file))
 		{
 			CategoryLanguageColorMap userColors;
@@ -378,7 +379,7 @@ public:
 		//  Check if this user has customized the colors
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path file = binFolder / boost::filesystem::path(fileName, boost::filesystem::native);
+		boost::filesystem::path file = binFolder / stringToPath(fileName);
 		if (!boost::filesystem::exists(file))
 		{
 			return false;
@@ -396,7 +397,7 @@ public:
 		//  Check if this user has customized the colors
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path file = binFolder / boost::filesystem::path(fileName, boost::filesystem::native);
+		boost::filesystem::path file = binFolder / stringToPath(fileName);
 		if (!boost::filesystem::exists(file))
 		{
 			ATLASSERT(!"Unable to locate LanguageReference.xml");
@@ -420,7 +421,7 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / boost::filesystem::path(LANGCOLFILE2, boost::filesystem::native);
+		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
 
 		CategoryLanguageColorMap defaultColors, diffColors;
 		loadDefaultColor(LANGCOLFILE, defaultColors);
@@ -445,7 +446,7 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / boost::filesystem::path(LANGCOLFILE2, boost::filesystem::native);
+		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
 		if (boost::filesystem::exists(file))
 			boost::filesystem::remove(file);
 		loadMergedColor();
@@ -666,7 +667,7 @@ public:
 	{
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path path = binFolder / boost::filesystem::path(LANGREFFILE_CSV, boost::filesystem::native);
+		boost::filesystem::path path = binFolder / stringToPath(LANGREFFILE_CSV);
 
 		std::ofstream ofs(path.string());
 		assert(ofs.good());
@@ -682,11 +683,11 @@ public:
 		m_lang.clear();
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path path = binFolder / boost::filesystem::path(LANGREFFILE_CSV, boost::filesystem::native);
-		boost::filesystem::path xml_path = binFolder / boost::filesystem::path(LANGREFFILE_XML, boost::filesystem::native);
+		boost::filesystem::path path = binFolder / stringToPath(LANGREFFILE_CSV);
+		boost::filesystem::path xml_path = binFolder / stringToPath(LANGREFFILE_XML);
 
 		CUnicodeFile file;
-		if (file.Open(path.wstring()))
+		if (file.Open(pathToString(path).c_str()))
 		{
 			std::_tstring data;
 			file.Read(data);

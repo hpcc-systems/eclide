@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "global.h"
 #include <HtmlHelp.h>
+#include "UtilFilesystem.h"
 
 static ULONG COMCTL_VERSION=0; 
 
@@ -106,11 +107,11 @@ const TCHAR * CheckExtension(const std::_tstring & path, const std::string & def
 {
 	try
 	{
-		boost::filesystem::path p(path, boost::filesystem::native);
+		boost::filesystem::path p = stringToPath(path);
 		std::string d = extension(p);
 		if (extension(p).length() == 0)
 			p = change_extension(p, defaultExt);
-		ext = p.wstring();
+		ext = pathToWString(p);
 		return ext.c_str();
 	}
 	catch (std::exception const& /*e*/)
@@ -491,7 +492,7 @@ void ShowHelp(const std::_tstring word)
 #else
 	appFolder /= "ECLReference.chm";
 #endif
-	std::_tstring helpPath = appFolder.wstring();
+	std::_tstring helpPath = pathToWString(appFolder);
 
 	HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);
 	HH_AKLINK link = {0};
@@ -758,9 +759,9 @@ const TCHAR * GetActiveXDLLPath(const std::_tstring & clsID, std::_tstring & pat
 
 const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & folder)
 {
-	boost::filesystem::path dllPath(GetActiveXDLLPath(clsID, folder), boost::filesystem::native), dllFolder;
+	boost::filesystem::path dllPath(stringToPath(GetActiveXDLLPath(clsID, folder))), dllFolder;
 	dllFolder = dllPath.branch_path();
-	folder = dllFolder.wstring();
+	folder = pathToWString(dllFolder);
 	return folder.c_str();
 }
 

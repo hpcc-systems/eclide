@@ -20,6 +20,7 @@
 #include <EclCC.h>
 #include "npHPCCSystemsGraphViewControl.h"
 #include "HListBox.h"
+#include <UtilFilesystem.h>
 //  ===========================================================================
 #define GLYPH_WIDTH 15
 
@@ -711,24 +712,24 @@ public:
 
 		if (boost::filesystem::exists(eclccPath)) 
 		{
-			m_Location = eclccPath.wstring().c_str();
+			m_Location = pathToWString(eclccPath).c_str();
 
 			boost::filesystem::path docsFolder;
 			GetDocumentsFolder(docsFolder);
 
 			docsFolder = docsFolder / "HPCC Systems" / "ECL";
 
-			boost::filesystem::path wuFolder = docsFolder / _T("wu") / m_config->GetLabel();
+			boost::filesystem::path wuFolder = docsFolder / "wu" / static_cast<const char *>(CT2A(m_config->GetLabel()));
 			boost::filesystem::create_directories(wuFolder);
-			m_EclWorkingFolder = wuFolder.wstring().c_str();
+			m_EclWorkingFolder = pathToWString(wuFolder).c_str();
 
 			boost::filesystem::path repositoryPath = docsFolder / "My Files";
 			boost::filesystem::create_directories(repositoryPath);
-			m_listFolders.AddString(repositoryPath.wstring().c_str());
+			m_listFolders.AddString(pathToWString(repositoryPath).c_str());
 
 			boost::filesystem::path samplesPath = clientToolsPath / "examples";
 			if (boost::filesystem::exists(samplesPath))
-				m_listFolders.AddString(samplesPath.wstring().c_str());
+				m_listFolders.AddString(pathToWString(samplesPath).c_str());
 		}
 		else
 		{
@@ -738,7 +739,7 @@ public:
 				boost::filesystem::wpath eclccPath = hpccbin;
 				eclccPath /= _T("eclcc.exe");
 				if (boost::filesystem::exists(eclccPath))
-					m_Location = eclccPath.wstring().c_str();
+					m_Location = pathToWString(eclccPath).c_str();
 			}
 
 			const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
@@ -747,13 +748,13 @@ public:
 				boost::filesystem::wpath wuFolder = hpccEcl;
 				wuFolder /= _T("wu");
 				boost::filesystem::create_directories(wuFolder);
-				m_EclWorkingFolder = wuFolder.wstring().c_str();
+				m_EclWorkingFolder = pathToWString(wuFolder).c_str();
 
 				boost::filesystem::wpath repositoryPath = hpccEcl;
 				repositoryPath = repositoryPath.parent_path();
 				repositoryPath /= _T("My Files");
 				boost::filesystem::create_directories(repositoryPath);
-				m_listFolders.AddString(repositoryPath.wstring().c_str());
+				m_listFolders.AddString(pathToWString(repositoryPath).c_str());
 			}
 		}
 
@@ -972,9 +973,9 @@ public:
 				CString otherFolder;
 				m_listFolders.GetText(i, otherFolder);
 				boost::filesystem::wpath otherPath = static_cast<const TCHAR *>(otherFolder);
-				if (boost::algorithm::iequals(path.leaf(), otherPath.leaf())) 
+				if (boost::algorithm::iequals(pathToString(path.leaf()), pathToString(otherPath.leaf()))) 
 				{
-					std::_tstring msg = _T("ECL folders must have unique name.  \"") + otherPath.leaf() + _T("\" is already used.");
+					std::_tstring msg = _T("ECL folders must have unique name.  \"") + pathToWString(otherPath.leaf()) + _T("\" is already used.");
 					MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
 					return 0;
 				}
@@ -2027,7 +2028,7 @@ public:
 	{
 		boost::filesystem::path path;
 		GetApplicationFolder(path);
-		std::_tstring native_path = path.wstring();
+		std::_tstring native_path = pathToWString(path);
 		::ShellExecute(m_hWnd, _T("open"), native_path.c_str(), _T(""), native_path.c_str(), SW_SHOW);
 		return 0;
 	}

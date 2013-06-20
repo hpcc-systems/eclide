@@ -11,6 +11,7 @@
 #include "utilDateTime.h"
 #include "EclCC.h"
 #include "LocalWorkunit.h"
+#include <UtilFilesystem.h>
 
 const SectionLabelDefault GLOBAL_SERVER_WORKUNIT(SectionLabel(_T("Server"), _T("Workunit")), _T(""));
 const SectionLabelDefault GLOBAL_CLUSTER(SectionLabel(_T("Server"), _T("Cluster")), _T("thor"));
@@ -944,7 +945,7 @@ protected:
 		CComPtr<IEclCC> eclcc = CreateIEclCC();
 		if (eclcc)
 		{
-			boost::filesystem::wpath path = eclcc->GetWorkingFolder();
+			boost::filesystem::path path = stringToPath(eclcc->GetWorkingFolder());
 			if (boost::filesystem::exists(path))
 			{
 				boost::filesystem::directory_iterator attr_itr_end;
@@ -1302,7 +1303,7 @@ protected:
 					if (!path.IsEmpty())
 					{
 						boost::filesystem::wpath p = path;
-						request.Jobname = stringPool.Create(p.stem().wstring());
+						request.Jobname = stringPool.Create(pathToWString(p.stem()));
 					}
 
 					CStructPool<ns6__DebugValue> debugValuePool;
@@ -1515,7 +1516,7 @@ protected:
 					return true;
 			} catch (const boost::filesystem::filesystem_error & ex) {
 				_DBGLOG(LEVEL_WARNING, ex.what());
-				_DBGLOG(LEVEL_WARNING, file.wstring().c_str());
+				_DBGLOG(LEVEL_WARNING, pathToWString(file).c_str());
 			}
 		}
 		return false;
