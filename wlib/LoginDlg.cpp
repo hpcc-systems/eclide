@@ -184,21 +184,6 @@ public:
 		CString accountServer = m_config->Get(GLOBAL_SERVER_ACCOUNT);
 		if (!m_verifyUser || accountServer.IsEmpty() || VerifyUser(m_config, m_User, m_Password, retCode, retMsg))
 		{
-			UINT state = ::GetKeyState(VK_SHIFT);
-			bool shiftKeyDown = ((state & 0x8000) != 0);
-			if (!shiftKeyDown && !accountServer.IsEmpty())
-			{
-				CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
-				CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
-				if (!m_config->Get(GLOBAL_IGNORESERVERVERSION) && !serverVersion->IsCompatable())
-				{
-					MessageBeep(MB_ICONEXCLAMATION);
-					std::_tstring ver;
-					m_Msg.Format(_T("Server version %s is too old (%s).\r\nHold down SHIFT key to bypass this warning."), serverVersion->GetString(), GetAboutVersion(ver));
-					DoDataExchange();
-					return;
-				}
-			}
 			ReleaseAllSingletons();
 			//prime the repository cache with the new credentials
 			CString server(m_config->Get(GLOBAL_SERVER_ATTRIBUTE));
@@ -907,10 +892,8 @@ void SetDefaultConfig(IConfig *iniFile, const std::_tstring & defaultConfig)
 //  ===========================================================================
 const TCHAR * GetAboutVersion(std::_tstring &version)
 {
-	version += GetApplicationVersion();
-	version += _T(".");
-	CComPtr<SMC::IVersion> ver = GetCommsVersion();
-	version += ver->GetString();
+	std::_tstring buildVer;
+	version += GetBuildVersion(buildVer);
 	return version.c_str();
 }
 

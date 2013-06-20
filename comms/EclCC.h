@@ -3,8 +3,10 @@
 #include <global.h>
 #include "workunit.h"
 #include "Attribute.h"
+#include "SMCVersion.h"
 
 static const TCHAR CompilerSection[](_T("Compiler"));
+static const SectionLabelDefault GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION(SectionLabel(CompilerSection, _T("OverrideDefaultSelection")), false);
 static const SectionLabelDefault GLOBAL_COMPILER_LOCATION(SectionLabel(CompilerSection, _T("Location")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_STDLIB(SectionLabel(CompilerSection, _T("StdLib")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ARGUMENTS(SectionLabel(CompilerSection, _T("Arguments")), _T(""));
@@ -24,7 +26,9 @@ static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER09(SectionLabel(Compil
 __interface IEclCC : public IUnknown
 {
 	const TCHAR * GetVersion() const;
+	SMC::IVersion * GetBuild() const;
 	const TCHAR * GetPrefWarnings(std::_tstring & warnings) const;
+	const TCHAR * GetPrefErrors(std::_tstring & warnings) const;
 
 	const TCHAR * GetWorkingFolder() const;
 	int GetEclFolderCount() const;
@@ -57,5 +61,5 @@ COMMS_API TRI_BOOL IsRemoteDaliEnabled();
 COMMS_API void EnableRemoteQueueEnabled(TRI_BOOL enable = TRI_BOOL_TRUE);
 COMMS_API TRI_BOOL IsRemoteQueueEnabled();
 
-COMMS_API IEclCC * CreateIEclCC();	//  Instances not thread safe (also not a singleton)!!!
+COMMS_API IEclCC * CreateIEclCC();
 

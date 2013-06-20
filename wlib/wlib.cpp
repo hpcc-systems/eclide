@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "wlib.h"
 #include "file_ver.h"
+#include "../config.h"
 
 const TCHAR *GetRegPathQB(const std::_tstring & overideVersion)
 {
@@ -24,6 +25,11 @@ const TCHAR *GetAppMajorVersion(std::_tstring & version)
 	return version.c_str();
 }
 
+const TCHAR *GetBuildVersion(std::_tstring & version)
+{
+	version = CA2T(BUILD_TAG);
+	return version.c_str();
+}
 
 #ifndef SEISINT_LIBEXPORTS
 class CATLDllModule : public CAtlDllModuleT< CATLDllModule >

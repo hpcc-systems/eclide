@@ -670,6 +670,7 @@ protected:
 	IConfigAdapt m_ini;
 	CString m_ConfigLabel;
 
+	bool m_overrideAutoCompilerSelect;
 	CString m_Location;
 	CString m_Arguments;
 	CString m_WUArguments;
@@ -694,6 +695,7 @@ public:
 
 	void LoadDefaults()
 	{
+		m_overrideAutoCompilerSelect = false;
 		m_Arguments = _T("");
 		m_WUArguments = _T("");
 		m_listFolders.ResetContent();
@@ -759,11 +761,13 @@ public:
 
 		DoDataExchange();
 		SaveToConfig();
+		EnableLocationSettings();
 	}
 
 	void LoadFromConfig(IConfig * config)
 	{
 		m_config = config;
+		m_overrideAutoCompilerSelect = m_config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
 		m_Location = m_config->Get(GLOBAL_COMPILER_LOCATION);
 		m_Arguments = m_config->Get(GLOBAL_COMPILER_ARGUMENTS);
 		m_WUArguments = m_config->Get(GLOBAL_COMPILER_WUARGUMENTS);
@@ -809,11 +813,13 @@ public:
 				m_listFolders.InsertString(i, text);
 		}
 		DoDataExchange();
+		EnableLocationSettings();
 	}
 
 	void SaveToConfig()
 	{
 		DoDataExchange(true);
+		m_config->Set(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION, m_overrideAutoCompilerSelect);
 		m_config->Set(GLOBAL_COMPILER_LOCATION, m_Location);
 		m_config->Set(GLOBAL_COMPILER_ARGUMENTS, m_Arguments);
 		m_config->Set(GLOBAL_COMPILER_WUARGUMENTS, m_WUArguments);
@@ -871,12 +877,20 @@ public:
 		m_owner->SetChanged(bChanged);
 	}
 
+	void EnableLocationSettings()
+	{
+		GetDlgItem(IDC_STATIC_LOCATION).EnableWindow(m_overrideAutoCompilerSelect);
+		GetDlgItem(IDC_EDIT_LOCATION).EnableWindow(m_overrideAutoCompilerSelect);
+		GetDlgItem(IDC_BUTTON_ECLCOMPILER).EnableWindow(m_overrideAutoCompilerSelect);
+	}
+
 	BEGIN_MSG_MAP(thisClass)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DESTROY(OnDestroy)
 
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 
+		COMMAND_HANDLER(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLCOMPILER, BN_CLICKED, OnEclCompilerClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLWORKINGFOLDER, BN_CLICKED, OnEclWorkingFolderClicked)
 		COMMAND_HANDLER(IDC_BUTTON_MOVEUP, BN_CLICKED, OnEclFolderMoveUpClicked)
@@ -890,6 +904,7 @@ public:
 	END_MSG_MAP()
 
 	BEGIN_DDX_MAP(thisClass)
+		DDX_CHECK(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, m_overrideAutoCompilerSelect)
 		DDX_TEXT(IDC_EDIT_LOCATION, m_Location)
 		DDX_TEXT(IDC_EDIT_ARGUMENTS, m_Arguments)
 		DDX_TEXT(IDC_EDIT_WUARGUMENTS, m_WUArguments)
@@ -922,6 +937,14 @@ public:
 	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		DoChanged();
+		return 0;
+	}
+
+	LRESULT OnCheckClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoDataExchange(true);
+		DoChanged();
+		EnableLocationSettings();
 		return 0;
 	}
 

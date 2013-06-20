@@ -4,10 +4,34 @@
 #include "comms.h"
 #include <cmdProcess.h>
 #include <Logger.h>
+#include <cache.h>
 #include <EclErrorParser.h>
 #include "Repository.h"
+#include "SMC.h"
 
 namespace algo = boost::algorithm;
+
+#if (BOOST_FILESYSTEM_VERSION == 3)
+std::wstring pathToString(const boost::filesystem::path & path)
+{
+	return path.wstring();
+}
+#else
+std::wstring pathToString(const boost::filesystem::path & path)
+{
+	return CA2T(path.native_file_string().c_str());
+}
+
+std::wstring pathToString(const boost::filesystem::wpath & path)
+{
+	return path.native_file_string();
+}
+#endif
+
+namespace SMC
+{
+IVersion * CreateVersion(const CString & url, const CString & version);
+}
 
 typedef std::pair<std::_tstring, bool> StringBoolPair;	//  Path, include in -I options
 typedef std::vector<StringBoolPair> WPathVector;
@@ -16,7 +40,7 @@ TRI_BOOL g_EnableCompiler = TRI_BOOL_UNKNOWN;
 TRI_BOOL g_EnableRemoteDali = TRI_BOOL_UNKNOWN;
 TRI_BOOL g_EnableRemoteQueue = TRI_BOOL_UNKNOWN;
 
-class CEclCC : public IEclCC, public CUnknown
+class CEclCC : public IEclCC, public clib::CLockableUnknown
 {
 protected:
 	CComPtr<IConfig> m_config;
@@ -32,14 +56,17 @@ protected:
 	WPathVector m_eclFolders;
 
 	mutable std::_tstring m_version;
+	mutable CComPtr<SMC::IVersion> m_compilerVersion;
 
 public:
-	BEGIN_CUNKNOWN
+	std::_tstring m_errors;
+	std::_tstring m_warnings;
+
+	BEGIN_CLOCKABLEUNKNOWN
 	END_CUNKNOWN(CUnknown)
 
-	CEclCC() 
+	CEclCC(IConfig * config, const std::_tstring & compilerFile) : m_config(config), m_compilerFile(compilerFile)
 	{
-		m_config = GetIConfig(QUERYBUILDER_CFG);
 		ATLASSERT(m_config);
 
 		for (int i = 0; i < 10; ++i)
@@ -82,7 +109,6 @@ public:
 				m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
 		}
 
-		m_compilerFile = CString(m_config->Get(GLOBAL_COMPILER_LOCATION));
 		m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
 
 		//  Patch for 3.10 temporary weirdness (directory structure changes).
@@ -106,20 +132,22 @@ public:
 		if (!boost::filesystem::exists(stdLibPath))
 			stdLibPath = clientToolsFolderPath / _T("share") / _T("ecllibrary");
 		if (boost::filesystem::exists(stdLibPath))
-			m_eclFolders.push_back(std::make_pair(stdLibPath.wstring(), false));
+			m_eclFolders.push_back(std::make_pair(pathToString(stdLibPath), false));
 
 		boost::filesystem::wpath pluginsPath = clientToolsFolderPath / _T("plugins");
 		if (boost::filesystem::exists(pluginsPath))
-			m_eclFolders.push_back(std::make_pair(pluginsPath.wstring(), false));
+			m_eclFolders.push_back(std::make_pair(pathToString(pluginsPath), false));
 	}
 
-	TRI_BOOL HasSettings() const
+	const TCHAR * GetCacheID() const
 	{
-		return g_EnableCompiler;
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		return m_compilerFile.c_str();
 	}
 
 	const TCHAR * GetVersion() const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		if (m_version.empty())
 		{
 			std::_tstring command = m_compilerFile;
@@ -129,7 +157,7 @@ public:
 				command += m_arguments;
 			}
 			command += _T(" --version");
-			std::_tstring runPath = m_compilerFolderPath.wstring().c_str();
+			std::_tstring runPath = pathToString(m_compilerFolderPath);
 			std::_tstring in, out, err;
 			runProcess(command, runPath, _T(""), in, out, err);
 			m_version = out;
@@ -137,12 +165,31 @@ public:
 		return m_version.c_str();
 	}
 
+	SMC::IVersion * GetBuild() const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		if (!m_compilerVersion)
+			m_compilerVersion = SMC::CreateVersion(m_compilerFile.c_str(), GetVersion());
+
+		return m_compilerVersion;
+	}
+
 	const TCHAR * GetPrefWarnings(std::_tstring & warnings) const
 	{
+		warnings = m_warnings;
+		return warnings.c_str();
+	}
+
+	const TCHAR * GetPrefErrors(std::_tstring & errors) const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		errors = m_errors;
+		if (!errors.empty())
+			errors += _T("\r\n");
 		if (!boost::filesystem::exists(m_compilerFilePath))
-			warnings = (boost::_tformat(_T("Compiler path invalid:  %1%")) % m_compilerFile).str() + _T("\r\n");
+			errors += (boost::_tformat(_T("Compiler path invalid:  %1%")) % m_compilerFile).str() + _T("\r\n");
 		else if (boost::filesystem::is_directory(m_compilerFilePath))
-			warnings = (boost::_tformat(_T("Compiler path does not specify eclcc.exe:  %1%")) % m_compilerFile).str() + _T("\r\n");
+			errors += (boost::_tformat(_T("Compiler path does not specify eclcc.exe:  %1%")) % m_compilerFile).str() + _T("\r\n");
 
 		if (!m_workingFolder.empty() && !boost::filesystem::exists(m_workingFolder))
 		{
@@ -152,35 +199,39 @@ public:
 				try {
 					boost::filesystem::create_directories(m_workingFolder);
 				} catch (const boost::filesystem::filesystem_error &) {
-					warnings += (boost::_tformat(_T("Failed to create folder:  %1%")) % m_workingFolder).str() + _T("\r\n");
+					errors += (boost::_tformat(_T("Failed to create folder:  %1%")) % m_workingFolder).str() + _T("\r\n");
 				}
 
 			}
 			else
-				warnings += (boost::_tformat(_T("Working folder invalid:  %1%")) % m_workingFolder).str() + _T("\r\n");
+				errors += (boost::_tformat(_T("Working folder invalid:  %1%")) % m_workingFolder).str() + _T("\r\n");
 		}
 
-		return warnings.c_str();
+		return errors.c_str();
 	}
 
 	const TCHAR * GetWorkingFolder() const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_workingFolder.c_str();
 	}
 
 	int GetEclFolderCount() const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_eclFolders.size();
 	}
 
 	const TCHAR * GetEclFolder(int i) const
 	{
-		ATLASSERT(i >= 0 && i < m_eclFolders.size());
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		ATLASSERT(i >= 0 && i < (int)m_eclFolders.size());
 		return m_eclFolders[i].first.c_str();
 	}
 
 	void ParseErrors(const std::_tstring & sourcePath, const std::_tstring & _err, bool &hasErrors, Dali::CEclExceptionVector & errors, bool markAllAsErrors) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		typedef std::vector<std::_tstring> split_vector_type;
 		split_vector_type SplitVec; 
 		algo::split(SplitVec, _err, algo::is_any_of("\r\n"), algo::token_compress_on);
@@ -226,6 +277,7 @@ public:
 
 	const TCHAR * CallEclCC(const std::_tstring & _module, const std::_tstring & _attribute, const std::_tstring & path, const std::_tstring & ecl, const StdStringVector & args, std::_tstring & out, std::_tstring & err, bool &hasErrors, Dali::CEclExceptionVector & errors) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		hasErrors = false;
 		CAtlTemporaryFile temp;
 		std::_tstring sourcePath;
@@ -277,7 +329,7 @@ public:
 		command += _T(" \"");
 		command += sourcePath;
 		command += _T("\"");
-		std::_tstring runPath = m_compilerFolderPath.wstring();
+		std::_tstring runPath = pathToString(m_compilerFolderPath);
 		std::_tstring in = _T("");
 
 		std::_tstring folder = m_workingFolder;
@@ -301,6 +353,7 @@ public:
 
 	void CheckSyntax(const std::_tstring & module, const std::_tstring & attribute, const std::_tstring & path, const std::_tstring & ecl, Dali::CEclExceptionVector & errors) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		StdStringVector args;
 		args.push_back(_T("f\"syntaxcheck=1\""));
 
@@ -311,14 +364,15 @@ public:
 
 	const TCHAR * GetWorkunitXML(const std::_tstring & wuid, std::_tstring & wuXml) const
 	{
-		std::_tstring filePath = (m_workingFolderPath / (wuid + _T(".xml"))).wstring();
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		std::_tstring filePath = pathToString((m_workingFolderPath / (wuid + _T(".xml"))));
 		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring command = _T("wuget.exe \"");
-			command += (m_workingFolderPath / (wuid + _T(".exe"))).wstring();
+			command += pathToString(m_workingFolderPath / (wuid + _T(".exe")));
 			command += _T("\"");
 			std::_tstring err;
-			runProcess(command, m_workingFolder, m_compilerFolderPath.wstring(), _T(""), wuXml, err);
+			runProcess(command, m_workingFolder, pathToString(m_compilerFolderPath), _T(""), wuXml, err);
 			CUnicodeFile file;
 			if (file.Create(filePath.c_str()))
 				file.Write(wuXml);
@@ -334,7 +388,8 @@ public:
 
 	const TCHAR * SaveWorkunitXML(const std::_tstring & wuid, std::_tstring & filePath) const
 	{
-		filePath = (m_workingFolderPath / (wuid + _T(".xml"))).wstring();
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		filePath = pathToString(m_workingFolderPath / (wuid + _T(".xml")));
 		if (!boost::filesystem::exists(filePath))
 		{
 			std::_tstring wuXml;
@@ -351,6 +406,7 @@ public:
 
 	const TCHAR * GetWorkunitResults(const std::_tstring & wuid, bool compileOnly, std::_tstring & results, bool & hasErrors, Dali::CEclExceptionVector & errors) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		boost::filesystem::wpath resultPath = m_workingFolderPath / (wuid + _T("-result.xml"));
 		boost::filesystem::wpath exePath = m_workingFolderPath / (wuid + _T(".exe"));
 		if (boost::filesystem::exists(exePath) && !boost::filesystem::exists(resultPath))
@@ -361,22 +417,22 @@ public:
 			}
 			else
 			{
-				std::_tstring command = exePath.wstring();
+				std::_tstring command = pathToString(exePath);
 				command += _T(" ");
 				command += (const TCHAR *)CString(m_config->Get(GLOBAL_COMPILER_WUARGUMENTS));
 				command += _T(" -xml");
 				std::_tstring err;
-				runProcess(command, m_workingFolder, m_compilerFolderPath.wstring(), _T(""), results, err);
+				runProcess(command, m_workingFolder, pathToString(m_compilerFolderPath), _T(""), results, err);
 				ParseErrors(_T("POIOIUPOIPOIPOIPOIPOIP"), err, hasErrors, errors, true);
 			}
 			CUnicodeFile file;
-			file.Create(resultPath.wstring());
+			file.Create(pathToString(resultPath).c_str());
 			file.Write(results);
 		}
 		else if (boost::filesystem::exists(resultPath))
 		{
 			CUnicodeFile file;
-			file.Open(resultPath.wstring());
+			file.Open(pathToString(resultPath).c_str());
 			file.Read(results);
 		}
 		return results.c_str();
@@ -384,6 +440,7 @@ public:
 
 	const TCHAR * Compile(const std::_tstring & path, const std::_tstring & ecl, const std::_tstring & wuid, int resultLimit, const std::_tstring & debugString, std::_tstring & wuXml, bool & hasErrors, Dali::CEclExceptionVector & errors) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		StdStringVector args;
 		args.push_back(_T("q"));
 		if (resultLimit > 0)
@@ -416,6 +473,7 @@ public:
 
 	bool GetArchive(const std::_tstring & path, const std::_tstring & ecl, std::_tstring & archive, Dali::CEclExceptionVector & errors) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		StdStringVector args;
 		args.push_back(_T("E"));
 
@@ -428,6 +486,7 @@ public:
 
 	const TCHAR * GetAttributeFilePath(const std::_tstring & module, const std::_tstring & attribute, std::_tstring & path) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		CComPtr<IRepository> rep = AttachRepository();
 		CComPtr<IAttribute> attr = rep->GetAttributeFast(module.c_str(), attribute.c_str(), CreateIAttributeECLType());
 		return GetAttributeFilePath(attr, path);
@@ -435,12 +494,14 @@ public:
 
 	const TCHAR * GetAttributeFilePath(IAttribute * attr, std::_tstring & path) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		path = attr->GetPath();
 		return path.c_str();
 	}
 
 	const TCHAR * GetAttributeLabel(IAttribute * attr, std::_tstring & label) const
 	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		label = attr->GetQualifiedLabel();
 		algo::replace_all(label, _T("."), _T("/"));
 		label += _T(".");
@@ -448,7 +509,19 @@ public:
 		return label.c_str();
 	}
 };
+typedef StlLinked<CEclCC> CEclCCAdapt;
+typedef std::vector<CEclCCAdapt> CEclCCVector;
+class CEclCCCompare
+{
+protected:
+	SMC::IVersionCompare m_versionCompare;
 
+public:
+	bool operator ()(CEclCCAdapt & l, CEclCCAdapt & r)
+	{
+		return m_versionCompare(l->GetBuild(), r->GetBuild());
+	}
+};
 void EnableLocalRepository(TRI_BOOL enable)
 {
 	g_EnableCompiler = enable;
@@ -479,11 +552,111 @@ TRI_BOOL IsRemoteQueueEnabled()
 	return g_EnableRemoteQueue;
 }
 
+CacheT<std::_tstring, CEclCC> EclCCCache;
+CEclCC * CreateEclCCRaw(IConfig * config, const std::_tstring & compilerFile)
+{
+	return EclCCCache.Get(new CEclCC(config, compilerFile));
+}
+
+unsigned int FindAllCEclCC(CEclCCVector & results)
+{
+	CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+
+	using namespace boost::filesystem;
+
+	path progFiles;
+	GetProgramFilesX86Folder(progFiles);
+	
+	{   //  Locate clienttools installs  ---
+		path testFolder = progFiles / "HPCCSystems";
+		if (exists(testFolder)) {
+			directory_iterator end_itr;
+			for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
+			{
+#if (BOOST_FILESYSTEM_VERSION == 3)
+				path eclccPath = *itr / "clienttools" / "bin" / "eclcc.exe";
+#else
+				path eclccPath = itr->path() / "clienttools" / "bin" / "eclcc.exe";
+#endif
+				if (exists(eclccPath))
+					results.push_back(CreateEclCCRaw(config, pathToString(eclccPath)));
+			}
+		}
+	}
+
+	{   //  Locate 6.x ECL IDE installs  (older than 4.x) ---
+		path testFolder = progFiles / "HPCC Systems" / "HPCC" / "bin";
+		if (exists(testFolder)) {
+			directory_iterator end_itr;
+			for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
+			{
+#if (BOOST_FILESYSTEM_VERSION == 3)
+				path eclccPath = *itr / "eclcc.exe";
+#else
+				path eclccPath = itr->path() / "eclcc.exe";
+#endif
+				if (exists(eclccPath))
+					results.push_back(CreateEclCCRaw(config, pathToString(eclccPath)));
+			}
+		}
+	}
+	std::sort(results.begin(), results.end(), CEclCCCompare());
+	return results.size();
+}
+
 IEclCC * CreateIEclCC()
 {
-	CEclCC * retVal = new CEclCC();
-	if (retVal->HasSettings())
-		return retVal;
-	delete retVal;
-	return NULL;
+	if (g_EnableCompiler != TRI_BOOL_TRUE)
+		return NULL;
+
+	CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+	if (!config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION))
+	{
+		CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
+		CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
+		CEclCCVector foundCompilers;
+		if (FindAllCEclCC(foundCompilers))
+		{
+			SMC::IVersionCompare versionCompare;
+			StlLinked<CEclCC> bestMatchEclCC_before;
+			StlLinked<CEclCC> bestMatchEclCC_after;
+			StlLinked<CEclCC> matchedEclCC;
+			for(CEclCCVector::const_iterator itr = foundCompilers.begin(); itr != foundCompilers.end(); ++itr)
+			{
+				if (versionCompare.equals(serverVersion.p, itr->get()->GetBuild()))
+				{
+					matchedEclCC = itr->get();
+					break;
+				}
+				if (versionCompare(serverVersion.p, itr->get()->GetBuild()))
+				{
+					bestMatchEclCC_after = itr->get();
+					break;
+				}
+				bestMatchEclCC_before = itr->get();
+			}
+			if (matchedEclCC)
+				return matchedEclCC;
+			
+			if (bestMatchEclCC_after && versionCompare.distance(serverVersion, bestMatchEclCC_after->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
+				matchedEclCC = bestMatchEclCC_after;
+
+			if (bestMatchEclCC_before && versionCompare.distance(serverVersion, bestMatchEclCC_before->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
+				matchedEclCC = bestMatchEclCC_before;
+
+			static const TCHAR * const warningTpl = _T("Compiler/Server mismatch:\r\nCompiler:\t%1%\r\nServer:\t%2%");
+			if (matchedEclCC)
+			{
+				matchedEclCC->m_warnings = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString() % serverVersion->GetString()).str();
+				return matchedEclCC;
+			}
+
+			//  No good match, just return latest  ---
+			matchedEclCC = foundCompilers.rbegin()->get();
+			matchedEclCC->m_errors = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString() % serverVersion->GetString()).str();
+			matchedEclCC->m_errors += _T("\r\n(To prevent this message from showing, either download and install the matching client tools package or override the default compiler settings in the preferences window)\r\n");
+			return matchedEclCC;
+		}
+	}
+	return CreateEclCCRaw(config, (const TCHAR *)CString(config->Get(GLOBAL_COMPILER_LOCATION)));
 }
