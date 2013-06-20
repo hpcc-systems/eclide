@@ -6,6 +6,7 @@
 #include <utilDateTime.h> //clib
 #include <util.h> //clib
 #include <EclCC.h> //commms
+#include <UtilFilesystem.h> //clib
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
 {
@@ -208,8 +209,8 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 	m_timeCtrl.ModifyStyle(0, DTS_TIMEFORMAT);
 
 	m_limitResult = GetDlgItem(IDC_SPIN_LIMITRESULT);
-	m_limitResult.SetRange32(0, 0x7fffffff);
-	m_limitResult.SetPos32(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_RESULTLIMIT));
+	m_limitResult.SetRange(0, 9999);
+	m_limitResult.SetPos(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_RESULTLIMIT));
 
 	m_maxRuntime = GetDlgItem(IDC_SPIN_MAXRUNTIME);
 	m_maxRuntime.SetRange(0, 24*60*7);
@@ -317,12 +318,12 @@ void CBuilderDlg::GetName(CString & name)
 
 void CBuilderDlg::SetResultLimit(int limit)
 {
-	m_limitResult.SetPos32(limit);
+	m_limitResult.SetPos(limit);
 }
 
 int CBuilderDlg::GetResultLimit()
 {
-	return m_limitResult.GetPos32();
+	return m_limitResult.GetPos();
 }
 
 void CBuilderDlg::SetMaxRuntime(int maxRuntime)
@@ -512,7 +513,7 @@ void CBuilderDlg::ShowAdvanced()
 	ShowHide(IDC_BUTTON_ARCHIVE, false);
 
 	DoDataExchange(true);
-	if (IsScheduled() || IsLabeled() || m_limitResult.GetPos32() != static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_RESULTLIMIT)) || m_debug.GetLength() || m_maxRuntime.GetPos() != 0)
+	if (IsScheduled() || IsLabeled() || m_limitResult.GetPos() != static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_RESULTLIMIT)) || m_debug.GetLength() || m_maxRuntime.GetPos() != 0)
 		m_advancedCtrl.SetWindowText(_T("Less *"));
 	else
 		m_advancedCtrl.SetWindowText(_T("Less"));
@@ -546,7 +547,7 @@ void CBuilderDlg::HideAdvanced()
 	ShowHide(IDC_BUTTON_ARCHIVE, true);
 
 	DoDataExchange(true);
-	if (IsScheduled() || IsLabeled() || m_limitResult.GetPos32() != static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_RESULTLIMIT)) || m_debug.GetLength() || m_maxRuntime.GetPos() != 0)
+	if (IsScheduled() || IsLabeled() || m_limitResult.GetPos() != static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_RESULTLIMIT)) || m_debug.GetLength() || m_maxRuntime.GetPos() != 0)
 		m_advancedCtrl.SetWindowText(_T("More *"));
 	else
 		m_advancedCtrl.SetWindowText(_T("More"));
@@ -587,7 +588,7 @@ void CBuilderDlg::OnLocateFileInExplorer(UINT /*uNotifyCode*/, int /*nID*/, HWND
 {
 	boost::filesystem::wpath file = m_path;
 	boost::filesystem::wpath folder = file.parent_path();
-	::ShellExecute(m_hWnd, _T("open"), _T(""), _T(""), folder.wstring().c_str(), SW_SHOWNORMAL);
+	::ShellExecute(m_hWnd, _T("open"), _T(""), _T(""), pathToWString(folder).c_str(), SW_SHOWNORMAL);
 }
 
 void CBuilderDlg::OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)

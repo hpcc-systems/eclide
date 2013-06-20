@@ -5,6 +5,7 @@
 #include "UnicodeFile.h"
 #include "md5.hpp"
 #include "ModuleHelper.h"
+#include <UtilFilesystem.h>
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
@@ -37,10 +38,10 @@ public:
 
 	CModFileRepository(const TCHAR* url, const TCHAR* label) : m_label(label), m_url(url)
 	{
-		m_path = boost::filesystem::path(url, boost::filesystem::native);
+		m_path = stringToPath(url);
 
 		CUnicodeFile file;
-		if (file.Open(m_path.wstring()))
+		if (file.Open(pathToWString(m_path).c_str()))
 		{
 			file.Read(m_modFile);
 			file.Close();
@@ -446,7 +447,7 @@ public:
 		}
 
 		CUnicodeFile file;
-		if (file.Create(m_path.wstring()))
+		if (file.Create(pathToWString(m_path).c_str()))
 		{
 			file.Write(m_modFile);
 			file.Close();

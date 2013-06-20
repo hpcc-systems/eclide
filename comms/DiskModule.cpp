@@ -7,6 +7,7 @@
 #include "ModuleHelper.h"
 #include <Aclapi.h>
 #include <authz.h>
+#include <UtilFilesystem.h>
 
 //  ===========================================================================
 class CFileAccess
@@ -313,8 +314,8 @@ public:
 		m_repository = const_cast<IRepository *>(rep);
 		m_parent = const_cast<IModule *>(parent);
 		m_path = path;
-		m_pathStr = path.wstring();
-		m_url = path.wstring().c_str();
+		m_pathStr = pathToWString(path);
+		m_url = pathToWString(path).c_str();
 		m_id = m_url;
 		m_id += _T("/") + m_qualifiedLabel;
 		m_id.MakeLower();
@@ -478,7 +479,7 @@ public:
 			return false;
 
 		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr(m_path); itr != end_itr; ++itr)
+		for (boost::filesystem::directory_iterator itr(wpathToPath(m_path)); itr != end_itr; ++itr)
 		{
 			if (boost::filesystem::is_directory(*itr))
 				return true;
