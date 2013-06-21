@@ -84,7 +84,7 @@ BEGIN
             VALUE "FileDescription", "sgrid Dynamic Link Library"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "sgrid.dll"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "sgrid.dll"
             VALUE "ProductName", " sgrid Dynamic Link Library"
             VALUE "ProductVersion", HPCC_VERSION

@@ -4,6 +4,7 @@
 //#include "WorkspaceItem.h"
 #include "Thread.h"
 #include "cache.h"
+#include <UtilFilesystem.h>
 
 //  ===========================================================================
 class CWorkspaceItem : public IWorkspaceItem, public clib::CLockableUnknown
@@ -473,7 +474,7 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_T
 		fileName += ".ecl";
 		wideFileName = CA2T(fileName.c_str());
 		filePath = envFolder / fileName;
-		wideFilePath = filePath.wstring();
+		wideFilePath = pathToWString(filePath);
 		if (!CWorkspaceItemCache.Exists(wideFilePath))
 			break;
 	}

@@ -20,7 +20,7 @@ protected:
 	std::_tstring m_url;
 	std::_tstring m_rawversion;
 	std::_tstring m_strversion;
-	int m_CommsVer;	// Compatable with _COMMS_VER
+	ParsedVersion m_parsedVersion;
 	mutable clib::recursive_mutex m_mutex;
 
 public:
@@ -34,62 +34,47 @@ public:
 		m_id = m_url + _T("/") + m_rawversion.c_str();
 #ifdef _DEBUG
 		//  <string>-|_<int>.<int>[<char>][.<int>].|-|_<string>[_<int>[<char>]]
-		ParsedVersion test1, test2, test3, test4, test5, test6, test7;
-		ATLASSERT(ParseVersion(_T("hpcc_100.10a.22_betaX_22a"), test1));
-		ATLASSERT(ParseVersion(_T("hpcc-100.10a.22-betaX_22a"), test2));
-		ATLASSERT(ParseVersion(_T("hpcc_100.10_betaX"), test3));
-		ATLASSERT(ParseVersion(_T("hpcc-100.10-betaX"), test4));
-		ATLASSERT(ParseVersion(_T("hpcc-100.10"), test5));
-		ATLASSERT(ParseVersion(_T("hpcc_3.0_beta4_63910"), test6));
-		//ATLASSERT(ParseVersion(_T("build_0702_40_gentoo64_linux"), test7)); 
-		//ATLASSERT(ParseVersion(_T("hpcc_100.10.1_betaX"), test2));
-		//ATLASSERT(ParseVersion(_T("build_200"), test3));
-		//ATLASSERT(ParseVersion(_T("build_200_2"), test4));
-		//ATLASSERT(ParseVersion(_T("build_200_2_gentoo_linux"), test5));
-		//ATLASSERT(ParseVersion(_T("build_200_gentoo_linux"), test6));
-		//ATLASSERT(ParseVersion(_T("build_0702_15a_gentoo64_linux"), test7));
+		static bool unitTest = false;
+		if (!unitTest)
+		{
+			unitTest = true;
+			ParsedVersion test;
+			ATLASSERT(ParseVersion(_T("4.3.2.1"), test));
+			ATLASSERT(test.type == ParsedVersion::ECLIDE);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-9rc"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9\r\n"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9[abc]"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9[abc+def]"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9[abc:def]"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9[abc_def]"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_4.0.0-rc9[community_4.0.0-rc9-4-g826364-dirty]"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("build_3_08"), test));
+			ATLASSERT(test.type == ParsedVersion::BUILD);
+			ATLASSERT(ParseVersion(_T("internal_3.10.8-8"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("community_5.6.7-rc8"), test));
+			ATLASSERT(test.type == ParsedVersion::OSS);
+			ATLASSERT(ParseVersion(_T("4.3.2 community_5.6.7-rc8"), test));
+			ATLASSERT(test.type == ParsedVersion::ECLCC);
+			ATLASSERT(!ParseVersion(_T("4.3.2-abc"), test));
+			ATLASSERT(!ParseVersion(_T("4.3.2"), test));
+			ATLASSERT(!ParseVersion(_T("4.3"), test));
+			ATLASSERT(!ParseVersion(_T("4"), test));
+		}
 #endif
-		ParsedVersion parsedVersion;
-		bool parsed = ParseVersion((const TCHAR *)version, parsedVersion);
-		//ATLASSERT(parsed);
-
-		//m_strversion = parsedVersion.projectName;
-		if (parsedVersion.majorVersion || parsedVersion.minorVersion || parsedVersion.pointVersion)
-		{
-			//if (!m_strversion.empty())
-				//m_strversion += _T(" ");
-			m_strversion += boost::lexical_cast<std::_tstring>(parsedVersion.majorVersion);
-		}
-		if (parsedVersion.minorVersion || parsedVersion.pointVersion)
-		{
-			m_strversion += _T(".");
-			m_strversion += boost::lexical_cast<std::_tstring>(parsedVersion.minorVersion);
-			m_strversion += parsedVersion.minorVersionAlpha;
-		}
-		if (parsedVersion.pointVersion)
-		{
-			m_strversion += _T(".");
-			m_strversion += boost::lexical_cast<std::_tstring>(parsedVersion.pointVersion);
-		}
-		if (!parsedVersion.suffix.empty())
-		{
-			m_strversion += _T(" (");
-			m_strversion += parsedVersion.suffix;
-			m_strversion += _T(")");
-		}
-		if (parsedVersion.ossFlag)
-			m_CommsVer = -1;
-		else
-			m_CommsVer = parsedVersion.majorVersion * 100 + parsedVersion.minorVersion;
-
-		if (m_strversion.empty() && !boost::algorithm::equals(static_cast<const TCHAR *>(version), DEFAULT_VERSION))
-			m_strversion = version;
+		ParseVersion((const TCHAR *)version, m_parsedVersion);
+		m_strversion = version;
+		boost::algorithm::trim(m_strversion);
 	}
-
-	//void Lock(CComPtr<clib::scoped_lock_ref_counted> & lock)
-	//{
-	//	lock = new clib::scoped_lock_ref_counted(m_mutex);
-	//}
 
 	const TCHAR * GetID()
 	{
@@ -115,48 +100,59 @@ public:
 		return m_strversion.c_str();
 	}
 
-	bool IsCompatable()
+	const TCHAR * GetPrefix() const
 	{
-#ifdef CHECK_FOR_OLD_SERVER
-		typedef std::vector<int> VersionHistory;
-		VersionHistory versions;
-		//  Push breaking versions into vector;
-		versions.push_back(471);
-		versions.push_back(491);
-		versions.push_back(499);
-		versions.push_back(505);
-		versions.push_back(50509);
-		versions.push_back(50514);
-		versions.push_back(50515);
-		versions.push_back(50520);
-		versions.push_back(50523);
-		versions.push_back(51100);
-		versions.push_back(51300);
-		versions.push_back(51400);
-		versions.push_back(52501);
-		versions.push_back(53300);
-		versions.push_back(53306);
-		versions.push_back(58300);
-		versions.push_back(65101);
-		int serverPos = 0;
-		int clientPos = 0;
-		for(VersionHistory::iterator itr = versions.begin(); itr != versions.end(); ++itr)
+		return m_parsedVersion.preffix.c_str();
+	}
+
+	unsigned int GetMajor() const
+	{
+		return m_parsedVersion.majorVersion;
+	}
+
+	unsigned int GetMinor() const
+	{
+		return m_parsedVersion.minorVersion;
+	}
+
+	unsigned int GetPoint() const
+	{
+		return m_parsedVersion.pointVersion;
+	}
+
+	const TCHAR * GetSuffixString() const
+	{
+		return m_parsedVersion.suffixStr.c_str();
+	}
+
+	unsigned int GetSuffixInteger() const
+	{
+		return m_parsedVersion.suffixInt;
+	}
+
+	int Compare(const IVersion * other) const
+	{
+		//  Ignore prefix  ---
+		const CVersion * otherBase = dynamic_cast<const CVersion *>(other);
+		if (otherBase)
 		{
-			if (m_CommsVer < *itr)
+			if (m_parsedVersion == otherBase->m_parsedVersion)
 			{
-				++serverPos;
+				int retVal = m_parsedVersion.suffixStr.compare(otherBase->m_parsedVersion.suffixStr);
+				if (retVal)
+					return retVal;
+				if (m_parsedVersion.suffixInt == otherBase->m_parsedVersion.suffixInt)
+					return 0;
+				if (m_parsedVersion.suffixInt < otherBase->m_parsedVersion.suffixInt)
+					return -1;
+				return 1;
 			}
-			if (_COMMS_VER < *itr)
-			{
-				++clientPos;
-			}
+			if (m_parsedVersion < otherBase->m_parsedVersion)
+				return -1;
+			return 1;
 		}
-		if (clientPos < serverPos)	//The bigger the pos the older it is.
-		{
-			return false;
-		}
-#endif
-		return true;
+		assert(false);
+		return -1;
 	}
 
 	void Update()

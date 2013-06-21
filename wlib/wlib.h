@@ -13,3 +13,4 @@
 WLIB_API const TCHAR *GetRegPathQB(const std::_tstring & overideVersion = _T(""));
 WLIB_API const TCHAR *GetAppVersion(std::_tstring & version);
 WLIB_API const TCHAR *GetAppMajorVersion(std::_tstring & version);
+WLIB_API const TCHAR *GetBuildVersion(std::_tstring & version);

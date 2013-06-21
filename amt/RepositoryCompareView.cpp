@@ -9,6 +9,7 @@
 #include "Util.h"
 #include "Logger.h"
 #include "MainFrm2.h"
+#include <UtilFilesystem.h>
 
 #define MAX_THREAD_COUNT 2
 //  ===========================================================================
@@ -142,10 +143,10 @@ void thread_GetWorkspaces(IRepository * rep, IWorkspaceVector * workspaces)
 {
 	boost::filesystem::path envFolder;
 	rep->GetEnvironmentFolder(envFolder);
-	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - Start")) % envFolder.wstring()).str());
+	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - Start")) % pathToWString(envFolder)).str());
 	ATLASSERT(workspaces->size() == 0);
 	rep->GetWorkspaces(workspaces, true);
-	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - End")) % envFolder.wstring()).str());
+	LogMsg((boost::_tformat(_T("thread_GetWorkspaces - %1% - End")) % pathToWString(envFolder)).str());
 }
 
 void thread_GetModules(IRepository * rep, std::_tstring parentLabel, IModuleVector * modules, bool checksum, bool noRefresh)

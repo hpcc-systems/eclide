@@ -11,6 +11,7 @@
 #include "EclCC.h"
 #include <CustomMessages.h>
 #include <AutoUpdate.h>
+#include <UtilFilesystem.h>
 
 static const SectionLabelDefault GLOBAL_LASTCONFIG(SectionLabel(_T("General"), _T("LastConfig")), _T("default"));
 static const SectionLabelDefault GLOBAL_LASTCONFIG_LHS(SectionLabel(_T("General"), _T("LastConfigLHS")), _T("default"));
@@ -184,21 +185,6 @@ public:
 		CString accountServer = m_config->Get(GLOBAL_SERVER_ACCOUNT);
 		if (!m_verifyUser || accountServer.IsEmpty() || VerifyUser(m_config, m_User, m_Password, retCode, retMsg))
 		{
-			UINT state = ::GetKeyState(VK_SHIFT);
-			bool shiftKeyDown = ((state & 0x8000) != 0);
-			if (!shiftKeyDown && !accountServer.IsEmpty())
-			{
-				CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
-				CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
-				if (!m_config->Get(GLOBAL_IGNORESERVERVERSION) && !serverVersion->IsCompatable())
-				{
-					MessageBeep(MB_ICONEXCLAMATION);
-					std::_tstring ver;
-					m_Msg.Format(_T("Server version %s is too old (%s).\r\nHold down SHIFT key to bypass this warning."), serverVersion->GetString(), GetAboutVersion(ver));
-					DoDataExchange();
-					return;
-				}
-			}
 			ReleaseAllSingletons();
 			//prime the repository cache with the new credentials
 			CString server(m_config->Get(GLOBAL_SERVER_ATTRIBUTE));
@@ -754,7 +740,7 @@ public:
 	void CheckForModuleFolders(std::_tstring & path)
 	{
 		bool hasChildFolder = false;
-		boost::filesystem::path folder(path, boost::filesystem::native);
+		boost::filesystem::path folder = stringToPath(path);
 		try
 		{
 			boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
@@ -773,8 +759,8 @@ public:
 
 		if (!hasChildFolder)
 		{
-			if (MessageBox((boost::_tformat(_T("The selected folder contains no \"Child\" folders, use %1% instead?")) % folder.parent_path().wstring()).str().c_str(), _T("AMT"), MB_YESNO) == IDYES)
-				path = folder.parent_path().wstring();
+			if (MessageBox((boost::_tformat(_T("The selected folder contains no \"Child\" folders, use %1% instead?")) % pathToWString(folder.parent_path())).str().c_str(), _T("AMT"), MB_YESNO) == IDYES)
+				path = pathToWString(folder.parent_path());
 		}
 	}
 
@@ -876,9 +862,9 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().extension().wstring(), _T(".cfg")))
+			if (boost::algorithm::iequals(pathToString(itr->path().extension()), _T(".cfg")))
 			{
-				std::string s = itr->path().leaf().string();
+				std::string s = pathToString(itr->path().leaf());
 				std::_tstring label = CA2T(s.substr(0, s.length() - 4).c_str());
 				int id = configCombo.AddString(label.c_str());
 				if (defaultValue.length() && defaultValue == label)
@@ -907,10 +893,8 @@ void SetDefaultConfig(IConfig *iniFile, const std::_tstring & defaultConfig)
 //  ===========================================================================
 const TCHAR * GetAboutVersion(std::_tstring &version)
 {
-	version += GetApplicationVersion();
-	version += _T(".");
-	CComPtr<SMC::IVersion> ver = GetCommsVersion();
-	version += ver->GetString();
+	std::_tstring buildVer;
+	version += GetBuildVersion(buildVer);
 	return version.c_str();
 }
 

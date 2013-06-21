@@ -8,6 +8,7 @@
 #include "cache.h"
 #include "logger.h"
 #include "UnicodeFile.h"
+#include <UtilFilesystem.h>
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
@@ -87,7 +88,7 @@ public:
 		if (!m_eclFetched || refresh)
 		{
 			CUnicodeFile file;
-			file.Open(m_path.wstring());
+			file.Open(m_path);
 			std::_tstring ecl;
 			file.Read(ecl);
 			file.Close();
@@ -136,7 +137,7 @@ public:
 	void Update()
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		m_description = m_path.wstring().c_str();
+		m_description = pathToWString(m_path).c_str();
 		m_modifiedDate = CA2T(boost::filesystem::basename(m_path).c_str());
 		m_modifiedDate.Replace(_T("_"), _T(":"));
 		m_modifiedBy = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);

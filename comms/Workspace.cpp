@@ -7,6 +7,7 @@
 #include "repository.h"
 #include "md5.hpp"
 #include "logger.h"
+#include <UtilFilesystem.h>
 
 const TCHAR * const DEFAULT_LABEL = _T("Default");
 
@@ -47,7 +48,7 @@ void save(const T &s, const char * filename)
 					boost::filesystem::remove(bakFilepath);
 				} catch (const boost::filesystem::filesystem_error & ex) {
 					_DBGLOG(LEVEL_WARNING, ex.what());
-					_DBGLOG(LEVEL_WARNING, bakFilepath.wstring().c_str());
+					_DBGLOG(LEVEL_WARNING, pathToWString(bakFilepath).c_str());
 				}
 			}
 
@@ -142,7 +143,7 @@ public:
 	void UpdateID()
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		m_folder = m_environmentFolder.wstring();
+		m_folder = pathToWString(m_environmentFolder);
 		m_id = m_folder + _T("\\") + m_label + _T(".ecl_ws");
 	}
 	const TCHAR * GetCacheID() const
@@ -198,7 +199,7 @@ public:
 	void Restore()
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		if (boost::filesystem::exists(boost::filesystem::path(m_id, boost::filesystem::native)))
+		if (boost::filesystem::exists(stringToPath(m_id)))
 			restore(*this, CT2A(m_id.c_str()));
 	}
 	bool Remove()
@@ -364,9 +365,9 @@ unsigned int GetWorkspaces(IRepository * repository, IWorkspaceVector * results,
 		{
 			if (!boost::filesystem::is_directory(*itr))
 			{
-				if (boost::algorithm::iequals(itr->path().extension().wstring(), _T(".ecl_ws")))
+				if (boost::algorithm::iequals(pathToWString(itr->path().extension()), _T(".ecl_ws")))
 				{
-					StlLinked<CWorkspace> workspace = AttachWorkspaceRaw(repository, itr->path().stem().wstring(), true, false, attributesOnly);
+					StlLinked<CWorkspace> workspace = AttachWorkspaceRaw(repository, pathToWString(itr->path().stem()), true, false, attributesOnly);
 					if (workspace->ShowInRoot())
 						results->push_back(workspace.get());
 				}
@@ -390,7 +391,7 @@ bool WorkspaceExists(IRepository * repository, const std::_tstring & label)
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().stem().wstring(), label))
+			if (boost::algorithm::iequals(pathToWString(itr->path().stem()), label))
 				return true;
 		}
 	}
@@ -407,7 +408,7 @@ bool RemoveWorkspace(IRepository * repository, const std::_tstring & label)
 	{
 		if (!boost::filesystem::is_directory(*itr))
 		{
-			if (boost::algorithm::iequals(itr->path().stem().wstring(), label))
+			if (boost::algorithm::iequals(pathToWString(itr->path().stem()), label))
 			{
 				try {
 					boost::filesystem::remove(*itr);
@@ -415,7 +416,7 @@ bool RemoveWorkspace(IRepository * repository, const std::_tstring & label)
 					retVal = true;
 				} catch (const boost::filesystem::filesystem_error & ex) {
 					_DBGLOG(LEVEL_WARNING, ex.what());
-					_DBGLOG(LEVEL_WARNING, itr->path().wstring().c_str());
+					_DBGLOG(LEVEL_WARNING, pathToWString(itr->path()).c_str());
 				}
 			}
 		}

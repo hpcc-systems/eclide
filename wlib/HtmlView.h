@@ -5,13 +5,13 @@
 #pragma once
 
 #include <exdispid.h>
+#include <file_ver.h>
 
 const int _nDispatchID = 1;
 
 #define WM_BROWSERTITLECHANGE        (WM_APP)
 #define WM_BROWSERDOCUMENTCOMPLETE   (WM_APP + 1)
 #define WM_BROWSERSTATUSTEXTCHANGE   (WM_APP + 2)
-
 
 class CHtmlView:
 	public CWindowImpl<CHtmlView, CAxWindow>,
@@ -99,6 +99,7 @@ public:
 		{
 			get_Browser(&m_spBrowser);
 		}
+		SetUserAgentString();
 	}
 
 	HRESULT get_Control(IUnknown** ppControl)
@@ -182,6 +183,33 @@ public:
 		m_spBrowser->ExecWB(OLECMDID_SELECTALL,OLECMDEXECOPT_DONTPROMPTUSER,NULL,NULL);
 	}
 	
+    bool SetUserAgentString()
+    {
+        static std::string g_userAgent;
+
+        if (g_userAgent.empty())
+        {
+            char * buff = NULL;
+            DWORD pdwBufferLengthOut = 0;
+            HRESULT hr = UrlMkGetSessionOption(URLMON_OPTION_USERAGENT, NULL, 0, &pdwBufferLengthOut, 0);
+            buff = (char *)malloc(pdwBufferLengthOut);
+            hr = UrlMkGetSessionOption(URLMON_OPTION_USERAGENT, buff, pdwBufferLengthOut, &pdwBufferLengthOut, 0);
+            //  if (hr == S_OK)  API Bug returns E_OUTOFMEMORY on success  
+            {
+                g_userAgent = buff;
+                std::_tstring ver;
+                boost::algorithm::replace_last(g_userAgent, ")", (boost::format("; eclide/%1%)") % static_cast<const char *>(CT2A(GetAppVersion(ver)))).str());
+            }
+            free(buff);
+        }
+
+        if (!g_userAgent.empty())
+        {
+            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, (LPVOID)g_userAgent.c_str(), g_userAgent.length(), 0);
+            return true;
+        }
+        return false;
+    }
 
 	BOOL PreTranslateMessage(MSG* pMsg)
 	{

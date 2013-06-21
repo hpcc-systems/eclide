@@ -13,6 +13,7 @@
 #include "ModuleHelper.h"
 #include "DiskRepository.h"
 #include "EclCC.h"
+#include <UtilFilesystem.h>
 
 void ClearAttributeTypeCache();
 void ClearAttributeCache();
@@ -899,7 +900,7 @@ public:
 	virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
 	{
 		boost::filesystem::path userFolder;
-		path = GetUserFolder(userFolder, GetUserId()) / boost::filesystem::path(GetLabel(), boost::filesystem::native);
+		path = GetUserFolder(userFolder, GetUserId()) / stringToPath(GetLabel());
 
 		try {
 			boost::filesystem::create_directories(path);

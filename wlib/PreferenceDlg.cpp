@@ -20,6 +20,7 @@
 #include <EclCC.h>
 #include "npHPCCSystemsGraphViewControl.h"
 #include "HListBox.h"
+#include <UtilFilesystem.h>
 //  ===========================================================================
 #define GLYPH_WIDTH 15
 
@@ -670,6 +671,7 @@ protected:
 	IConfigAdapt m_ini;
 	CString m_ConfigLabel;
 
+	bool m_overrideAutoCompilerSelect;
 	CString m_Location;
 	CString m_Arguments;
 	CString m_WUArguments;
@@ -694,6 +696,7 @@ public:
 
 	void LoadDefaults()
 	{
+		m_overrideAutoCompilerSelect = false;
 		m_Arguments = _T("");
 		m_WUArguments = _T("");
 		m_listFolders.ResetContent();
@@ -711,24 +714,24 @@ public:
 
 		if (boost::filesystem::exists(eclccPath)) 
 		{
-			m_Location = eclccPath.wstring().c_str();
+			m_Location = pathToWString(eclccPath).c_str();
 
 			boost::filesystem::path docsFolder;
 			GetDocumentsFolder(docsFolder);
 
 			docsFolder = docsFolder / "HPCC Systems" / "ECL";
 
-			boost::filesystem::path wuFolder = docsFolder / _T("wu") / m_config->GetLabel();
+			boost::filesystem::path wuFolder = docsFolder / "wu" / static_cast<const char *>(CT2A(m_config->GetLabel()));
 			boost::filesystem::create_directories(wuFolder);
-			m_EclWorkingFolder = wuFolder.wstring().c_str();
+			m_EclWorkingFolder = pathToWString(wuFolder).c_str();
 
 			boost::filesystem::path repositoryPath = docsFolder / "My Files";
 			boost::filesystem::create_directories(repositoryPath);
-			m_listFolders.AddString(repositoryPath.wstring().c_str());
+			m_listFolders.AddString(pathToWString(repositoryPath).c_str());
 
 			boost::filesystem::path samplesPath = clientToolsPath / "examples";
 			if (boost::filesystem::exists(samplesPath))
-				m_listFolders.AddString(samplesPath.wstring().c_str());
+				m_listFolders.AddString(pathToWString(samplesPath).c_str());
 		}
 		else
 		{
@@ -738,7 +741,7 @@ public:
 				boost::filesystem::wpath eclccPath = hpccbin;
 				eclccPath /= _T("eclcc.exe");
 				if (boost::filesystem::exists(eclccPath))
-					m_Location = eclccPath.wstring().c_str();
+					m_Location = pathToWString(eclccPath).c_str();
 			}
 
 			const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
@@ -747,23 +750,25 @@ public:
 				boost::filesystem::wpath wuFolder = hpccEcl;
 				wuFolder /= _T("wu");
 				boost::filesystem::create_directories(wuFolder);
-				m_EclWorkingFolder = wuFolder.wstring().c_str();
+				m_EclWorkingFolder = pathToWString(wuFolder).c_str();
 
 				boost::filesystem::wpath repositoryPath = hpccEcl;
 				repositoryPath = repositoryPath.parent_path();
 				repositoryPath /= _T("My Files");
 				boost::filesystem::create_directories(repositoryPath);
-				m_listFolders.AddString(repositoryPath.wstring().c_str());
+				m_listFolders.AddString(pathToWString(repositoryPath).c_str());
 			}
 		}
 
 		DoDataExchange();
 		SaveToConfig();
+		EnableLocationSettings();
 	}
 
 	void LoadFromConfig(IConfig * config)
 	{
 		m_config = config;
+		m_overrideAutoCompilerSelect = m_config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
 		m_Location = m_config->Get(GLOBAL_COMPILER_LOCATION);
 		m_Arguments = m_config->Get(GLOBAL_COMPILER_ARGUMENTS);
 		m_WUArguments = m_config->Get(GLOBAL_COMPILER_WUARGUMENTS);
@@ -809,11 +814,13 @@ public:
 				m_listFolders.InsertString(i, text);
 		}
 		DoDataExchange();
+		EnableLocationSettings();
 	}
 
 	void SaveToConfig()
 	{
 		DoDataExchange(true);
+		m_config->Set(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION, m_overrideAutoCompilerSelect);
 		m_config->Set(GLOBAL_COMPILER_LOCATION, m_Location);
 		m_config->Set(GLOBAL_COMPILER_ARGUMENTS, m_Arguments);
 		m_config->Set(GLOBAL_COMPILER_WUARGUMENTS, m_WUArguments);
@@ -871,12 +878,20 @@ public:
 		m_owner->SetChanged(bChanged);
 	}
 
+	void EnableLocationSettings()
+	{
+		GetDlgItem(IDC_STATIC_LOCATION).EnableWindow(m_overrideAutoCompilerSelect);
+		GetDlgItem(IDC_EDIT_LOCATION).EnableWindow(m_overrideAutoCompilerSelect);
+		GetDlgItem(IDC_BUTTON_ECLCOMPILER).EnableWindow(m_overrideAutoCompilerSelect);
+	}
+
 	BEGIN_MSG_MAP(thisClass)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DESTROY(OnDestroy)
 
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 
+		COMMAND_HANDLER(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLCOMPILER, BN_CLICKED, OnEclCompilerClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLWORKINGFOLDER, BN_CLICKED, OnEclWorkingFolderClicked)
 		COMMAND_HANDLER(IDC_BUTTON_MOVEUP, BN_CLICKED, OnEclFolderMoveUpClicked)
@@ -890,6 +905,7 @@ public:
 	END_MSG_MAP()
 
 	BEGIN_DDX_MAP(thisClass)
+		DDX_CHECK(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, m_overrideAutoCompilerSelect)
 		DDX_TEXT(IDC_EDIT_LOCATION, m_Location)
 		DDX_TEXT(IDC_EDIT_ARGUMENTS, m_Arguments)
 		DDX_TEXT(IDC_EDIT_WUARGUMENTS, m_WUArguments)
@@ -922,6 +938,14 @@ public:
 	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		DoChanged();
+		return 0;
+	}
+
+	LRESULT OnCheckClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoDataExchange(true);
+		DoChanged();
+		EnableLocationSettings();
 		return 0;
 	}
 
@@ -972,9 +996,9 @@ public:
 				CString otherFolder;
 				m_listFolders.GetText(i, otherFolder);
 				boost::filesystem::wpath otherPath = static_cast<const TCHAR *>(otherFolder);
-				if (boost::algorithm::iequals(path.leaf(), otherPath.leaf())) 
+				if (boost::algorithm::iequals(pathToString(path.leaf()), pathToString(otherPath.leaf()))) 
 				{
-					std::_tstring msg = _T("ECL folders must have unique name.  \"") + otherPath.leaf() + _T("\" is already used.");
+					std::_tstring msg = _T("ECL folders must have unique name.  \"") + pathToWString(otherPath.leaf()) + _T("\" is already used.");
 					MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
 					return 0;
 				}
@@ -2027,7 +2051,7 @@ public:
 	{
 		boost::filesystem::path path;
 		GetApplicationFolder(path);
-		std::_tstring native_path = path.wstring();
+		std::_tstring native_path = pathToWString(path);
 		::ShellExecute(m_hWnd, _T("open"), native_path.c_str(), _T(""), native_path.c_str(), SW_SHOW);
 		return 0;
 	}

@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "GraphView Control"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "GraphViewCtl.dll"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "GraphViewCtl.dll"
             VALUE "ProductName", "GraphViewControl"
             VALUE "ProductVersion", HPCC_VERSION

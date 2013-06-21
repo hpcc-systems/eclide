@@ -50,7 +50,7 @@ BEGIN
             VALUE "FileDescription", "ECL IDE Application"
             VALUE "FileVersion",  HPCC_VERSION
             VALUE "InternalName", "ECLIDE"
-            VALUE "LegalCopyright", "HPCC Systems, Copyright 2011, All rights reserved."
+            VALUE "LegalCopyright", "HPCC Systems, Copyright 2013, All rights reserved."
             VALUE "OriginalFilename", "eclide.exe"
             VALUE "ProductName", "ECL IDE Application"
             VALUE "ProductVersion", HPCC_VERSION
