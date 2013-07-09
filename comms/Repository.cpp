@@ -27,7 +27,7 @@ PasswordCacheT g_passwordCache;
 IModule * CreateModule(const IRepository *rep, const ns2__ECLModule *data, bool noBroadcast=false);
 IModule * CreateModulePlaceholder(const IRepository *rep, const std::_tstring &label);
 IAttribute * CreateAttribute(const IRepository *rep, const ns2__ECLAttribute * data, bool noBroadcast=false);
-IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const ns2__ECLAttribute * data);
+IAttributeHistory * CreateAttributeHistory(const IRepository *rep, IAttributeType * type, const ns2__ECLAttribute * data);
 
 #define ESP_EXCEPTION_LOG3(T) CReportingGSoapEspException<ns2__ArrayOfEspException> exceptions(T, __FILE__, __LINE__)
 
@@ -523,7 +523,7 @@ public:
 			{
 				if (response.outAttribute->ModuleName && response.outAttribute->Name)	//  Succeeded but no attribute.
 				{
-					CComPtr<IAttributeHistory> attribute = CreateAttributeHistory(this, response.outAttribute);
+					CComPtr<IAttributeHistory> attribute = CreateAttributeHistory(this, type, response.outAttribute);
 					return attribute;
 				}
 			}
@@ -620,7 +620,7 @@ public:
 			{
 				for(std::size_t i = 0; i < response.outAttributes->ECLAttribute.size(); ++i)
 				{
-					StlLinked<IAttributeHistory> attribute = CreateAttributeHistory(this, response.outAttributes->ECLAttribute[i]);
+					StlLinked<IAttributeHistory> attribute = CreateAttributeHistory(this, type, response.outAttributes->ECLAttribute[i]);
 					attributes.push_back(attribute);
 				}
 			}
