@@ -196,7 +196,7 @@ IAttributeHistory * CreateAttributeHistory(const IRepository* rep, const std::_t
 	return attr;
 }
 #else
-IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const ns2__ECLAttribute * data)
+IAttributeHistory * CreateAttributeHistory(const IRepository *rep, IAttributeType * type, const ns2__ECLAttribute * data)
 {
 	std::_tstring moduleName;
 	SAFE_ASSIGN(moduleName, data->ModuleName);
@@ -207,13 +207,11 @@ IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const ns2__EC
 	if (name.empty())
 		return NULL;
 
-	std::_tstring type;
-	SAFE_ASSIGN(type, data->Type);
 	unsigned int version = 0;
 	SAFE_ASSIGN(version, data->Version);
 	bool isSandbox = false;
 	SAFE_ASSIGN(isSandbox, data->IsSandbox);
-	CAttributeHistory * attr = CreateAttributeHistoryRaw(rep, moduleName.c_str(), name.c_str(), CreateIAttributeType(type), version, isSandbox);
+	CAttributeHistory * attr = CreateAttributeHistoryRaw(rep, moduleName.c_str(), name.c_str(), type, version, isSandbox);
 	ATLASSERT(attr);
 	attr->Update(data);
 	return attr;
