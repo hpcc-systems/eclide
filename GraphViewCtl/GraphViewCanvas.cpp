@@ -110,6 +110,7 @@ void CGraphViewCanvas::OnClear()
 	clib::recursive_mutex::scoped_lock lock(m_mutex);
 	Stop();
 	SetRedraw(false);
+	ClearSelected();
 
 	CBuildingEdgeVisibility building(m_buildingEdgeVisibility);
 	RemoveSubgraph(m_graph);
@@ -3840,6 +3841,7 @@ void CGraphViewCanvas::OnDestroy()
 	m_tooltip.RemoveAllTools();
 	if (m_tooltip.IsWindow())
 		m_tooltip.DestroyWindow();
+	ClearSelected();
 }
 
 void CGraphViewCanvas::OnHScroll(int scrollRequest, short scrollPos, HWND hWnd)
