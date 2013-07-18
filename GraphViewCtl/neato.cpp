@@ -1014,7 +1014,8 @@ bool CGraphATTLayoutImpl::pulse2(const GraphTypes::RectF & extent)
 	std::_tstring formatbuf;
 	RectF bbox;
 
-	std::string svgResult;
+	IString * svgResult = createIString();
+	svgResult->AddRef();
 	bool retVal = false;
 	std::stringstream dotStream;
 	{
@@ -1074,11 +1075,12 @@ bool CGraphATTLayoutImpl::pulse2(const GraphTypes::RectF & extent)
 		//	if (static_cast<bool>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_DEBUG_LOGRESULTXML))==true)
 		{
 			std::ofstream file("c:\\temp\\neato_cpp.xml");
-			file << svgResult;
+			file << svgResult->c_str();
 		}
 #endif
-		std::_tstring content = CA2T(svgResult.c_str(), CP_UTF8);
+		std::_tstring content = CA2T(svgResult->c_str(), CP_UTF8);
 		mergeSVG(content.c_str(), m_graph, m_mode);
+		svgResult->Release();
 	}
 	return retVal;
 }
