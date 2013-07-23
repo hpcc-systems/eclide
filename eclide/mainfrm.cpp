@@ -29,9 +29,6 @@ enum UM
 	UM_LAST
 };
 
-#define STATE_DEBUG _T("DebugWorkspace")
-#define STATE_WORKSPACE _T("Workspace")
-
 static const SectionLabelDefault GLOBAL_TABBEDSTYLE(SectionLabel(_T("General"), _T("TabStyle")), (int)CMFCTabCtrl::STYLE_3D_VS2005);
 static const SectionLabelDefault GLOBAL_CLOSEONTAB(SectionLabel(_T("General"), _T("CloseOnTab")), false);
 
@@ -231,7 +228,7 @@ CMainFrame::CMainFrame() : m_threadSave(5)
 	m_tabbedMDI = true;
 	m_tabbedStyle = (CMFCTabCtrl::Style)(int)m_iniFile->Get(GLOBAL_TABBEDSTYLE);
 	m_closeOnTab = (bool)m_iniFile->Get(GLOBAL_CLOSEONTAB);
-	m_debugMode = false;
+	m_workspaceMode = WORKSPACE_NORMAL;
 	m_supressSyncTOC = true;
 
 	m_prevRibbon = RIBBON_HOME;
@@ -423,24 +420,22 @@ void PreAdjustPane(CDockablePane * pane)
 	}
 }
 
-void ShowHidePane(CDockablePane * pane, bool show, bool newDebugMode, IConfig * iniFile)
-{
-	::CString title;
-	pane->GetWindowText(title);
-	//  Save the old visibility
-	bool oldVisible = pane->IsPaneVisible() != FALSE;
-	iniFile->Set(!newDebugMode ? STATE_DEBUG : STATE_WORKSPACE, (const TCHAR *)title, oldVisible);
-	//  Get the new visibility
-	bool newVisible = iniFile->Get(newDebugMode ? STATE_DEBUG : STATE_WORKSPACE, (const TCHAR *)title, show);
-	if ((show && newVisible) || (!show && oldVisible))
+const TCHAR * const _STATE_DEBUG = _T("DebugWorkspace");
+const TCHAR * const _STATE_GRAPH = _T("GraphWorkspace");
+const TCHAR * const _STATE_NORMAL = _T("Workspace");
+const TCHAR * const getWorkspaceString(WORKSPACE workspaceMode) {
+	switch(workspaceMode)
 	{
-		if (!pane->IsAutoHideMode())
-		{
-			if (show == true)
-				PreAdjustPane(pane);
-			pane->ShowPane(show, FALSE, FALSE);
-		}
+	case WORKSPACE_NORMAL:
+		return _STATE_NORMAL;
+	case WORKSPACE_GRAPH:
+		return _STATE_GRAPH;
+	case WORKSPACE_DEBUG:
+		return _STATE_DEBUG;
+	default:
+		ATLASSERT(false);
 	}
+	return _STATE_NORMAL;
 }
 
 void MoveToFront(CDockablePane * pane, bool setActive)
@@ -459,44 +454,69 @@ void MoveToFront(CDockablePane * pane, bool setActive)
 	}
 }
 
-void CMainFrame::SetDebugMode(bool debugMode)
+void CMainFrame::SetWorkspaceMode(WORKSPACE workspaceMode)
 {
-	if (m_debugMode != debugMode)
+	if (m_workspaceMode != workspaceMode)
 	{
-		CString oldSection = m_debugMode ? STATE_DEBUG : STATE_WORKSPACE;
-		m_debugMode = debugMode;
-		CString newSection = m_debugMode ? STATE_DEBUG : STATE_WORKSPACE;
+		CString oldSection = getWorkspaceString(m_workspaceMode);
+		m_workspaceMode = workspaceMode;
+		CString newSection = getWorkspaceString(m_workspaceMode);
 		theApp.SaveState(this, oldSection);
 		if (!theApp.IsStateExists(newSection))
 		{
-			ATLASSERT(m_debugMode);
-			m_debugDataViews->ShowPane(TRUE, FALSE, TRUE);
-			m_debugPropertyGridViews->ShowPane(TRUE, FALSE, TRUE);
-			m_debugBreakpointView->ShowPane(TRUE, FALSE, TRUE);
-			m_debugPropertiesView->ShowPane(TRUE, FALSE, TRUE);
-			m_debugSearchView->ShowPane(TRUE, FALSE, TRUE);
-			m_debugSearchView->ShowPane(TRUE, FALSE, TRUE);
+			switch (m_workspaceMode)
+			{
+			case WORKSPACE_DEBUG:
+				m_debugDataViews->ShowPane(TRUE, FALSE, TRUE);
+				m_debugPropertyGridViews->ShowPane(TRUE, FALSE, TRUE);
+				m_debugBreakpointView->ShowPane(TRUE, FALSE, TRUE);
+				m_debugPropertiesView->ShowPane(TRUE, FALSE, TRUE);
+				m_debugSearchView->ShowPane(TRUE, FALSE, TRUE);
+				m_debugSearchView->ShowPane(TRUE, FALSE, TRUE);
 
 #ifdef WORKSPACE_WINDOW
-			m_Workspace->ShowPane(FALSE, FALSE, TRUE);
+				m_Workspace->ShowPane(FALSE, FALSE, TRUE);
 #endif
-			m_Repository->ShowPane(FALSE, FALSE, TRUE);
-			m_RepositoryFilter->ShowPane(FALSE, FALSE, TRUE);
-			m_Workunits->ShowPane(FALSE, FALSE, TRUE);
-			m_WorkunitsActive->ShowPane(FALSE, FALSE, TRUE);
-			m_WorkunitsFilter->ShowPane(FALSE, FALSE, TRUE);
+				m_Repository->ShowPane(FALSE, FALSE, TRUE);
+				m_RepositoryFilter->ShowPane(FALSE, FALSE, TRUE);
+				m_Workunits->ShowPane(FALSE, FALSE, TRUE);
+				m_WorkunitsActive->ShowPane(FALSE, FALSE, TRUE);
+				m_WorkunitsFilter->ShowPane(FALSE, FALSE, TRUE);
 #ifdef DFU_WINDOWS
-			m_Dfu->ShowPane(FALSE, FALSE, TRUE);
-			m_DfuFilter->ShowPane(FALSE, FALSE, TRUE);
+				m_Dfu->ShowPane(FALSE, FALSE, TRUE);
+				m_DfuFilter->ShowPane(FALSE, FALSE, TRUE);
 #endif
-			m_Syntax->ShowPane(FALSE, FALSE, TRUE);
-			m_Error->ShowPane(FALSE, FALSE, TRUE);
-			//MoveToFront(m_debugDataViews, true);
-			//MoveToFront(m_debugPropertyGridViews, false);
-			//MoveToFront(m_debugBreakpointView, true);
-			//MoveToFront(m_debugPropertiesView, true);
-			//MoveToFront(m_debugSearchView, true);
-			//MoveToFront(m_debugSearchView, true);
+				m_Syntax->ShowPane(FALSE, FALSE, TRUE);
+				m_Error->ShowPane(FALSE, FALSE, TRUE);
+				break;
+
+			case WORKSPACE_GRAPH:
+				m_debugDataViews->ShowPane(FALSE, FALSE, TRUE);
+				m_debugPropertyGridViews->ShowPane(FALSE, FALSE, TRUE);
+				m_debugBreakpointView->ShowPane(FALSE, FALSE, TRUE);
+				m_debugPropertiesView->ShowPane(TRUE, FALSE, TRUE);
+				m_debugSearchView->ShowPane(FALSE, FALSE, TRUE);
+				m_debugSearchView->ShowPane(FALSE, FALSE, TRUE);
+
+#ifdef WORKSPACE_WINDOW
+				m_Workspace->ShowPane(FALSE, FALSE, TRUE);
+#endif
+				m_Repository->ShowPane(FALSE, FALSE, TRUE);
+				m_RepositoryFilter->ShowPane(TRUE, FALSE, TRUE);
+				m_Workunits->ShowPane(FALSE, FALSE, TRUE);
+				m_WorkunitsActive->ShowPane(FALSE, FALSE, TRUE);
+				m_WorkunitsFilter->ShowPane(FALSE, FALSE, TRUE);
+#ifdef DFU_WINDOWS
+				m_Dfu->ShowPane(FALSE, FALSE, TRUE);
+				m_DfuFilter->ShowPane(TRUE, FALSE, TRUE);
+#endif
+				m_Syntax->ShowPane(TRUE, FALSE, TRUE);
+				m_Error->ShowPane(TRUE, FALSE, TRUE);
+				break;
+
+			default:
+				ATLASSERT(false);
+			}
 		}
 		else
 		{
@@ -887,7 +907,6 @@ LRESULT CMainFrame::OnSelectRibbon(WPARAM wParam, LPARAM lParam)
 			if (!isHidden)
 				m_wndRibbonBar.ActivateContextCategory(wParam);
 			bRecalc = TRUE;
-			m_debugPropertiesView->ShowPane(TRUE, FALSE, TRUE);
 		}
 		break;
 	case RIBBON_GRAPH2:
@@ -941,87 +960,22 @@ LRESULT CMainFrame::OnSelectRibbon(WPARAM wParam, LPARAM lParam)
 
 	if (bRecalc)
 	{
-		if (m_debugPropertiesView->IsVisible() && !m_CategoryGraph->IsVisible())
-			m_debugPropertiesView->ShowPane(FALSE, FALSE, FALSE);
-
 		m_wndRibbonBar.RecalcLayout();
 		m_wndRibbonBar.RedrawWindow();
-
 		SendMessage(WM_NCPAINT, 0, 0);
-#define XXXVERY_NEW_STATESAVE
-#ifdef VERY_NEW_STATESAVE
-		//WINDOWPLACEMENT wp;
-		//wp.length = sizeof(WINDOWPLACEMENT);
-		//GetWindowPlacement(&wp);
-		bool bLoadUserToolbars = theApp.m_bLoadUserToolbars;
-		theApp.m_bLoadUserToolbars = FALSE;
-		SetRedraw(FALSE);
-		if ((RIBBON)wParam == RIBBON_DEBUG && m_prevRibbon != RIBBON_DEBUG)
-		{
-			theApp.SaveState(this, STATE_WORKSPACE);
-			theApp.LoadState(this, STATE_DEBUG);
-		}
-		else if ((RIBBON)wParam != RIBBON_DEBUG && m_prevRibbon == RIBBON_DEBUG)
-		{
-			theApp.SaveState(this, STATE_DEBUG);
-			theApp.LoadState(this, STATE_WORKSPACE);
-		}
-		//SetWindowPlacement(&wp);
-		SetRedraw(TRUE);
-		RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
-		theApp.m_bLoadUserToolbars = theApp.m_bLoadUserToolbars;
-		//GetDesktopWindow()->RedrawWindow(rectOld, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
-#elif NEW_STATESAVE
-		CWinAppEx* pApp = DYNAMIC_DOWNCAST(CWinAppEx, AfxGetApp());
-		if (pApp != NULL)
-		{
-			CObList paneList;
-			if ((RIBBON)wParam == RIBBON_DEBUG && m_prevRibbon != RIBBON_DEBUG)
-			{
-				SetRedraw(false);
-				m_dockManager.SaveState(m_fullRegWorkspacePath, IDR_MAINFRAME);
-				m_dockManager.LoadState(m_fullRegDebugPath, IDR_MAINFRAME);
-				m_dockManager.SetDockState();
-				SetRedraw(true);
-				AdjustDockingLayout();
-				m_dockManager.GetPaneList(paneList, true);
-			}
-			else if ((RIBBON)wParam != RIBBON_DEBUG && m_prevRibbon == RIBBON_DEBUG)
-			{
-				SetRedraw(false);
-				m_dockManager.SaveState(m_fullRegDebugPath, IDR_MAINFRAME);
-				m_dockManager.LoadState(m_fullRegWorkspacePath, IDR_MAINFRAME);
-				m_dockManager.SetDockState();
-				SetRedraw(true);
-				AdjustDockingLayout();
-				m_dockManager.GetPaneList(paneList, true);
-			}
 
-			if (paneList.GetCount() > 0)
-			{
-				//m_dockManager.RecalcLayout();
-				//RecalcLayout();
-				RedrawWindow();
-			}
-
-			for (POSITION pos = paneList.GetHeadPosition(); pos != NULL;)
-			{
-				CObject * obj = paneList.GetNext(pos);
-				CBasePane* basePane = DYNAMIC_DOWNCAST(CBasePane, obj);
-				CDockablePane* dockablePane = DYNAMIC_DOWNCAST(CDockablePane, obj);
-				if (dockablePane)
-					PreAdjustPane(dockablePane);
-				else
-				{
-					ASSERT_VALID(basePane);
-					basePane->RecalcLayout();
-					basePane->RedrawWindow(0, 0, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
-				}
-			}
+		switch((RIBBON)wParam)
+		{
+		case RIBBON_DEBUG:
+			SetWorkspaceMode(WORKSPACE_DEBUG);
+			break;
+		case RIBBON_GRAPH:
+		case RIBBON_GRAPH2:
+			SetWorkspaceMode(WORKSPACE_GRAPH);
+			break;
+		default:
+			SetWorkspaceMode(WORKSPACE_NORMAL);
 		}
-#else
-		SetDebugMode((RIBBON)wParam == RIBBON_DEBUG);
-#endif
 	}
 	m_prevRibbon = (RIBBON)wParam;
 	return 0;
@@ -1474,14 +1428,13 @@ void CMainFrame::InitializeDocking(UINT nID)
 		break;
 	}
 
-	if (!theApp.IsStateExists(STATE_WORKSPACE))
+	if (!theApp.IsStateExists(getWorkspaceString(WORKSPACE_NORMAL)))
 	{
-		ATLASSERT(!m_debugMode);
+		ATLASSERT(m_workspaceMode == WORKSPACE_NORMAL);
 		hiddenPanes.push_back(HiddenPane(m_debugDataViews));
 		hiddenPanes.push_back(HiddenPane(m_debugPropertyGridViews));
 		hiddenPanes.push_back(HiddenPane(m_debugBreakpointView));
 		hiddenPanes.push_back(HiddenPane(m_debugPropertiesView));
-		hiddenPanes.push_back(HiddenPane(m_debugSearchView));
 		hiddenPanes.push_back(HiddenPane(m_debugSearchView));
 	}
 	ATLASSERT(mainPanes.size() + neighbourPanes.size() + tabbedPanes.size() == 15);
@@ -3619,14 +3572,15 @@ BOOL CMainFrame::OnViewResetDockedToolbars(UINT nID)
 	Undock(m_debugPropertyGridViews);
 	Undock(m_Error);
 
-	bool debugState = m_debugMode;
-	SetDebugMode(false);
-	theApp.CleanState(STATE_DEBUG);
-	theApp.CleanState(STATE_WORKSPACE);
+	WORKSPACE workspaceMode = m_workspaceMode;
+	SetWorkspaceMode(WORKSPACE_NORMAL);
+	theApp.CleanState(getWorkspaceString(WORKSPACE_DEBUG));
+	theApp.CleanState(getWorkspaceString(WORKSPACE_GRAPH));
+	theApp.CleanState(getWorkspaceString(WORKSPACE_NORMAL));
 
 	InitializeDocking(nID);
 
-	SetDebugMode(debugState);
+	SetWorkspaceMode(workspaceMode);
 	return TRUE;
 }
 
