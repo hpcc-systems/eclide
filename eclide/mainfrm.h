@@ -312,6 +312,15 @@ struct HiddenPane
 };
 typedef std::vector<HiddenPane> HiddenPaneVector;
 
+enum WORKSPACE
+{
+	WORKSPACE_UNKNOWN = 0,
+	WORKSPACE_NORMAL,
+	WORKSPACE_GRAPH,
+	WORKSPACE_DEBUG,
+	WORKSPACE_LAST
+};
+
 class CMainFrame :	public CMDIFrameWndEx, 
 					public IFindReplace,
 					public ILoginConfigPreferences,
@@ -392,13 +401,13 @@ public:
 	bool m_tabbedMDI;
 	CMFCTabCtrl::Style m_tabbedStyle;
 	bool m_closeOnTab;
-	bool m_debugMode;
+	WORKSPACE m_workspaceMode;
 	bool m_supressSyncTOC;
 
 // Generated message map functions
 protected:
 	void SetMDIMode();
-	void SetDebugMode(bool debugMode);
+	void SetWorkspaceMode(WORKSPACE workspaceMode);
 public:
 	void SetProgressBar(int nID, int pos, int layoutProgress);
 protected:
