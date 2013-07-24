@@ -55,8 +55,11 @@ public:
 	virtual unsigned GetAllModules(IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool GetChecksum = false, bool noRefresh = true, bool noBroadcast = false) const
 	{
 		//clib::recursive_mutex::scoped_lock proc(m_mutex);
-		CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), m_repositoryLabel);
-		CachePoolAccessor<IModuleHierarchy> moduleHierarchyCache(m_cacheGetModulesHierarchy, GetCacheID(), m_repositoryLabel);
+		if (m_supressModuleChecksum)
+			GetChecksum = false;
+
+		CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), m_repositoryLabel, boost::lexical_cast<std::_tstring>(GetChecksum));
+		CachePoolAccessor<IModuleHierarchy> moduleHierarchyCache(m_cacheGetModulesHierarchy, GetCacheID(), m_repositoryLabel, boost::lexical_cast<std::_tstring>(GetChecksum));
 
 		if (!modulesCache.needs_update(noRefresh) && !moduleHierarchyCache.needs_update(noRefresh))
 		{

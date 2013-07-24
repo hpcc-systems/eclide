@@ -506,6 +506,11 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return ::RemoveWorkspace(this, label);
 	}
+	void SupressModuleChecksum(bool supressModuleChecksum)
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		//  GetChecksum is ignored anyway  ---
+	}
 	IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
