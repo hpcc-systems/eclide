@@ -1096,7 +1096,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
 		pChild = new CChildBuilderFrm(workspaceItem);
 		CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
 		pChild->m_view->SetAttribute(src);
-		pChild->m_view->SetEcl(src->GetText(), true);
+		pChild->m_view->SetEcl(src->GetText(true, true), true);
 	}
 	return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
 }

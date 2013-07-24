@@ -96,6 +96,11 @@ bool CRepositoryCompareDlg::SetFilter(int filter)
 	return m_repositoryView->SetFilter(filter);
 }
 
+void CRepositoryCompareDlg::SupressModuleChecksum(bool supressModuleChecksum)
+{
+	m_repositoryView->SupressModuleChecksum(supressModuleChecksum);
+}
+
 bool CRepositoryCompareDlg::DoMigration()
 {
 	return m_repositoryView->DoMigration();
