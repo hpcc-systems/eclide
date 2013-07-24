@@ -2934,6 +2934,7 @@ void CMainFrame::SaveWorkunitAs(CComPtr<Dali::IWorkunit> wu)
 		return;
 	}
 
+	static const TCHAR szExcelFilter[] = _T("Excel Files (*.xls)\0*.xls\0All Files (*.*)\0*.*\0\0");
 	std::_tstring wuid = wu->GetWuid();
 	wuid += _T(".xls");
 	CFileDialogEx wndFileDialog(FALSE, _T(".xls"), wuid.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szExcelFilter, m_hWnd);	
@@ -3302,9 +3303,42 @@ void CMainFrame::OnFileNewSpray()
 	//}
 }
 
+void appendFileToFilterString(const std::_tstring & description, const std::_tstring & extension, std::_tstring & filterString, std::_tstring & extensionSring)
+{
+	filterString += (boost::_tformat(_T("%1% (*%2%)")) % description % extension).str();
+	filterString.append(_T("\0"), 1);
+	filterString += (boost::_tformat(_T("*%1%")) % extension).str();
+	filterString.append(_T("\0"), 1);
+
+	if (!extensionSring.empty())
+		extensionSring += _T("; ");
+	extensionSring += (boost::_tformat(_T("*%1%")) % extension).str();
+}
+
 void CMainFrame::OnFileOpen()
 {
-	CFileDialogEx wndFileDialog(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST, szEclFilter, m_hWnd);	
+	//static const TCHAR szEclFilter[] = _T("Supported Files (*.ecl; *.mod; *.xgmml)\0*.ecl;*.mod;*.xgmml\0ECL Files (*.ecl)\0*.ecl\0Module Files (*.mod)\0*.mod\0XGMML Files (*.xgmml)\0*.xgmml\0All Files (*.*)\0*.*\0\0");
+	IAttributeTypeVector types;
+	GetAttributeTypes(types);
+	std::_tstring tmpFilter;
+	std::_tstring supportedFileExts;
+	for(IAttributeTypeVector::const_iterator itr = types.begin(); itr != types.end(); ++itr)
+	{
+		appendFileToFilterString(itr->get()->GetDescription(), itr->get()->GetFileExtension(), tmpFilter, supportedFileExts);
+	}
+	appendFileToFilterString(_T("Module File"), _T(".mod"), tmpFilter, supportedFileExts);
+	appendFileToFilterString(_T("XGMML File"), _T(".xgmml"), tmpFilter, supportedFileExts);
+
+	std::_tstring openFilter = std::_tstring(_T("Supported Files (")) + supportedFileExts + _T(")");
+	openFilter.append(_T("\0"), 1);
+	openFilter += supportedFileExts;
+	openFilter.append(_T("\0"), 1);
+	openFilter += tmpFilter;
+	static const TCHAR allFiles[] = _T("All Files (*.*)\0*.*\0\0");
+	int sizeOfAllFiles = sizeof(allFiles) / sizeof(("A"));
+	openFilter.append(allFiles, sizeOfAllFiles);
+
+	CFileDialogEx wndFileDialog(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST, openFilter.c_str(), m_hWnd);	
 	if ( IDOK == wndFileDialog.DoModal () ) 
 	{
 		// get the starting position on the opended files
