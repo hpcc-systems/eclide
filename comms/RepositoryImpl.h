@@ -45,10 +45,12 @@ protected:
 	std::_tstring m_id;
 	std::_tstring m_repositoryLabel;
 
+	bool m_supressModuleChecksum;
+
 public:
 	IMPLEMENT_CUNKNOWN;
 
-	CRepositoryBase(const TCHAR* userId, const TCHAR* password, const TCHAR* label, const TCHAR* instance) : m_label(label), m_instance(instance), m_cacheGetModules(60 * 5), m_cacheGetAttributes(55)
+	CRepositoryBase(const TCHAR* userId, const TCHAR* password, const TCHAR* label, const TCHAR* instance) : m_label(label), m_instance(instance), m_cacheGetModules(60 * 5), m_cacheGetAttributes(55), m_supressModuleChecksum(false)
 	{
 		UpdateID();
 	}
@@ -558,6 +560,11 @@ public:
 	bool RemoveWorkspace(const std::_tstring & label)
 	{
 		return ::RemoveWorkspace(this, label);
+	}
+
+	void SupressModuleChecksum(bool supressModuleChecksum)
+	{
+		m_supressModuleChecksum = supressModuleChecksum;
 	}
 
 	IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path)

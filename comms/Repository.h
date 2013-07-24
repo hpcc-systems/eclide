@@ -93,6 +93,9 @@ __interface IRepository : public IUnknown
 	bool WorkspaceExists(const std::_tstring & label);
 	bool RemoveWorkspace(const std::_tstring & label);
 
+	//  AMT Overrides  ---
+	void SupressModuleChecksum(bool supressModuleChecksum);
+
 	IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path);
 	IWorkspaceItem * CreateIWorkspaceItem(IAttribute * attr, const std::_tstring & path);
 	IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type);

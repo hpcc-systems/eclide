@@ -2005,6 +2005,8 @@ BEGIN
         MENUITEM "&Refresh",                    ID_EDIT_REFRESH
         MENUITEM "Expand All",                  ID_EDIT_EXPANDALL
         MENUITEM "Add To Rep",                  ID_EDIT_ADDTOREP
+        MENUITEM SEPARATOR
+        MENUITEM "Module &Checksum",            ID_EDIT_MODULE_CHECKSUM, CHECKED
     END
     POPUP "View"
     BEGIN

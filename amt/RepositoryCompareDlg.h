@@ -38,6 +38,7 @@ public:
 	void ClearSelection();
 	void ExpandAll();
 	bool SetFilter(int filter = AMT_SHOW_MATCHING & AMT_SHOW_NOT_MATCHING & AMT_SHOW_ORPHANS);
+	void SupressModuleChecksum(bool supressModuleChecksum);
 	bool DoMigration();
 	int GetMigrationCount() const;
 	CTreePairNode * GetSelectedItem() const;

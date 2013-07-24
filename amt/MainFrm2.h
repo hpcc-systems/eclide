@@ -161,6 +161,7 @@ protected:  // control bar embedded members
 	BOOL m_bCheckBoxMatching;
 	BOOL m_bCheckBoxNotMatching;
 	BOOL m_bCheckBoxOrphans;
+	BOOL m_bCheckBoxModuleChecksum;
 
 	BOOL m_bCheckBoxCRLF;
 	BOOL m_bCheckBoxWhitespace;
@@ -218,6 +219,8 @@ protected:
 	afx_msg void OnUpdateSyncToSelection(CCmdUI* pCmdUI);
 	afx_msg void OnCopyCrossreference();
 	afx_msg void OnUpdateCopyCrossreference(CCmdUI* pCmdUI);
+	afx_msg void OnEditModuleChecksum();
+	afx_msg void OnUpdateEditModuleChecksum(CCmdUI* pCmdUI);
 	afx_msg void OnHelpClientTools();
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
