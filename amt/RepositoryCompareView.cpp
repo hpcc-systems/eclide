@@ -518,6 +518,12 @@ bool CRepositoryCompareView::SetFilter(int filter)
 	return false;
 }
 
+void CRepositoryCompareView::SupressModuleChecksum(bool supressModuleChecksum)
+{
+	m_repLHS->SupressModuleChecksum(supressModuleChecksum);
+	m_repRHS->SupressModuleChecksum(supressModuleChecksum);
+}
+
 bool CRepositoryCompareView::CanCopy() const
 {
 	return m_sel.HasSelection();

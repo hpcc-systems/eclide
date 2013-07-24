@@ -73,6 +73,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_DEPENDEES_COPYCROSSREFERENCE, OnCopyCrossreference)
 	ON_UPDATE_COMMAND_UI(ID_DEPENDEES_COPYCROSSREFERENCE, OnUpdateCopyCrossreference)
 
+	ON_COMMAND(ID_EDIT_MODULE_CHECKSUM, OnEditModuleChecksum)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_MODULE_CHECKSUM, OnUpdateEditModuleChecksum)
+
 	ON_COMMAND(ID_HELP_CLIENTTOOLS, OnHelpClientTools)
 
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_OFF_2007_AQUA, OnApplicationLook)
@@ -96,6 +99,7 @@ CMainFrame::CMainFrame() : m_sourceEclView(this), m_targetEclView(this), m_EditS
 	m_bCheckBoxMatching = true;
 	m_bCheckBoxNotMatching = true;
 	m_bCheckBoxOrphans = true;
+	m_bCheckBoxModuleChecksum = true;
 
 	m_bCheckBoxCRLF = false;
 	m_bCheckBoxWhitespace = false;
@@ -642,6 +646,9 @@ void CMainFrame::InitializeRibbon()
 	pPanelDependees->Add(new CMFCRibbonButton(ID_DEPENDEES_SYNCTOSELECTION, _T("Sync To Selection")));
 	pPanelDependees->Add(new CMFCRibbonButton(ID_DEPENDEES_COPYCROSSREFERENCE, _T("Copy Crossreference")));
 
+	CMFCRibbonPanel* pPanelAdvanced = pCategoryHome->AddPanel(_T("Advanced"));
+	pPanelAdvanced->Add(new CMFCRibbonCheckBox(ID_EDIT_MODULE_CHECKSUM, _T("Module Checksums\nu")));
+
 	// Add elements to the right side of tabs:
 	strTemp.LoadString(IDS_RIBBON_STYLE);
 	CMFCRibbonButton* pVisualStyleButton = new CMFCRibbonButton(-1, strTemp, -1, -1);
@@ -959,6 +966,18 @@ void CMainFrame::OnCopyCrossreference()
 void CMainFrame::OnUpdateCopyCrossreference(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(m_dependees.HasCrossreferenced());
+}
+
+void CMainFrame::OnEditModuleChecksum()
+{
+	m_bCheckBoxModuleChecksum = !m_bCheckBoxModuleChecksum;
+	m_repositoryDlg.SupressModuleChecksum(!m_bCheckBoxModuleChecksum);
+	OnEditRefresh();
+}
+
+void CMainFrame::OnUpdateEditModuleChecksum(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck (m_bCheckBoxModuleChecksum);	
 }
 
 void CMainFrame::OnHelpClientTools()
