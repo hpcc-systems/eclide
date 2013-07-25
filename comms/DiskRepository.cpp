@@ -353,10 +353,7 @@ public:
 
 	virtual unsigned int GetAttributeTypes(IAttributeTypeVector & types) const
 	{
-		types.push_back(CreateIAttributeECLType());
-		types.push_back(CreateIAttributeESDLType());
-		types.push_back(CreateIAttributeSALTType());
-		return types.size();
+		return ::GetAttributeTypes(types);
 	}
 
 	virtual unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, bool regExp, bool sandboxed, bool checkedout, bool locked, bool orphaned, const TCHAR* utcDate, IAttributeVector & attributes) const
