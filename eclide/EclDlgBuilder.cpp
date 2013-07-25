@@ -97,7 +97,21 @@ void CBuilderDlg::OnTimer(UINT_PTR nIDEvent)
 }
 bool CBuilderDlg::DoFileSaveAs() 
 {
-	CFileDialogEx wndFileDialog(FALSE, _T(".ecl"), m_path, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szEclSaveFilter, m_hWnd);
+	IAttributeTypeVector types;
+	GetAttributeTypes(types);
+	std::_tstring saveFilter;
+	for(IAttributeTypeVector::const_iterator itr = types.begin(); itr != types.end(); ++itr)
+	{
+		saveFilter += (boost::_tformat(_T("%1% (*%2%)")) % itr->get()->GetDescription() % itr->get()->GetFileExtension()).str();
+		saveFilter.append(_T("\0"), 1);
+		saveFilter += (boost::_tformat(_T("*%1%")) % itr->get()->GetFileExtension()).str();
+		saveFilter.append(_T("\0"), 1);
+	}
+	static const TCHAR allFiles[] = _T("All Files (*.*)\0*.*\0\0");
+	int sizeOfAllFiles = sizeof(allFiles) / sizeof(("A"));
+	saveFilter.append(allFiles, sizeOfAllFiles);
+
+	CFileDialogEx wndFileDialog(FALSE, _T(".ecl"), m_path, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, saveFilter.c_str(), m_hWnd);
 
 	if ( IDOK == wndFileDialog.DoModal() ) 
 	{
