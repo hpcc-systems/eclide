@@ -274,3 +274,21 @@ void CAttributeDataView::LoadText()
 		SetText(m_attr->GetText(false));
 }
 //  ===========================================================================
+void CLocalDataView::SetSource(const std::_tstring & filePath)
+{
+	m_filePath = filePath;
+}
+void CLocalDataView::LoadText()
+{
+	if (!m_eclView.GetLength())
+	{
+		CUnicodeFile file;
+		if (file.Open(m_filePath))
+		{
+			std::_tstring ecl;
+			file.Read(ecl);
+			SetText(ecl);
+		}
+	}
+}
+//  ===========================================================================
