@@ -94,6 +94,8 @@ set ( SRCS
 		Util.h
 		utilDateTime.cpp
 		utilDateTime.h
+		UtilFilesystem.cpp
+		UtilFilesystem.h
 		Wildcard.cpp
 		Wildcard.h
 		XGMMLSaxHandler.cpp

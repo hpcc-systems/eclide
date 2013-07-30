@@ -1,3 +1,6 @@
+#if defined(_MSC_VER) && (_MSC_VER >= 1700)
+#define _WTL_USE_VSSYM32
+#endif
 #include <atlframe.h>
 #include <atlctrls.h>
 #include <atlctrlw.h>
