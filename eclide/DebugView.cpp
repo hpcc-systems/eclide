@@ -64,6 +64,7 @@ CDebugView::CDebugView(Dali::IWorkunit * wu, IResultSlot *resultSlot) : m_wu(wu)
 	m_prevActiveWnd = NULL;
 	m_searchConditions.m_condition = _T("Equals");
 	m_searchConditions.m_caseSensitive = false;
+	m_supressRefresh = false;
 
 	m_frmGlobalGraph.SetOwner(this);
 	m_frmActiveGraph.SetOwner(this, &m_frmGlobalGraph.m_view);
@@ -146,6 +147,7 @@ bool CDebugView::UpdateUI(CCmdUI * cui)
 		UPDATEUI(cui, ID_DEBUGGER_DETACH, paused);
 		UPDATEUI(cui, ID_DEBUGGER_BREAK, running);
 		UPDATEUI(cui, ID_DEBUGGER_ABORT, active);
+		UPDATEUI(cui, ID_DEBUGGER_RESTART, active);
 		UPDATEUI(cui, ID_DEBUGGER_STEP, paused);
 		UPDATEUI(cui, ID_DEBUGGER_NEXT, paused);
 		UPDATEUI(cui, ID_DEBUGGER_STEPGRAPH, paused);
@@ -214,6 +216,16 @@ bool CDebugView::UpdateUI(CCmdUI * cui)
 	return false;
 }
 
+void CDebugView::SetSupressRefresh(bool supress)
+{
+	m_supressRefresh = supress;
+}
+
+bool CDebugView::SupressRefresh() const
+{
+	return m_supressRefresh;
+}
+
 LRESULT CDebugView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 {
 	SetMsgHandled(false);
@@ -245,6 +257,12 @@ LRESULT CDebugView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 	m_splitter.SetSplitterPanes(m_paneGlobal, m_paneActive);
 	m_splitter.SetSplitterPosPct((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_ROXIE_SPLITTERPOS));
 
+	Init();
+	return 0;
+}
+
+void CDebugView::Init() 
+{
 	m_sequence = 0;
 	m_sequenceGraph = 0;
 	m_showMode = SHOW_MODE_ALL;
@@ -264,7 +282,6 @@ LRESULT CDebugView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 #endif
 
 	PostMessage(CWM_INITIALIZE);
-	return 0;
 }
 
 LRESULT CDebugView::OnInitialize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
@@ -917,6 +934,30 @@ void CDebugView::OnButtonBreak(UINT uNotifyCode, int nID, CWindow wndCtl)
 void CDebugView::OnButtonAbort(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	m_debugSession->Abort();
+}
+
+void CDebugView::OnButtonRestart(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	WTL::CWaitCursor wait;
+	SetSupressRefresh(true);
+	StlLinked<Dali::IDali> server = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
+	Dali::IWorkunitVector wus;
+	wus.push_back(m_wu.p);
+	server->AbortWorkunits(&wus);
+	while(!m_wu->IsComplete())
+	{
+		m_wu->Refresh(true);
+		::Sleep(200);
+	}
+	server->ResubmitWorkunits(&wus);
+	while(!m_wu->IsDebugging())
+	{
+		server->GetWorkunit(m_wu->GetWuid(), true);  //Force Refresh (m_wu->Refresh will not work for complete WUs)
+		::Sleep(200);
+	}
+	SetSupressRefresh(false);
+
+	Init();
 }
 
 void CDebugView::OnButtonStep(UINT uNotifyCode, int nID, CWindow wndCtl)

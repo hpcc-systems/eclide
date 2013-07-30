@@ -1293,6 +1293,7 @@ void CMainFrame::InitializeRibbon()
 		CMFCRibbonPanel* pPanelProcess = m_CategoryDebug->AddPanel(_T("Process"), m_PanelImages.ExtractIcon (7));
 		pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_DETACH, _T("Detach\nd"), 14));
 		pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_ABORT, _T("Abort\na"), 15));
+		pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_RESTART, _T("Restart\nr"), 19));
 		pPanelProcess->Add(new CMFCRibbonSeparator());
 		pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_BREAK, _T("Break\nb"), 16));
 		pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_CONTINUE, _T("Continue\nc"), 13));
