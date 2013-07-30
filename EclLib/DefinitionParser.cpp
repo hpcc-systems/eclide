@@ -51,9 +51,9 @@ struct definition_parser : public boost::spirit::classic::grammar<definition_par
 
 			first =
 				(
-				def_string	= ( builder_def				[ASSIGN(type, ParsedDefinition::BUILDER)]
-							  | remote_def				[ASSIGN(type, ParsedDefinition::REMOTE)]
-							  | local_def				[ASSIGN(type, ParsedDefinition::LOCAL)]
+				def_string	= ( builder_def				[ASSIGN(m_type, ParsedDefinition::BUILDER)]
+							  | remote_def				[ASSIGN(m_type, ParsedDefinition::REMOTE)]
+							  | local_def				[ASSIGN(m_type, ParsedDefinition::LOCAL)]
 							  ), 
 
 				builder_def	= confix_p('(', row_col, ')'),
@@ -137,9 +137,13 @@ public:
 	{
 		ParsedDefinition pd;
 		ATLASSERT(DefinitionToLocation(_T("(1,2)"), pd));
+		ATLASSERT(pd.GetType() == ParsedDefinition::BUILDER);
 		ATLASSERT(DefinitionToLocation(_T("c:\\temp\\test.ecl(2,3)"), pd));
+		ATLASSERT(pd.GetType() == ParsedDefinition::LOCAL);
 		ATLASSERT(DefinitionToLocation(_T("c:\\temp\\test123.ecl(4,5)"), pd));
+		ATLASSERT(pd.GetType() == ParsedDefinition::LOCAL);
 		ATLASSERT(DefinitionToLocation(_T("a.b(6,7)"), pd));
+		ATLASSERT(pd.GetType() == ParsedDefinition::REMOTE);
 		//ATLASSERT(!DefinitionToLocation(_T("a.b.c(8,9)"), pd));
 	}
 } DefinitionToLocationTest;

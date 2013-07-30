@@ -381,10 +381,20 @@ void CDebugView::NewSelection(const CDebugGraphView * from, const CUniqueID & ne
 		ParsedDefinition pd;
 		if (DefinitionToLocation(def, pd))
 		{
-			if (pd.IsBuilder())
+			switch (pd.GetType()) 
+			{
+			case ParsedDefinition::BUILDER:
 				GetIMainFrame()->m_debugDataViews->SetTabSelection(_T("Builder"), pd.row, pd.col);
-			else
+				break;
+			case ParsedDefinition::REMOTE:
 				GetIMainFrame()->m_debugDataViews->SetTabSelection((pd.module + _T(".") + pd.attribute).c_str(), pd.row, pd.col);
+				break;
+			case ParsedDefinition::LOCAL:
+				GetIMainFrame()->m_debugDataViews->SetTabSelection((pd.module + pd.attribute).c_str(), pd.row, pd.col);
+				break;
+			default:
+				ATLASSERT(false);
+			}
 		}
 	}
 
