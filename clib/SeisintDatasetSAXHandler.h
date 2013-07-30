@@ -226,6 +226,13 @@ public:
 					}
 					for (Element::StringStringMap::const_iterator itr = e.m_attr.begin(); itr != e.m_attr.end(); ++itr)
 					{
+						if (boost::algorithm::iequals(itr->first, _T("seq")) ||
+							boost::algorithm::iequals(itr->first, _T("eog")) ||
+							boost::algorithm::iequals(itr->first, _T("eof")) ||
+							boost::algorithm::iequals(itr->first, _T("skip")) ||
+							boost::algorithm::iequals(itr->first, _T("limit")) ||
+							boost::algorithm::iequals(itr->first, _T("count")))
+							continue;
 						std::_tstring columnLabel = _T("@") + itr->first;
 						int col = EnsureColumnExists(table, columnLabel);
 						table->SetCell(m_row, col, itr->second);
