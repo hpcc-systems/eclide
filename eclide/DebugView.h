@@ -74,6 +74,7 @@ private:
 	bool m_viewDebugAttributes;
 	bool m_viewRedundantSubgraphs;
 	bool m_viewPassthroughVertices;
+	bool m_supressRefresh;
 
 	GlobalSearchConditions m_searchConditions;
 
@@ -106,7 +107,10 @@ public:
 	CDebugView(Dali::IWorkunit * wu, IResultSlot *resultSlot);
 	~CDebugView();
 
+	void Init();
 	bool UpdateUI(CCmdUI * cui);
+	void SetSupressRefresh(bool supress);
+	bool SupressRefresh() const;
 
 	BEGIN_CUNKNOWN
 		IMPLEMENT_INTERFACE(IResultView)
@@ -141,6 +145,7 @@ public:
 		COMMAND_ID_HANDLER_EX(ID_DEBUGGER_DETACH, OnButtonDetach)
 		COMMAND_ID_HANDLER_EX(ID_DEBUGGER_BREAK, OnButtonBreak)
 		COMMAND_ID_HANDLER_EX(ID_DEBUGGER_ABORT, OnButtonAbort)
+		COMMAND_ID_HANDLER_EX(ID_DEBUGGER_RESTART, OnButtonRestart)
 
 		COMMAND_ID_HANDLER_EX(ID_DEBUGGER_STEP, OnButtonStep)
 		COMMAND_ID_HANDLER_EX(ID_DEBUGGER_NEXT, OnButtonNext)
@@ -196,6 +201,7 @@ public:
 	void OnButtonDetach(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnButtonBreak(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnButtonAbort(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnButtonRestart(UINT uNotifyCode, int nID, CWindow wndCtl);	
 
 	void OnButtonStep(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnButtonNext(UINT uNotifyCode, int nID, CWindow wndCtl);

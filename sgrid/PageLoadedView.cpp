@@ -189,6 +189,11 @@ void CPageLoadedView::SetTotal(int total)
 	m_loaded.push_back(range);
 }
 
+int CPageLoadedView::GetTotal() const
+{
+	return m_total;
+}
+
 void CPageLoadedView::SetRequested(int from, int to)
 {
 	if (from < 1 && to < 1)
@@ -200,8 +205,10 @@ void CPageLoadedView::SetRequested(int from, int to)
 
 void CPageLoadedView::SetLoaded(int from, int to)
 {
-	ATLASSERT(from >= 1 && to <= m_total);
-	InsertItem(from, to, RowRange::S_LOADED);
+	if (from >= 1 && to <= m_total)
+	{
+		InsertItem(from, to, RowRange::S_LOADED);
+	}
 }
 
 void CPageLoadedView::InsertItem(int from, int to, RowRange::STATE state)
