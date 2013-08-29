@@ -3,6 +3,7 @@
 
 #include "DockableDataViews.h"
 #include "Repository.h"
+#include "UtilFilesystem.h"
 
 //  ===========================================================================
 CDockableDataViews::CDockableDataViews() //: m_dlgview(NULL, NULL)
@@ -134,8 +135,8 @@ void CDockableDataViews::SetTabEcl(const std::_tstring & localFile, int row, con
 		m_sourceTabs[localFile] = attributeDataView.get();
 		attributeDataView->Create(NULL, localFile.c_str(), WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), &m_wndTab, 1);
 		attributeDataView->SetFont(&afxGlobalData.fontRegular);
-		boost::filesystem::path p(localFile);
-		m_wndTab.AddTab(attributeDataView, p.filename().wstring().c_str(), 0, FALSE);
+		boost::filesystem::path p = stringToPath(localFile);
+		m_wndTab.AddTab(attributeDataView, pathToWString(p.filename()).c_str(), 0, FALSE);
 		attributeDataView->SetOwner(m_owner);
 		attributeDataView->SetSource(localFile);
 	}
