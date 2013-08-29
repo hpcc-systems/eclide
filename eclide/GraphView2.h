@@ -188,7 +188,7 @@ public:
 		ATLASSERT(retVal);
 		CComSafeArray<VARIANT> vertices = vaResult.parray;
 		for(ULONG i = 0; i < vertices.GetCount(); ++i)
-			results->Add(CUniqueID(guidDefault, XGMML_CAT_EDGE, boost::lexical_cast<std::_tstring>(vertices.GetAt(i).lVal)));
+			results->Add(CUniqueID(guidDefault, XGMML_CAT_VERTEX, boost::lexical_cast<std::_tstring>(vertices.GetAt(i).lVal)));	//  UniqueID's ID is the internal int...
 		ATLASSERT(retVal);
 	}
 
@@ -198,10 +198,15 @@ public:
 		ATLASSERT(retVal);
 	}
 
-	int GetItem(const CUniqueID& uid)
+	int UniqueIDToInternalID(const CUniqueID& uid)
+	{
+		return boost::lexical_cast<int>(uid.GetID());
+	}
+
+	int GetItem(const std::_tstring globalID)
 	{
 		CComVariant vaResult;
-		bool retVal = InvokeScript(_T("getItem"), uid.GetID(), vaResult);
+		bool retVal = InvokeScript(_T("getItem"), globalID, vaResult);
 		ATLASSERT(retVal);
 		return vaResult.intVal;
 	}
@@ -223,12 +228,12 @@ public:
 
 	void CenterGraphItem(const CUniqueID& uid, bool scaleToFit = true)
 	{
-		CenterGraphItem(GetItem(uid), scaleToFit);
+		CenterGraphItem(UniqueIDToInternalID(uid), scaleToFit);
 	}
 
 	void CenterVertex(const CUniqueID& uid, bool scaleToFit = true)
 	{
-		CenterGraphItem(GetItem(uid), scaleToFit);
+		CenterGraphItem(UniqueIDToInternalID(uid), scaleToFit);
 	}
 
 	IGraphSubgraph* GetSubgraph(const CUniqueID& uid)

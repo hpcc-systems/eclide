@@ -39,6 +39,7 @@ public:
 	void PrepTabEcl(const SGV::CGraphViewCtrl & graphView, Dali::IWorkunit * wu);
 	void SetTabEcl(Dali::IWorkunit * wu, int row, const CUniqueID & id);
 	void SetTabEcl(const std::_tstring & moduleLabel, const std::_tstring & attributeLabel, int row, const CUniqueID & id);
+	void SetTabEcl(const std::_tstring & localFile, int row, const CUniqueID & id);
 
 	void SetTabSelection(const std::_tstring & label, const roxie::CSearchRowVector & searchResults);
 	void SetTabSelection(const std::_tstring & label, int row, int col);

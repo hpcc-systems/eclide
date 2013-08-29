@@ -13,6 +13,7 @@
 #define ATTRIBUTE_TYPE_PLUGIN _T("dll")
 #define ATTRIBUTE_TYPE_ESDL _T("esdl")
 #define ATTRIBUTE_TYPE_SALT _T("salt")
+#define ATTRIBUTE_TYPE_KEL _T("kel")
 #define ATTRIBUTE_TYPE_XSLT _T("xslt")
 #define ATTRIBUTE_TYPE_WORKSPACE _T("ecl_ws")
 
@@ -64,6 +65,8 @@ public:
 				m_description = _T("ESDL - Enterprise Services Definition Language");
 			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
 				m_description = _T("SPC - Salt Definition File");
+			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
+				m_description = _T("KEL - Knowlege Engineering Language");
 			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_WORKSPACE))
 				m_description = _T("ECL_WS - ECL Workspace Persistance File");
 			else
@@ -79,6 +82,8 @@ public:
 			m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
 		else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
 			m_defaultText = (boost::_tformat(_T("SALT:  %s;")) % attrLabel.c_str()).str();
+		else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
+			m_defaultText = (boost::_tformat(_T("KEL:  %s;")) % attrLabel.c_str()).str();
 		else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_WORKSPACE))
 			m_defaultText = (boost::_tformat(_T("ECL_WS:  %s;")) % attrLabel.c_str()).str();
 		else
@@ -127,6 +132,18 @@ IAttributeType * CreateIAttributeSALTType()
 {
 	return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_SALT));
 }
+IAttributeType * CreateIAttributeKELType()
+{
+	return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_KEL));
+}
+unsigned int GetAttributeTypes(IAttributeTypeVector & types)
+{
+	types.push_back(CreateIAttributeECLType());
+	types.push_back(CreateIAttributeESDLType());
+	types.push_back(CreateIAttributeSALTType());
+	types.push_back(CreateIAttributeKELType());
+	return types.size();
+}
 bool IsValidExtension(const std::_tstring & ext)
 {
 	if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECL))
@@ -138,6 +155,8 @@ bool IsValidExtension(const std::_tstring & ext)
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
 		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_SALT))
+		return true;
+	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_KEL))
 		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_PLUGIN))
 		return true;

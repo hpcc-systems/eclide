@@ -1395,6 +1395,7 @@ BEGIN
         MENUITEM "Break",                       ID_DEBUGGER_BREAK
         MENUITEM "Detach",                      ID_DEBUGGER_DETACH
         MENUITEM "Continue",                    ID_DEBUGGER_CONTINUE
+        MENUITEM "Restart",                     ID_DEBUGGER_RESTART
         MENUITEM SEPARATOR
         MENUITEM "Step",                        ID_DEBUGGER_STEP
         MENUITEM "Step Graph",                  ID_DEBUGGER_STEPGRAPH

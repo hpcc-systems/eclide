@@ -2942,6 +2942,13 @@ void CMultiResultView::WorkunitUpdated(Dali::IWorkunit * workunit)
 {
 	if (::IsWindow(m_hWnd))
 	{
+		if (m_debugView)
+		{
+			CDebugView * debugView = dynamic_cast<CDebugView *>(m_debugView.get());
+			if (debugView && debugView->SupressRefresh())
+				return;
+		}
+
 		ATLTRACE(_T("CMultiResultView::WorkunitUpdated(%s - %d)\n"), workunit->GetWuid(), workunit->GetState());
 		PostMessage(CWM_REFRESH, 0);
 	}

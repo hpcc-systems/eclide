@@ -258,7 +258,8 @@ public:
 		case SGRID::SGRID_REDRAWROWS:
 			for (int i = (int)wParam; i <= (int)lParam; ++i)
 			{
-				m_view.RedrawRow(i);
+				if (i >= 0 && i < m_pageLoaded.GetTotal())
+					m_view.RedrawRow(i);
 			}
 			m_view.Invalidate();
 			break;

@@ -38,5 +38,6 @@ COMMS_API IAttributeType * CreateIAttributeECLType();
 COMMS_API IAttributeType * CreateIAttributeESDLType();
 COMMS_API IAttributeType * CreateIAttributeSALTType();
 COMMS_API IAttributeType * CreateIAttributeType(const std::_tstring & repositoryType, const std::_tstring & description = _T(""));
+COMMS_API unsigned int GetAttributeTypes(IAttributeTypeVector & types);
 COMMS_API bool IsValidExtension(const std::_tstring & ext);
 COMMS_API bool HasValidExtension(const std::_tstring & filename);
