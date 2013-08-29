@@ -82,3 +82,12 @@ public:
 	void LoadText();
 };
 //  ===========================================================================
+class CLocalDataView : public CSourceDataView
+{
+protected:
+	std::_tstring m_filePath;
+public:
+	void SetSource(const std::_tstring & filePath);
+	void LoadText();
+};
+//  ===========================================================================

@@ -41,6 +41,7 @@ public:
 	~CPageLoadedView();
 
 	void SetTotal(int total);
+	int GetTotal() const;
 	void SetRequested(int from, int to);
 	void SetLoaded(int from, int to);
 	bool IsFullyLoaded() const;

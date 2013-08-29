@@ -35,9 +35,6 @@ class CDfuFrame;
 class CDfuFilterFrame;
 
 const TCHAR * const ROLLBACK_MESSAGE = _T("Are you sure?\r\n\r\nNote:  Any open windows will be updated to reflect the current ecl.");
-static const TCHAR szEclFilter[] = _T("Supported Files (*.ecl; *.mod; *.xgmml)\0*.ecl;*.mod;*.xgmml\0ECL Files (*.ecl)\0*.ecl\0Module Files (*.mod)\0*.mod\0XGMML Files (*.xgmml)\0*.xgmml\0All Files (*.*)\0*.*\0\0");
-static const TCHAR szEclSaveFilter[] = _T("ECL Files (*.ecl)\0*.ecl\0All Files (*.*)\0*.*\0\0");
-static const TCHAR szExcelFilter[] = _T("Excel Files (*.xls)\0*.xls\0All Files (*.*)\0*.*\0\0");
 //  ===========================================================================
 enum PERSIST_ITEM_TYPE 
 {

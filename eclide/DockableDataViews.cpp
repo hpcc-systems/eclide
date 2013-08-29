@@ -69,10 +69,20 @@ void CDockableDataViews::PrepTabEcl(const SGV::CGraphViewCtrl & graphView, Dali:
 		ParsedDefinition pd;
 		if (DefinitionToLocation(static_cast<const TCHAR *>(def), pd))
 		{
-			if (pd.IsBuilder())
+			switch (pd.GetType())
+			{
+			case ParsedDefinition::BUILDER:
 				SetTabEcl(wu, pd.row, vertices.Get());
-			else
+				break;
+			case ParsedDefinition::REMOTE:
 				SetTabEcl(pd.module, pd.attribute, pd.row, vertices.Get());
+				break;
+			case ParsedDefinition::LOCAL:
+				SetTabEcl(pd.module + pd.attribute, pd.row, vertices.Get());
+				break;
+			default:
+				ATLASSERT(false);
+			}
 		}
 	}
 	m_wndTab.SetRedraw(true);
@@ -112,6 +122,24 @@ void CDockableDataViews::SetTabEcl(const std::_tstring & moduleLabel, const std:
 		attributeDataView->SetSource(moduleLabel, attributeLabel);
 	}
 	m_sourceTabs[label]->SetBreakpointLocation(row, id);
+}
+
+void CDockableDataViews::SetTabEcl(const std::_tstring & localFile, int row, const CUniqueID & id)
+{
+	std::_tstring label = localFile;
+	StringSourceMap::iterator itr = m_sourceTabs.find(localFile);
+	if (itr == m_sourceTabs.end())
+	{
+		StlLinked<CLocalDataView> attributeDataView = new CLocalDataView();
+		m_sourceTabs[localFile] = attributeDataView.get();
+		attributeDataView->Create(NULL, localFile.c_str(), WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), &m_wndTab, 1);
+		attributeDataView->SetFont(&afxGlobalData.fontRegular);
+		boost::filesystem::path p(localFile);
+		m_wndTab.AddTab(attributeDataView, p.filename().wstring().c_str(), 0, FALSE);
+		attributeDataView->SetOwner(m_owner);
+		attributeDataView->SetSource(localFile);
+	}
+	m_sourceTabs[localFile]->SetBreakpointLocation(row, id);
 }
 
 void CDockableDataViews::ClearTabData()

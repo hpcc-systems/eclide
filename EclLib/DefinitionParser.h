@@ -5,6 +5,14 @@
 class ParsedDefinition
 {
 public:
+	enum TYPE
+	{
+		 UNKNOWN,
+		 BUILDER,
+		 LOCAL,
+		 REMOTE,
+		 LAST
+	} m_type;
 	std::_tstring module;
 	std::_tstring attribute;
 	unsigned int row;
@@ -12,21 +20,23 @@ public:
 
 	ParsedDefinition()
 	{
+		m_type = UNKNOWN;
 		row = 0;
 		col = 0;
 	}
 
 	ParsedDefinition(const ParsedDefinition & other)
 	{
+		m_type = other.m_type;
 		module = other.module;
 		attribute = other.attribute;
 		row = other.row;
 		col = other.col;
 	}
 
-	bool IsBuilder() const
+	TYPE GetType() const
 	{
-		return module.size() == 0 && attribute.size() == 0;
+		return m_type;
 	}
 };
 
