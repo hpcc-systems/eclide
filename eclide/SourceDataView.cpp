@@ -3,6 +3,7 @@
 
 #include "SourceDataView.h"
 #include "DialogAddBreakpoint.h"
+#include "UtilFilesystem.h"
 
 //  ===========================================================================
 CSourceDataView::CSourceDataView() : m_eclView(this)
@@ -283,7 +284,7 @@ void CLocalDataView::LoadText()
 	if (!m_eclView.GetLength())
 	{
 		CUnicodeFile file;
-		if (file.Open(m_filePath))
+		if (file.Open(stringToPath(m_filePath)))
 		{
 			std::_tstring ecl;
 			file.Read(ecl);
