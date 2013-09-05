@@ -212,7 +212,7 @@ public:
 		ATLASSERT(ecl);
 
 		CUnicodeFile file;
-		file.Create(pathToWString(m_path).c_str(), GENERIC_WRITE, CREATE_ALWAYS, CUnicodeFile::ENCODING_ANSI);
+		file.Create(pathToWString(m_path).c_str(), GENERIC_WRITE, CREATE_ALWAYS);
 		if(file.IsOpen())
 		{
 			m_eclSet = true;
