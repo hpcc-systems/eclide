@@ -650,7 +650,7 @@ public:
 				path /= filename;
 
 				CUnicodeFile file;
-				file.Create(pathToWString(path).c_str(),GENERIC_WRITE,CREATE_ALWAYS,CUnicodeFile::ENCODING_ANSI);
+				file.Create(pathToWString(path).c_str(),GENERIC_WRITE,CREATE_ALWAYS);
 				file.Close();
 			}
 		}
