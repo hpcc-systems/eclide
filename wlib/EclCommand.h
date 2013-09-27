@@ -612,7 +612,7 @@ public:
 			syntaxStatus += warnCount;
 			syntaxStatus += _T(" Warnings");
 			m_eclSlot->PostStatus(syntaxStatus);
-			m_eclSlot->RefreshSyntax(m_ecl, 0, true);
+			m_eclSlot->RefreshSyntax(m_ecl, 0, err || warn);
 		}
 		return 0;
 	}
