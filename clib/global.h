@@ -48,6 +48,7 @@ CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesys
 CLIB_API const boost::filesystem::path & GetAppDataFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetDocumentsFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetMyDocumentsFolder(boost::filesystem::path & path);
+CLIB_API const boost::filesystem::path & GetTempFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetCompanyFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetApplicationFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetUserFolder(boost::filesystem::path & path, const std::_tstring & user);
