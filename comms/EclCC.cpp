@@ -12,6 +12,9 @@
 
 namespace algo = boost::algorithm;
 
+const TCHAR * const ECLCC_ECLBUNDLE_PATH = _T("ECLCC_ECLBUNDLE_PATH");
+typedef std::map<std::_tstring, std::_tstring> StringPathMap;
+
 namespace SMC
 {
 IVersion * CreateVersion(const CString & url, const CString & version);
@@ -121,6 +124,12 @@ public:
 		boost::filesystem::wpath pluginsPath = clientToolsFolderPath / _T("plugins");
 		if (boost::filesystem::exists(pluginsPath))
 			m_eclFolders.push_back(std::make_pair(pathToWString(pluginsPath), false));
+
+		StringPathMap paths;
+		GetPaths(paths);
+		StringPathMap::const_iterator found = paths.find(ECLCC_ECLBUNDLE_PATH);
+		if (found != paths.end())
+			m_eclFolders.push_back(std::make_pair(found->second, false));
 	}
 
 	const TCHAR * GetCacheID() const
@@ -491,6 +500,31 @@ public:
 		label += _T(".");
 		label += attr->GetType()->GetRepositoryCode();
 		return label.c_str();
+	}
+
+	unsigned int GetPaths(StringPathMap & paths) const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		std::_tstring command = m_compilerFile + _T(" -showpaths");
+		boost::filesystem::path tempPath;
+		GetTempFolder(tempPath);
+		std::_tstring in, out, err;
+		runProcess(command, pathToWString(tempPath), _T(""), in, out, err);
+		typedef std::vector<std::_tstring> split_vector_type;
+		split_vector_type lines; 
+		boost::algorithm::split(lines, out, boost::algorithm::is_any_of(_T("\r\n")), boost::algorithm::token_compress_on); 
+		for(split_vector_type::const_iterator itr = lines.begin(); itr != lines.end(); ++itr)
+		{
+			split_vector_type assignment; 
+			boost::algorithm::split(assignment, *itr, boost::algorithm::is_any_of(_T("=")), boost::algorithm::token_compress_on); 
+			if (assignment.size() == 2)
+			{
+				boost::algorithm::replace_all(assignment[1], _T("/"), _T("\\"));	//  Workaround for HPCC-10111
+				boost::algorithm::trim_right_if(assignment[1], boost::algorithm::is_any_of("\\")); 
+				paths[assignment[0]] = assignment[1];
+			}
+		}
+		return paths.size();
 	}
 };
 typedef StlLinked<CEclCC> CEclCCAdapt;
