@@ -76,6 +76,20 @@ CLIB_API const boost::filesystem::path & GetMyDocumentsFolder(boost::filesystem:
 	boost::filesystem::create_directories(path);
 	return path;
 }
+CLIB_API const boost::filesystem::path & GetTempFolder(boost::filesystem::path & path)
+{
+	DWORD result = ::GetTempPath(0, _T(""));
+	if (result == 0)
+		return path;
+
+	std::vector<TCHAR> tempPath(result);
+	result = ::GetTempPath(static_cast<DWORD>(tempPath.size()), &tempPath[0]);
+	if ((result == 0) || (result > tempPath.size()))
+		return path;
+
+	path = stringToPath(std::_tstring(tempPath.begin(), tempPath.begin() + static_cast<std::size_t>(result)));
+	return path;
+}
 CLIB_API const boost::filesystem::path & GetCompanyFolder(boost::filesystem::path & path)
 {
 	boost::filesystem::path p;
