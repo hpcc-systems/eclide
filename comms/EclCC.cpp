@@ -464,11 +464,30 @@ public:
 		return wuXml.c_str();
 	}
 
+	bool autoFindManifest(const boost::filesystem::path & file, boost::filesystem::path & manifestPath) const
+	{
+		manifestPath = file;
+		manifestPath.replace_extension("manifest");
+		if (boost::filesystem::exists(manifestPath))
+			return true;
+
+		manifestPath = manifestPath.remove_filename() / "files" / "manifest.xml";
+		if (boost::filesystem::exists(manifestPath))
+			return true;
+
+		return false;
+	}
+
 	bool GetArchive(const std::_tstring & path, const std::_tstring & ecl, std::_tstring & archive, Dali::CEclExceptionVector & errors) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		StdStringVector args;
 		args.push_back(_T("E"));
+
+		boost::filesystem::path filePath = path;
+		boost::filesystem::path manifestPath;
+		if(autoFindManifest(filePath, manifestPath))
+			args.push_back(_T("manifest=") + manifestPath.native());
 
 		std::_tstring err;
 		bool hasErrors = false;
