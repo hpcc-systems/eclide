@@ -1220,6 +1220,7 @@ protected:
 	bool SubmitEcl(const CString &cluster, const CString & queue, WUAction _action, const CString & attrQualifiedLabel, const CString & _ecl, const CString & path, const CString label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive, bool noCommonPrivateAttributes, int maxRunTime, bool debug)
 	{
 		bool isXml = false;
+		bool isArchive = false;
 		CString ecl = _ecl;
 		std::_tstring queryName;
 		{//  ECL or XML
@@ -1261,6 +1262,7 @@ protected:
 					UpdateLocalWorkunit(resultWu, wuXml, results, errors);
 					return false;
 				}
+				isArchive = true;
 			}
 		}
 
@@ -1333,7 +1335,10 @@ protected:
 
 #if _COMMS_VER < 300682
 #else
-					request.QueryMainDefinition = stringPool.Create(attrQualifiedLabel);
+					if (!isArchive) 
+					{
+						request.QueryMainDefinition = stringPool.Create(attrQualifiedLabel);
+					}
 #endif
 
 					_ns6__WUUpdateResponse response;
