@@ -490,7 +490,7 @@ public:
 		boost::filesystem::path filePath = path;
 		boost::filesystem::path manifestPath;
 		if(autoFindManifest(filePath, manifestPath))
-			args.push_back(_T("manifest=") + manifestPath.native());
+			args.push_back(_T("manifest=") + pathToWString(manifestPath));
 
 		std::_tstring err;
 		bool hasErrors = false;
