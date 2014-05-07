@@ -384,9 +384,10 @@ HRESULT CGraphView3::GetFuncInfoFromId(const IID& iid, DISPID dispidMember, LCID
 		else if (dispidMember == g_dispMouseDoubleClick)
 		{
 			info.vtReturn = VT_I4;
-			info.nParams = 2;
+			info.nParams = 3;
 			info.pVarTypes[0] = VT_I4;
-			info.pVarTypes[1] = VT_DISPATCH;
+			info.pVarTypes[1] = VT_I4;
+			info.pVarTypes[2] = VT_DISPATCH;
 			return S_OK;
 		}
 		else if (dispidMember == g_dispSelectionChanged)
@@ -428,7 +429,7 @@ HRESULT CGraphView3::GetFuncInfoFromId(const IID& iid, DISPID dispidMember, LCID
 	return E_FAIL;
 }
 
-HRESULT CGraphView3::OnMouseDoubleClick(int val, IDispatch * oSender)
+HRESULT CGraphView3::OnMouseDoubleClick(int val, int keyState, IDispatch * oSender)
 {
 	m_wndLNGVC.CenterGraphItem(val);
 	return S_OK;
