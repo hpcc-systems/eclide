@@ -487,7 +487,7 @@ public:
 		StdStringVector args;
 		args.push_back(_T("E"));
 
-		boost::filesystem::path filePath = path;
+		boost::filesystem::path filePath = stringToPath(path);
 		boost::filesystem::path manifestPath;
 		if(autoFindManifest(filePath, manifestPath))
 			args.push_back(_T("manifest=") + pathToWString(manifestPath));
