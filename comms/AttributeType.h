@@ -10,6 +10,7 @@ enum PREPROCESS_TYPE
 	PREPROCESS_CALCINCLUDES, 
 	PREPROCESS_SAVE, 
 	PREPROCESS_COMMIT, 
+	PREPROCESS_SUBMIT, 
 	PREPROCESS_LAST
 };
 
@@ -21,6 +22,7 @@ const TCHAR * const PREPROCESS_LABEL[] =
 	_T("CalcIncludes"),
 	_T("Save"),
 	_T("Commit"),
+	_T("Submit"),
 	_T("Last")
 };
 
