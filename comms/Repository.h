@@ -28,6 +28,15 @@ public:
 typedef StlLinked<CRepLabel> CRepLabelAdapt;
 typedef std::vector<CRepLabelAdapt> CRepLabelVector;
 
+enum SEARCHMODE
+{
+	SEARCHMODE_UNKNOWN = -1,
+	SEARCHMODE_PLAIN = 0,
+	SEARCHMODE_WILDCARD,
+	SEARCHMODE_REGEXP,
+	SEARCHMODE_LAST
+};
+
 __interface IRepository : public IUnknown
 {
 	void SetRepositoryLabel(const std::_tstring & label);
@@ -46,7 +55,7 @@ __interface IRepository : public IUnknown
 	IModule * InsertModule(const TCHAR* label) const;
 
 	unsigned int GetAttributeTypes(IAttributeTypeVector & types) const;
-	unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, bool regExp, bool sandboxed, bool checkedout, bool locked, bool orphaned, const  TCHAR* utcDate, IAttributeVector & attributes) const;
+	unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, SEARCHMODE searchMode, bool sandboxed, bool checkedout, bool locked, bool orphaned, const  TCHAR* utcDate, IAttributeVector & attributes) const;
 	bool Label(const TCHAR* label, std::_tstring &error_message) const;
 	bool GetLabels(CRepLabelVector & labels) const;
 	bool GetLabels(const std::_tstring & module, const std::_tstring & attr, CRepLabelVector & globalLabels, CRepLabelVector & localLabels) const;

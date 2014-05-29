@@ -869,7 +869,7 @@ void CMainFrame::OnFindServices()
 {
 	IAttributeVector repAttrs;
 	std::_tstring changedSince;
-	m_repositoryDlg.m_repositoryView->m_repRHS->FindAttributes(_T("--SOAP--"), _T(""), _T(""), false, false, false, false, false, changedSince.c_str(), repAttrs);
+	m_repositoryDlg.m_repositoryView->m_repRHS->FindAttributes(_T("--SOAP--"), _T(""), _T(""), SEARCHMODE_PLAIN, false, false, false, false, changedSince.c_str(), repAttrs);
 	std::_tstring items;
 	for (IAttributeVector::const_iterator itr = repAttrs.begin(); itr != repAttrs.end(); ++itr)
 	{
@@ -882,7 +882,7 @@ void CMainFrame::OnFindServices()
 	}
 
 	repAttrs.clear();
-	m_repositoryDlg.m_repositoryView->m_repRHS->FindAttributes(_T("--LIBRARY--"), _T(""), _T(""), false, false, false, false, false, changedSince.c_str(), repAttrs);
+	m_repositoryDlg.m_repositoryView->m_repRHS->FindAttributes(_T("--LIBRARY--"), _T(""), _T(""), SEARCHMODE_PLAIN, false, false, false, false, changedSince.c_str(), repAttrs);
 	for (IAttributeVector::const_iterator itr = repAttrs.begin(); itr != repAttrs.end(); ++itr)
 	{
 		if (boost::algorithm::starts_with(itr->get()->GetQualifiedLabel(), _T("Trash")) ||
