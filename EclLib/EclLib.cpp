@@ -18,3 +18,20 @@ BOOL APIENTRY DllMain( HANDLE  /*hModule*/,
 	}
     return TRUE;
 }
+
+#ifdef _DEBUG
+#include "EclErrorParser.h"
+class CTest {
+public:
+	CTest::CTest() {
+		ParsedEclError test;
+		ATLASSERT(ParseEclError(_T("\\machine\\temp\\test.ecl(7,13) : error C007 : Hello and Welcome"), test));
+		ATLASSERT(ParseEclError(_T("c:\\temp\\test.ecl(7,13) : error C007 : Hello and Welcome"), test));
+		ATLASSERT(ParseEclError(_T("\\machine\\temp\\test.ecl : 7,13 : error C007 - Hello and Welcome"), test));
+		ATLASSERT(ParseEclError(_T("c:\\temp\\test.ecl : 7,13 : error C007 - Hello and Welcome"), test));
+		ATLASSERT(ParseEclError(_T("(7) : error C007 stuff : Hello and Welcome"), test));
+		ATLASSERT(ParseEclError(_T("error : Hello and Welcome"), test));
+	}
+} _eclErrorParserTest;
+#endif
+

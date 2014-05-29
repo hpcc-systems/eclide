@@ -3,7 +3,7 @@
 #include "Attribute.h"
 #include "repository.h"
 #include "cmdProcess.h"
-#include "SaltErrorParser.h"
+#include "EclErrorParser.h"
 #include <UtilFilesystem.h>
 
 class CAttributeBase : public clib::CLockableUnknown
@@ -117,15 +117,15 @@ public:
 				boost::algorithm::split(SplitVec, errStr, boost::algorithm::is_any_of("\r\n"), boost::algorithm::token_compress_on);
 				for(split_vector_type::iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
 				{
-					ParsedSaltError err;
-					if (ParseSaltError(*itr, err))
+					ParsedEclError err;
+					if (ParseEclError(*itr, err))
 					{
 						StlLinked<Dali::CEclException> exception = new Dali::CEclException;
-						exception->m_code = 0;
+						exception->m_code = err.code;
 						exception->m_lineNo = err.row;
-						exception->m_column = 0;
-						exception->m_message = (boost::_tformat(_T("%1% -> %2%")) % err.message % err.other).str().c_str();
-						exception->m_severity = _T("Error");;
+						exception->m_column = err.col;
+						exception->m_message = err.other.empty() ? err.message.c_str() : (boost::_tformat(_T("%1% -> %2%")) % err.message % err.other).str().c_str();
+						exception->m_severity = err.type.empty() ? _T("Error") : err.type.c_str();
 						errs.push_back(exception);
 					}
 				}
