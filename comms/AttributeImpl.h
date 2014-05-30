@@ -17,16 +17,45 @@ public:
 	virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
 	virtual const TCHAR *GetLabel() const = 0;
 
+	bool locatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
+	{
+		boost::filesystem::path folder, path;
+		//  Check for ./plugin install  ---
+		GetProgramFolder(folder);
+		folder /= "plugin";
+		path = folder / batchFile;
+		if (boost::filesystem::exists(path))
+		{
+			foundFolder = folder;
+			return true;
+		}
+		//  Check for sibling install  ---
+		GetProgramFolder(folder);
+		if (folder.has_parent_path()) 
+		{
+			folder = folder.parent_path();
+			if (folder.has_parent_path()) 
+			{
+				folder = folder.parent_path();
+				folder /= GetType()->GetRepositoryCode();
+				path = folder / batchFile;
+				if (boost::filesystem::exists(path))
+				{
+					foundFolder = folder;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		boost::filesystem::path folder, path;
-		GetProgramFolder(folder);
-		folder /= "plugin";
 		std::string batchFile = CT2A(GetType()->GetRepositoryCode());
 		batchFile += ".bat";
-		path = folder / batchFile;
-		if (boost::filesystem::exists(path))
+		boost::filesystem::path folder;
+		if (locatePlugin(batchFile, folder)) 
 		{
 			//  Hack For ESDL PrePreProcessing  ---
 			if (boost::algorithm::equals(batchFile.c_str(), "esdl.bat"))

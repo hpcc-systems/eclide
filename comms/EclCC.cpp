@@ -286,7 +286,8 @@ public:
 			std::string necl = CT2A(ecl.c_str(), CP_UTF8);
 			temp.Write(necl.c_str(), necl.length());
 			temp.HandsOff();
-			command += _T(" --nosourcepath");
+			if (GetBuild()->GetMajor() >= 5)
+				command += _T(" --nosourcepath");
 		}
 		else if (path.empty())
 		{

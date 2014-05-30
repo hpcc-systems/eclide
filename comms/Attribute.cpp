@@ -481,13 +481,10 @@ public:
 	int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		boost::filesystem::path folder, path;
-		GetProgramFolder(folder);
-		folder /= "plugin";
 		std::string batchFile = CT2A(GetType()->GetRepositoryCode());
 		batchFile += ".bat";
-		path = folder / batchFile;
-		if (boost::filesystem::exists(path))
+		boost::filesystem::path folder;
+		if (locatePlugin(batchFile, folder)) 
 		{
 			//  Hack For ESDL PrePreProcessing  ---
 			if (boost::algorithm::equals(batchFile.c_str(), "esdl.bat"))
