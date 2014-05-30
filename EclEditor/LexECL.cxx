@@ -436,7 +436,10 @@ static void FoldEclDoc(unsigned int startPos, int length, int initStyle,
 				while ((j < endPos) && IsASpaceOrTab(styler.SafeGetCharAt(j))) {
 					j++;
 				}
-				if (MatchNoCase(styler, j, "region") || MatchNoCase(styler, j, "if")) {
+				if (MatchNoCase(styler, j, "region") || 
+					MatchNoCase(styler, j, "if") ||
+					MatchNoCase(styler, j, "loop") ||
+					MatchNoCase(styler, j, "for")) {
 					levelNext++;
 				} else if (MatchNoCase(styler, j, "endregion") || MatchNoCase(styler, j, "end")) {
 					levelNext--;
