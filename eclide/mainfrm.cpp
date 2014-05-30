@@ -522,7 +522,11 @@ void CMainFrame::SetWorkspaceMode(WORKSPACE workspaceMode)
 		{
 			SetRedraw(FALSE);
 			theApp.EnableLoadWindowPlacement(FALSE);
+			//  Prevent LoadState from replacing the accelerator table  ---
+			CKeyboardManager * tmp = afxKeyboardManager;
+			afxKeyboardManager = NULL;
 			theApp.LoadState(this, newSection);
+			afxKeyboardManager = tmp;
 			SetRedraw(TRUE);
 			RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
 			AdjustClientArea();
