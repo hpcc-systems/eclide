@@ -425,7 +425,18 @@ void CBuilderDlg::DoCheckSyntax()
 		if (!m_path.IsEmpty() && IsDirty()) 
 			DoFileSave(m_path);
 	}
-	clib::thread run(__FUNCTION__, boost::bind(&EclCheckSyntax, this, ecl, cluster, CString(), CString(), m_path, m_debug, false, m_noCommonPrivateAttributes));
+
+	if (m_attribute->GetType() == CreateIAttributeECLType())
+	{
+		clib::thread run(__FUNCTION__, boost::bind(&EclCheckSyntax, this, ecl, cluster, CString(), CString(), m_path, m_debug, false, m_noCommonPrivateAttributes));
+	}
+	else
+	{
+		IAttributeVector attrs;
+		Dali::CEclExceptionVector errors;
+		m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, errors);
+		SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
+	}
 }
 
 void CBuilderDlg::DoCheckComplexity()

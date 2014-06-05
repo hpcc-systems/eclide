@@ -13,8 +13,6 @@ set ( SRCS
 		ecl_grammar.cpp
 		ecl_grammar.h
 		resource.h
-		SaltErrorParser.cpp
-		SaltErrorParser.h
 		UTCParser.cpp
 		UTCParser.h
 		VersionParser.cpp
