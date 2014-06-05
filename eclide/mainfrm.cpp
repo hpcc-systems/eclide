@@ -523,6 +523,16 @@ void CMainFrame::SetWorkspaceMode(WORKSPACE workspaceMode)
 			SetRedraw(FALSE);
 			theApp.EnableLoadWindowPlacement(FALSE);
 			theApp.LoadState(this, newSection);
+
+			CWnd* pWndChild=CWnd::FromHandle(m_hWndMDIClient); 
+			pWndChild=pWndChild->GetWindow(GW_CHILD); 
+			while(pWndChild) 
+			{ 
+				if (pWndChild->IsKindOf(RUNTIME_CLASS(CMDIChildWnd)))
+					((CMDIChildWnd*)pWndChild)->SetHandles(NULL, this->m_hAccelTable);
+				pWndChild=pWndChild->GetWindow(GW_HWNDNEXT); 
+			} 
+
 			SetRedraw(TRUE);
 			RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
 			AdjustClientArea();
