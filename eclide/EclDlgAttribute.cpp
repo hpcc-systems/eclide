@@ -92,13 +92,14 @@ void CAttributeDlg::DoCheckSyntax()
 	CString cluster(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER));
 	CString module(m_attribute->GetModuleQualifiedLabel());
 	CString attribute(m_attribute->GetLabel());
+
+	if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+	{
+		if (!DoSave(false))
+			return;
+	}
 	if (m_attribute->GetType() == CreateIAttributeECLType())
 	{
-		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-		{
-			if (!DoSave(false))
-				return;
-		}
 		clib::thread run(__FUNCTION__, boost::bind(&EclCheckSyntax, this, ecl, cluster, module, attribute, _T(""), _T(""), false, false));
 	}
 	else

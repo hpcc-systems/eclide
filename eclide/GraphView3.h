@@ -209,7 +209,7 @@ public:
 	HRESULT GetFuncInfoFromId(const IID& iid, DISPID dispidMember, LCID lcid, _ATL_FUNC_INFO& info);
 	STDMETHOD(OnScaleChanged)(int val, IDispatch * oSender);
 	STDMETHOD(OnLayoutFinished)(IDispatch * oSender);
-	STDMETHOD(OnMouseDoubleClick)(int item, IDispatch * oSender);
+	STDMETHOD(OnMouseDoubleClick)(int item, int keyState, IDispatch * oSender);
 	STDMETHOD(OnSelChanged)(VARIANT selection, IDispatch * oSender);
 
 	//CTabPane

@@ -356,7 +356,7 @@ public:
 		ExecEcl(Dali::WUActionRun, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled(), true);
 	}
 
-	void ExecEcl(Dali::WUAction action, const CString &ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool isDrilldown=false)
+	void ExecEcl(Dali::WUAction action, const CString &_ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool supressPath=false)
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{
@@ -387,7 +387,20 @@ public:
 		if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
 			attrQualifiedLabel = attr->GetQualifiedLabel(true);
 
-		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, isDrilldown ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+		CString ecl = _ecl;
+		CComPtr<IAttribute> attr = m_dlgview.GetAttribute();
+		if (attr != NULL && attr->GetType() != CreateIAttributeECLType())
+		{
+			IAttributeVector attrs;
+			Dali::CEclExceptionVector errors;
+			attr->PreProcess(PREPROCESS_SUBMIT, _ecl, attrs, errors);
+			if (!attrs.empty())
+			{
+				ecl = attrs[0]->GetText(false, true);
+			}
+			supressPath = true;
+		}
+		result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, supressPath ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
 		GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
 		PostStatus(_T(""));

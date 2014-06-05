@@ -286,7 +286,8 @@ public:
 			std::string necl = CT2A(ecl.c_str(), CP_UTF8);
 			temp.Write(necl.c_str(), necl.length());
 			temp.HandsOff();
-			command += _T(" --nosourcepath");
+			if (GetBuild()->GetMajor() >= 5)
+				command += _T(" --nosourcepath");
 		}
 		else if (path.empty())
 		{
@@ -487,10 +488,10 @@ public:
 		StdStringVector args;
 		args.push_back(_T("E"));
 
-		boost::filesystem::path filePath = path;
+		boost::filesystem::path filePath = stringToPath(path);
 		boost::filesystem::path manifestPath;
 		if(autoFindManifest(filePath, manifestPath))
-			args.push_back(_T("manifest=") + manifestPath.native());
+			args.push_back(_T("manifest=") + pathToWString(manifestPath));
 
 		std::_tstring err;
 		bool hasErrors = false;
