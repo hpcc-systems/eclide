@@ -37,7 +37,7 @@ public:
 			if (folder.has_parent_path()) 
 			{
 				folder = folder.parent_path();
-				folder /= GetType()->GetRepositoryCode();
+				folder /= stringToPath(GetType()->GetRepositoryCode());
 				path = folder / batchFile;
 				if (boost::filesystem::exists(path))
 				{
