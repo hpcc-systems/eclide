@@ -163,6 +163,10 @@ bool ParseEclError(const std::_tstring & def_string, ParsedEclError & result)
 	if (boost::spirit::classic::parse(def_string.c_str(), ecl_p[phoenix::var(result1) = phoenix::arg1], space_p).full)
 	{
 		result = result1;
+		if (boost::algorithm::equals(result.type, "error"))
+			result.type = _T("Error");
+		else if (boost::algorithm::equals(result.type, "warning"))
+			result.type = _T("Warning");
 		return true;
 	}
 	return false;

@@ -92,6 +92,7 @@ public:
     int m_code;
     CString m_message;
     CString m_fileName;
+    CString m_fileType;
     int m_lineNo;
     int m_column;
 
