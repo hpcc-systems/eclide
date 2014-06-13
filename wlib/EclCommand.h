@@ -573,7 +573,7 @@ public:
 			StlLinked<Dali::CEclException> e = itr->get();
 			if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_ERROR)
 			{
-				m_ecl->SyntaxAdd(SYNTAX_ERROR, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
+				m_ecl->SyntaxAdd(SYNTAX_ERROR, e->m_code, e->m_fileName, e->m_fileType, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 				err++;
 			}
 		}
@@ -582,7 +582,7 @@ public:
 			StlLinked<Dali::CEclException> e = itr->get();
 			if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code != 1033)	//  Push sandboxed warnings to the end.
 			{
-				m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
+				m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_fileType, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 				warn++;
 			}
 		}
@@ -591,7 +591,7 @@ public:
 			StlLinked<Dali::CEclException> e = itr->get();
 			if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code == 1033)	//  Push sandboxed warnings to the end.
 			{
-				m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
+				m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_fileType, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 				warn++;
 			}
 		}
@@ -600,7 +600,7 @@ public:
 			StlLinked<Dali::CEclException> e = itr->get();
 			if (e->m_severity != Dali::CEclException::ECL_EXCEPTION_ERROR && e->m_severity != Dali::CEclException::ECL_EXCEPTION_WARNING)
 			{
-				m_ecl->SyntaxAdd(SYNTAX_INFO, e->m_code, e->m_fileName, e->m_message, e->m_lineNo - 1, e->m_column - 1);
+				m_ecl->SyntaxAdd(SYNTAX_INFO, e->m_code, e->m_fileName, e->m_fileType, e->m_message, e->m_lineNo - 1, e->m_column - 1);
 			}
 		}
 

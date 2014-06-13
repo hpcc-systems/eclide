@@ -426,7 +426,7 @@ void CBuilderDlg::DoCheckSyntax()
 			DoFileSave(m_path);
 	}
 
-	if (m_attribute->GetType() == CreateIAttributeECLType())
+	if (!m_attribute || m_attribute->GetType() == CreateIAttributeECLType())
 	{
 		clib::thread run(__FUNCTION__, boost::bind(&EclCheckSyntax, this, ecl, cluster, CString(), CString(), m_path, m_debug, false, m_noCommonPrivateAttributes));
 	}
