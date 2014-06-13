@@ -31,6 +31,7 @@ public:
     SYNTAX_TYPE m_type;
     int m_code;
     CString m_fileName;
+    CString m_fileType;
     CString m_message;
 	int m_markerHandle;
 	int m_lineNo;
@@ -89,10 +90,15 @@ public:
 		return false;
 	}
 
-	void SyntaxGetSource(CString & result)
+	void SyntaxGetSource(CString & result, CString & type)
 	{
 		if (m_currIndex != -1)
+		{
 			result = m_list[m_currIndex].m_fileName;
+			type = m_list[m_currIndex].m_fileType;
+			if (type.IsEmpty())
+				type = _T("ecl");
+		}
 	}
 
 	void SyntaxClearAll()
@@ -113,16 +119,17 @@ public:
 	void SyntaxChecking()
 	{
 		SyntaxClearAll();
-		SyntaxAdd(SYNTAX_INFO, 0, _T(""), _T("Checking..."), 0, 0);
+		SyntaxAdd(SYNTAX_INFO, 0, _T(""), _T(""), _T("Checking..."), 0, 0);
 	}
 
-	void SyntaxAdd(SYNTAX_TYPE type, int code, const CString & fileName, const CString & message, int lineNo, int colNo)
+	void SyntaxAdd(SYNTAX_TYPE type, int code, const CString & fileName, const CString & fileType, const CString & message, int lineNo, int colNo)
 	{
 		T* pT = static_cast<T*>(this);
 		CSyntaxError err;
 		err.m_type = type;
 		err.m_code = code;
 		err.m_fileName = fileName;
+		err.m_fileType = fileType;
 		err.m_message = message;
 		/*
 		if (lineNo > pT->GetLineCount() - 1)
@@ -201,12 +208,13 @@ public:
 		{
 			m_currIndex = indx;
 			CString source;
-			pT->SyntaxGetSource(source);
+			CString type;
+			pT->SyntaxGetSource(source, type);
 			if (source.GetLength())
 			{
 				CSyntaxErrorVector errors;
 				pT->SyntaxGet(source, errors);
-				pT->m_owner->DoCheckAttributeSyntax(source, CreateIAttributeECLType(), errors);
+				pT->m_owner->DoCheckAttributeSyntax(source, CreateIAttributeType(static_cast<const TCHAR *>(type)), errors);
 			}
 			else if (lineNo >= 0)
 			{
@@ -259,7 +267,7 @@ public:
 		for(CSyntaxErrorVector::const_iterator itr = error.begin(); itr != error.end(); ++itr)
 		{
 			//FileName needs to be blank to indicate that the "new" owner is the current window.
-			SyntaxAdd(itr->m_type, itr->m_code, _T(""), itr->m_message, itr->m_lineNo, itr->m_colNo);
+			SyntaxAdd(itr->m_type, itr->m_code, _T(""), _T(""), itr->m_message, itr->m_lineNo, itr->m_colNo);
 		}
 	}
 };

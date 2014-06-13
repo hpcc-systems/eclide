@@ -37,7 +37,7 @@ public:
 			if (folder.has_parent_path()) 
 			{
 				folder = folder.parent_path();
-				folder /= GetType()->GetRepositoryCode();
+				folder /= stringToPath(GetType()->GetRepositoryCode());
 				path = folder / batchFile;
 				if (boost::filesystem::exists(path))
 				{
@@ -90,7 +90,14 @@ public:
 					PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, nonECLattrs, errs);
 					for(IAttributeVector::const_iterator itr = nonECLattrs.begin(); itr != nonECLattrs.end(); ++itr)
 					{
-						itr->get()->PreProcess(action, overrideEcl, attrs, errs);
+						//  Convert from imported attribute to real attribute  ---
+						CComPtr<IAttribute> includeAttr = m_repository->GetAttribute(itr->get()->GetQualifiedLabel(), GetType());
+						if (includeAttr) 
+						{
+							IAttributeVector tmp;
+							includeAttr->PreProcess(PREPROCESS_CALCINCLUDES, includeAttr->GetText(), tmp, errs);
+							nonECLattrs.insert(nonECLattrs.end(), tmp.begin(), tmp.end());
+						}
 					}
 				}
 				break;
@@ -141,6 +148,7 @@ public:
 					f.Close();
 				}
 
+				std::_tstring kelCacheFolder = pathToWString(stringToPath(inputFile.TempFileName()).parent_path() / stringToPath("kelcache"));
 				typedef std::vector<std::_tstring> split_vector_type;
 				split_vector_type SplitVec; 
 				boost::algorithm::split(SplitVec, errStr, boost::algorithm::is_any_of("\r\n"), boost::algorithm::token_compress_on);
@@ -155,6 +163,21 @@ public:
 						exception->m_column = err.col;
 						exception->m_message = err.other.empty() ? err.message.c_str() : (boost::_tformat(_T("%1% -> %2%")) % err.message % err.other).str().c_str();
 						exception->m_severity = err.type.empty() ? _T("Error") : err.type.c_str();
+						if (boost::algorithm::iequals(inputFile.TempFileName(), err.location))
+							exception->m_fileName = L"";
+						else if (boost::algorithm::starts_with(err.location, kelCacheFolder))
+						{
+							boost::algorithm::erase_head(err.location, kelCacheFolder.length());
+							boost::algorithm::trim_left_if(err.location, boost::algorithm::is_any_of(_T("\\/")));
+							boost::filesystem::path errPath = err.location;
+							errPath = errPath.replace_extension();
+							err.location = pathToWString(errPath);
+							boost::algorithm::replace_all(err.location, _T("\\"), _T("."));
+							exception->m_fileName = err.location.c_str();
+						}
+						else
+							exception->m_fileName = err.location.c_str();
+						exception->m_fileType = GetType()->GetRepositoryCode();
 						errs.push_back(exception);
 					}
 				}
