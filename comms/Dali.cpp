@@ -512,14 +512,14 @@ public:
 			boost::filesystem::wpath path = eclcc->GetWorkingFolder();
 		}
 
-		retVal = GetWorkunit(m_config, wuid, noBroadcast);
-		if (retVal)
-			return retVal;
-
 		IWorkunitVector workunits;
 		GetWorkunits1(m_config, wuid, _T(""), _T(""), _T(""), _T(""), _T(""), 1, &workunits, noBroadcast);
 		if (workunits.size() > 0)
 			return workunits[0];
+
+		retVal = GetWorkunit(m_config, wuid, noBroadcast);
+		if (retVal)
+			return retVal;
 
 		return NULL;
 	}

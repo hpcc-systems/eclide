@@ -11,23 +11,48 @@ public:
 	}
 };
 
-CLIB_API CString & Serialize(StdStringVector & source, CString & result)
+CLIB_API const TCHAR * SortedSerialize(StdStringVector & source, std::_tstring & target, const TCHAR * delim)
 {
 	std::sort(source.begin(), source.end(), StringCompareUpperCased());
 	for(StdStringVector::const_iterator itr = source.begin(); itr != source.end(); ++itr)
 	{
-		if (!result.IsEmpty())
-			result += _T(" ");
-		result += itr->c_str();
+		if (!target.empty())
+			target += delim;
+		target += itr->c_str();
 	}
-	return result;
+	return target.c_str();
 }
 
-CLIB_API const TCHAR * Serialize(StdStringVector & source, std::_tstring & result)
+CLIB_API StdStringVector::size_type SortedDeserialize(const std::_tstring & source, StdStringVector & target, const TCHAR * delim)
 {
-	CString tmp;
-	Serialize(source, tmp);
-	result = (const TCHAR *)tmp;
-	return result.c_str();
+	boost::algorithm::split(target, source, boost::algorithm::is_any_of(delim), boost::algorithm::token_compress_on).size(); 
+	std::sort(target.begin(), target.end(), StringCompareUpperCased());
+	return target.size();
 }
+
+#ifdef _DEBUG
+class CTest {
+public:
+	CTest::CTest() {
+		std::_tstring in, out;
+		StdStringVector list;
+
+		in = _T("a b c d e f");
+		list.clear();
+		out.clear();
+		SortedDeserialize(in, list);
+		SortedSerialize(list, out);
+		ATLASSERT(list.size() == 6);
+		ATLASSERT(boost::algorithm::equals(in, out));
+
+		in = _T("a,b,c,d,e,f");
+		list.clear();
+		out.clear();
+		SortedDeserialize(in, list, _T(","));
+		SortedSerialize(list, out, _T(","));
+		ATLASSERT(list.size() == 6);
+		ATLASSERT(boost::algorithm::equals(in, out));
+	}
+} _SerializerTest;
+#endif
 

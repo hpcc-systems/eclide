@@ -47,22 +47,24 @@ public:
 	static void threadLoadWorkunit(CWorkspaceItem * self, CString wuids)
 	{
 		StlLinked<Dali::IDali> server = Dali::AttachDali();
-		int curPos = 0;
-		do
-		{
-			//it's quite possible that the work unit has been deleted: then we'll get a log entry
-			CString wuid = wuids.Tokenize(_T(","), curPos);
-			if (wuid.IsEmpty())
-				break;
 
+		int wuCap = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_PERSISTLIMIT);
+		StdStringVector wus;
+		SortedDeserialize(static_cast<const TCHAR *>(wuids), wus, _T(","));
+		for (StdStringVector::const_reverse_iterator ritr = wus.rbegin(); ritr != wus.rend(); ++ritr)
+		{
+			CString wuid = ritr->c_str();
 			if (!self->HasWorkunit(wuid))
 			{
 				StlLinked<Dali::IWorkunit> workunit = server->GetWorkunitFast(wuid, true);
 				if (workunit.get())
 					self->AppendWorkunit(workunit.get());
 			}
+
+			if (--wuCap <= 0)
+				break;
 		}
-		while (curPos);
+
 		self->m_loaded = LOADING_FINISHED;
 	}
 

@@ -542,6 +542,9 @@
 #define IDC_STATIC_COMPILER             525
 #define IDC_STATIC_LOCATION             526
 #define IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION 527
+#define IDC_EDIT_WORKUNITPERSISTLIMIT   528
+#define IDC_SPIN_WORKUNITPERSISTLIMIT   529
+#define IDC_STATIC_PERSISTLIMIT         530
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -875,7 +878,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61413
 #define _APS_NEXT_COMMAND_VALUE         33089
-#define _APS_NEXT_CONTROL_VALUE         528
+#define _APS_NEXT_CONTROL_VALUE         531
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif
