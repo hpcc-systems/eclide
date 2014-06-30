@@ -1629,6 +1629,7 @@ protected:
 	int m_DisableAutoUpdate;
 	int m_WorkUnitPollFreq;
 	int m_WorkUnitFetchLimit;
+	int m_WorkUnitPersistLimit;
 
 	WTL::CButton m_buttInstall;
 	WTL::CButton m_buttUninstall;
@@ -1663,6 +1664,7 @@ public:
 		m_DisableAutoUpdate = m_ini->Get(GLOBAL_DISABLEAUTOUPDATE);
 		m_WorkUnitPollFreq = m_config->Get(GLOBAL_ACTIVEWORKUNIT_REFRESH);
 		m_WorkUnitFetchLimit = m_config->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
+		m_WorkUnitPersistLimit = m_config->Get(GLOBAL_WORKUNIT_PERSISTLIMIT);
 
 		DoDataExchange();
 
@@ -1678,6 +1680,7 @@ public:
 		m_ini->Set(GLOBAL_DISABLEAUTOUPDATE, m_DisableAutoUpdate);
 		m_config->Set(GLOBAL_ACTIVEWORKUNIT_REFRESH, m_WorkUnitPollFreq);
 		m_config->Set(GLOBAL_WORKUNIT_FETCHLIMIT, m_WorkUnitFetchLimit);
+		m_config->Set(GLOBAL_WORKUNIT_PERSISTLIMIT, m_WorkUnitPersistLimit);
 	}
 
 	void DoApply(bool bMakeGlobal)
@@ -1744,6 +1747,7 @@ public:
 		DDX_CHECK(IDC_CHECK_DISABLEAUTOUPDATE, m_DisableAutoUpdate)
 		DDX_INT(IDC_EDIT_WORKUNITPOLL, m_WorkUnitPollFreq)
 		DDX_INT(IDC_EDIT_WORKUNITFETCHLIMIT, m_WorkUnitFetchLimit)
+		DDX_INT(IDC_EDIT_WORKUNITPERSISTLIMIT, m_WorkUnitPersistLimit)
 	END_DDX_MAP()
 
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
@@ -1755,6 +1759,7 @@ public:
 
 		SetLimit(IDC_SPIN_WORKUNITPOLL, 5, 999);
 		SetLimit(IDC_SPIN_WORKUNITFETCHLIMIT, 100, 999999);
+		SetLimit(IDC_SPIN_WORKUNITPERSISTLIMIT, 0, 10);
 
 		LoadFromConfig(m_config); //this calls PopulateControls
 

@@ -7,6 +7,7 @@
 #include <StringSet.h> //clib
 
 const SectionLabelDefault GLOBAL_WORKUNIT_FETCHLIMIT(SectionLabel(_T("Workunit"), _T("FetchLimit")), 999);
+const SectionLabelDefault GLOBAL_WORKUNIT_PERSISTLIMIT(SectionLabel(_T("Workunit"), _T("PersistLimit")), 3);
 
 namespace Dali
 {
