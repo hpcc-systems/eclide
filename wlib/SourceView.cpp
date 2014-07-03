@@ -808,7 +808,7 @@ bool CSourceCtrl::StartAutoComplete()
 		if (list.size())
 		{
 			std::_tstring listStr;
-			Serialize(list, listStr);
+			SortedSerialize(list, listStr);
 			AutoCShow(currentPos - (startPos + (periodPos == 0 ? 0 : periodPos + 1)), listStr.c_str());
 		}
 	}

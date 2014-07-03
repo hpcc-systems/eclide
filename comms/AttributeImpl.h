@@ -169,7 +169,7 @@ public:
 						{
 							boost::algorithm::erase_head(err.location, kelCacheFolder.length());
 							boost::algorithm::trim_left_if(err.location, boost::algorithm::is_any_of(_T("\\/")));
-							boost::filesystem::path errPath = err.location;
+							boost::filesystem::path errPath = stringToPath(err.location);
 							errPath = errPath.replace_extension();
 							err.location = pathToWString(errPath);
 							boost::algorithm::replace_all(err.location, _T("\\"), _T("."));

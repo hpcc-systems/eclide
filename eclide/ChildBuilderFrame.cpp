@@ -938,18 +938,17 @@ void threadRestoreWorkunits(CBuilderFrame * self, CString wuids)
 {
 	clib::CThreadQueue loadWorkunits(0);
 	Dali::IWorkunitVector workunits;
-	int curPos = 0;
-	do
+
+	int wuCap = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_PERSISTLIMIT);
+	StdStringVector wus;
+	SortedDeserialize(static_cast<const TCHAR *>(wuids), wus, _T(","));
+	for (StdStringVector::const_reverse_iterator ritr = wus.rbegin(); ritr != wus.rend(); ++ritr)
 	{
-		//it's quite possible that the work unit has been deleted: then we'll get a log entry
-		CString resToken = wuids.Tokenize(_T(","), curPos);
-		if ( resToken.IsEmpty() )
+		loadWorkunits.Append(__FUNCTION__, boost::bind(&threadRestoreWorkunit, self, ritr->c_str(), &workunits));
+
+		if (--wuCap <= 0)
 			break;
-
-		loadWorkunits.Append(__FUNCTION__, boost::bind(&threadRestoreWorkunit, self, resToken, &workunits));
 	}
-	while (curPos);
-
 	loadWorkunits.SetMaxThreadCount(30);
 	loadWorkunits.Join();
 
