@@ -5,7 +5,7 @@
 #pragma warning(disable:4503)
 #pragma warning(disable:4127)
 
-#define _COMMS_VER 300682
+#define _COMMS_VER 402682
 
 //  Leak Checking ---
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
@@ -123,6 +123,8 @@ const TCHAR * const _COMMS_VER_STR = _T("build_3_08");
 #  include "3_08-68200/WebService.h"
 #elif _COMMS_VER == 300800
 #  include "3_08/WebService.h"
+#elif _COMMS_VER == 402682
+#  include "4_02-68200/WebService.h"
 #else
 #  include "WebService.h"
 #endif

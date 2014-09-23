@@ -233,7 +233,7 @@ public:
 		return types.size();
 	}
 
-	virtual unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, bool regExp, bool sandboxed, bool checkedout, bool locked, bool orphaned, const TCHAR* utcDate, IAttributeVector & attributes) const
+	virtual unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, SEARCHMODE searchMode, bool sandboxed, bool checkedout, bool locked, bool orphaned, const TCHAR* utcDate, IAttributeVector & attributes) const
 	{
 		//clib::recursive_mutex::scoped_lock proc(m_mutex);
 		CSoapInitialize<WsAttributesServiceSoapProxy> server(m_url, g_passwordCache[m_url].first.c_str(), g_passwordCache[m_url].second.c_str());
@@ -241,8 +241,13 @@ public:
 		_ns2__FindAttributes request;
 		CStringAssign ModuleName(request.ModuleName, module);
 		CStringAssign UserName(request.UserName, user);
-		CStringAssign Pattern(request.Pattern, regExp ? _T("") : searchText);
-		CStringAssign Regexp(request.Regexp, regExp ? searchText : _T(""));
+		CStringAssign Pattern(request.Pattern, searchMode == SEARCHMODE_WILDCARD ? searchText :  _T(""));
+		CStringAssign Regexp(request.Regexp, searchMode == SEARCHMODE_REGEXP ? searchText :  _T(""));
+#if _COMMS_VER < 402682
+#elif _COMMS_VER < 700000
+		CStringAssign Plain(request.Plain, searchMode == SEARCHMODE_PLAIN ? searchText :  _T(""));
+#else
+#endif
 		CStringAssign ChangedSince(request.ChangedSince, utcDate);
 		IAttributeTypeVector types;
 		GetAttributeTypes(types);

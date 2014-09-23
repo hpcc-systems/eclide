@@ -5,13 +5,6 @@
 #include "FindReplace.h"
 
 //  ===========================================================================
-enum SEARCHMODE
-{
-	SEARCHMODE_UNKNOWN = -1,
-	SEARCHMODE_REGEXP = 0,
-	SEARCHMODE_WILDCARD,
-};
-
 enum RFUM
 {
 	RFUM_FIRST = CWM_LAST + 1,
