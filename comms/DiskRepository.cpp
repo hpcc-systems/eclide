@@ -356,7 +356,7 @@ public:
 		return ::GetAttributeTypes(types);
 	}
 
-	virtual unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, bool regExp, bool sandboxed, bool checkedout, bool locked, bool orphaned, const TCHAR* utcDate, IAttributeVector & attributes) const
+	virtual unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, SEARCHMODE searchMode, bool sandboxed, bool checkedout, bool locked, bool orphaned, const TCHAR* utcDate, IAttributeVector & attributes) const
 	{
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
 		{

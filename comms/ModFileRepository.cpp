@@ -183,7 +183,7 @@ public:
 		return types.size();
 	}
 
-	unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, bool regExp, bool sandboxed, bool checkedout, bool locked, bool orphaned, const  TCHAR* utcDate, IAttributeVector & attributes) const
+	unsigned FindAttributes(const std::_tstring & searchText, const std::_tstring & module, const std::_tstring & user, SEARCHMODE searchMode, bool sandboxed, bool checkedout, bool locked, bool orphaned, const  TCHAR* utcDate, IAttributeVector & attributes) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		ATLASSERT(!"CModFileRepository::FindAttributes not implemented");
