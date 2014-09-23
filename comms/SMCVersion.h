@@ -59,6 +59,8 @@ public:
 				{
 					if (_tcslen(l->GetSuffixString()) && !_tcslen(r->GetSuffixString())) // "" > "rc" > "closedown"
 						return true;
+					else if (!_tcslen(l->GetSuffixString()) && _tcslen(r->GetSuffixString()))
+						return false;
 
 					int strComp = _tcscmp(l->GetSuffixString(), r->GetSuffixString());  // "rc" > "closedown"
 					if (strComp == 0)

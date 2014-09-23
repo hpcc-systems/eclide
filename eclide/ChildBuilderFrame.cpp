@@ -944,10 +944,13 @@ void threadRestoreWorkunits(CBuilderFrame * self, CString wuids)
 	SortedDeserialize(static_cast<const TCHAR *>(wuids), wus, _T(","));
 	for (StdStringVector::const_reverse_iterator ritr = wus.rbegin(); ritr != wus.rend(); ++ritr)
 	{
-		loadWorkunits.Append(__FUNCTION__, boost::bind(&threadRestoreWorkunit, self, ritr->c_str(), &workunits));
+		if (!ritr->empty()) 
+		{
+			loadWorkunits.Append(__FUNCTION__, boost::bind(&threadRestoreWorkunit, self, ritr->c_str(), &workunits));
 
-		if (--wuCap <= 0)
-			break;
+			if (--wuCap <= 0)
+				break;
+		}
 	}
 	loadWorkunits.SetMaxThreadCount(30);
 	loadWorkunits.Join();
