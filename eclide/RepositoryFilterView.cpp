@@ -2,6 +2,7 @@
 #include "..\en_us\resource.h"
 
 #include "RepositoryFilterView.h"
+#include <SMC.h>
 
 //  ==========================================================================
 CRepositoryFilterView::CRepositoryFilterView() 
@@ -33,6 +34,8 @@ FINDMODE CRepositoryFilterView::GetFindMode()
 {
 	switch (m_mode)
 	{
+	case SEARCHMODE_PLAIN:
+		return FINDMODE_NONE;
 	case SEARCHMODE_WILDCARD:
 		return FINDMODE_WILDCARD;
 	case SEARCHMODE_REGEXP:
@@ -49,8 +52,6 @@ LRESULT CRepositoryFilterView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 	*m_comboModuleCtrl = GetDlgItem(IDC_COMBO_MODULE);
 
 	m_modeCtrl = GetDlgItem(IDC_COMBO_MODE);
-	m_modeCtrl.AddString(_T("Wildcard Match"));
-	m_modeCtrl.AddString(_T("Regular Expression"));
 
 	m_dateCtrl = GetDlgItem(IDC_DATETIMEPICKER_DATE);
 	m_timeCtrl = GetDlgItem(IDC_DATETIMEPICKER_TIME);
@@ -224,6 +225,7 @@ LRESULT CRepositoryFilterView::OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	DoRestoreState();
 	WTL::CLockWindowUpdate lock(m_hWnd);
 	m_Tree.DeleteAllItems();
+	m_modeCtrl.ResetContent();
 	return 0;
 }
 
@@ -244,6 +246,22 @@ LRESULT CRepositoryFilterView::OnReset(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	DoRestoreState();
 	WTL::CLockWindowUpdate lock(m_hWnd);
 	m_Tree.DeleteAllItems();
+
+	CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
+	CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
+
+	m_modeCtrl.ResetContent();
+	int row = 0;
+	if (serverVersion->GetMajor() >= 5)
+	{
+		row = m_modeCtrl.AddString(_T("Plain"));
+		m_modeCtrl.SetItemData(row, SEARCHMODE_PLAIN);
+	}
+	row = m_modeCtrl.AddString(_T("Wildcard"));
+	m_modeCtrl.SetItemData(row, SEARCHMODE_WILDCARD);
+	row = m_modeCtrl.AddString(_T("Regular Expression"));
+	m_modeCtrl.SetItemData(row, SEARCHMODE_REGEXP);
+
 	return 0;
 }
 
@@ -300,16 +318,10 @@ LRESULT CRepositoryFilterView::OnCbnSelendokComboModule(WORD /*wNotifyCode*/, WO
 
 LRESULT CRepositoryFilterView::OnCbnSelendokComboMode(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	switch(m_modeCtrl.GetCurSel())
-	{
-	case 0:
-	case 1:
-		m_mode = static_cast<SEARCHMODE>(m_modeCtrl.GetCurSel());
-		break;
-	default:
-		m_mode = SEARCHMODE_UNKNOWN;
-		break;
-	}
+	m_mode = SEARCHMODE_UNKNOWN;
+	int sel = m_modeCtrl.GetCurSel();
+	if (sel >=0)
+		m_mode = static_cast<SEARCHMODE>(m_modeCtrl.GetItemData(sel));
 	return 0;
 }
 
@@ -486,7 +498,7 @@ void CRepositoryFilterView::DoSearch(CRepositoryFilterView *self, std::_tstring 
 {
 	CComPtr<IRepository> rep = AttachRepository();
 	IAttributeVectorPtr * results = new IAttributeVectorPtr();	//This is released in the submit done.
-	int foundCount = rep->FindAttributes(searchText, searchModule, searchUser, (searchOptions.mode == SEARCHMODE_REGEXP), searchOptions.sandboxed, searchOptions.checkedout, searchOptions.locked, searchOptions.orphaned, searchOptions.modifiedSince ? dateTime.c_str() : _T(""), *results);
+	int foundCount = rep->FindAttributes(searchText, searchModule, searchUser, searchOptions.mode, searchOptions.sandboxed, searchOptions.checkedout, searchOptions.locked, searchOptions.orphaned, searchOptions.modifiedSince ? dateTime.c_str() : _T(""), *results);
 	::PostMessage(self->m_hWnd, CWM_SUBMITDONE, (WPARAM)(results), foundCount);
 }
 //  ===========================================================================
