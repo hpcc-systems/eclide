@@ -54,7 +54,7 @@ public:
 		for (StdStringVector::const_reverse_iterator ritr = wus.rbegin(); ritr != wus.rend(); ++ritr)
 		{
 			CString wuid = ritr->c_str();
-			if (!self->HasWorkunit(wuid))
+			if (!wuid.IsEmpty() && !self->HasWorkunit(wuid))
 			{
 				StlLinked<Dali::IWorkunit> workunit = server->GetWorkunitFast(wuid, true);
 				if (workunit.get())
@@ -124,8 +124,10 @@ public:
 				}
 				m_loaded = LOADING_STARTED;
 				CString wuids = m_props.Get(PERSIST_WUID);
-				clib::thread run(__FUNCTION__, boost::bind(&threadLoadWorkunit, this, wuids));
-				//threadLoadWorkunit(this, wuids);
+				if (!wuids.IsEmpty()) {
+					clib::thread run(__FUNCTION__, boost::bind(&threadLoadWorkunit, this, wuids));
+					//threadLoadWorkunit(this, wuids);
+				}
 			}
 			break;
 		case WORKSPACE_ITEM_ATTRIBUTE:
