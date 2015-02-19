@@ -5,6 +5,7 @@
 #include "cmdProcess.h"
 #include "EclErrorParser.h"
 #include <UtilFilesystem.h>
+#include "logger.h"
 
 class CAttributeBase : public clib::CLockableUnknown
 {
@@ -46,6 +47,7 @@ public:
 				}
 			}
 		}
+		_DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
 		return false;
 	}
 
