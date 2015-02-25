@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "..\en_us\resource.h"
 
-#include ".\repositorytreenode.h"
+#include ".\RepositoryTreeNode.h"
 #include <util.h> //clib
 #include <utilDateTime.h> //clib
 #include <dali.h> //comms
@@ -90,7 +90,7 @@ void CRepositoryNode::LoadModules(IModuleVector & modules, CLoadingNode * loadin
 		{
 			CModuleNode * newNode = new CModuleNode(m_owner, itr->get());
 			newNode->InsertBelow(*GetTreeView(), m_bVirtualNode ? TVI_ROOT : *this);
-			newNode->operator ()(itr->get());
+			newNode->operator ()(itr->get(), REFRESH_MODULE_UNKNOWN);
 		}
 	}
 }
@@ -153,12 +153,21 @@ ATTRSTATE CModuleNode::GetState()
 	}
 	return ATTRSTATE_LOCKED;
 }
-void CModuleNode::operator()(IModule * /*module*/)
+void CModuleNode::operator()(IModule * /*module*/, REFRESH_MODULE refreshType)
 {
 	if (GetTreeView())
 	{
 		SetState(-1, TVIS_STATEIMAGEMASK);
 		SetState(INDEXTOSTATEIMAGEMASK(GetStateIcon(GetState())), TVIS_STATEIMAGEMASK);
+	}
+	switch (refreshType) {
+	case REFRESH_MODULE_CHILDADDED:
+		if (IsExpanded())
+		{
+			Expand(TVE_COLLAPSE | TVE_COLLAPSERESET);
+			Expand();
+		}
+		break;
 	}
 }
 
@@ -181,7 +190,7 @@ void CModuleNode::ItemExpanding()
 	{
 		CModuleNode * newNode = new CModuleNode(m_owner, itr->get());
 		newNode->InsertBelow(*GetTreeView(), *this);
-		newNode->operator ()(newNode->GetModule());
+		newNode->operator ()(newNode->GetModule(), REFRESH_MODULE_UNKNOWN);
 	}
 	for (IAttributeVector::iterator itr = attributes.begin(); itr != attributes.end(); ++itr)
 	{

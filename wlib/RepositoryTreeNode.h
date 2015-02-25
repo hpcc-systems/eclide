@@ -137,7 +137,7 @@ public:
 	int GetDispSelectedImage();
 	int GetDispChildren();
 	ATTRSTATE GetState();
-	void operator()(IModule *module);
+	void operator()(IModule *module, REFRESH_MODULE refreshType);
 
 	IModule * GetModule();
 	void SetNextExpandShouldBeFast();
