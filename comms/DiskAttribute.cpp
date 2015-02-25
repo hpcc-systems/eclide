@@ -494,10 +494,10 @@ CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* mod
 	return DiskAttributeCache.Get(new CDiskAttribute(rep, module, label, type, path, version, sandboxed));
 }
 
-//IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, unsigned version, bool sandboxed)
-//{
-//	return CreateDiskAttributeRaw(rep, module, label, version, sandboxed, false);
-//}
+IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, const boost::filesystem::wpath & path)
+{
+	return CreateDiskAttributeRaw(rep, module, label, type->GetRepositoryCode(), path, 0, false);
+}
 
 IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path)
 {
