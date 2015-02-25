@@ -40,6 +40,13 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
 {
 	CommsInitialize();
 
+	if (boost::algorithm::contains(static_cast<const TCHAR *>(user), _T(" ")))
+	{
+		retCode = 1004;
+		retMsg = _T("Invalid User ID.");
+		return false;
+	}
+
 	ResetNamespace(config);
 	CalcNamespace(config, user, password);
 	CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(config->Get(GLOBAL_SERVER_ACCOUNT), user, password);
