@@ -465,7 +465,15 @@ static void FoldEclDoc(unsigned int startPos, int length, int initStyle,
 			}
 		}
 		if (style == SCE_ECL_WORD2) {
-			if (MatchNoCase(styler, i, "record") || MatchNoCase(styler, i, "transform") || MatchNoCase(styler, i, "type") || MatchNoCase(styler, i, "function") || 
+			if (MatchNoCase(styler, i, "transform")) {
+				unsigned int j = i + 1;
+				while ((j < endPos) && IsASpace(styler.SafeGetCharAt(j))) {
+					j++;
+				}
+				if (styler.SafeGetCharAt(j) != '(') {
+					levelNext++;
+				}
+			} else if (MatchNoCase(styler, i, "record") || MatchNoCase(styler, i, "type") || MatchNoCase(styler, i, "function") || 
 				MatchNoCase(styler, i, "module") || MatchNoCase(styler, i, "service") || MatchNoCase(styler, i, "interface") || MatchNoCase(styler, i, "ifblock") ||
 				MatchNoCase(styler, i, "macro") || MatchNoCase(styler, i, "beginc++")) {
 				levelNext++;
