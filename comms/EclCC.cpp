@@ -594,6 +594,11 @@ TRI_BOOL IsRemoteQueueEnabled()
 }
 
 CacheT<std::_tstring, CEclCC> EclCCCache;
+void ClearEclCCSingletons()
+{
+	EclCCCache.Clear();
+}
+
 CEclCC * CreateEclCCRaw(IConfig * config, const std::_tstring & compilerFile)
 {
 	return EclCCCache.Get(new CEclCC(config, compilerFile));

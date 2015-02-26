@@ -938,6 +938,7 @@ void ClearRepositorySingletons(bool childrenOnly)
 		RepositoryCache.Clear();
 		g_passwordCache.clear();
 	}
+	ClearEclCCSingletons();
 }
 
 //static void RollbackAsync(CString url, CString user, CString password, IAttributeVectorAdapt attributes, async_rollback_complete_slot_type s)
