@@ -490,7 +490,7 @@ public:
 
 	void Refresh(bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
 	{
-		if (deleted) 
+		if (deleted || newAttrAsOldOneMoved) 
 			DeleteAttribute(this);
 
 		on_refresh(this, eclChanged, newAttrAsOldOneMoved, deleted);
