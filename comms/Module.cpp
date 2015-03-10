@@ -270,9 +270,9 @@ public:
 		return on_refresh.connect(s); 
 	}
 
-	void Refresh()
+	void Refresh(REFRESH_MODULE refreshType = REFRESH_MODULE_UNKNOWN)
 	{
-		on_refresh(this);
+		on_refresh(this, refreshType);
 	}
 };
 

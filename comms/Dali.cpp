@@ -575,6 +575,7 @@ public:
 
 	unsigned GetGraphs(const CString &pWuid)
 	{
+		ATLASSERT(!pWuid.IsEmpty());
 		CString url, user, password;
 		CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password));
 		CStringPool stringPool;
@@ -1043,6 +1044,7 @@ protected:
 
 	static IWorkunit * GetWorkunit(CServerConfig config, CString wuid, bool noBroadcast) 
 	{
+		ATLASSERT(!wuid.IsEmpty());
 		StlLinked<IWorkunit> retVal;
 
 		if (boost::algorithm::istarts_with((const TCHAR *)wuid, _T("L")))

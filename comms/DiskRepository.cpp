@@ -17,6 +17,7 @@ namespace algo = boost::algorithm;
 IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false);
 IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl, bool noBroadcast);
 IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed);
+IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, const boost::filesystem::wpath & path);
 IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path);
 //IAttributeHistory * CreateAttributeHistory(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring & label, const ECLAttribute * data);
 void ClearDiskAttributeCache();
@@ -99,6 +100,12 @@ private:
 					std::_tstring attrLabel = stringToWString(boost::filesystem::basename(relativePath)).c_str();
 					std::_tstring ecl;
 					CComPtr<IAttribute> attr = GetDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), 0, false);
+					if (!attr) 
+					{
+						attr = CreateDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), fullPath);
+						if (attr)
+							attr->GetModule()->Refresh(REFRESH_MODULE_CHILDADDED);
+					}
 					if (attr)
 						attr->GetText();
 				}
@@ -201,6 +208,15 @@ public:
 
 	virtual unsigned GetAllModules(IModuleVector & _modules, IModuleHierarchy & _moduleHierarchy, bool GetChecksum = false, bool noRefresh = true, bool noBroadcast = false) const
 	{
+		CachePoolAccessor<IModuleVector> modulesCache(m_cacheGetModules, GetCacheID(), m_repositoryLabel, boost::lexical_cast<std::_tstring>(GetChecksum));
+		CachePoolAccessor<IModuleHierarchy> moduleHierarchyCache(m_cacheGetModulesHierarchy, GetCacheID(), m_repositoryLabel, boost::lexical_cast<std::_tstring>(GetChecksum));
+		if (!modulesCache.needs_update(noRefresh) && !moduleHierarchyCache.needs_update(noRefresh))
+		{
+			_modules = modulesCache.get();
+			_moduleHierarchy = moduleHierarchyCache.get();
+			return _modules.size();
+		}
+
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		IModuleVector modules;
 		IModuleHierarchy moduleHierarchy;
@@ -225,6 +241,8 @@ public:
 				_modules.insert(_modules.end(), itr->second.begin(), itr->second.end());
 			}
 		}
+		modulesCache.update(_modules);
+		moduleHierarchyCache.update(_moduleHierarchy);
 		return _modules.size();
 	}
 

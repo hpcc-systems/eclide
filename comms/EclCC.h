@@ -62,4 +62,4 @@ COMMS_API void EnableRemoteQueueEnabled(TRI_BOOL enable = TRI_BOOL_TRUE);
 COMMS_API TRI_BOOL IsRemoteQueueEnabled();
 
 COMMS_API IEclCC * CreateIEclCC();
-
+COMMS_API void ClearEclCCSingletons();

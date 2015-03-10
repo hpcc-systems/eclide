@@ -481,7 +481,13 @@ void ClearDiskAttributeCache()
 IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed)
 {
 	CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::wpath(), version, sandboxed);
-	return DiskAttributeCache.Exists(attr->GetCacheID());
+	IAttribute * retVal = DiskAttributeCache.Exists(attr->GetCacheID());
+	if (retVal && !retVal->Exists())
+	{
+		DiskAttributeCache.Clear(attr->GetCacheID());
+		return NULL;
+	}
+	return retVal;
 }
 
 void DeleteAttribute(CDiskAttribute * attr)
@@ -494,10 +500,10 @@ CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* mod
 	return DiskAttributeCache.Get(new CDiskAttribute(rep, module, label, type, path, version, sandboxed));
 }
 
-//IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, unsigned version, bool sandboxed)
-//{
-//	return CreateDiskAttributeRaw(rep, module, label, version, sandboxed, false);
-//}
+IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, const boost::filesystem::wpath & path)
+{
+	return CreateDiskAttributeRaw(rep, module, label, type->GetRepositoryCode(), path, 0, false);
+}
 
 IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path)
 {
