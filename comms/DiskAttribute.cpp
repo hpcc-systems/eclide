@@ -481,7 +481,13 @@ void ClearDiskAttributeCache()
 IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed)
 {
 	CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::wpath(), version, sandboxed);
-	return DiskAttributeCache.Exists(attr->GetCacheID());
+	IAttribute * retVal = DiskAttributeCache.Exists(attr->GetCacheID());
+	if (retVal && !retVal->Exists())
+	{
+		DiskAttributeCache.Clear(attr->GetCacheID());
+		return NULL;
+	}
+	return retVal;
 }
 
 void DeleteAttribute(CDiskAttribute * attr)

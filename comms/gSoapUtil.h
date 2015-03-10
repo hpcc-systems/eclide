@@ -2,6 +2,7 @@
 
 #include "SoapUtil.h"
 #include "Global.h"
+#include "..\config.h"
 
 //  ===========================================================================
 void ResetNamespace(IConfig * config);
@@ -79,6 +80,8 @@ private:
 	void Init(const std::_tstring & url, const std::_tstring & user, const std::_tstring & password, int _connect_timeout = 0, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT)
 	{
 		m_url = CT2A(url.c_str());
+		m_url += "?ClientID=ECLIDE-";
+		m_url += BUILD_TAG;
 		m_user = CT2A(user.c_str());
 		m_password = CT2A(password.c_str());
 
