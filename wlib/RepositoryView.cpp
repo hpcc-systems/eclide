@@ -167,6 +167,28 @@ LRESULT CRepositoryView::OnRefresh(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam
 	Refresh((IModule *)wParam);
 	return 0;
 }
+
+LRESULT CRepositoryView::OnRefreshModuleNode(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
+{
+	CModuleNode * node = (CModuleNode *)wParam;
+	if (node && node->GetTreeView() && node->GetTreeView()->IsWindow())
+	{
+		node->SetState(-1, TVIS_STATEIMAGEMASK);
+		node->SetState(INDEXTOSTATEIMAGEMASK(GetStateIcon(node->GetState())), TVIS_STATEIMAGEMASK);
+		switch (lParam) {
+		case REFRESH_MODULE_CHILDADDED:
+			if (node->IsExpanded())
+			{
+				node->Expand(TVE_COLLAPSE | TVE_COLLAPSERESET);
+				node->Expand();
+			}
+			break;
+		}
+		node->Release();
+	}
+	return 0;
+}
+
 LRESULT CRepositoryView::OnInitialize(UINT /*uMsg*/, WPARAM /*wNoCreate*/, LPARAM /*lParam*/)
 {
 	Refresh(NULL);

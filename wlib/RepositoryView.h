@@ -7,7 +7,6 @@
 #include "Combo.h"
 #include "util.h"
 #include "utilDateTime.h"
-#include <CustomMessages.h>
 #include <ModuleHelper.h>
 #include "AttrListDlg.h"
 
@@ -463,6 +462,7 @@ public:
 		MESSAGE_HANDLER_EX(CWM_CLEAR, OnClear)
 		MESSAGE_HANDLER_EX(CWM_RESET, OnReset)
 		MESSAGE_HANDLER_EX(CWM_REFRESH, OnRefresh)
+		MESSAGE_HANDLER_EX(RVUM_REFRESHMODULENODE, OnRefreshModuleNode)
 		MESSAGE_HANDLER_EX(CWM_INITIALIZE, OnInitialize)
 
 		MSG_WM_PAINT(OnPaint)
@@ -484,6 +484,7 @@ public:
 	LRESULT OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	LRESULT OnReset(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	LRESULT OnRefresh(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
+	LRESULT OnRefreshModuleNode(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	LRESULT OnInitialize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	LRESULT OnSelectionUpdated(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	void OnPaint(HDC hDc); 

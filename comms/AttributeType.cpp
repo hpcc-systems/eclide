@@ -12,6 +12,7 @@
 #define ATTRIBUTE_TYPE_ECLOTHER _T("ecl*")
 #define ATTRIBUTE_TYPE_PLUGIN _T("dll")
 #define ATTRIBUTE_TYPE_ESDL _T("esdl")
+#define ATTRIBUTE_TYPE_ECM _T("ecm")
 #define ATTRIBUTE_TYPE_SALT _T("salt")
 #define ATTRIBUTE_TYPE_KEL _T("kel")
 #define ATTRIBUTE_TYPE_XSLT _T("xslt")
@@ -65,6 +66,8 @@ public:
 				m_description = _T("ECL - Enterprise Control Language");
 			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
 				m_description = _T("ESDL - Enterprise Services Definition Language");
+			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM))
+				m_description = _T("ECM (ESDL) - Enterprise Services Definition Language");
 			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
 				m_description = _T("SPC - Salt Definition File");
 			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
@@ -85,6 +88,8 @@ public:
 		if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECL))
 			m_defaultText = (boost::_tformat(_T("EXPORT %1% := 'todo';")) % attrLabel.c_str()).str();
 		else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
+			m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
+		else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM))
 			m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
 		else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
 			m_defaultText = (boost::_tformat(_T("SALT:  %s;")) % attrLabel.c_str()).str();
@@ -138,6 +143,10 @@ IAttributeType * CreateIAttributeESDLType()
 {
 	return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_ESDL));
 }
+IAttributeType * CreateIAttributeECMType()
+{
+	return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_ECM));
+}
 IAttributeType * CreateIAttributeSALTType()
 {
 	return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_SALT));
@@ -158,6 +167,7 @@ unsigned int GetAttributeTypes(IAttributeTypeVector & types)
 {
 	types.push_back(CreateIAttributeECLType());
 	types.push_back(CreateIAttributeESDLType());
+	types.push_back(CreateIAttributeECMType());
 	types.push_back(CreateIAttributeSALTType());
 	types.push_back(CreateIAttributeKELType());
 	types.push_back(CreateIAttributeDUDType());
@@ -173,6 +183,8 @@ bool IsValidExtension(const std::_tstring & ext)
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECLLIB))
 		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
+		return true;
+	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECM))
 		return true;
 	else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_SALT))
 		return true;

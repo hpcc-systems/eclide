@@ -155,19 +155,10 @@ ATTRSTATE CModuleNode::GetState()
 }
 void CModuleNode::operator()(IModule * /*module*/, REFRESH_MODULE refreshType)
 {
-	if (GetTreeView())
+	if (GetTreeView() && GetTreeView()->IsWindow())
 	{
-		SetState(-1, TVIS_STATEIMAGEMASK);
-		SetState(INDEXTOSTATEIMAGEMASK(GetStateIcon(GetState())), TVIS_STATEIMAGEMASK);
-	}
-	switch (refreshType) {
-	case REFRESH_MODULE_CHILDADDED:
-		if (IsExpanded())
-		{
-			Expand(TVE_COLLAPSE | TVE_COLLAPSERESET);
-			Expand();
-		}
-		break;
+		AddRef();
+		GetTreeView()->GetParent().PostMessage(RVUM_REFRESHMODULENODE, (WPARAM)this, refreshType);
 	}
 }
 
