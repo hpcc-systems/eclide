@@ -2,6 +2,7 @@
 
 #include "MultiTreeNode.h"
 #include "repository.h"
+#include <CustomMessages.h>
 
 //MaskIcons
 #define STATE_UNKNOWN 0
@@ -19,6 +20,13 @@
 #define STATE_PLACEHOLDER 12 
 
 struct CRepositorySelections;
+
+enum RVUM
+{
+	RVUM_FIRST = CWM_LAST + 1,
+	RVUM_REFRESHMODULENODE,
+	RVUM_LAST
+};
 
 //  ===========================================================================
 __interface IRepositorySlot
