@@ -43,75 +43,7 @@ private:
 		}
 	}
 
-	static void thread_MonitorFolder2(CComPtr<CMonitorFolder> self)	
-	{
-		USES_CONVERSION;
-
-		HANDLE hDir = CreateFile(pathToWString(self->m_path).c_str(), FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
-
-		FILE_NOTIFY_INFORMATION Buffer[1024];
-		DWORD BytesReturned;
-		while( ReadDirectoryChangesW(
-			hDir,                                  // handle to directory
-			&Buffer,                                    // read results buffer
-			sizeof(Buffer),                                // length of buffer
-			TRUE,                                 // monitoring option
-			FILE_NOTIFY_CHANGE_SECURITY|
-			FILE_NOTIFY_CHANGE_CREATION|
-			FILE_NOTIFY_CHANGE_LAST_ACCESS|
-			FILE_NOTIFY_CHANGE_LAST_WRITE|
-			FILE_NOTIFY_CHANGE_SIZE|
-			FILE_NOTIFY_CHANGE_ATTRIBUTES|
-			FILE_NOTIFY_CHANGE_DIR_NAME|
-			FILE_NOTIFY_CHANGE_FILE_NAME,             // filter conditions
-			&BytesReturned,              // bytes returned
-			NULL,                          // overlapped buffer
-			NULL// completion routine
-			))
-		{
-			for (int i = 0; !Buffer[i].NextEntryOffset; ++i)
-			{
-				if (!self->m_doMonitor)
-					return;
-
-				CString helper_txt;
-				switch(Buffer[i].Action)
-				{
-				case FILE_ACTION_ADDED: 
-					helper_txt = "The file was added to the directory"; break; 
-				case FILE_ACTION_REMOVED: 
-					helper_txt = "The file was removed from the directory"; break; 
-				case FILE_ACTION_MODIFIED: 
-					helper_txt = "The file was modified. This can be a change in the time stamp or attributes."; break; 
-				case FILE_ACTION_RENAMED_OLD_NAME: 
-					helper_txt = "The file was renamed and this is the old name."; break; 
-				case FILE_ACTION_RENAMED_NEW_NAME: 
-					helper_txt = "The file was renamed and this is the new name."; break;
-				}
-
-				std::_tstring filename(Buffer[i].FileName, Buffer[i].FileNameLength / sizeof(_T(' ')));
-				if (HasValidExtension(filename))
-				{
-					boost::filesystem::wpath fullPath = self->m_path / filename;
-					boost::filesystem::wpath relativePath = boost::filesystem::wpath(self->m_path.filename()) / filename;
-					std::_tstring type = pathToWString(relativePath.extension());
-					std::_tstring moduleLabel = pathToWString(relativePath.parent_path());
-					algo::replace_all(moduleLabel, _T("\\"), _T("."));
-					std::_tstring attrLabel = stringToWString(boost::filesystem::basename(relativePath)).c_str();
-					std::_tstring ecl;
-					CComPtr<IAttribute> attr = GetDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), 0, false);
-					if (!attr) 
-					{
-						attr = CreateDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), fullPath);
-						if (attr)
-							attr->GetModule()->Refresh(REFRESH_MODULE_CHILDADDED);
-					}
-					if (attr)
-						attr->GetText();
-				}
-			}
-		}
-	}
+	static void thread_MonitorFolder2(CComPtr<CMonitorFolder> self);	
 
 public:
 	CMonitorFolder(CDiskRepository * repository, const boost::filesystem::path & path) : m_repository(repository), m_path(pathToWPath(path)), m_leaf(pathToWString(path.filename()))
@@ -812,6 +744,77 @@ public:
 };
 static CacheT<std::_tstring, CDiskRepository> DiskRepositoryCache;
 //  ===========================================================================
+void CMonitorFolder::thread_MonitorFolder2(CComPtr<CMonitorFolder> self)
+{
+	USES_CONVERSION;
+
+	HANDLE hDir = CreateFile(pathToWString(self->m_path).c_str(), FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
+
+	FILE_NOTIFY_INFORMATION Buffer[1024];
+	DWORD BytesReturned;
+	while( ReadDirectoryChangesW(
+		hDir,                                  // handle to directory
+		&Buffer,                                    // read results buffer
+		sizeof(Buffer),                                // length of buffer
+		TRUE,                                 // monitoring option
+		FILE_NOTIFY_CHANGE_SECURITY|
+		FILE_NOTIFY_CHANGE_CREATION|
+		FILE_NOTIFY_CHANGE_LAST_ACCESS|
+		FILE_NOTIFY_CHANGE_LAST_WRITE|
+		FILE_NOTIFY_CHANGE_SIZE|
+		FILE_NOTIFY_CHANGE_ATTRIBUTES|
+		FILE_NOTIFY_CHANGE_DIR_NAME|
+		FILE_NOTIFY_CHANGE_FILE_NAME,             // filter conditions
+		&BytesReturned,              // bytes returned
+		NULL,                          // overlapped buffer
+		NULL// completion routine
+		))
+	{
+		for (int i = 0; !Buffer[i].NextEntryOffset; ++i)
+		{
+			if (!self->m_doMonitor)
+				return;
+
+			CString helper_txt;
+			switch(Buffer[i].Action)
+			{
+			case FILE_ACTION_ADDED: 
+				helper_txt = "The file was added to the directory"; break; 
+			case FILE_ACTION_REMOVED: 
+				helper_txt = "The file was removed from the directory"; break; 
+			case FILE_ACTION_MODIFIED: 
+				helper_txt = "The file was modified. This can be a change in the time stamp or attributes."; break; 
+			case FILE_ACTION_RENAMED_OLD_NAME: 
+				helper_txt = "The file was renamed and this is the old name."; break; 
+			case FILE_ACTION_RENAMED_NEW_NAME: 
+				helper_txt = "The file was renamed and this is the new name."; break;
+			}
+
+			std::_tstring filename(Buffer[i].FileName, Buffer[i].FileNameLength / sizeof(_T(' ')));
+			if (HasValidExtension(filename))
+			{
+				boost::filesystem::wpath fullPath = self->m_path / filename;
+				boost::filesystem::wpath relativePath = boost::filesystem::wpath(self->m_path.filename()) / filename;
+				std::_tstring type = pathToWString(relativePath.extension());
+				std::_tstring moduleLabel = pathToWString(relativePath.parent_path());
+				algo::replace_all(moduleLabel, _T("\\"), _T("."));
+				std::_tstring attrLabel = stringToWString(boost::filesystem::basename(relativePath)).c_str();
+				std::_tstring ecl;
+				CComPtr<IAttribute> attr = GetDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), 0, false);
+				if (!attr) 
+				{
+					self->m_repository->ClearShortTermCache();
+					attr = CreateDiskAttribute((IRepository *)self->m_repository, moduleLabel.c_str(), attrLabel.c_str(), CreateIAttributeType(type), fullPath);
+					if (attr)
+						attr->GetModule()->Refresh(REFRESH_MODULE_CHILDADDED);
+				}
+				if (attr)
+					attr->GetText();
+			}
+		}
+	}
+}
+//  ===========================================================================
 void ClearDiskRepositorySingletons()
 {
 	ClearDiskAttributeCache();
@@ -846,3 +849,4 @@ COMMS_API IRepository * AttachDiskRepository(const TCHAR* url, const TCHAR * lab
 	}
 	return retVal;
 }
+
