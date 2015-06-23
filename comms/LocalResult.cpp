@@ -89,6 +89,10 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_total;
 	}
+	const TCHAR *GetECLType(const std::_tstring & colID) const
+	{
+		return NULL;
+	}
 	unsigned GetResultData(__int64 start, int count, ITable * result) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);

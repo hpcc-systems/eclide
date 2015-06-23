@@ -1085,7 +1085,7 @@ protected:
 		request.IncludeTimers = true;
 		request.IncludeVariables = false;
 		request.IncludeWorkflows = false;
-		request.SuppressResultSchemas = true;
+		request.SuppressResultSchemas = false;
 
 		_ns6__WUInfoResponse response;
 		ESP_EXCEPTION_LOG3(response.Exceptions);
