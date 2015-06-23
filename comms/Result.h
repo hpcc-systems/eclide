@@ -14,6 +14,7 @@ __interface IResult : public IUnknown
 	const TCHAR *GetLink() const;
 	const TCHAR *GetFileName() const;
 	__int64 GetTotal() const;
+	const TCHAR *GetECLType(const std::_tstring & colID) const;
 	unsigned GetResultData(__int64 start, int count, ITable * result) const;
 	unsigned GetResultData(__int64 start, int count, ITable * result, __int64 & total) const;
 };

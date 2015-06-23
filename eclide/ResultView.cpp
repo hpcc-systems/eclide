@@ -617,7 +617,7 @@ public:
 	{
 		return m_table->GetColumn(i);
 	}
-	const TCHAR * GetColumnTypeAsECL(int i, std::_tstring & type) const
+	const TCHAR * _GetColumnTypeAsECL(int i, std::_tstring & type) const
 	{
 		switch (m_table->GetColumnType(i))
 		{
@@ -650,10 +650,20 @@ public:
 		}
 		return type.c_str();
 	}
+	const TCHAR * GetColumnTypeAsECL(int i, std::_tstring & type) const
+	{
+		const TCHAR * _type = m_result->GetECLType(m_table->GetColumn(i));
+		if (_type) {
+			type = _type;
+		} else {
+			return _GetColumnTypeAsECL(i, type);
+		}
+		return type.c_str();
+	}
 	bool IsColQuoted(int col) const
 	{
 		std::_tstring type;
-		return boost::algorithm::iequals(GetColumnTypeAsECL(col, type), VARSTRING);
+		return boost::algorithm::iequals(_GetColumnTypeAsECL(col, type), VARSTRING);
 	}
 	const TCHAR * GetCellQuoted(__int64 row, int col, std::_tstring & result)
 	{
