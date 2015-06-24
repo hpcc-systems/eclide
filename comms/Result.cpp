@@ -16,7 +16,7 @@ typedef ECLWUResult ECLResult;
 
 namespace Dali
 {
-
+typedef std::map<std::_tstring, std::_tstring> StringStringMap;
 class CResult : public IResult, public clib::CLockableUnknown, public boost::noncopyable
 {
 protected:
@@ -30,6 +30,7 @@ protected:
 	CString m_fileName;
 	bool IsSupplied;
 	__int64 m_total;
+	StringStringMap m_schemaMap;
 
 public:
 	IMPLEMENT_CLOCKABLEUNKNOWN;
@@ -86,6 +87,16 @@ public:
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return m_total;
 	}
+	const TCHAR *GetECLType(const std::_tstring & colID) const
+	{
+		clib::recursive_mutex::scoped_lock proc(m_mutex);
+		StringStringMap::const_iterator found = m_schemaMap.find(colID);
+		if (found != m_schemaMap.end()) 
+		{
+			return found->second.c_str();
+		}
+		return NULL;
+	}
 	unsigned GetResultData(__int64 start, int count, ITable * result) const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -138,6 +149,17 @@ public:
 		SAFE_ASSIGN(IsSupplied, c->IsSupplied);
 		SAFE_ASSIGN(m_total, c->Total);
 		SAFE_ASSIGN2CSTRING(m_fileName, c->FileName);
+		if (c->ECLSchemas)
+		{
+			m_schemaMap.clear();
+			for(std::size_t i = 0; i < c->ECLSchemas->ECLSchemaItem.size(); ++i)
+			{
+				if (c->ECLSchemas->ECLSchemaItem[i]->ColumnName && c->ECLSchemas->ECLSchemaItem[i]->ColumnType) 
+				{
+					m_schemaMap[*c->ECLSchemas->ECLSchemaItem[i]->ColumnName] = *c->ECLSchemas->ECLSchemaItem[i]->ColumnType;
+				}
+			}
+		}
 	}
 #endif
 };

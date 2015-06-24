@@ -5,6 +5,7 @@
 #include <util.h> //clib
 #include <utilDateTime.h> //clib
 #include <dali.h> //comms
+#include <topology.h> //comms
 #include <thread.h>
 
 const TCHAR * const SYNTAXWARNING = _T("Warning");
@@ -155,19 +156,10 @@ ATTRSTATE CModuleNode::GetState()
 }
 void CModuleNode::operator()(IModule * /*module*/, REFRESH_MODULE refreshType)
 {
-	if (GetTreeView())
+	if (GetTreeView() && GetTreeView()->IsWindow())
 	{
-		SetState(-1, TVIS_STATEIMAGEMASK);
-		SetState(INDEXTOSTATEIMAGEMASK(GetStateIcon(GetState())), TVIS_STATEIMAGEMASK);
-	}
-	switch (refreshType) {
-	case REFRESH_MODULE_CHILDADDED:
-		if (IsExpanded())
-		{
-			Expand(TVE_COLLAPSE | TVE_COLLAPSERESET);
-			Expand();
-		}
-		break;
+		AddRef();
+		GetTreeView()->GetParent().PostMessage(RVUM_REFRESHMODULENODE, (WPARAM)this, refreshType);
 	}
 }
 
@@ -373,11 +365,36 @@ void CAttributeNode::SetSyntaxState(SYNTAX_CHECK state)
 	m_syntaxCheck = state;
 }
 
+const TCHAR *GetSyntaxTargetCluster(std::_tstring & targetCluster)
+{
+	StlLinked<Topology::ITopology> server = AttachTopology(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_TOPOLOGY), _T("Topology"));
+	Topology::IClusterVector clusters;
+	server->GetClusters(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), clusters);
+	targetCluster = _T("");
+	for (Topology::IClusterVector::const_iterator itr = clusters.begin(); itr != clusters.end(); ++itr) {
+		if (targetCluster.empty()) {
+			//  Default to first cluster  ---
+			targetCluster = itr->get()->GetName();
+		}
+		if (boost::algorithm::iequals(itr->get()->GetName(), _T("hthor")) || boost::algorithm::iequals(itr->get()->GetType(), _T("hthor"))) {
+			//  Prefer hthor cluster  ---
+			//  TODO:  Retest when HPCC-13787 is resolved  ---
+			targetCluster = itr->get()->GetName();
+			break;
+		} else if (boost::algorithm::icontains(itr->get()->GetName(), _T("hthor"))) {
+			targetCluster = itr->get()->GetName();
+			//  Continue in case we find an actual hthor  ---
+		}
+	}
+	return targetCluster.c_str();
+}
+
 SYNTAX_CHECK CAttributeNode::CheckSyntax()
 {
+	std::_tstring targetCluster;
 	Dali::CEclExceptionVector errors;
 	StlLinked<Dali::IDali> dali = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
-	if (dali->CheckSyntax(_T("hthor"), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attribute->GetModuleQualifiedLabel(), m_attribute->GetLabel(), _T(""), m_attribute->GetText(), -1, _T(""), false, false, errors))
+	if (dali->CheckSyntax(GetSyntaxTargetCluster(targetCluster), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attribute->GetModuleQualifiedLabel(), m_attribute->GetLabel(), _T(""), m_attribute->GetText(), -1, _T(""), false, false, errors))
 	{
 		m_syntaxCheck = SYNTAX_CHECK_PASS;
 		m_syntaxSummary.clear();
@@ -608,9 +625,10 @@ SYNTAX_CHECK CAttributeHistoryNode::GetSyntaxState() const
 
 SYNTAX_CHECK CAttributeHistoryNode::CheckSyntax()
 {
+	std::_tstring targetCluster;
 	m_errors.clear();
 	StlLinked<Dali::IDali> dali = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
-	if (dali->CheckSyntax(_T("hthor"), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attributeHistory->GetAttribute()->GetModuleQualifiedLabel(), m_attributeHistory->GetAttribute()->GetLabel(), _T(""), m_attributeHistory->GetText(), -1, _T(""), false, false, m_errors))
+	if (dali->CheckSyntax(GetSyntaxTargetCluster(targetCluster), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), m_attributeHistory->GetAttribute()->GetModuleQualifiedLabel(), m_attributeHistory->GetAttribute()->GetLabel(), _T(""), m_attributeHistory->GetText(), -1, _T(""), false, false, m_errors))
 	{
 		m_syntaxCheck = SYNTAX_CHECK_PASS;
 		for(Dali::CEclExceptionVector::iterator itr = m_errors.begin(); itr != m_errors.end(); ++itr)
