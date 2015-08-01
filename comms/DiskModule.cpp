@@ -148,7 +148,7 @@ protected:
 
 	void DisplayError(char* pszAPI, DWORD dwError)
 	{
-		LPVOID lpvMessageBuffer;
+		LPTSTR lpvMessageBuffer = NULL;
 
 		if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_FROM_SYSTEM,
 			GetModuleHandle(L"Kernel32.dll"), dwError, 
@@ -160,9 +160,9 @@ protected:
 		}
 
 		//  ...now display this string.
-		wprintf_s(L"ERROR: API        = %s.\n", (char *)pszAPI);
+		wprintf_s(L"ERROR: API        = %s.\n", (TCHAR *)CA2T(pszAPI));
 		wprintf_s(L"       error code = %08X.\n", dwError);
-		wprintf_s(L"       message    = %s.\n", (char *)lpvMessageBuffer);
+		wprintf_s(L"       message    = %s.\n", lpvMessageBuffer);
 
 		//  Free the buffer allocated by the system.
 		LocalFree(lpvMessageBuffer);

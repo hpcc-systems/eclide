@@ -9,7 +9,6 @@
 #include <atlddx.h>
 #include <atlcrack.h>
 #include <atlscrl.h>
-#include <atlprint.h>
 #include <atldlgs.h>
 #include <atltheme.h>
 #include <atlsplit.h>

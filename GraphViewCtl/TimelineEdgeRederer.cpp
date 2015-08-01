@@ -187,7 +187,7 @@ SizeF CTimelineEdgeRenderer::CalcDisplaySizes(
 		&m_canvas->GetListFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 		ARGB(GraphTypes::Color::Black),
 		m_canvas->m_fonts,
-		(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+		static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 	if(m_sizeTrackerS.Update(m_canvas))
 	{
@@ -636,13 +636,13 @@ void CTimelineEdgeRenderer::Draw(WPARAM wParam)
 		tdh.m_borderwidth=1.0;
 		tdh.m_margins=m_textMargins;
 		tdh.m_printing=m_canvas->IsPrinting();
-		tdh.m_scale=IsHot()?1.0:m_canvas->GetScale();
+		tdh.m_scale= static_cast<GraphTypes::REAL>(IsHot()?1.0:m_canvas->GetScale());
 
 		FontInfo fi(
 			&m_canvas->GetListFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 			0,
 			m_canvas->m_fonts,
-			(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+			static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 		CalcColors(tdh.m_cbkgnd, tdh.m_cborder, fi.m_color, true);
 
@@ -705,7 +705,7 @@ void CTimelineEdgeRenderer::Draw(WPARAM wParam)
 		// Target vertex
 
 		tdh.m_text=m_vt->GetLabel();
-		tdh.m_scale=IsHot()?1.0:m_canvas->GetScale();
+		tdh.m_scale= static_cast<GraphTypes::REAL>(IsHot()?1.0:m_canvas->GetScale());
 
 		CalcColors(tdh.m_cbkgnd, tdh.m_cborder, fi.m_color, false);
 		bbox=CalcVertexTextBBox(false);
@@ -812,7 +812,7 @@ void CTimelineEdgeRenderer::DrawLabel(CAggDC& dc)
 		&m_canvas->GetListFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 		fcolor,
 		m_canvas->m_fonts,
-		(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+		static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 
 	if(m_sizeTracker.Update(m_canvas))

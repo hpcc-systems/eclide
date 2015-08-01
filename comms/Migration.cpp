@@ -329,7 +329,7 @@ public:
 
 	bool m_setTextNoBroadcast;
 	int m_retries;
-	int m_maxThreadCount;
+	unsigned int m_maxThreadCount;
 
 	CMigration(IMigrationCallback * caller, bool setTextNoBroadcast, IRepository * targetRep) : m_threads(0), m_setTextNoBroadcast(setTextNoBroadcast)
 	{

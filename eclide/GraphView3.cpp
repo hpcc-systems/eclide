@@ -448,7 +448,7 @@ bool CGraphView3::InitGraphControl()
 		Hr = spAxWindow->CreateControl(CComBSTR(GUID_npHPCCSystemsGraphViewControl), m_wndLNGVC.m_hWnd, NULL);
 		if(FAILED(Hr)) 
 			return false;
-	}	catch (const std::exception & ex) {
+	}	catch (const std::exception &) {
 		return false;
 	}
 

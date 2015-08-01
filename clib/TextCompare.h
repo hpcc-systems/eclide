@@ -121,9 +121,9 @@ public:
 	bool MovedCompContains(unsigned int pos) const;
 
 	unsigned int GetMatchCount() const;
-	void GetMatch(int gap, CTable & baseTable, CTable & compTable) const;
+	void GetMatch(unsigned int gap, CTable & baseTable, CTable & compTable) const;
 	unsigned int GetGapCount() const;
-	void GetGap(int gap, CTable & baseTable, CTable & compTable) const;
+	void GetGap(unsigned int gap, CTable & baseTable, CTable & compTable) const;
 
 protected:
 	void CalculateMatches(CMatchBlockVector & matches) const;

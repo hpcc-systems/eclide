@@ -171,11 +171,11 @@ GraphTypes::SizeF CAggDC::GetScaledTextExtent(
 		renderSize.Height=GraphTypes::REAL(fonts->m_feng.height());
 
 		// unfortunately, the measure above is unreliable
-		GraphTypes::REAL pathwidth=ras_aa.max_x()-ras_aa.min_x()+1;
+		GraphTypes::REAL pathwidth=static_cast<GraphTypes::REAL>(ras_aa.max_x()-ras_aa.min_x()+1);
 		if(pathwidth>renderSize.Width)
 			renderSize.Width=pathwidth;
 
-		GraphTypes::REAL pathheight=ras_aa.max_y()-ras_aa.min_y()+1;
+		GraphTypes::REAL pathheight= static_cast<GraphTypes::REAL>(ras_aa.max_y()-ras_aa.min_y()+1);
 		if(pathheight>renderSize.Height)
 			renderSize.Height=pathheight;
 	}

@@ -9,7 +9,7 @@
 #include <xtree>
 #include <set>
 #include <utility>
-#include <hash_map>
+#include <unordered_map>
 namespace std
 {
 #ifdef _UNICODE

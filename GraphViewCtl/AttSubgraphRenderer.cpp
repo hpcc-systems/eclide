@@ -501,7 +501,7 @@ void CAttSubgraphRenderer::SetWindowPos(const CRect& pos, UINT flags)
 		ATLASSERT(!(flags&SWP_NOMOVE)); // no move, no size, no sense for now
 
 		m_rcWnd.OffsetRect(offset);
-		m_rcButMin.Offset(offset.x, offset.y);
+		m_rcButMin.Offset(static_cast<GraphTypes::REAL>(offset.x), static_cast<GraphTypes::REAL>(offset.y));
 	}
 	else
 	{
@@ -535,7 +535,7 @@ int CAttSubgraphRenderer::CalcCaptionSize(CDCHandle& dc, const TCHAR* title)
 		&m_canvas->GetCaptionFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 		0,
 		m_canvas->m_fonts,
-		(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+		static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 	m_captionSize=tdh.CalcSize(dc, fi);
 
@@ -591,7 +591,7 @@ void CAttSubgraphRenderer::DrawCaption(CAggDC& dc, const Color & colourBackgroun
 			&m_canvas->GetCaptionFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 			colourBorder,
 			m_canvas->m_fonts,
-			(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+			static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 		rcfcaption.x=m_rcWnd.left+border;
 		rcfcaption.y=m_rcWnd.top+border;

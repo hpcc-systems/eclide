@@ -123,7 +123,7 @@ public:
       if( iPos < 0 || iPos >= m_aViews.GetSize() ) return FALSE;
       if( iPos == m_iCurPos ) return TRUE; // Already selected
       // Ask user if it's OK to change selection...
-      NMHDR nmh = { m_hWnd, GetDlgCtrlID(), TCN_SELCHANGING };
+      NMHDR nmh = { m_hWnd, static_cast<UINT_PTR>(GetDlgCtrlID()), TCN_SELCHANGING };
       LRESULT lRes = ::SendMessage(GetParent(), WM_NOTIFY, nmh.idFrom, (LPARAM) &nmh);
       if( lRes!=0 ) return FALSE; // User declined
       // Assign new state
@@ -203,7 +203,7 @@ public:
       // FIX: Important; see Q149501
       ModifyStyleEx(0, WS_EX_CONTROLPARENT);
       // This is a little WTL subclass helper notification
-      NMHDR nmh = { m_hWnd, GetDlgCtrlID(), TCN_INITIALIZE };
+      NMHDR nmh = { m_hWnd, static_cast<UINT_PTR>(GetDlgCtrlID()), TCN_INITIALIZE };
       ::SendMessage(GetParent(), WM_NOTIFY, nmh.idFrom, (LPARAM) &nmh);
    }
 };

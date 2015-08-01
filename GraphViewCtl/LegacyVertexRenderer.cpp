@@ -255,7 +255,7 @@ GraphTypes::SizeF CLegacyVertexRenderer::CalcDisplaySizes(
 			&m_canvas->GetListFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 			0,
 			m_canvas->m_fonts,
-			(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+			static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 		CDrawVertexHelper tdh;
 		tdh.m_borderwidth=1;
@@ -561,7 +561,7 @@ void CLegacyVertexRenderer::Draw(CAggDC& dc)
 		&m_canvas->GetListFont(m_canvas->IsPrinting()?m_canvas->GetFontPixHeight():DEFAULT_FONT_SIZE),
 		fontColor,
 		m_canvas->m_fonts,
-		(DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72);
+		static_cast<GraphTypes::REAL>((DEFAULT_FONT_SIZE-1)*m_canvas->GetDPIY()/72));
 
 	CDrawVertexHelper tdh;
 	tdh.m_text=label.c_str();
