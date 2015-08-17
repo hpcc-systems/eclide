@@ -4,9 +4,9 @@
 set ( HPCC_PROJECT "community" )
 set ( HPCC_MAJOR 5 )
 set ( HPCC_MINOR 2 )
-set ( HPCC_POINT 5 )
-set ( HPCC_MATURITY "closedown" )
-set ( HPCC_SEQUENCE 0 )
+set ( HPCC_POINT 6 )
+set ( HPCC_MATURITY "release" )
+set ( HPCC_SEQUENCE 1 )
 ###
 IF ( ${HPCC_POINT} GREATER 65 )
   error ( "HPCC_POINT must be less than 66." )
