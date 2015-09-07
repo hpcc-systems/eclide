@@ -28,7 +28,7 @@ HBITMAP Modify(HICON icon, int iBrightess, int iContrast)
 		CxImage ximg_ht;
 		ximg_ht.CreateFromHICON(icon);
 
-		RGBQUAD oldColor,newColor,tmpColor;
+		//RGBQUAD oldColor,newColor,tmpColor;
 
 		//this will be a little tricky:
 		//oldColor = ximg_ht.GetPixelColor(0,0); // first.. get first pixel color (used as transparent one)

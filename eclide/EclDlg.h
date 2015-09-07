@@ -15,7 +15,6 @@ __interface IAttribute;
 template<typename T>
 class CEclDlgQBImpl:
 	public CSourceDlgImpl<T>, 
-	public WTL::CPrintJobInfo,
 	public CEclCommandMixin<T>
 {
 	typedef T thisClass;
@@ -25,8 +24,6 @@ class CEclDlgQBImpl:
 public:
 	CEclDlgQBImpl(ISourceSlot * owner) : baseClass(owner)
 	{
-		//m_printer.OpenDefaultPrinter();
-		//m_devmode.CopyFromPrinter(m_printer);
 		InitEclCommandMixin(::GetUIUpdate(), ::GetIMainFrame(), &m_view, owner);
 	}
 

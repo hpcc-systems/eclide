@@ -90,9 +90,9 @@ public:
 };
 
 template<typename _Kty, typename _Ty>
-class HashCacheT : public stdext::hash_map<_Kty, StlLinked<_Ty> >
+class HashCacheT : public std::unordered_map<_Kty, StlLinked<_Ty> >
 {
-	typedef stdext::hash_map<_Kty, StlLinked<_Ty> > MapType;
+	typedef std::unordered_map<_Kty, StlLinked<_Ty> > MapType;
 
 protected:
 public:

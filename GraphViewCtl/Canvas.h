@@ -160,7 +160,7 @@ public:
 	virtual ULONG STDMETHODCALLTYPE AddRef() throw();
 	virtual ULONG STDMETHODCALLTYPE Release() throw();
 #else
-	IMPLEMENT_CUNKNOWN();
+	IMPLEMENT_CUNKNOWN;
 #endif
 
 	CMeta&			m_meta;

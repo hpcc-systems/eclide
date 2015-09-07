@@ -46,7 +46,7 @@ void restore(T &s, const char * filename)
 		// restore the schedule from the archive
 		ia >> BOOST_SERIALIZATION_NVP(s);
 	}
-	catch(const boost::archive::archive_exception &e)
+	catch(const boost::archive::archive_exception &)
 	{
 		//  This typically means the count is wrong...
 		ATLASSERT(false);

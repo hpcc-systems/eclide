@@ -132,7 +132,7 @@ BOOL CSourceDataView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 						break;
 					default:
 						{
-							int itemID = id - (ID_DEBUGSOURCEVIEW_LOCATE + 100);
+							unsigned int itemID = id - (ID_DEBUGSOURCEVIEW_LOCATE + 100);
 							if (itemID >= 0 && itemID < found->second.size())
 								m_owner->NewSelection(NULL, found->second[itemID], true, false);
 						}

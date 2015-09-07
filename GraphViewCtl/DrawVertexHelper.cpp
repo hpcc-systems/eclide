@@ -60,7 +60,7 @@ void CDrawVertexHelper::Draw(CAggDC& dc, const FontInfo& font, const GraphTypes:
 				text,
 				font.m_typeface.c_str(), 
 				font.m_fontMgr,
-				font.m_height);
+				round_int(font.m_height));
 
 			extent.Height*=m_scale;
 			extent.Width*=m_scale;
@@ -129,7 +129,7 @@ void CDrawVertexHelper::Draw(CAggDC& dc, const FontInfo& font, const GraphTypes:
 			rcinner,
 			font.m_color,
 			font.m_typeface.c_str(), 
-			font.m_height,
+			round_int(font.m_height),
 			descsubtract);
 
 		dc.TransformPop();
@@ -171,10 +171,10 @@ void CDrawVertexHelper::Draw(CAggDC& dc, const FontInfo& font, const GraphTypes:
 		// don't scale margins for scale factors >1.0 since it would clip the text
 		if(m_scale<1.0)
 		{
-			scaled.cxLeftWidth*=m_scale,
-			scaled.cyTopHeight*=m_scale,
-			scaled.cxLeftWidth*=m_scale,
-			scaled.cyBottomHeight*=m_scale;
+			scaled.cxLeftWidth=round_int(scaled.cxLeftWidth * m_scale),
+			scaled.cyTopHeight=round_int(scaled.cyTopHeight * m_scale),
+			scaled.cxLeftWidth=round_int(scaled.cxLeftWidth * m_scale),
+			scaled.cyBottomHeight=round_int(scaled.cyBottomHeight * m_scale);
 		}
 
 		textRect.DeflateRect(
@@ -281,7 +281,7 @@ SizeF CDrawVertexHelper::CalcSize(CDCHandle& dc, const FontInfo& font, const TCH
 			text, 
 			font.m_typeface.c_str(), 
 			font.m_fontMgr,
-			font.m_height);
+			round_int(font.m_height));
 
 		PointF marg(
 			REAL(m_margins.cxLeftWidth+m_margins.cxRightWidth),
@@ -326,10 +326,10 @@ SizeF CDrawVertexHelper::CalcSize(CDCHandle& dc, const FontInfo& font, const TCH
 		// don't scale margins for scale factors >1.0 since it would clip the text
 		if(m_scale<1.0)
 		{
-			scaled.cxLeftWidth*=m_scale,
-			scaled.cyTopHeight*=m_scale,
-			scaled.cxLeftWidth*=m_scale,
-			scaled.cyBottomHeight*=m_scale;
+			scaled.cxLeftWidth = round_int(scaled.cxLeftWidth * m_scale),
+			scaled.cyTopHeight = round_int(scaled.cyTopHeight * m_scale),
+			scaled.cxLeftWidth = round_int(scaled.cxLeftWidth * m_scale),
+			scaled.cyBottomHeight = round_int(scaled.cyBottomHeight * m_scale);
 		}
 
 		size.Width+=scaled.cxLeftWidth+scaled.cxRightWidth;

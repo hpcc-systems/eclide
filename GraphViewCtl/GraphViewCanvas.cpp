@@ -415,8 +415,8 @@ void CGraphViewCanvas::SetOverviewSize(const CSize& size)
 		{
 			RectF orgrc;
 			ir->GetBoundsBox(orgrc);
-			orgrc.Width=size.cx;
-			orgrc.Height=size.cy;
+			orgrc.Width=static_cast<GraphTypes::REAL>(size.cx);
+			orgrc.Height= static_cast<GraphTypes::REAL>(size.cy);
 			ir->SetBoundsBox(orgrc,SWP_NOMOVE|SWP_NOREDRAW);
 			InvalidateLayout();	
 		}
@@ -529,8 +529,8 @@ void CGraphViewCanvas::SetLayout(SGV::LAYOUT layout)
 	{
 		CRect pos;
 		m_canvas->m_currentFocus->GetWindowRect(pos);
-		m_prevCenter.x = pos.left;
-		m_prevCenter.y = pos.top;
+		m_prevCenter.x = static_cast<GraphTypes::REAL>(pos.left);
+		m_prevCenter.y = static_cast<GraphTypes::REAL>(pos.top);
 		ATLTRACE("v ");
 	}
 	else
@@ -3271,8 +3271,8 @@ float CGraphViewCanvas::SetScaleToFit(bool selectedOnly, float maxScale)
 
 	CRect rc;
 	GetClientRect(&rc);
-	wRect.Width=rc.Width();
-	wRect.Height=rc.Height();
+	wRect.Width= static_cast<GraphTypes::REAL>(rc.Width());
+	wRect.Height= static_cast<GraphTypes::REAL>(rc.Height());
 
 	//if (m_hSB.IsWindowVisible())
 	{
@@ -3481,7 +3481,7 @@ void CGraphViewCanvas::SetScaleAt(const CPoint& pt, REAL step/*=0.25*/)
 	if(new_scale>5)
 		new_scale=5;
 
-	if(m_canvas->SetScale(new_scale))
+	if(m_canvas->SetScale(static_cast<float>(new_scale)))
 	{
 		// restore point
 		m_canvas->AllTransform(oldpt); // new screen coords of desired point
@@ -3922,7 +3922,7 @@ void CGraphViewCanvas::OnHScroll(int scrollRequest, short scrollPos, HWND hWnd)
 		GetClientRect(&rcclient);
 		RectF graphExtent;
 		m_canvas->GetGraphExtent(graphExtent);
-		graphExtent.Offset(-change,0);
+		graphExtent.Offset(static_cast<GraphTypes::REAL>(-change),0);
 		m_canvas->StoreGraphExtent(graphExtent);
 		if(scrollRequest!=SB_THUMBTRACK)
 			UpdateScrollBars(rcclient);
@@ -4019,7 +4019,7 @@ void CGraphViewCanvas::OnVScroll(int scrollRequest, short scrollPos, HWND hWnd)
 		GetClientRect(&rcclient);
 		RectF graphExtent;
 		m_canvas->GetGraphExtent(graphExtent);
-		graphExtent.Offset(0,-change);
+		graphExtent.Offset(0, static_cast<GraphTypes::REAL>(-change));
 		m_canvas->StoreGraphExtent(graphExtent);
 		if(scrollRequest!=SB_THUMBTRACK)
 			UpdateScrollBars(rcclient);
@@ -4049,7 +4049,7 @@ BOOL CGraphViewCanvas::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					new_scale=0.005;
 				if(new_scale>5)
 					new_scale=5;
-				SetScale(new_scale);
+				SetScale(static_cast<float>(new_scale));
 				NMSGVHDR msg;
 				msg.id = CUniqueID();
 				m_canvas->NotifyParent(SCW_NOTIFYSCALECHANGE, &msg);
@@ -4271,8 +4271,8 @@ LRESULT CGraphViewCanvas::OnLayoutFinished(UINT /*uMsg*/, WPARAM wParam, LPARAM 
 			{
 				CRect pos;
 				m_canvas->m_currentFocus->GetWindowRect(pos);
-				center.x = pos.left;
-				center.y = pos.top;
+				center.x = static_cast<GraphTypes::REAL>(pos.left);
+				center.y = static_cast<GraphTypes::REAL>(pos.top);
 				ATLTRACE("v ");
 			}
 			else
@@ -4318,7 +4318,7 @@ LRESULT CGraphViewCanvas::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*
 		aggdc->TransformReset();
 		if(IsReadOnly())
 			aggdc->Rect(rcclient.TopLeft(), rcclient.BottomRight(), Color::Gray, Color::Gray);
-		aggdc->DrawScaledText(m_message.c_str(), GraphTypes::RectF(rcclient.CenterPoint().x, rcclient.CenterPoint().y, 140, 20), Color::Black, "Verdana", 22, GraphTypes::PointF(0.0f, 0.0f));
+		aggdc->DrawScaledText(m_message.c_str(), GraphTypes::RectF(static_cast<GraphTypes::REAL>(rcclient.CenterPoint().x), static_cast<GraphTypes::REAL>(rcclient.CenterPoint().y), 140.0f, 20.0f), Color::Black, "Verdana", 22, GraphTypes::PointF(0.0f, 0.0f));
 	}
 	else if(IsReadOnly())
 	{
@@ -4364,7 +4364,7 @@ LRESULT CGraphViewCanvas::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*
 	{
 		boost::scoped_ptr<CAggDC> aggdc(CAggDC::CreateBlitMemoryDC(dc, m_canvas->m_fonts, m_hWnd, &rc));
 		aggdc->TransformReset();
-		aggdc->DrawScaledText(m_message.c_str(), GraphTypes::RectF(rcclient.CenterPoint().x, rcclient.CenterPoint().y, 140, 20), Color::Black, "Verdana", 22, GraphTypes::PointF(0.0f, 0.0f));
+		aggdc->DrawScaledText(m_message.c_str(), GraphTypes::RectF(static_cast<GraphTypes::REAL>(rcclient.CenterPoint().x), static_cast<GraphTypes::REAL>(rcclient.CenterPoint().y), 140.0f, 20.0f), Color::Black, "Verdana", 22, GraphTypes::PointF(0.0f, 0.0f));
 	}
 	if (m_hWnd == ::GetFocus())
 		dc.DrawFocusRect(rcclient);

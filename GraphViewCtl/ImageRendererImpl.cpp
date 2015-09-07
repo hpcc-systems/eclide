@@ -352,8 +352,8 @@ LRESULT CImageRenderer::HitTestDispatchMsg(const GraphTypes::PointF& point,
 					break;
 				CSize imgsize;
 				img.GetSize(imgsize);
-				sizeimg.Width=imgsize.cx;
-				sizeimg.Height=imgsize.cy;
+				sizeimg.Width= static_cast<GraphTypes::REAL>(imgsize.cx);
+				sizeimg.Height= static_cast<GraphTypes::REAL>(imgsize.cy);
 				m_canvas->SizeTransform(sizeimg);
 
 				rcimg.x=rcimg.y=0;
@@ -432,8 +432,8 @@ LRESULT CImageRenderer::HitTestDispatchMsg(const GraphTypes::PointF& point,
 
 					CSize imgsize;
 					img.GetSize(imgsize);
-					sizeimg.Width=imgsize.cx;
-					sizeimg.Height=imgsize.cy;
+					sizeimg.Width= static_cast<GraphTypes::REAL>(imgsize.cx);
+					sizeimg.Height= static_cast<GraphTypes::REAL>(imgsize.cy);
 					m_canvas->SizeTransform(sizeimg);
 
 					rcimg.x=rcimg.y=0;
@@ -723,7 +723,7 @@ RectF CImageRenderer::DrawBitmap(
 {
 	CSize imgsize;
 	iinfo.GetSize(imgsize);
-	RectF rImg(0, 0, imgsize.cx, imgsize.cy);
+	RectF rImg(0.0f, 0.0f, static_cast<GraphTypes::REAL>(imgsize.cx), static_cast<GraphTypes::REAL>(imgsize.cy));
 	// true image size in pixels, not accounting for image resizing
 	iinfo.GetSourceSize(imgsize); 
 
@@ -923,8 +923,8 @@ void CImageRenderer::AdjustOffsets(
 	if(scale)
 	{
 		SizeF scaledMargin;
-		scaledMargin.Width=marginX;
-		scaledMargin.Height=marginY;
+		scaledMargin.Width= static_cast<GraphTypes::REAL>(marginX);
+		scaledMargin.Height= static_cast<GraphTypes::REAL>(marginY);
 
 		m_canvas->SizeTransform(scaledMargin);
 
@@ -1275,7 +1275,7 @@ CRect CImageRenderer::CalcMinImageRect()
 					const ImageInfo& img=itrnodeimages->second;
 					ATLASSERT(img.image);
 
-					REAL minsize=m_handleSize*3;
+					REAL minsize= static_cast<GraphTypes::REAL>(m_handleSize*3);
 					SizeF sizeimg(minsize, minsize);
 					m_canvas->SizeTransform(sizeimg);
 					RectF rcimg(0, 0, sizeimg.Width, sizeimg.Height);

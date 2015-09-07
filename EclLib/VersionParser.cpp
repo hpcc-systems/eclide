@@ -122,7 +122,7 @@ bool ParseVersion(const std::_tstring & version_string, ParsedVersion & result)
 #ifdef _DEBUG
 	else
 	{
-		std::_tstring parsed(trim_version_string.begin(), parse_result.stop);
+		std::_tstring parsed(trim_version_string.cbegin(), parse_result.stop);
 	}
 #endif
 	return false;

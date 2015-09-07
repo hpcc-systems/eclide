@@ -25,9 +25,9 @@ class CTest {
 public:
 	CTest::CTest() {
 		ParsedEclError test;
-		ATLASSERT(ParseEclError(_T("C:\Users\bloodea\AppData\Local\Temp\TFRC987.tmp:10,32:error K2003 - current input doesn't match any of the available syntax paths at 's'"), test));
-		ATLASSERT(ParseEclError(_T("C:\Users\bloodea\AppData\Local\Temp\TFRC987.tmp:15,44:error K2003 - current input doesn't match any of the available syntax paths at ':='"), test));
-		ATLASSERT(ParseEclError(_T("C:\Users\bloodea\AppData\Local\Temp\TFRC987.tmp:16,45:error K2003 - current input doesn't match any of the available syntax paths at ':='"), test));
+		ATLASSERT(ParseEclError(_T("C:\\Users\\bloodea\\AppData\\Local\\Temp\\TFRC987.tmp:10,32:error K2003 - current input doesn't match any of the available syntax paths at 's'"), test));
+		ATLASSERT(ParseEclError(_T("C:\\Users\\bloodea\\AppData\\Local\\Temp\\TFRC987.tmp:15,44:error K2003 - current input doesn't match any of the available syntax paths at ':='"), test));
+		ATLASSERT(ParseEclError(_T("C:\\Users\\bloodea\\AppData\\Local\\Temp\\TFRC987.tmp:16,45:error K2003 - current input doesn't match any of the available syntax paths at ':='"), test));
 		ATLASSERT(ParseEclError(_T("\\machine\\temp\\test.ecl(7,13) : error C007 : Hello and Welcome"), test));
 		ATLASSERT(ParseEclError(_T("c:\\temp\\test.ecl(7,13) : error C007 : Hello and Welcome"), test));
 		ATLASSERT(ParseEclError(_T("\\machine\\temp\\test.ecl : 7,13 : error C007 - Hello and Welcome"), test));

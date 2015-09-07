@@ -440,8 +440,8 @@ void CListWindowRenderer::GetWindowSize(GraphTypes::SizeF& size) const
 	CRectMap::const_iterator itr=m_wnd_sizes.find(m_canvas->GetDpiScale());
 	if(itr!=m_wnd_sizes.end())
 		wndrc=itr->second;
-	size.Width=wndrc.Width();
-	size.Height=wndrc.Height();
+	size.Width= static_cast<GraphTypes::REAL>(wndrc.Width());
+	size.Height= static_cast<GraphTypes::REAL>(wndrc.Height());
 }
 
 //-----------------------------------------------------------------------------

@@ -154,7 +154,7 @@ public:
 typedef StlLinked<CModuleNode> CModuleNodeAdapt;
 typedef std::vector<CModuleNodeAdapt> CModuleNodeVector;
 
-WLIB_API enum SYNTAX_CHECK
+enum SYNTAX_CHECK
 {
 	SYNTAX_CHECK_UNKNOWN,
 	SYNTAX_CHECK_PENDING,

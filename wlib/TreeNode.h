@@ -5,7 +5,7 @@
 #include "workunit.h"
 #include "attribute.h"
 
-WLIB_API enum ImageIDS
+enum ImageIDS
 {
 	IID_FOLDER_CLOSED = 0,
 	IID_FOLDER_OPEN,
@@ -37,7 +37,7 @@ WLIB_API enum ImageIDS
 	IID_TRASH_FULL
 };
 
-WLIB_API enum StateIDS
+enum StateIDS
 {
 	SID_NONE = 0,
 	SID_GREENTICK,

@@ -6,7 +6,7 @@ __interface IAttributeHistory;
 #include "WorkspaceItem.h"
 #include "SciSyntaxMarker.h"
 
-typedef enum BuilderStartup
+enum BuilderStartup
 {
 	StartUnknown = 0,
 	StartNoChange,

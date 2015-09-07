@@ -125,7 +125,7 @@ int CTimelineCtrl::CalcBottomBarHeight()
 			m_bottomTextHeight);
 
 	m_bottomFontPixelHeight=size.Height;
-	return round_int(size.Height) + m_bottomMargin*2 + m_tick1Height;
+	return round_int(size.Height + m_bottomMargin*2 + m_tick1Height);
 }
 
 //-----------------------------------------------------------------------------
@@ -411,13 +411,13 @@ void CTimelineCtrl::ScrollTimeline(int pixels)
 	if(m_topUnits==unitsYears && (m_endTime.wYear-m_beginTime.wYear)>1)
 	{
 		double mins=duration/60.0;
-		ratio=rcwidth/mins;	
+		ratio=static_cast<GraphTypes::REAL>(rcwidth/mins);
 		units=unitsMinutes;
 	}
 	else
 	{
-		double secs=duration;
-		ratio=rcwidth/secs;
+		double secs= static_cast<double>(duration);
+		ratio= static_cast<GraphTypes::REAL>(rcwidth/secs);
 		units=unitsSeconds;
 	}
 
@@ -498,13 +498,13 @@ void CTimelineCtrl::ScaleTimeline(double scale)
 	if(m_topUnits==unitsYears && (m_endTime.wYear-m_beginTime.wYear)>1)
 	{
 		double mins=duration/60.0;
-		ratio=rcwidth/mins;	
+		ratio= static_cast<GraphTypes::REAL>(rcwidth/mins);
 		units=unitsMinutes;
 	}
 	else
 	{
-		double secs=duration;
-		ratio=rcwidth/secs;
+		double secs= static_cast<double>(duration);
+		ratio= static_cast<GraphTypes::REAL>(rcwidth/secs);
 		units=unitsSeconds;
 	}
 
@@ -1005,7 +1005,7 @@ REAL CTimelineCtrl::ScreenPosFromTime(const FILETIME& time) const
 		pos=double(m_wndWidth)*(double(t_t1)/double(t2_t1));
 	}
 
-	return pos;
+	return static_cast<REAL>(pos);
 }
 
 //-----------------------------------------------------------------------------
@@ -1025,7 +1025,7 @@ REAL CTimelineCtrl::ScreenSizeFromTimeInterval(const __int64& interval) const
 	if(t2_t1!=0)
 		size=double(m_wndWidth)*(double(interval)/double(t2_t1));
 
-	return size;
+	return static_cast<REAL>(size);
 }
 
 //-----------------------------------------------------------------------------
@@ -1559,7 +1559,7 @@ RectF CTimelineCtrl::DrawLeftmost(
 		}
 		else
 		{
-			rc.x=topbar?m_topLeftMargin:m_bottomLeftMargin;
+			rc.x= static_cast<GraphTypes::REAL>(topbar?m_topLeftMargin:m_bottomLeftMargin);
 		}
 	}
 	else
@@ -1678,14 +1678,14 @@ void CTimelineCtrl::DrawBackground(CAggDC& aggdc, bool topbar)
 {
 	bool balternate=false;
 	bool barnoticks=topbar?m_topTickers.empty():m_bottomTickers.empty();
-	RectF rcbk(0.0, 0.0, 0.0, m_topBarHeight);
+	RectF rcbk(0.0, 0.0, 0.0, static_cast<GraphTypes::REAL>(m_topBarHeight));
 	BarUnits units=topbar?m_topUnits:m_bottomUnits;
 	TimeFormat format=topbar?m_topFormat:m_bottomFormat;
 
 	if(!topbar)
 	{
-		rcbk.y=m_topBarHeight+1;
-		rcbk.Height=m_bottomBarHeight;
+		rcbk.y= static_cast<GraphTypes::REAL>(m_topBarHeight+1);
+		rcbk.Height= static_cast<GraphTypes::REAL>(m_bottomBarHeight);
 	}
 
 	unsigned value;
@@ -1719,7 +1719,7 @@ void CTimelineCtrl::DrawBackground(CAggDC& aggdc, bool topbar)
 
 		// TODO when topmost units are 10s of years this seems wrong
 		balternate=AlternatingColor(format, value, topbar);
-		rcbk.Width=m_wndWidth;
+		rcbk.Width= static_cast<GraphTypes::REAL>(m_wndWidth);
 		aggdc.LinearGradientRect(rcbk, balternate?m_lightBgrColor:m_darkBgrColor, Color::White);
 	}
 	else
@@ -1982,7 +1982,7 @@ void CTimelineCtrl::DrawMinutes(CAggDC& aggdc, bool topbar)
 			CalcTextVerticalPosition(m_leftHotSpots.day, true);
 			CalcTextVerticalPosition(m_leftHotSpots.month, true);
 			CalcTextVerticalPosition(m_leftHotSpots.year, true);
-			CalcHotSpots(m_beginTime, formatHourMinute, m_leftHotSpots, m_topLeftMargin);
+			CalcHotSpots(m_beginTime, formatHourMinute, m_leftHotSpots, static_cast<GraphTypes::REAL>(m_topLeftMargin));
 		}
 
 		size=CAggDC::GetScaledTextExtent(
@@ -2173,7 +2173,7 @@ void CTimelineCtrl::DrawHours(CAggDC& aggdc, bool topbar)
 			CalcTextVerticalPosition(m_leftHotSpots.day, true);
 			CalcTextVerticalPosition(m_leftHotSpots.month, true);
 			CalcTextVerticalPosition(m_leftHotSpots.year, true);
-			CalcHotSpots(m_beginTime, formatHours, m_leftHotSpots, m_topLeftMargin);
+			CalcHotSpots(m_beginTime, formatHours, m_leftHotSpots, static_cast<GraphTypes::REAL>(m_topLeftMargin));
 		}
 
 		size=CAggDC::GetScaledTextExtent(
@@ -2351,7 +2351,7 @@ void CTimelineCtrl::DrawDays(CAggDC& aggdc, bool topbar)
 			CalcTextVerticalPosition(m_leftHotSpots.day, true);
 			CalcTextVerticalPosition(m_leftHotSpots.month, true);
 			CalcTextVerticalPosition(m_leftHotSpots.year, true);
-			CalcHotSpots(m_beginTime, formatDayMonthYear, m_leftHotSpots, m_topLeftMargin);
+			CalcHotSpots(m_beginTime, formatDayMonthYear, m_leftHotSpots, static_cast<GraphTypes::REAL>(m_topLeftMargin));
 		}
 
 		size=CAggDC::GetScaledTextExtent(
@@ -2605,7 +2605,7 @@ void CTimelineCtrl::DrawMonths(CAggDC& aggdc, bool topbar)
 		{
 			CalcTextVerticalPosition(m_leftHotSpots.month, true);
 			CalcTextVerticalPosition(m_leftHotSpots.year, true);
-			CalcHotSpots(m_beginTime, formatMonthAndYear, m_leftHotSpots, m_topLeftMargin);
+			CalcHotSpots(m_beginTime, formatMonthAndYear, m_leftHotSpots, static_cast<GraphTypes::REAL>(m_topLeftMargin));
 		}
 
 		size=CAggDC::GetScaledTextExtent(
@@ -3036,7 +3036,7 @@ LRESULT CTimelineCtrl::OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 		break;
 	};// switch
 
-	p1.y=p2.y=Height();
+	p1.y=p2.y= static_cast<GraphTypes::REAL>(Height());
 	aggdc->Line(p1, p2, m_dividerColor);
 
 	return 0;

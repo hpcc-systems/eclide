@@ -679,7 +679,7 @@ GraphTypes::REAL CCanvas::ScreenPosFromTime(
 
 	ATLASSERT(rc.Width>0); // what do to in this case?
 	if(rc.Width==0)
-		return pos;
+		return static_cast<GraphTypes::REAL>(pos);
 
 	// formula is: pos = width*(t-t1)/(t2-t1)
 
@@ -689,7 +689,7 @@ GraphTypes::REAL CCanvas::ScreenPosFromTime(
 	//pos=rc.Width*double(t_t1)/double(t2_t1);
 	pos=(double(t_t1)/double(t2_t1))*rc.Width;
 
-	return pos;
+	return static_cast<GraphTypes::REAL>(pos);
 }
 
 //-----------------------------------------------------------------------------

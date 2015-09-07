@@ -452,7 +452,7 @@ const TCHAR * wildcardToRegex(const std::_tstring & wildcard, std::_tstring & re
 {
 	//regex = _T("^");
 
-	for (int i = 0; i < wildcard.length(); ++i) 
+	for (unsigned int i = 0; i < wildcard.length(); ++i) 
 	{
 		switch (wildcard[i])
 		{

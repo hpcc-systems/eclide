@@ -972,7 +972,7 @@ public:
       ATLASSERT(!::IsBadCodePtr((FARPROC)Proc));
       return ::EnumPropsEx(m_hWnd, Proc, lParam) != -1;
    }  
-   typedef struct PROPFIND { LPCTSTR pstrName; BOOL bFound; };
+   struct PROPFIND { LPCTSTR pstrName; BOOL bFound; };
    BOOL FindProperty(LPCTSTR pstrName) const
    {
       ATLASSERT(::IsWindow(m_hWnd));
