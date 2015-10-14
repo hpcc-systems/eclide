@@ -9,6 +9,7 @@
 #include "RecursiveMutex.h"
 #include "PreferenceDlg.h"
 #include <EclCC.h>
+#include <ShellContextMenu.h>  //wlib
 
 struct ContextState
 {
@@ -62,8 +63,12 @@ public:
         CalculateContextMenuState(s,state);
 
         WTL::CMenu m;
-        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+        CShellContextMenu scm(*pT);
+        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE) {
             m.LoadMenu(IDR_POPUP_REPOSITORY_LOCAL);
+            if (!s.diskReps.empty())
+                scm.InsertTortoiseGitMenuItems(s.diskReps.at(0)->GetPath(), 4, m.GetSubMenu(0));
+        }
         else
             m.LoadMenu(IDR_POPUP_REPOSITORY);
         m.SetMenuDefaultItem(ID_REPOSITORY_OPEN);
@@ -309,6 +314,10 @@ public:
                         }
                     }
                 }
+            }
+            else 
+            {
+                scm.InvokeCommand(pick, pt);
             }
         }
     }

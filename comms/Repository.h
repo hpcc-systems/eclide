@@ -1,7 +1,7 @@
 #pragma once
 
 #include "comms.h"
-#include "module.h"
+#include "DiskModule.h"
 #include "global.h"
 #include "StringSet.h"
 #include "workspace.h"
@@ -139,6 +139,7 @@ void ClearModFileRepositorySingletons();
 struct CRepositorySelections
 {
     IRepositoryVector		reps;
+    IDiskModuleVector		diskReps;
     IModuleVector			plugins;
     IModuleVector			mods;
     IAttributeVector		attrs;

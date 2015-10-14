@@ -69,6 +69,8 @@ set ( SRCS
 		RepositoryView.h
 		SciSyntaxMarker.h
 		scite.h
+		ShellContextMenu.h
+		ShellContextMenu.cpp
 		SimplePromptDlg.cpp
 		SimplePromptDlg.h
 		SourceView.cpp

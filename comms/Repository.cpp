@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "repositoryImpl.h"
 
-#include "Module.h"
 #include "gSoapUtil.h"
 #include "clib.h"
 #include "cache.h"
