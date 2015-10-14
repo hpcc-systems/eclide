@@ -28,31 +28,31 @@
 class DLL_EXP CxImageTIF: public CxImage
 {
 public:
-	CxImageTIF(): CxImage(CXIMAGE_FORMAT_TIF) {m_tif2=NULL; m_multipage=false; m_pages=0;}
-	~CxImageTIF();
+    CxImageTIF(): CxImage(CXIMAGE_FORMAT_TIF) {m_tif2=NULL; m_multipage=false; m_pages=0;}
+    ~CxImageTIF();
 
-	TIFF* TIFFOpenEx(CxFile * hFile);
-	void  TIFFCloseEx(TIFF* tif);
+    TIFF* TIFFOpenEx(CxFile * hFile);
+    void  TIFFCloseEx(TIFF* tif);
 
 //	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_TIF);}
 //	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_TIF);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile, bool bAppend=false);
-	bool Encode(CxFile * hFile, CxImage ** pImages, int pagecount);
-	bool Encode(FILE *hFile, bool bAppend=false) { CxIOFile file(hFile); return Encode(&file,bAppend); }
-	bool Encode(FILE *hFile, CxImage ** pImages, int pagecount)
-				{ CxIOFile file(hFile); return Encode(&file, pImages, pagecount); }
+    bool Encode(CxFile * hFile, bool bAppend=false);
+    bool Encode(CxFile * hFile, CxImage ** pImages, int pagecount);
+    bool Encode(FILE *hFile, bool bAppend=false) { CxIOFile file(hFile); return Encode(&file,bAppend); }
+    bool Encode(FILE *hFile, CxImage ** pImages, int pagecount)
+                { CxIOFile file(hFile); return Encode(&file, pImages, pagecount); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 protected:
-	void TileToStrip(uint8* out, uint8* in,	uint32 rows, uint32 cols, int outskew, int inskew);
-	bool EncodeBody(TIFF *m_tif, bool multipage=false, int page=0, int pagecount=0);
-	TIFF *m_tif2;
-	bool m_multipage;
-	int  m_pages;
+    void TileToStrip(uint8* out, uint8* in,	uint32 rows, uint32 cols, int outskew, int inskew);
+    bool EncodeBody(TIFF *m_tif, bool multipage=false, int page=0, int pagecount=0);
+    TIFF *m_tif2;
+    bool m_multipage;
+    int  m_pages;
 };
 
 #endif

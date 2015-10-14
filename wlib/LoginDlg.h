@@ -7,23 +7,23 @@
 
 __interface ILoginConfigPreferences
 {
-	bool ShowConfigPreference(IConfig *config); //true if changed config
+    bool ShowConfigPreference(IConfig *config); //true if changed config
 };
 
 __interface IConfig;
 
 struct STRUCT_DALI
 {
-	StlLinked<Dali::IDali> m_dali;
-	std::_tstring cluster;
-	std::_tstring queue;
+    StlLinked<Dali::IDali> m_dali;
+    std::_tstring cluster;
+    std::_tstring queue;
 
-	void Clear()
-	{
-		m_dali = NULL;
-		cluster = _T("");
-		queue = _T("");
-	}
+    void Clear()
+    {
+        m_dali = NULL;
+        cluster = _T("");
+        queue = _T("");
+    }
 };
 
 WLIB_API INT_PTR DoModalLogin(ILoginConfigPreferences *prefs, IConfig* configIni, IConfig* config, bool verifyUser=true, const TCHAR *title=0);

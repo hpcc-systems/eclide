@@ -9,52 +9,52 @@
 class CRWMonitor
 {
 private:
-	LONG m_nReaders;
-	LONG m_nWriters;
+    LONG m_nReaders;
+    LONG m_nWriters;
 
 public:
-	CRWMonitor()
-	{
-		m_nReaders = 0;
-		m_nWriters = 0;
-	}
+    CRWMonitor()
+    {
+        m_nReaders = 0;
+        m_nWriters = 0;
+    }
 
-	void LockR()
-	{
-		for(;;)
-		{
-			::InterlockedIncrement(&m_nReaders);
-			if(m_nWriters == 0) 
-				break;
-			::InterlockedDecrement(&m_nReaders);
-			::Sleep(0);
-		}
-	}
+    void LockR()
+    {
+        for(;;)
+        {
+            ::InterlockedIncrement(&m_nReaders);
+            if(m_nWriters == 0) 
+                break;
+            ::InterlockedDecrement(&m_nReaders);
+            ::Sleep(0);
+        }
+    }
 
-	void LockW()
-	{
-		for(;;) 
-		{
-			if( ::InterlockedExchange( &m_nWriters, 1 ) == 1 ) 
-				::Sleep(0);
-			else 
-			{
-				while(m_nReaders != 0) 
-					::Sleep(0);
-				break;
-			}
-		}
-	}
+    void LockW()
+    {
+        for(;;) 
+        {
+            if( ::InterlockedExchange( &m_nWriters, 1 ) == 1 ) 
+                ::Sleep(0);
+            else 
+            {
+                while(m_nReaders != 0) 
+                    ::Sleep(0);
+                break;
+            }
+        }
+    }
 
-	void UnlockR()
-	{
-		::InterlockedDecrement(&m_nReaders);
-	}
+    void UnlockR()
+    {
+        ::InterlockedDecrement(&m_nReaders);
+    }
 
-	void UnlockW()
-	{
-		::InterlockedDecrement(&m_nWriters);
-	}
+    void UnlockW()
+    {
+        ::InterlockedDecrement(&m_nWriters);
+    }
 };
 
 

@@ -24,21 +24,21 @@ extern "C" {
 class CxImageJ2K: public CxImage
 {
 public:
-	CxImageJ2K(): CxImage(CXIMAGE_FORMAT_J2K) {}
+    CxImageJ2K(): CxImage(CXIMAGE_FORMAT_J2K) {}
 
 //	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_J2K);}
 //	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_J2K);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
-	void j2k_calc_explicit_stepsizes(j2k_tccp_t *tccp, int prec);
-	void j2k_encode_stepsize(int stepsize, int numbps, int *expn, int *mant);
-	int j2k_floorlog2(int a);
+    void j2k_calc_explicit_stepsizes(j2k_tccp_t *tccp, int prec);
+    void j2k_encode_stepsize(int stepsize, int numbps, int *expn, int *mant);
+    int j2k_floorlog2(int a);
 };
 
 #endif

@@ -9,55 +9,55 @@
 
 /*
 *********************************************************************
-	Notes by Author:
+    Notes by Author:
 *********************************************************************
 
-	Limitations:
-	============
+    Limitations:
+    ============
 
-	a) Transparency:
+    a) Transparency:
 
-	A Metafile is vector graphics, which has transparency by design.
-	This class always converts into	a Bitmap format. Transparency is
-	supported, but there is no good way to find out, which parts
-	of the Metafile are transparent. There are two ways how we can
-	handle this:
+    A Metafile is vector graphics, which has transparency by design.
+    This class always converts into	a Bitmap format. Transparency is
+    supported, but there is no good way to find out, which parts
+    of the Metafile are transparent. There are two ways how we can
+    handle this:
 
-	- Clear the Background of the Bitmap with the background color
-	  you like (i have used COLOR_WINDOW) and don't support transparency.
+    - Clear the Background of the Bitmap with the background color
+      you like (i have used COLOR_WINDOW) and don't support transparency.
 
-	  below #define XMF_SUPPORT_TRANSPARENCY 0
-			#define XMF_COLOR_BACK RGB(Background color you like)
+      below #define XMF_SUPPORT_TRANSPARENCY 0
+            #define XMF_COLOR_BACK RGB(Background color you like)
 
-	- Clear the Background of the Bitmap with a very unusual color
-	  (which one ?) and use this color as the transparent color
+    - Clear the Background of the Bitmap with a very unusual color
+      (which one ?) and use this color as the transparent color
 
-	  below #define XMF_SUPPORT_TRANSPARENCY 1
-			#define	XMF_COLOR_TRANSPARENT_R ...
-			#define	XMF_COLOR_TRANSPARENT_G	...
-			#define	XMF_COLOR_TRANSPARENT_B	...
+      below #define XMF_SUPPORT_TRANSPARENCY 1
+            #define	XMF_COLOR_TRANSPARENT_R ...
+            #define	XMF_COLOR_TRANSPARENT_G	...
+            #define	XMF_COLOR_TRANSPARENT_B	...
 
-	b) Resolution
+    b) Resolution
 
-	Once we have converted the Metafile into a Bitmap and we zoom in
-	or out, the image may not look very good. If we still had the
-	original Metafile, zooming would produce good results always.
+    Once we have converted the Metafile into a Bitmap and we zoom in
+    or out, the image may not look very good. If we still had the
+    original Metafile, zooming would produce good results always.
 
-	c) Size
+    c) Size
 
-	Although the filesize of a Metafile may be very small, it might
-	produce a Bitmap with a bombastic size. Assume you have a Metafile
-	with an image size of 6000*4000, which contains just one Metafile
-	record ((e.g. a line from (0,0) to (6000, 4000)). The filesize
-	of this Metafile would be let's say 100kB. If we convert it to
-	a 6000*4000 Bitmap with 24 Bits/Pixes, the Bitmap would consume
-	about 68MB of memory.
+    Although the filesize of a Metafile may be very small, it might
+    produce a Bitmap with a bombastic size. Assume you have a Metafile
+    with an image size of 6000*4000, which contains just one Metafile
+    record ((e.g. a line from (0,0) to (6000, 4000)). The filesize
+    of this Metafile would be let's say 100kB. If we convert it to
+    a 6000*4000 Bitmap with 24 Bits/Pixes, the Bitmap would consume
+    about 68MB of memory.
 
-	I have choosen, to limit the size of the Bitmap to max.
-	screensize, to avoid memory problems.
+    I have choosen, to limit the size of the Bitmap to max.
+    screensize, to avoid memory problems.
 
-	If you want something else,
-	modify #define XMF_MAXSIZE_CX / XMF_MAXSIZE_CY below
+    If you want something else,
+    modify #define XMF_MAXSIZE_CX / XMF_MAXSIZE_CY below
 
 *********************************************************************
 */
@@ -76,42 +76,42 @@ class CxImageWMF: public CxImage
 
 typedef struct tagRECT16
 {
-	short int	left;
-	short int	top;
-	short int	right;
-	short int	bottom;
+    short int	left;
+    short int	top;
+    short int	right;
+    short int	bottom;
 } RECT16;
 
 // taken from Windos 3.11 SDK Documentation (Programmer's Reference Volume 4: Resources)
 typedef struct tagMETAFILEHEADER
 {
-	DWORD	key;		// always 0x9ac6cdd7
-	WORD	reserved1;	// reserved = 0
-	RECT16	bbox;		// bounding rectangle in metafile units as defined in "inch"
-	WORD	inch;		// number of metafile units per inch (should be < 1440)
-	DWORD	reserved2;	// reserved = 0
-	WORD	checksum;	// sum of the first 10 WORDS (using XOR operator)
+    DWORD	key;		// always 0x9ac6cdd7
+    WORD	reserved1;	// reserved = 0
+    RECT16	bbox;		// bounding rectangle in metafile units as defined in "inch"
+    WORD	inch;		// number of metafile units per inch (should be < 1440)
+    DWORD	reserved2;	// reserved = 0
+    WORD	checksum;	// sum of the first 10 WORDS (using XOR operator)
 } METAFILEHEADER;
 
 #pragma pack()
 
 public:
-	CxImageWMF(): CxImage(CXIMAGE_FORMAT_WMF) { }
+    CxImageWMF(): CxImage(CXIMAGE_FORMAT_WMF) { }
 
-	bool Decode(CxFile * hFile, long nForceWidth=0, long nForceHeight=0);
-	bool Decode(FILE *hFile, long nForceWidth=0, long nForceHeight=0)
-			{ CxIOFile file(hFile); return Decode(&file,nForceWidth,nForceHeight); }
+    bool Decode(CxFile * hFile, long nForceWidth=0, long nForceHeight=0);
+    bool Decode(FILE *hFile, long nForceWidth=0, long nForceHeight=0)
+            { CxIOFile file(hFile); return Decode(&file,nForceWidth,nForceHeight); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 protected:
-	void ShrinkMetafile(int &cx, int &cy);
-	BOOL CheckMetafileHeader(METAFILEHEADER *pmetafileheader);
-	HENHMETAFILE ConvertWmfFiletoEmf(CxFile *pFile, METAFILEHEADER *pmetafileheader);
-	HENHMETAFILE ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh);
+    void ShrinkMetafile(int &cx, int &cy);
+    BOOL CheckMetafileHeader(METAFILEHEADER *pmetafileheader);
+    HENHMETAFILE ConvertWmfFiletoEmf(CxFile *pFile, METAFILEHEADER *pmetafileheader);
+    HENHMETAFILE ConvertEmfFiletoEmf(CxFile *pFile, ENHMETAHEADER *pemfh);
 
 };
 
@@ -132,13 +132,13 @@ protected:
 #define	XMF_COLOR_TRANSPARENT_B		112
 // don't change
 #define	XMF_COLOR_TRANSPARENT		RGB (XMF_COLOR_TRANSPARENT_R, \
-										 XMF_COLOR_TRANSPARENT_G, \
-										 XMF_COLOR_TRANSPARENT_B)
+                                         XMF_COLOR_TRANSPARENT_G, \
+                                         XMF_COLOR_TRANSPARENT_B)
 // don't change
 #define	XMF_RGBQUAD_TRANSPARENT		XMF_COLOR_TRANSPARENT_B, \
-									XMF_COLOR_TRANSPARENT_G, \
-									XMF_COLOR_TRANSPARENT_R, \
-									0
+                                    XMF_COLOR_TRANSPARENT_G, \
+                                    XMF_COLOR_TRANSPARENT_R, \
+                                    0
 // max. size. see Notes above
 // alternatives
 //#define	XMF_MAXSIZE_CX	(GetSystemMetrics(SM_CXSCREEN)-10)

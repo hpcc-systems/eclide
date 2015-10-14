@@ -36,18 +36,18 @@ const int RLE_DELTA       = 2;
 class CxImageBMP: public CxImage
 {
 public:
-	CxImageBMP(): CxImage(CXIMAGE_FORMAT_BMP) {};
+    CxImageBMP(): CxImage(CXIMAGE_FORMAT_BMP) {};
 
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 protected:
-	bool DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib);
+    bool DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib);
 };
 
 #define BFT_ICON   0x4349   /* 'IC' */
@@ -72,7 +72,7 @@ protected:
                                     : (int)(lpbi)->biClrUsed)
 
 #define FixBitmapInfo(lpbi)     if ((lpbi)->biSizeImage == 0)                 \
-												(lpbi)->biSizeImage = DibSizeImage(lpbi); \
+                                                (lpbi)->biSizeImage = DibSizeImage(lpbi); \
                                 if ((lpbi)->biClrUsed == 0)                   \
                                     (lpbi)->biClrUsed = DibNumColors(lpbi);   \
 

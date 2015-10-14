@@ -19,61 +19,61 @@ protected:
     std::_tstring m_Name;
 
 public:
-	IMPLEMENT_CUNKNOWN;
+    IMPLEMENT_CUNKNOWN;
 
-	CGroup(const std::_tstring & url, const std::_tstring & name) : m_Url(url), m_Name(name)
-	{
-	}
+    CGroup(const std::_tstring & url, const std::_tstring & name) : m_Url(url), m_Name(name)
+    {
+    }
 
-	virtual ~CGroup()
-	{
-	}
+    virtual ~CGroup()
+    {
+    }
 
-	const TCHAR *GetID() const
-	{
-		return m_Name.c_str();
-	}
-	const TCHAR * GetCacheID() const
-	{
-		return m_Name.c_str();
-	}
+    const TCHAR *GetID() const
+    {
+        return m_Name.c_str();
+    }
+    const TCHAR * GetCacheID() const
+    {
+        return m_Name.c_str();
+    }
 
-	const TCHAR *GetName() const
-	{
-		return m_Name.c_str();
-	}
+    const TCHAR *GetName() const
+    {
+        return m_Name.c_str();
+    }
 
-	void Update(const std::_tstring & name)
-	{
-		m_Name = name;
-		Refresh();
-	}
+    void Update(const std::_tstring & name)
+    {
+        m_Name = name;
+        Refresh();
+    }
 
-	void Refresh()
-	{
-	}
+    void Refresh()
+    {
+    }
 };
 
 CacheT<std::_tstring, CGroup> GroupCache;
 CGroup * CreateGroupRaw(const CString & url, const CString & wuid)
 {
-	return GroupCache.Get(new CGroup(static_cast<const TCHAR *>(url), static_cast<const TCHAR *>(wuid)));
+    return GroupCache.Get(new CGroup(static_cast<const TCHAR *>(url), static_cast<const TCHAR *>(wuid)));
 }
 
 IGroup * CreateGroup(const CString & url, const CString & wuid)
 {
-	return CreateGroupRaw(url, wuid);
+    return CreateGroupRaw(url, wuid);
 }
 
 IGroup * CreateGroup(const CString & url, const std::_tstring & data)
 {
-	CGroup * attr = CreateGroupRaw(url, data.c_str());
-	ATLASSERT(attr);
-	attr->Update(data);
-	return attr;
+    CGroup * attr = CreateGroupRaw(url, data.c_str());
+    ATLASSERT(attr);
+    attr->Update(data);
+    return attr;
 }
 void ClearGroupSingletons()
 {
-	GroupCache.clear();
+    GroupCache.clear();
 }
 }

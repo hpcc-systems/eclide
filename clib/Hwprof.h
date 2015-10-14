@@ -23,8 +23,8 @@ Time measurement is done by use of best timer available (1.12 MHz, about 900 nse
 Usage:
                     
 Include:	HWPROF.H
-	Include this file in each source file you want to monitor and wherein 
-	you want to put the Profile.dumpprint call.
+    Include this file in each source file you want to monitor and wherein 
+    you want to put the Profile.dumpprint call.
 
 Source:		HWPROF.CPP
     Include this file in your project list or make file.
@@ -33,7 +33,7 @@ Source:		HWPROF.CPP
 
 Functions / Macros:
 
-		BEGIN_PROF( <FlagText> );
+        BEGIN_PROF( <FlagText> );
 
 Defines a start point of a region to monitor. HWPROF uses file name and line 
 number as identification for accumulation. The parameter FlagText is an 
@@ -42,30 +42,30 @@ a comment. If at run time a region is aready active, its measurements are
 stopped and the values are saved. 
 
 
-		END_PROF();
+        END_PROF();
 
 Defines the ending point of a region to monitor. Each END_PROF must have
 a corresponding BEGIN_PROF call. Association is done dynamically. After END_PROF
 the former region is resumed, if there is one.
 
-		
-		NEXT_PROF( <FlagText> );
+        
+        NEXT_PROF( <FlagText> );
 
 Ends up the current region and starts a new one.
 
 
-		FUNC_PROF(expr)
+        FUNC_PROF(expr)
 
 Creates a profile region that suround the evaluation of expr. The expression itself
 is used as flagtext.
 
 
-		STMT_PROF(expr)
+        STMT_PROF(expr)
 
 Same as FUNC_PROF, use it for void-type expressions.
-	
-	  
-		Profile.dumpprint(int Hide = 10);
+    
+      
+        Profile.dumpprint(int Hide = 10);
 
 Dump accumulated values into MFCs dump context. The output format is:
 
@@ -80,22 +80,22 @@ the last lines that all together consume elapsed time of not more than 1/Hide
 of all are hidden (1 -> no output, 2 -> one half is shown, 3 -> 2/3 is shown 
 10 -> 90% is shown).
 
-		
-		Profile.reset();
+        
+        Profile.reset();
 
 Clear counters of all regions and retain the memory used. This function may
 only be used when no region is active.
 
-		
-		#define PROFILE <Instance of CHWProfile>
+        
+        #define PROFILE <Instance of CHWProfile>
 
 Use this define before include of HWPROF.H to enable measurement and 
 to provide the profile variable to use. The thing provided here should be a pointer 
 to CHWProfile		
 
-		
-		#undef PROFILE
-		
+        
+        #undef PROFILE
+        
 Use this before include of HWPROF.H to disable measurement (this is the default).
 
 To avoid confusion, use #define / #undef of PROFILE only in CPP-Files and never 
@@ -109,18 +109,18 @@ class CHWProfileStack;
 
 class CLIB_API CHWProfile
 {
-	CHWProfileEntry* First;
-	CHWProfileStack* Current;
+    CHWProfileEntry* First;
+    CHWProfileStack* Current;
 
-	CHWProfileEntry* FindStart(const TCHAR*, int) const;
+    CHWProfileEntry* FindStart(const TCHAR*, int) const;
 public:
-	CHWProfile();
+    CHWProfile();
 
-	void Start(const TCHAR* FileName, int Line, const TCHAR* Flag);
-	void End();
+    void Start(const TCHAR* FileName, int Line, const TCHAR* Flag);
+    void End();
 
-	virtual void dumpprint(int Hide = 10) const;
-	virtual void reset();
+    virtual void dumpprint(int Hide = 10) const;
+    virtual void reset();
 };
 
 #if defined(UNICODE) || defined(_UNICODE)
@@ -150,7 +150,7 @@ public:
 template<class cType>
 cType _ReturnProfile(cType x)
 {
-	(PROFILE)->End();
-	return x;
+    (PROFILE)->End();
+    return x;
 };
 

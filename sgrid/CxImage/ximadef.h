@@ -69,7 +69,7 @@
 #ifndef _COMPLEX_DEFINED
 
 typedef struct tagcomplex {
-	double x,y;
+    double x,y;
 } _complex;
 
 #endif
@@ -113,61 +113,61 @@ typedef void*          HRGN;
 
 typedef struct tagRECT
 {
-	long    left;
-	long    top;
-	long    right;
-	long    bottom;
+    long    left;
+    long    top;
+    long    right;
+    long    bottom;
 } RECT;
 
 typedef struct tagPOINT
 {
-	long  x;
-	long  y;
+    long  x;
+    long  y;
 } POINT;
 
 typedef struct tagRGBQUAD {
-	BYTE    rgbBlue;
-	BYTE    rgbGreen;
-	BYTE    rgbRed;
-	BYTE    rgbReserved;
+    BYTE    rgbBlue;
+    BYTE    rgbGreen;
+    BYTE    rgbRed;
+    BYTE    rgbReserved;
 } RGBQUAD;
 
 #pragma pack(1)
 
 typedef struct tagBITMAPINFOHEADER{
-	DWORD      biSize;
-	long       biWidth;
-	long       biHeight;
-	WORD       biPlanes;
-	WORD       biBitCount;
-	DWORD      biCompression;
-	DWORD      biSizeImage;
-	long       biXPelsPerMeter;
-	long       biYPelsPerMeter;
-	DWORD      biClrUsed;
-	DWORD      biClrImportant;
+    DWORD      biSize;
+    long       biWidth;
+    long       biHeight;
+    WORD       biPlanes;
+    WORD       biBitCount;
+    DWORD      biCompression;
+    DWORD      biSizeImage;
+    long       biXPelsPerMeter;
+    long       biYPelsPerMeter;
+    DWORD      biClrUsed;
+    DWORD      biClrImportant;
 } BITMAPINFOHEADER;
 
 typedef struct tagBITMAPFILEHEADER {
-	WORD    bfType;
-	DWORD   bfSize;
-	WORD    bfReserved1;
-	WORD    bfReserved2;
-	DWORD   bfOffBits;
+    WORD    bfType;
+    DWORD   bfSize;
+    WORD    bfReserved1;
+    WORD    bfReserved2;
+    DWORD   bfOffBits;
 } BITMAPFILEHEADER;
 
 typedef struct tagBITMAPCOREHEADER {
-	DWORD   bcSize;
-	WORD    bcWidth;
-	WORD    bcHeight;
-	WORD    bcPlanes;
-	WORD    bcBitCount;
+    DWORD   bcSize;
+    WORD    bcWidth;
+    WORD    bcHeight;
+    WORD    bcPlanes;
+    WORD    bcBitCount;
 } BITMAPCOREHEADER;
 
 typedef struct tagRGBTRIPLE {
-	BYTE    rgbtBlue;
-	BYTE    rgbtGreen;
-	BYTE    rgbtRed;
+    BYTE    rgbtBlue;
+    BYTE    rgbtGreen;
+    BYTE    rgbtRed;
 } RGBTRIPLE;
 
 #pragma pack()
@@ -185,7 +185,7 @@ typedef struct tagRGBTRIPLE {
 #ifndef _COMPLEX_DEFINED
 
 typedef struct tagcomplex {
-	double x,y;
+    double x,y;
 } _complex;
 
 #endif

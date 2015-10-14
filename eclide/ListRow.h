@@ -6,15 +6,15 @@
 class CListRow : public CUnknown
 {
 protected:
-	CString m_nullstr;
-	WTL::CListViewCtrl &m_listCtrl;
+    CString m_nullstr;
+    WTL::CListViewCtrl &m_listCtrl;
 
 public:
-	CListRow(WTL::CListViewCtrl &listctrl);
-	int InsertItem(WTL::CListViewCtrl *lc, int nItem = INT_MAX);//, WU_STATE state);
-	void GetDispInfo(NMLVDISPINFO* plvdi);
-	virtual void GetText(unsigned column, CString & result);
-	virtual int GetDispImage();
+    CListRow(WTL::CListViewCtrl &listctrl);
+    int InsertItem(WTL::CListViewCtrl *lc, int nItem = INT_MAX);//, WU_STATE state);
+    void GetDispInfo(NMLVDISPINFO* plvdi);
+    virtual void GetText(unsigned column, CString & result);
+    virtual int GetDispImage();
 };
 
 //class CCellRow : public CListRow

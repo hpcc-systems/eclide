@@ -5,13 +5,13 @@
 
 namespace SMC
 {
-	__interface ICluster : public clib::ILockableUnknown
+    __interface ICluster : public clib::ILockableUnknown
 {
-	const TCHAR * GetID();
-	const TCHAR * GetLabel();
-	Dali::IWorkunit *GetRunning();
-	int GetQueueCount();
-	Dali::IWorkunit *GetQueueItem(unsigned item);
+    const TCHAR * GetID();
+    const TCHAR * GetLabel();
+    Dali::IWorkunit *GetRunning();
+    int GetQueueCount();
+    Dali::IWorkunit *GetQueueItem(unsigned item);
 };
 
 typedef StlLinked<ICluster> IClusterAdapt;

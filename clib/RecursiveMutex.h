@@ -7,9 +7,9 @@ namespace clib
 class lock_error : public std::logic_error
 {
 public:
-	lock_error() : std::logic_error("Error Locking clib::recursive_mutex")
-	{
-	}
+    lock_error() : std::logic_error("Error Locking clib::recursive_mutex")
+    {
+    }
 };
 
 //This class is better for debugging as it allows a timeout and detects abandonment
@@ -19,48 +19,48 @@ class CMutexLock
 public:
     typedef unsigned cv_state;
 
-	CMutexLock()
-	{
-		m_mutex = ::CreateMutex(0,FALSE,NULL);
+    CMutexLock()
+    {
+        m_mutex = ::CreateMutex(0,FALSE,NULL);
 #if _DEBUG
-		m_maxWait = 25 * 1000;
+        m_maxWait = 25 * 1000;
 #else
-		m_maxWait = (DWORD)-1;
+        m_maxWait = (DWORD)-1;
 #endif
-	}
-	~CMutexLock()
-	{
-		::CloseHandle(m_mutex);
-	}
+    }
+    ~CMutexLock()
+    {
+        ::CloseHandle(m_mutex);
+    }
 
-	bool do_trylock()
-	{
-		return (WAIT_OBJECT_0 == ::WaitForSingleObject(m_mutex, 0));
-	}
-	void do_lock()
-	{
-		//ATLTRACE(_T("CMutex:do_lock(%0x)\n"), ::GetCurrentThreadId());
-		if ( WAIT_TIMEOUT == ::WaitForSingleObject(m_mutex, m_maxWait) )
-		{
-			ATLASSERT(!_T("Wait Timed Out"));
-		}
-	}
-	void do_unlock()
-	{
-		//ATLTRACE(_T("CMutex:do_unlock(%0x)\n"), ::GetCurrentThreadId());
-		ATLASSERT(::ReleaseMutex(m_mutex));
-	}
-	void do_lock(unsigned /*state*/)
-	{
-		ATLASSERT(!_T("NOT IMPLEMENTED"));
-	}
-	void do_unlock(unsigned /*state*/)
-	{
-		ATLASSERT(!_T("NOT IMPLEMENTED"));
-	}
+    bool do_trylock()
+    {
+        return (WAIT_OBJECT_0 == ::WaitForSingleObject(m_mutex, 0));
+    }
+    void do_lock()
+    {
+        //ATLTRACE(_T("CMutex:do_lock(%0x)\n"), ::GetCurrentThreadId());
+        if ( WAIT_TIMEOUT == ::WaitForSingleObject(m_mutex, m_maxWait) )
+        {
+            ATLASSERT(!_T("Wait Timed Out"));
+        }
+    }
+    void do_unlock()
+    {
+        //ATLTRACE(_T("CMutex:do_unlock(%0x)\n"), ::GetCurrentThreadId());
+        ATLASSERT(::ReleaseMutex(m_mutex));
+    }
+    void do_lock(unsigned /*state*/)
+    {
+        ATLASSERT(!_T("NOT IMPLEMENTED"));
+    }
+    void do_unlock(unsigned /*state*/)
+    {
+        ATLASSERT(!_T("NOT IMPLEMENTED"));
+    }
 protected:
-	HANDLE m_mutex;
-	DWORD  m_maxWait;
+    HANDLE m_mutex;
+    DWORD  m_maxWait;
 };
 
 template <typename Mutex>
@@ -107,18 +107,18 @@ public:
     explicit scoped_lock(Mutex& mx, bool initially_locked=true) : m_mutex(mx), m_locked(false)
     {
         if (initially_locked) 
-			lock();
+            lock();
     }
     ~scoped_lock()
     {
         if (m_locked) 
-			unlock();
+            unlock();
     }
 
     void lock()
     {
         if (m_locked) 
-			throw lock_error();
+            throw lock_error();
         lock_ops<Mutex>::lock(m_mutex);
         m_locked = true;
     }
@@ -126,25 +126,25 @@ public:
     void unlock()
     {
         if (!m_locked) 
-			throw lock_error();
+            throw lock_error();
         lock_ops<Mutex>::unlock(m_mutex);
         m_locked = false;
     }
 
     bool locked() const 
-	{ 
-		return m_locked; 
-	}
+    { 
+        return m_locked; 
+    }
 
-	operator const void*() const 
-	{ 
-		return m_locked ? this : 0; 
-	}
+    operator const void*() const 
+    { 
+        return m_locked ? this : 0; 
+    }
 
-	operator mutex_type&()
-	{
-		return m_mutex;
-	}
+    operator mutex_type&()
+    {
+        return m_mutex;
+    }
 
 private:
     //friend class boost::condition;
@@ -162,18 +162,18 @@ public:
     explicit scoped_lockw(Mutex& mx, bool initially_locked=true) : m_mutex(mx), m_locked(false)
     {
         if (initially_locked) 
-			lockw();
+            lockw();
     }
     ~scoped_lockw()
     {
         if (m_locked) 
-			unlockw();
+            unlockw();
     }
 
     void lockw()
     {
         if (m_locked) 
-			throw lock_error();
+            throw lock_error();
         lock_ops<Mutex>::lockw(m_mutex);
         m_locked = true;
     }
@@ -181,25 +181,25 @@ public:
     void unlockw()
     {
         if (!m_locked) 
-			throw lock_error();
+            throw lock_error();
         lock_ops<Mutex>::unlockw(m_mutex);
         m_locked = false;
     }
 
     bool locked() const 
-	{ 
-		return m_locked; 
-	}
+    { 
+        return m_locked; 
+    }
 
-	operator const void*() const 
-	{ 
-		return m_locked ? this : 0; 
-	}
+    operator const void*() const 
+    { 
+        return m_locked ? this : 0; 
+    }
 
-	operator mutex_type&()
-	{
-		return m_mutex;
-	}
+    operator mutex_type&()
+    {
+        return m_mutex;
+    }
 
 private:
     //friend class boost::condition;
@@ -217,18 +217,18 @@ public:
     explicit scoped_lockr(Mutex& mx, bool initially_locked=true) : m_mutex(mx), m_locked(false)
     {
         if (initially_locked) 
-			lockr();
+            lockr();
     }
     ~scoped_lockr()
     {
         if (m_locked) 
-			unlockr();
+            unlockr();
     }
 
     void lockr()
     {
         if (m_locked) 
-			throw lock_error();
+            throw lock_error();
         lock_ops<Mutex>::lockr(m_mutex);
         m_locked = true;
     }
@@ -236,25 +236,25 @@ public:
     void unlockr()
     {
         if (!m_locked) 
-			throw lock_error();
+            throw lock_error();
         lock_ops<Mutex>::unlockr(m_mutex);
         m_locked = false;
     }
 
     bool locked() const 
-	{ 
-		return m_locked; 
-	}
+    { 
+        return m_locked; 
+    }
 
-	operator const void*() const 
-	{ 
-		return m_locked ? this : 0; 
-	}
+    operator const void*() const 
+    { 
+        return m_locked ? this : 0; 
+    }
 
-	operator mutex_type&()
-	{
-		return m_mutex;
-	}
+    operator mutex_type&()
+    {
+        return m_mutex;
+    }
 
 private:
     //friend class boost::condition;
@@ -270,16 +270,16 @@ public:
     recursive_mutex();
     ~recursive_mutex();
 
-	LONG GetLockCount();
+    LONG GetLockCount();
 
 private:
-	CComAutoCriticalSection m_critSec;
+    CComAutoCriticalSection m_critSec;
     typedef std::size_t cv_state;
-	LONG m_lockCount;
+    LONG m_lockCount;
 
     void do_lock();
     void do_unlock();
-	//void do_lock(cv_state& state);
+    //void do_lock(cv_state& state);
     //void do_unlock(cv_state& state);
 };
 
@@ -288,8 +288,8 @@ typedef scoped_lock<recursive_mutex> scoped_mutex_lock;
 class CLIB_API rwrecursive_mutex : private boost::noncopyable
 {
 protected:
-	LONG m_nReaders;
-	LONG m_nWriters;
+    LONG m_nReaders;
+    LONG m_nWriters;
 
 public:
     friend class clib::lock_ops<rwrecursive_mutex>;
@@ -313,13 +313,13 @@ typedef rwrecursive_mutex CRWMutex;
 class rwscoped_lock_ref_counted : public CUnknown
 {
 protected:
-	rwscoped_mutex_lock *m_lock;
+    rwscoped_mutex_lock *m_lock;
 
 public:
-	IMPLEMENT_CUNKNOWN;
+    IMPLEMENT_CUNKNOWN;
 
-	rwscoped_lock_ref_counted(CRWMutex &m);
-	virtual ~rwscoped_lock_ref_counted(); 
+    rwscoped_lock_ref_counted(CRWMutex &m);
+    virtual ~rwscoped_lock_ref_counted(); 
 };
 
 typedef CComPtr<rwscoped_lock_ref_counted> rwscoped_lock_ref_counted_adapt;
@@ -330,28 +330,28 @@ namespace clib
 class CLIB_API scoped_lock_ref_counted : public CUnknown, public boost::noncopyable
 {
 protected:
-	recursive_mutex::scoped_lock *m_lock;
+    recursive_mutex::scoped_lock *m_lock;
 
 public:
-	IMPLEMENT_CUNKNOWN;
-	scoped_lock_ref_counted(recursive_mutex & m) ;
-	virtual ~scoped_lock_ref_counted(); 
+    IMPLEMENT_CUNKNOWN;
+    scoped_lock_ref_counted(recursive_mutex & m) ;
+    virtual ~scoped_lock_ref_counted(); 
 };
 typedef CComPtr<scoped_lock_ref_counted> scoped_lock_ref_counted_adapt;
 
 __interface ILockableUnknown : public IUnknown
 {
-	void Lock(CComPtr<scoped_lock_ref_counted> & lock);
+    void Lock(CComPtr<scoped_lock_ref_counted> & lock);
 };
 
 class CLIB_API CLockableUnknown : public CUnknown
 {
 protected:
-	mutable clib::recursive_mutex m_mutex;
+    mutable clib::recursive_mutex m_mutex;
 
 public:
-	IMPLEMENT_CUNKNOWN;
-	void Lock(CComPtr<scoped_lock_ref_counted> & lock);
+    IMPLEMENT_CUNKNOWN;
+    void Lock(CComPtr<scoped_lock_ref_counted> & lock);
 };
 }
 
@@ -360,28 +360,28 @@ namespace boost
 class CLIB_API scoped_lock_ref_counted : public CUnknown, public boost::noncopyable
 {
 protected:
-	recursive_mutex::scoped_lock *m_lock;
+    recursive_mutex::scoped_lock *m_lock;
 
 public:
-	IMPLEMENT_CUNKNOWN;
-	scoped_lock_ref_counted(recursive_mutex & m) ;
-	virtual ~scoped_lock_ref_counted(); 
+    IMPLEMENT_CUNKNOWN;
+    scoped_lock_ref_counted(recursive_mutex & m) ;
+    virtual ~scoped_lock_ref_counted(); 
 };
 typedef CComPtr<scoped_lock_ref_counted> scoped_lock_ref_counted_adapt;
 
 __interface ILockableUnknown : public IUnknown
 {
-	void Lock(CComPtr<scoped_lock_ref_counted> & lock);
+    void Lock(CComPtr<scoped_lock_ref_counted> & lock);
 };
 
 }
 
 #define IMPLEMENT_CLOCKABLEUNKNOWN \
-	IMPLEMENT_CUNKNOWN; \
-	void Lock(CComPtr<clib::scoped_lock_ref_counted> & lock) { return CLockableUnknown::Lock(lock); }
+    IMPLEMENT_CUNKNOWN; \
+    void Lock(CComPtr<clib::scoped_lock_ref_counted> & lock) { return CLockableUnknown::Lock(lock); }
 
 #define BEGIN_CLOCKABLEUNKNOWN \
-	void Lock(CComPtr<clib::scoped_lock_ref_counted> & lock) { return CLockableUnknown::Lock(lock); } \
-	BEGIN_CUNKNOWN
+    void Lock(CComPtr<clib::scoped_lock_ref_counted> & lock) { return CLockableUnknown::Lock(lock); } \
+    BEGIN_CUNKNOWN
 
 //  ===========================================================================
