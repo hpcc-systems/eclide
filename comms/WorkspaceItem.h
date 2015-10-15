@@ -7,38 +7,38 @@
 
 enum WORKSPACE_ITEM_TYPE 
 {
-	WORKSPACE_ITEM_UNKNOWN,
-	WORKSPACE_ITEM_BUILDER,
-	WORKSPACE_ITEM_ATTRIBUTE,
-	WORKSPACE_ITEM_GRAPH,
-	WORKSPACE_ITEM_LAST
+    WORKSPACE_ITEM_UNKNOWN,
+    WORKSPACE_ITEM_BUILDER,
+    WORKSPACE_ITEM_ATTRIBUTE,
+    WORKSPACE_ITEM_GRAPH,
+    WORKSPACE_ITEM_LAST
 };
 
 __interface __declspec(uuid("A4A4FFF2-0DED-422F-B06B-B0FE4CDB6C52")) IWorkspaceItem : public IUnknown
 {
-	const TCHAR * Serialize(std::_tstring & result) const;
-	IRepository * GetRepository() const;
-	const TCHAR * GetID() const;
-	const TCHAR * GetLabel() const;
-	WORKSPACE_ITEM_TYPE GetType() const;
-	int GetGroupIndex() const;
-	int GetTabIndex() const;
-	bool IsActive() const;
-	const TCHAR *GetChecksum() const;
+    const TCHAR * Serialize(std::_tstring & result) const;
+    IRepository * GetRepository() const;
+    const TCHAR * GetID() const;
+    const TCHAR * GetLabel() const;
+    WORKSPACE_ITEM_TYPE GetType() const;
+    int GetGroupIndex() const;
+    int GetTabIndex() const;
+    bool IsActive() const;
+    const TCHAR *GetChecksum() const;
 
-	void SetContent(const CPersistMap & pm);
-	void Restore(IPersistable * window) const;
+    void SetContent(const CPersistMap & pm);
+    void Restore(IPersistable * window) const;
 
-	//  Attribute Helpers  ---
-	bool Exists() const;
-	IModule * GetModule() const;
-	IAttribute * GetAttribute() const;
+    //  Attribute Helpers  ---
+    bool Exists() const;
+    IModule * GetModule() const;
+    IAttribute * GetAttribute() const;
 
-	//  Builder Helpers  ---
-	unsigned int GetWorkunits(Dali::IWorkunitVector * results) const;
-	unsigned int GetWorkunitCount() const;
+    //  Builder Helpers  ---
+    unsigned int GetWorkunits(Dali::IWorkunitVector * results) const;
+    unsigned int GetWorkunitCount() const;
 
-	//  Graph Helpers  ---
+    //  Graph Helpers  ---
 };
 typedef StlLinked<IWorkspaceItem> IWorkspaceItemAdapt;
 typedef std::vector<IWorkspaceItemAdapt> IWorkspaceItemVector;

@@ -15,23 +15,23 @@ typedef globaldata_signal_type::slot_type globaldata_slot_type;
 
 __interface IConfig : public IUnknown
 {
-	const TCHAR * GetLabel();
-	void SetLabel(const std::_tstring & label, const std::_tstring & ext = _T("cfg"));
-	const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path);
-	_variant_t Get(const std::_tstring & section, const std::_tstring & label, const _variant_t & defaultVal);
-	_variant_t Get(const SectionLabel & sectionLabel, const _variant_t & defaultVal);
-	_variant_t Get(const SectionLabelDefault & sectionLabel);
-	void Set(const std::_tstring & section, const std::_tstring & label, const _variant_t & val);
-	void Set(const SectionLabel & sectionLabel, const _variant_t & val);
-	void Set(const SectionLabelDefault & sectionLabelDefault, const _variant_t & val);
-	void Set(const SectionLabelDefault & sectionLabelDefault, const TCHAR * val);
-	void Set(const SectionLabelDefault & sectionLabelDefault, const std::_tstring & val);
-	boost::signals::connection ConnectSlot(const globaldata_slot_type & slot);
-	void Disconnect(boost::signals::connection& slot);
+    const TCHAR * GetLabel();
+    void SetLabel(const std::_tstring & label, const std::_tstring & ext = _T("cfg"));
+    const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path);
+    _variant_t Get(const std::_tstring & section, const std::_tstring & label, const _variant_t & defaultVal);
+    _variant_t Get(const SectionLabel & sectionLabel, const _variant_t & defaultVal);
+    _variant_t Get(const SectionLabelDefault & sectionLabel);
+    void Set(const std::_tstring & section, const std::_tstring & label, const _variant_t & val);
+    void Set(const SectionLabel & sectionLabel, const _variant_t & val);
+    void Set(const SectionLabelDefault & sectionLabelDefault, const _variant_t & val);
+    void Set(const SectionLabelDefault & sectionLabelDefault, const TCHAR * val);
+    void Set(const SectionLabelDefault & sectionLabelDefault, const std::_tstring & val);
+    boost::signals::connection ConnectSlot(const globaldata_slot_type & slot);
+    void Disconnect(boost::signals::connection& slot);
 
-	//void SetLabel(const CString & label);
-	//void Reset(const CString & newLabel);
-	//void SaveAs(const CString & newLabel);
+    //void SetLabel(const CString & label);
+    //void Reset(const CString & newLabel);
+    //void SaveAs(const CString & newLabel);
 };
 
 typedef StlLinked<IConfig> IConfigAdapt;
@@ -83,5 +83,5 @@ CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const std::_tstring &
 CLIB_API IConfig * CreateIConfig(const std::_tstring & id);
 CLIB_API IConfig * GetIConfig(const std::_tstring & id);
 #ifdef __IServiceProvider_INTERFACE_DEFINED__
-	CLIB_API IServiceProvider * GetIServiceProvider(const std::_tstring & id = QUERYBUILDER_CFG);
+    CLIB_API IServiceProvider * GetIServiceProvider(const std::_tstring & id = QUERYBUILDER_CFG);
 #endif		

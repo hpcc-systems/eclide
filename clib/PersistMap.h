@@ -49,52 +49,52 @@ typedef std::map<std::_tstring, std::_tstring> PersistMap;
 class CLIB_API CPersistMap : public CUnknown
 {
 protected:
-	PersistMap m_map;
+    PersistMap m_map;
 
 public:
-	BEGIN_CUNKNOWN
-	END_CUNKNOWN(CUnknown)
+    BEGIN_CUNKNOWN
+    END_CUNKNOWN(CUnknown)
 
-	CPersistMap();
+    CPersistMap();
 
-	void Set(const std::_tstring & key, const std::_tstring & value);
-	const TCHAR * Get(const std::_tstring & key) const;
-	bool HasContent() const;
+    void Set(const std::_tstring & key, const std::_tstring & value);
+    const TCHAR * Get(const std::_tstring & key) const;
+    bool HasContent() const;
 
-	bool serialize(std::_tstring & resultXml) const;
-	bool deserialize(const std::_tstring & xmlPath);
-	bool deserializeXML(const std::_tstring & xml);
+    bool serialize(std::_tstring & resultXml) const;
+    bool deserialize(const std::_tstring & xmlPath);
+    bool deserializeXML(const std::_tstring & xml);
 
 protected:
-	bool deserialize(const std::_tstring & xml_path, bool isPath);
+    bool deserialize(const std::_tstring & xml_path, bool isPath);
 };
 typedef StlLinked<CPersistMap> CPersistMapAdapt;
 typedef std::vector<CPersistMapAdapt> CPersistMapVector;
 
 __interface __declspec(uuid("B117F331-C28C-4CBE-94DD-6696D0123546")) IPersistable
 {
-	void SavePersistInfo(CPersistMap & persistInfo);
-	void RestorePersistInfo(const CPersistMap & persistInfo);
-	HWND GetHwnd();
+    void SavePersistInfo(CPersistMap & persistInfo);
+    void RestorePersistInfo(const CPersistMap & persistInfo);
+    HWND GetHwnd();
 };
 
 
 class CLIB_API CPersistWindow
 {
 protected:
-	IPersistable * m_owner;
-	boost::filesystem::path m_filePath;
-	CUnicodeFile m_file;
-	clib::recursive_mutex m_mutex;
+    IPersistable * m_owner;
+    boost::filesystem::path m_filePath;
+    CUnicodeFile m_file;
+    clib::recursive_mutex m_mutex;
 
 public:
-	CPersistWindow(IPersistable * m_owner);
-	void SetPath(const std::string & path, const boost::filesystem::path & folder);
-	void Save();
-	void Restore();
-	void Remove();
+    CPersistWindow(IPersistable * m_owner);
+    void SetPath(const std::string & path, const boost::filesystem::path & folder);
+    void Save();
+    void Restore();
+    void Remove();
 
 protected:
-	void GenerateTmpFile(const boost::filesystem::path & folder);
-	static void DoAutoSave(CUnicodeFile *f, CPersistMap *persistInfo);
+    void GenerateTmpFile(const boost::filesystem::path & folder);
+    static void DoAutoSave(CUnicodeFile *f, CPersistMap *persistInfo);
 };

@@ -78,17 +78,17 @@
 
 inline void _cdecl Trace0DBFB266_B244_11D3_A459_000629B2F85(char* lpszFormat, ...)
 {
-	va_list args;
-	va_start(args, lpszFormat);
+    va_list args;
+    va_start(args, lpszFormat);
 
-	int nBuf;
-	char szBuffer[512];
+    int nBuf;
+    char szBuffer[512];
 
-	nBuf = _vsnprintf(szBuffer, sizeof(szBuffer) / sizeof(WCHAR), lpszFormat, args);
-	ASSERT(nBuf < sizeof(szBuffer));//Output truncated as it was > sizeof(szBuffer)
+    nBuf = _vsnprintf(szBuffer, sizeof(szBuffer) / sizeof(WCHAR), lpszFormat, args);
+    ASSERT(nBuf < sizeof(szBuffer));//Output truncated as it was > sizeof(szBuffer)
 
-	OutputDebugStringA(szBuffer);
-	va_end(args);
+    OutputDebugStringA(szBuffer);
+    va_end(args);
 }
 
 #define	TRACE	Trace0DBFB266_B244_11D3_A459_000629B2F85
@@ -111,14 +111,14 @@ inline void _cdecl Trace0DBFB266_B244_11D3_A459_000629B2F85(char* lpszFormat, ..
 class CDogTag
 {
 public:
-	CDogTag() { _this = this; }
-	CDogTag(const CDogTag& copy) { _this = this; ASSERT(copy.IsValid()); }
-	~CDogTag() { ASSERT(IsValid()); _this = 0; }
+    CDogTag() { _this = this; }
+    CDogTag(const CDogTag& copy) { _this = this; ASSERT(copy.IsValid()); }
+    ~CDogTag() { ASSERT(IsValid()); _this = 0; }
 
-	CDogTag& operator=(const CDogTag& rhs)
-		{ ASSERT(IsValid() && rhs.IsValid()); return *this; }
+    CDogTag& operator=(const CDogTag& rhs)
+        { ASSERT(IsValid() && rhs.IsValid()); return *this; }
 
-	bool IsValid() const { return _this == this; }
+    bool IsValid() const { return _this == this; }
 
 private:
    const CDogTag *_this;

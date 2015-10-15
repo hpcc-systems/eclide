@@ -28,114 +28,114 @@
 // selection change notification structure
 typedef struct tagNMSGVHDR 
 {
-	NMHDR hdr;
-	CUniqueID id;
+    NMHDR hdr;
+    CUniqueID id;
 } NMSGVHDR, *LPNMSGVHDR;
 
 // selection change notification structure
 typedef struct tagNMNOTIFYCALCTOOLTIP
 {
-	NMHDR hdr;
-	CUniqueID id;
-	bool supressTooltip;
+    NMHDR hdr;
+    CUniqueID id;
+    bool supressTooltip;
 } NMNOTIFYCALCTOOLTIP , *LPNMNOTIFYCALCTOOLTIP;
 
 // selection change notification structure
 typedef struct tagNMSELECTIONCHANGE 
 {
-	NMHDR hdr;
-	CUniqueID idSelect;
-	CUniqueID idDeselect;
+    NMHDR hdr;
+    CUniqueID idSelect;
+    CUniqueID idDeselect;
 } NMSELECTIONCHANGE , *LPNMSELECTIONCHANGE;
 
 // visibility change notification structure
 typedef struct tagNMVISIBILITYCHANGE 
 {
-	NMHDR hdr;
-	CUniqueID id;
+    NMHDR hdr;
+    CUniqueID id;
 } NMVISIBILITYCHANGE , *LPNMVISIBILITYCHANGE;
 
 // items connected notification structure
 typedef struct tagNMITEMCONN 
 {
-	NMHDR hdr;
-	CUniqueID idfrom;
-	CUniqueID idto;
+    NMHDR hdr;
+    CUniqueID idfrom;
+    CUniqueID idto;
 } NMITEMCONN , *LPNMITEMCONN;
 
 // item's label edited notification structure
 typedef struct tagNMLABELEDITED 
 {
-	NMHDR hdr;
-	CUniqueID		parentid;
-	CUniqueID		id;
-	std::_tstring	newlabel;
+    NMHDR hdr;
+    CUniqueID		parentid;
+    CUniqueID		id;
+    std::_tstring	newlabel;
 } NMLABELEDITED , *LPNMLABELEDITED;
 
 // recalculate points for edges to avoid obstacles notification structure
 typedef struct tagNMRECALCEDGEPOINTS 
 {
-	NMHDR hdr;
+    NMHDR hdr;
 } NMRECALCEDGEPOINTS , *LPNMRECALCEDGEPOINTS;
 
 // item got focus
 typedef struct tagNMFOCUSCHANGED 
 {
-	NMHDR hdr;
-	CUniqueID id;
-	bool bGained;
+    NMHDR hdr;
+    CUniqueID id;
+    bool bGained;
 } NMFOCUSCHANGED , *LPNMFOCUSCHANGED;
 
 typedef struct tagNMDODRAGDROP
 {
-	NMHDR hdr;
-	CPoint dragStartPos;
+    NMHDR hdr;
+    CPoint dragStartPos;
 } NMDODRAGDROP , *LPNMDODRAGDROP;
 
 // item context clicked
 typedef struct tagNMCONTEXTMENU 
 {
-	NMHDR hdr;
-	CUniqueID id;
-	CPoint pt;
+    NMHDR hdr;
+    CUniqueID id;
+    CPoint pt;
 } NMCONTEXTMENU, *LPNMCONTEXTMENU;
 
 // mouse message
 typedef struct tagNMMOUSEMESSAGE 
 {
-	NMHDR hdr;
-	UINT uMsg;
-	CUniqueID id;
-	CPoint pt;
+    NMHDR hdr;
+    UINT uMsg;
+    CUniqueID id;
+    CPoint pt;
 } NMMOUSEMESSAGE, *LPNMMOUSEMESSAGE;
 
 // canvas has been scrolled
 typedef struct tagNMSCROLL
 {
-	NMHDR hdr;
-	CPoint pt;
+    NMHDR hdr;
+    CPoint pt;
 } NMSCROLL, *LPNMSCROLL;
 
 // right mouse click time notification structure
 typedef struct tagNMTIMELINERCLK 
 {
-	NMHDR hdr;
-	SYSTEMTIME time;
-	CPoint pt;
+    NMHDR hdr;
+    SYSTEMTIME time;
+    CPoint pt;
 } NMTIMELINERCLK, *LPNMTIMELINERCLK;
 
 // double click time notification structure
 typedef struct tagNMTIMELINEDBLCLK 
 {
-	NMHDR hdr;
-	SYSTEMTIME begin, end;
+    NMHDR hdr;
+    SYSTEMTIME begin, end;
 } NMTIMELINEDBLCLK, *LPNMTIMELINEDBLCLK;
 
 // tooltip hyperlink clicked
 typedef struct tagNMTOOLTIPLINKCLICK
 {
-	NMHDR hdr;
-	CUniqueID target;
-	std::_tstring definition;
-	std::_tstring copy;
+    NMHDR hdr;
+    CUniqueID target;
+    std::_tstring definition;
+    std::_tstring copy;
 } NMTOOLTIPLINKCLICK, *LPNMTOOLTIPLINKCLICK;

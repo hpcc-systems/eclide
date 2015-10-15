@@ -14,88 +14,88 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageJ2K::Decode(CxFile *hFile)
 {
-	if (hFile == NULL) return false;
+    if (hFile == NULL) return false;
 
   try
   {
-	BYTE* src;
-	long len;
-	j2k_image_t *img=NULL;
-	j2k_cp_t *cp=NULL;
-	long i,x,y,w,h,max;
+    BYTE* src;
+    long len;
+    j2k_image_t *img=NULL;
+    j2k_cp_t *cp=NULL;
+    long i,x,y,w,h,max;
 
-	len=hFile->Size();
-	src=(BYTE*)malloc(len);
-	hFile->Read(src, len, 1);
+    len=hFile->Size();
+    src=(BYTE*)malloc(len);
+    hFile->Read(src, len, 1);
 
-	if (!j2k_decode(src, len, &img, &cp)) {
-		free(src);
-		throw "failed to decode J2K image!";
-	}
+    if (!j2k_decode(src, len, &img, &cp)) {
+        free(src);
+        throw "failed to decode J2K image!";
+    }
 
-	free(src);
+    free(src);
 
     if (img->numcomps==3 &&
-		img->comps[0].dx==img->comps[1].dx &&
-		img->comps[1].dx==img->comps[2].dx &&
-		img->comps[0].dy==img->comps[1].dy &&
-		img->comps[1].dy==img->comps[2].dy &&
-		img->comps[0].prec==img->comps[1].prec &&
-		img->comps[1].prec==img->comps[2].prec)
-	{
+        img->comps[0].dx==img->comps[1].dx &&
+        img->comps[1].dx==img->comps[2].dx &&
+        img->comps[0].dy==img->comps[1].dy &&
+        img->comps[1].dy==img->comps[2].dy &&
+        img->comps[0].prec==img->comps[1].prec &&
+        img->comps[1].prec==img->comps[2].prec)
+    {
         w=CEILDIV(img->x1-img->x0, img->comps[0].dx);
         h=CEILDIV(img->y1-img->y0, img->comps[0].dy);
         max=(1<<img->comps[0].prec)-1;
 
-		Create(w,h,24,CXIMAGE_FORMAT_J2K);
+        Create(w,h,24,CXIMAGE_FORMAT_J2K);
 
-		RGBQUAD c;
+        RGBQUAD c;
         for (i=0,y=0; y<h; y++) {
-			for (x=0; x<w; x++,i++){
-				c.rgbRed   = img->comps[0].data[i];
-				c.rgbGreen = img->comps[1].data[i];
-				c.rgbBlue  = img->comps[2].data[i];
-				SetPixelColor(x,h-1-y,c);
-			}
-		}
-	} else {
-		int compno;
-		info.nNumFrames = img->numcomps;
-		if ((info.nFrame<0)||(info.nFrame>=info.nNumFrames)){
-			j2k_destroy(&img,&cp);
-			throw "wrong frame!";
-		}
-		for (compno=0; compno<=info.nFrame; compno++) {
-			w=CEILDIV(img->x1-img->x0, img->comps[compno].dx);
-			h=CEILDIV(img->y1-img->y0, img->comps[compno].dy);
-			max=(1<<img->comps[compno].prec)-1;
-			Create(w,h,8,CXIMAGE_FORMAT_J2K);
-			SetGrayPalette();
-			for (i=0,y=0; y<h; y++) {
-				for (x=0; x<w; x++,i++){
-					SetPixelIndex(x,h-1-y,img->comps[compno].data[i]);
-				}
-			}
-		}
-	}
+            for (x=0; x<w; x++,i++){
+                c.rgbRed   = img->comps[0].data[i];
+                c.rgbGreen = img->comps[1].data[i];
+                c.rgbBlue  = img->comps[2].data[i];
+                SetPixelColor(x,h-1-y,c);
+            }
+        }
+    } else {
+        int compno;
+        info.nNumFrames = img->numcomps;
+        if ((info.nFrame<0)||(info.nFrame>=info.nNumFrames)){
+            j2k_destroy(&img,&cp);
+            throw "wrong frame!";
+        }
+        for (compno=0; compno<=info.nFrame; compno++) {
+            w=CEILDIV(img->x1-img->x0, img->comps[compno].dx);
+            h=CEILDIV(img->y1-img->y0, img->comps[compno].dy);
+            max=(1<<img->comps[compno].prec)-1;
+            Create(w,h,8,CXIMAGE_FORMAT_J2K);
+            SetGrayPalette();
+            for (i=0,y=0; y<h; y++) {
+                for (x=0; x<w; x++,i++){
+                    SetPixelIndex(x,h-1-y,img->comps[compno].data[i]);
+                }
+            }
+        }
+    }
 
-	j2k_destroy(&img,&cp);
+    j2k_destroy(&img,&cp);
 
   } catch (char *message) {
-	strncpy(info.szLastError,message,255);
-	return FALSE;
+    strncpy(info.szLastError,message,255);
+    return FALSE;
   }
-	return true;
+    return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageJ2K::Encode(CxFile * hFile)
 {
-	if (EncodeSafeCheck(hFile)) return false;
+    if (EncodeSafeCheck(hFile)) return false;
 
-	if (head.biClrUsed!=0 && !IsGrayScale()){
-		strcpy(info.szLastError,"J2K can save only RGB or GrayScale images");
-		return false;
-	}
+    if (head.biClrUsed!=0 && !IsGrayScale()){
+        strcpy(info.szLastError,"J2K can save only RGB or GrayScale images");
+        return false;
+    }
 
     int i,x,y;
     j2k_image_t *img;
@@ -103,26 +103,26 @@ bool CxImageJ2K::Encode(CxFile * hFile)
     j2k_tcp_t *tcp;
     j2k_tccp_t *tccp;
 
-	img = (j2k_image_t *)calloc(sizeof(j2k_image_t),1);
-	cp = (j2k_cp_t *)calloc(sizeof(j2k_cp_t),1);
+    img = (j2k_image_t *)calloc(sizeof(j2k_image_t),1);
+    cp = (j2k_cp_t *)calloc(sizeof(j2k_cp_t),1);
 
     cp->tx0=0; cp->ty0=0;
     cp->tw=1; cp->th=1;
     cp->tcps=(j2k_tcp_t*)calloc(sizeof(j2k_tcp_t),1);
     tcp=&cp->tcps[0];
 
-	long w=head.biWidth;
-	long h=head.biHeight;
+    long w=head.biWidth;
+    long h=head.biHeight;
  
-	tcp->numlayers=1;
-	for (i=0;i<tcp->numlayers;i++) tcp->rates[i]=(w*h*GetJpegQuality())/600;
+    tcp->numlayers=1;
+    for (i=0;i<tcp->numlayers;i++) tcp->rates[i]=(w*h*GetJpegQuality())/600;
 
 
     if (IsGrayScale()) {
         img->x0=0;
-		img->y0=0;
-		img->x1=w;
-		img->y1=h;
+        img->y0=0;
+        img->x1=w;
+        img->y1=h;
         img->numcomps=1;
         img->comps=(j2k_comp_t*)calloc(sizeof(j2k_comp_t),1);
         img->comps[0].data=(int*)calloc(w*h*sizeof(int),1);
@@ -130,16 +130,16 @@ bool CxImageJ2K::Encode(CxFile * hFile)
         img->comps[0].sgnd=0;
         img->comps[0].dx=1;
         img->comps[0].dy=1;
-		for (i=0,y=0; y<h; y++) {
-			for (x=0; x<w; x++,i++){
-				img->comps[0].data[i]=GetPixelIndex(x,h-1-y);
-			}
-		}
+        for (i=0,y=0; y<h; y++) {
+            for (x=0; x<w; x++,i++){
+                img->comps[0].data[i]=GetPixelIndex(x,h-1-y);
+            }
+        }
     } else if (!IsIndexed()) {
         img->x0=0;
-		img->y0=0;
-		img->x1=w;
-		img->y1=h;
+        img->y0=0;
+        img->x1=w;
+        img->y1=h;
         img->numcomps=3;
         img->comps=(j2k_comp_t*)calloc(img->numcomps*sizeof(j2k_comp_t),1);
         for (i=0; i<img->numcomps; i++) {
@@ -149,21 +149,21 @@ bool CxImageJ2K::Encode(CxFile * hFile)
             img->comps[i].dx=1;
             img->comps[i].dy=1;
         }
-		RGBQUAD c;
+        RGBQUAD c;
         for (i=0,y=0; y<h; y++) {
-			for (x=0; x<w; x++,i++){
-				c=GetPixelColor(x,h-1-y);
-				img->comps[0].data[i]=c.rgbRed;
-				img->comps[1].data[i]=c.rgbGreen;
-				img->comps[2].data[i]=c.rgbBlue;
-			}
-		}
+            for (x=0; x<w; x++,i++){
+                c=GetPixelColor(x,h-1-y);
+                img->comps[0].data[i]=c.rgbRed;
+                img->comps[1].data[i]=c.rgbGreen;
+                img->comps[2].data[i]=c.rgbBlue;
+            }
+        }
     } else {
         return 0;
     }
-	
+    
     cp->tdx=img->x1-img->x0;
-	cp->tdy=img->y1-img->y0;
+    cp->tdy=img->y1-img->y0;
 
     tcp->csty=0;
     tcp->prg=0;
@@ -190,15 +190,15 @@ bool CxImageJ2K::Encode(CxFile * hFile)
     long len = j2k_encode(img, cp, dest, tcp->rates[tcp->numlayers-1]+2);
 
     if (len==0) {
-		strcpy(info.szLastError,"J2K failed to encode image");
+        strcpy(info.szLastError,"J2K failed to encode image");
     } else {
-		hFile->Write(dest, len, 1);
-	}
-	
-	free(dest);
-	j2k_destroy(&img,&cp);
+        hFile->Write(dest, len, 1);
+    }
+    
+    free(dest);
+    j2k_destroy(&img,&cp);
 
-	return (len!=0);
+    return (len!=0);
 }
 ////////////////////////////////////////////////////////////////////////////////
 

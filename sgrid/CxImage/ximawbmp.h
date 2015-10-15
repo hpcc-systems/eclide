@@ -26,16 +26,16 @@ typedef struct tagWbmpHeader
 } WBMPHEADER;
 #pragma pack()
 public:
-	CxImageWBMP(): CxImage(CXIMAGE_FORMAT_WBMP) {}
+    CxImageWBMP(): CxImage(CXIMAGE_FORMAT_WBMP) {}
 
 //	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_WBMP);}
 //	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_WBMP);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 };
 

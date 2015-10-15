@@ -117,8 +117,8 @@ extern WTL::CAppModule _Module;
 
 //  MFC Command Update Helper
 #define	UPDATEUI(cui, id, val)	if (cui->m_nID == id){\
-						cui->Enable(val);\
-						return true;}
+                        cui->Enable(val);\
+                        return true;}
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -14,36 +14,36 @@
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageWBMP::Decode(CxFile *hFile)
 {
-	if (hFile == NULL) return false;
+    if (hFile == NULL) return false;
 
-	WBMPHEADER wbmpHead;
+    WBMPHEADER wbmpHead;
 
   try
   {
-	if (hFile->Read(&wbmpHead,sizeof(wbmpHead),1)==0)
-		throw "Not a WBMP";
+    if (hFile->Read(&wbmpHead,sizeof(wbmpHead),1)==0)
+        throw "Not a WBMP";
 
-	if (wbmpHead.Type != 0)
-		throw "Unsupported WBMP type";			
+    if (wbmpHead.Type != 0)
+        throw "Unsupported WBMP type";			
 
-	if (wbmpHead.ImageHeight==0 || wbmpHead.ImageWidth==0)
-		throw "Corrupted WBMP";
+    if (wbmpHead.ImageHeight==0 || wbmpHead.ImageWidth==0)
+        throw "Corrupted WBMP";
 
-	Create(wbmpHead.ImageWidth, wbmpHead.ImageHeight, 1, CXIMAGE_FORMAT_WBMP);
-	if (!IsValid()) throw "WBMP Create failed";
-	SetGrayPalette();
+    Create(wbmpHead.ImageWidth, wbmpHead.ImageHeight, 1, CXIMAGE_FORMAT_WBMP);
+    if (!IsValid()) throw "WBMP Create failed";
+    SetGrayPalette();
 
-	int linewidth=(wbmpHead.ImageWidth+7)/8;
+    int linewidth=(wbmpHead.ImageWidth+7)/8;
     CImageIterator iter(this);
-	iter.Upset();
+    iter.Upset();
     for (int y=0; y < wbmpHead.ImageHeight; y++){
-		hFile->Read(iter.GetRow(),linewidth,1);
-		iter.PrevRow();
+        hFile->Read(iter.GetRow(),linewidth,1);
+        iter.PrevRow();
     }
 
   } catch (char *message) {
-	strncpy(info.szLastError,message,255);
-	return FALSE;
+    strncpy(info.szLastError,message,255);
+    return FALSE;
   }
     return true;
 }
@@ -52,31 +52,31 @@ bool CxImageWBMP::Decode(CxFile *hFile)
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImageWBMP::Encode(CxFile * hFile)
 {
-	if (EncodeSafeCheck(hFile)) return false;
+    if (EncodeSafeCheck(hFile)) return false;
 
-	//check format limits
-	if ((head.biWidth>255)||(head.biHeight>255)||(head.biBitCount!=1)){
-		strcpy(info.szLastError,"Can't save this image as WBMP");
-		return false;
-	}
+    //check format limits
+    if ((head.biWidth>255)||(head.biHeight>255)||(head.biBitCount!=1)){
+        strcpy(info.szLastError,"Can't save this image as WBMP");
+        return false;
+    }
 
-	WBMPHEADER wbmpHead;
-	wbmpHead.Type=0;
-	wbmpHead.FixHeader=0;
-	wbmpHead.ImageWidth=(BYTE)head.biWidth;
-	wbmpHead.ImageHeight=(BYTE)head.biHeight;
+    WBMPHEADER wbmpHead;
+    wbmpHead.Type=0;
+    wbmpHead.FixHeader=0;
+    wbmpHead.ImageWidth=(BYTE)head.biWidth;
+    wbmpHead.ImageHeight=(BYTE)head.biHeight;
 
     // Write the file header
-	hFile->Write(&wbmpHead,sizeof(wbmpHead),1);
+    hFile->Write(&wbmpHead,sizeof(wbmpHead),1);
     // Write the pixels
-	int linewidth=(wbmpHead.ImageWidth+7)/8;
+    int linewidth=(wbmpHead.ImageWidth+7)/8;
     CImageIterator iter(this);
-	iter.Upset();
+    iter.Upset();
     for (int y=0; y < wbmpHead.ImageHeight; y++){
-		hFile->Write(iter.GetRow(),linewidth,1);
-		iter.PrevRow();
+        hFile->Write(iter.GetRow(),linewidth,1);
+        iter.PrevRow();
     }
-	return true;
+    return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
 #endif // CXIMAGE_SUPPORT_ENCODE

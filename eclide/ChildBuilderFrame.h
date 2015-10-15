@@ -8,14 +8,14 @@ __interface IAttributeHistory;
 
 enum BuilderStartup
 {
-	StartUnknown = 0,
-	StartNoChange,
-	StartEcl,
-	StartExceptions,
-	StartEclWatch,
-	StartGraph,
-	StartFirstResult,
-	StartLast
+    StartUnknown = 0,
+    StartNoChange,
+    StartEcl,
+    StartExceptions,
+    StartEclWatch,
+    StartGraph,
+    StartFirstResult,
+    StartLast
 };
 
 class CMainFrame;

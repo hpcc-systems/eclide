@@ -5,8 +5,8 @@
 
 __interface IResultRequestQueue : public IUnknown
 {
-	void Clear();
-	void GetResultData(Dali::CResultDataRequest* request, bool bHighPriority=true);
+    void Clear();
+    void GetResultData(Dali::CResultDataRequest* request, bool bHighPriority=true);
 };
 
 typedef StlLinked<IResultRequestQueue> IResultRequestQueueAdapt;

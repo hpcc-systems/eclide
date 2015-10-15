@@ -5,24 +5,24 @@
 // NOTE: *MUST* match definition in GraphViewCtl.idl
 enum VISIBLE
 {
-	VISIBLE_DEFAULT = 0,
-	VISIBLE_HIDE,
-	VISIBLE_SHOW
+    VISIBLE_DEFAULT = 0,
+    VISIBLE_HIDE,
+    VISIBLE_SHOW
 };
 
 typedef std::vector<VISIBLE> VisibleVector;
 
 enum IMAGE_POSITION
 {
-	POSITION_NORTH_WEST = 0,
-	POSITION_NORTH,
-	POSITION_NORTH_EAST,
-	POSITION_WEST,
-	POSITION_CENTER,
-	POSITION_EAST,
-	POSITION_SOUTH_WEST,
-	POSITION_SOUTH,
-	POSITION_SOUTH_EAST
+    POSITION_NORTH_WEST = 0,
+    POSITION_NORTH,
+    POSITION_NORTH_EAST,
+    POSITION_WEST,
+    POSITION_CENTER,
+    POSITION_EAST,
+    POSITION_SOUTH_WEST,
+    POSITION_SOUTH,
+    POSITION_SOUTH_EAST
 };
 
 // must match GraphViewCtl.h
@@ -40,54 +40,54 @@ typedef float REAL;
 /*
 class REAL
 {
-	float val;
+    float val;
 public:
-	REAL() throw()
-	{
-		val=0;
-	}
-	
-	REAL(const REAL& r) throw()
-	{
-		val=r.val;
-	}
+    REAL() throw()
+    {
+        val=0;
+    }
+    
+    REAL(const REAL& r) throw()
+    {
+        val=r.val;
+    }
 
-	REAL(double r) throw()
-	{
-		val=static_cast<float>(r);
-	}
+    REAL(double r) throw()
+    {
+        val=static_cast<float>(r);
+    }
 
-	REAL(float r) throw()
-	{
-		val=r;
-	}
+    REAL(float r) throw()
+    {
+        val=r;
+    }
 
-	REAL(long r) throw()
-	{
-		val=static_cast<float>(r);
-	}
+    REAL(long r) throw()
+    {
+        val=static_cast<float>(r);
+    }
 
-	REAL(int r) throw()
-	{
-		val=static_cast<float>(r);
-	}
+    REAL(int r) throw()
+    {
+        val=static_cast<float>(r);
+    }
 
-	operator double() const
-	{
-		return static_cast<double>(val);
-	}
+    operator double() const
+    {
+        return static_cast<double>(val);
+    }
 
     REAL& operator+=(const REAL& r)
     {
-		val+=r.val;
-		return *this;
-	}
+        val+=r.val;
+        return *this;
+    }
 
     REAL& operator-=(const REAL& r)
     {
-		val-=r.val;
-		return *this;
-	}
+        val-=r.val;
+        return *this;
+    }
 
 };
 */
@@ -97,8 +97,8 @@ typedef std::vector<REAL> REALVector;
 
 enum Coordinates
 {
-	world,
-	screen
+    world,
+    screen
 };
 
 #define REAL_MAX            FLT_MAX
@@ -124,7 +124,7 @@ public:
         Height = size.Height;
     }
 
-	SizeF(IN const SIZE& size)
+    SizeF(IN const SIZE& size)
     {
         Width = static_cast<REAL>(size.cx);
         Height = static_cast<REAL>(size.cy);
@@ -159,10 +159,10 @@ public:
         return (Width == 0.0f && Height == 0.0f);
     }
 
-	operator CSize() const
-	{
-		return CSize(round_int(Width),round_int(Height));
-	}
+    operator CSize() const
+    {
+        return CSize(round_int(Width),round_int(Height));
+    }
 
 public:
 
@@ -173,72 +173,72 @@ public:
 class PointF
 {
 public:
-	PointF()
-	{
-		x = y = 0.0f;
-	}
+    PointF()
+    {
+        x = y = 0.0f;
+    }
 
-	PointF(IN const PointF &point)
-	{
-		x = point.x;
-		y = point.y;
-	}
+    PointF(IN const PointF &point)
+    {
+        x = point.x;
+        y = point.y;
+    }
 
-	PointF(IN const SizeF &size)
-	{
-		x = size.Width;
-		y = size.Height;
-	}
+    PointF(IN const SizeF &size)
+    {
+        x = size.Width;
+        y = size.Height;
+    }
 
-	PointF(IN const POINT &point)
-	{
-		x = static_cast<REAL>(point.x)+0.5f;
-		y = static_cast<REAL>(point.y)+0.5f;
-	}
+    PointF(IN const POINT &point)
+    {
+        x = static_cast<REAL>(point.x)+0.5f;
+        y = static_cast<REAL>(point.y)+0.5f;
+    }
 
-	PointF(IN LONG _x, IN LONG _y)
-	{
-		x = static_cast<REAL>(_x)+0.5f;
-		y = static_cast<REAL>(_y)+0.5f;
-	}
+    PointF(IN LONG _x, IN LONG _y)
+    {
+        x = static_cast<REAL>(_x)+0.5f;
+        y = static_cast<REAL>(_y)+0.5f;
+    }
 
-	PointF(IN REAL _x,
-		IN REAL _y)
-	{
-		x = _x;
-		y = _y;
-	}
+    PointF(IN REAL _x,
+        IN REAL _y)
+    {
+        x = _x;
+        y = _y;
+    }
 
-	~PointF()
-	{
-	}
+    ~PointF()
+    {
+    }
 
-	PointF operator+(IN const PointF& point) const
-	{
-		return PointF(x + point.x,
-			y + point.y);
-	}
+    PointF operator+(IN const PointF& point) const
+    {
+        return PointF(x + point.x,
+            y + point.y);
+    }
 
-	PointF operator-(IN const PointF& point) const
-	{
-		return PointF(x - point.x,
-			y - point.y);
-	}
+    PointF operator-(IN const PointF& point) const
+    {
+        return PointF(x - point.x,
+            y - point.y);
+    }
 
-	BOOL Equals(IN const PointF& point)
-	{
-		return (x == point.x) && (y == point.y);
-	}
+    BOOL Equals(IN const PointF& point)
+    {
+        return (x == point.x) && (y == point.y);
+    }
 
-	operator CPoint() const
-	{
-		return CPoint(floor_int(x), floor_int(y));
-	}
+    operator CPoint() const
+    {
+        return CPoint(floor_int(x), floor_int(y));
+    }
 
 public:
 
-	REAL x;
-	REAL y;
+    REAL x;
+    REAL y;
 };
 
 typedef std::vector<PointF> PointFVector;
@@ -265,10 +265,10 @@ public:
 
     RectF(const RECT &r)
     {
-		x = static_cast<REAL>(r.left)+0.5f;
+        x = static_cast<REAL>(r.left)+0.5f;
         y = static_cast<REAL>(r.top)+0.5f;
-		Width = static_cast<REAL>(r.right - r.left);
-		Height = static_cast<REAL>(r.bottom - r.top);
+        Width = static_cast<REAL>(r.right - r.left);
+        Height = static_cast<REAL>(r.bottom - r.top);
     }
 
     RectF(IN const PointF& location,
@@ -288,7 +288,7 @@ public:
         Height = size.Height;
     }
 
-	RectF* Clone() const
+    RectF* Clone() const
     {
         return new RectF(x, y, Width, Height);
     }
@@ -331,7 +331,7 @@ public:
         point->y = y;
     }
 
-	REAL GetLeft() const
+    REAL GetLeft() const
     {
         return x;
     }
@@ -407,7 +407,7 @@ public:
     {
         REAL right = std::min<REAL>(a.GetRight(), b.GetRight());
         REAL bottom = std::min<REAL>(a.GetBottom(), b.GetBottom());
-		REAL left = std::max<REAL>(a.GetLeft(), b.GetLeft());
+        REAL left = std::max<REAL>(a.GetLeft(), b.GetLeft());
         REAL top = std::max<REAL>(a.GetTop(), b.GetTop());
 
         c.x = left;
@@ -453,21 +453,21 @@ public:
         y += dy;
     }
 
-	operator CRect() const
-	{
-		CRect r;
+    operator CRect() const
+    {
+        CRect r;
 
-		r.left=floor_int(x);
-		r.top=floor_int(y);
-		r.right=r.left+round_int(Width);
-		r.bottom=r.top+round_int(Height);
-		return r;
-	}
+        r.left=floor_int(x);
+        r.top=floor_int(y);
+        r.right=r.left+round_int(Width);
+        r.bottom=r.top+round_int(Height);
+        return r;
+    }
 
-	bool operator == (const RectF & other) const
-	{
-		return (other.x == x && other.y == y && other.Width == Width && other.Height == Height);
-	}
+    bool operator == (const RectF & other) const
+    {
+        return (other.x == x && other.y == y && other.Width == Width && other.Height == Height);
+    }
 
 public:
 
@@ -599,36 +599,36 @@ public:
         return RGB(GetRed(), GetGreen(), GetBlue());
     }
 
-	static COLORREF ToCOLORREF(ARGB argb);
+    static COLORREF ToCOLORREF(ARGB argb);
 
-	void Darken()
-	{
-		float r = GetR() * 2.0f / 3.0f;
-		float g = GetG() * 2.0f / 3.0f;
-		float b = GetB() * 2.0f / 3.0f;
-		SetValue(MakeARGB(GetA(), static_cast<BYTE>(r), static_cast<BYTE>(g), static_cast<BYTE>(b)));
-	}
+    void Darken()
+    {
+        float r = GetR() * 2.0f / 3.0f;
+        float g = GetG() * 2.0f / 3.0f;
+        float b = GetB() * 2.0f / 3.0f;
+        SetValue(MakeARGB(GetA(), static_cast<BYTE>(r), static_cast<BYTE>(g), static_cast<BYTE>(b)));
+    }
 
-	void Lighten()
-	{
-		float r = std::min<float>(GetR() * 2.0f, 255.0f);
-		float g = std::min<float>(GetG() * 2.0f, 255.0f);
-		float b = std::min<float>(GetB() * 2.0f, 255.0f);
-		SetValue(MakeARGB(GetA(), static_cast<BYTE>(r), static_cast<BYTE>(g), static_cast<BYTE>(b)));
-	}
+    void Lighten()
+    {
+        float r = std::min<float>(GetR() * 2.0f, 255.0f);
+        float g = std::min<float>(GetG() * 2.0f, 255.0f);
+        float b = std::min<float>(GetB() * 2.0f, 255.0f);
+        SetValue(MakeARGB(GetA(), static_cast<BYTE>(r), static_cast<BYTE>(g), static_cast<BYTE>(b)));
+    }
 
-	void MoreBright(WORD step=1);
-	void LessBright(WORD step=1);
-	void MoreSaturated(WORD step=1);
-	void LessSaturated(WORD step=1);
-	WORD GetHue() const;
-	WORD GetLuminance() const;
-	WORD GetSaturation() const;
-	void GetHLS(WORD hls[3]) const;
+    void MoreBright(WORD step=1);
+    void LessBright(WORD step=1);
+    void MoreSaturated(WORD step=1);
+    void LessSaturated(WORD step=1);
+    WORD GetHue() const;
+    WORD GetLuminance() const;
+    WORD GetSaturation() const;
+    void GetHLS(WORD hls[3]) const;
 
-	void Complementary(Color& comp);
-	bool IsDarker(const Color& color) const;
-	bool IsLighter(const Color& color) const;
+    void Complementary(Color& comp);
+    bool IsDarker(const Color& color) const;
+    bool IsLighter(const Color& color) const;
 
 public:
 
@@ -810,10 +810,10 @@ public:
                 ((ARGB) (a) << AlphaShift));
     }
 
-	unsigned long ToBGR()
-	{
-		return RGB(GetBlue(), GetGreen(), GetRed());
-	}
+    unsigned long ToBGR()
+    {
+        return RGB(GetBlue(), GetGreen(), GetRed());
+    }
 
 
 protected:
@@ -827,35 +827,35 @@ CLIB_API unsigned long ToBGR(COLORREF rgb);
 class CRectEx : public CRect
 {
 public:
-	CRectEx() : CRect(0, 0, 0, 0)
-	{
-	}
+    CRectEx() : CRect(0, 0, 0, 0)
+    {
+    }
 
-	CRectEx(const CRect & r) : CRect(r)
-	{
-	}
+    CRectEx(const CRect & r) : CRect(r)
+    {
+    }
 };
 class CSizeEx : public CSize
 {
 public:
-	CSizeEx() : CSize(0, 0)
-	{
-	}
+    CSizeEx() : CSize(0, 0)
+    {
+    }
 
-	CSizeEx(const CSize & s) : CSize(s)
-	{
-	}
+    CSizeEx(const CSize & s) : CSize(s)
+    {
+    }
 };
 
 //-----------------------------------------------------------------------------
 
 __interface IBitmap	: public IUnknown
 {
-	WTL::CBitmap* GetCBitmap();
-	bool IsValid() const;
-	bool GetSize(SIZE& size) const;
-	void* GetBitsPtr() const;
-	const BITMAPINFO& GetBitmapInfo() const;
+    WTL::CBitmap* GetCBitmap();
+    bool IsValid() const;
+    bool GetSize(SIZE& size) const;
+    void* GetBitsPtr() const;
+    const BITMAPINFO& GetBitmapInfo() const;
 };
 
 CLIB_API IBitmap* CreateIBitmap(HBITMAP hBitmap);
@@ -865,181 +865,181 @@ CLIB_API IBitmap* CreateIBitmap(HBITMAP hBitmap);
 class CAutoPen
 {
 protected:
-	WTL::CDCHandle &m_dc;
-	WTL::CPen &m_pen;
-	HPEN m_oldPen;
+    WTL::CDCHandle &m_dc;
+    WTL::CPen &m_pen;
+    HPEN m_oldPen;
 
 public:
-	CAutoPen(WTL::CPen &newPen, WTL::CDCHandle &dc) : m_dc(dc), m_pen(newPen)
-	{
-		m_oldPen = m_dc.SelectPen(m_pen);
-	}
+    CAutoPen(WTL::CPen &newPen, WTL::CDCHandle &dc) : m_dc(dc), m_pen(newPen)
+    {
+        m_oldPen = m_dc.SelectPen(m_pen);
+    }
 
-	~CAutoPen()
-	{
+    ~CAutoPen()
+    {
 #ifndef _WIN32_WCE
-		if (m_oldPen == NULL || ::GetObjectType(m_oldPen) == OBJ_PEN || ::GetObjectType(m_oldPen) == OBJ_EXTPEN)
-			m_dc.SelectPen(m_oldPen);
+        if (m_oldPen == NULL || ::GetObjectType(m_oldPen) == OBJ_PEN || ::GetObjectType(m_oldPen) == OBJ_EXTPEN)
+            m_dc.SelectPen(m_oldPen);
 #else
-		if (m_oldPen == NULL || ::GetObjectType(m_oldPen) == OBJ_PEN)
-			m_dc.SelectPen(m_oldPen);
+        if (m_oldPen == NULL || ::GetObjectType(m_oldPen) == OBJ_PEN)
+            m_dc.SelectPen(m_oldPen);
 #endif
-	}
+    }
 };
 
 class CAutoBrush
 {
 protected:
-	WTL::CDCHandle &m_dc;
-	WTL::CBrush &m_brush;
-	HBRUSH m_oldBrush;
+    WTL::CDCHandle &m_dc;
+    WTL::CBrush &m_brush;
+    HBRUSH m_oldBrush;
 
 public:
-	CAutoBrush(WTL::CBrush &newBrush, WTL::CDCHandle &dc) : m_dc(dc), m_brush(newBrush)
-	{
-		m_oldBrush = m_dc.SelectBrush(m_brush);
-	}
+    CAutoBrush(WTL::CBrush &newBrush, WTL::CDCHandle &dc) : m_dc(dc), m_brush(newBrush)
+    {
+        m_oldBrush = m_dc.SelectBrush(m_brush);
+    }
 
-	~CAutoBrush()
-	{
-		if (m_oldBrush == NULL || ::GetObjectType(m_oldBrush) == OBJ_BRUSH)
-			m_dc.SelectBrush(m_oldBrush);
-	}
+    ~CAutoBrush()
+    {
+        if (m_oldBrush == NULL || ::GetObjectType(m_oldBrush) == OBJ_BRUSH)
+            m_dc.SelectBrush(m_oldBrush);
+    }
 };
 
 class CAutoFont
 {
 protected:
-	WTL::CDCHandle &m_dc;
-	WTL::CFont &m_font;
-	HFONT m_oldFont;
+    WTL::CDCHandle &m_dc;
+    WTL::CFont &m_font;
+    HFONT m_oldFont;
 
 public:
-	CAutoFont(WTL::CFont &newFont, WTL::CDCHandle &dc) : m_dc(dc), m_font(newFont)
-	{
-		m_oldFont = m_dc.SelectFont(m_font);
-	}
+    CAutoFont(WTL::CFont &newFont, WTL::CDCHandle &dc) : m_dc(dc), m_font(newFont)
+    {
+        m_oldFont = m_dc.SelectFont(m_font);
+    }
 
-	~CAutoFont()
-	{
-		if (m_oldFont == NULL || ::GetObjectType(m_oldFont) == OBJ_FONT)
-			m_dc.SelectFont(m_oldFont);
-	}
+    ~CAutoFont()
+    {
+        if (m_oldFont == NULL || ::GetObjectType(m_oldFont) == OBJ_FONT)
+            m_dc.SelectFont(m_oldFont);
+    }
 };
 
 #ifndef _WIN32_WCE
 class HTMLElement
 {
 protected:
-	CComPtr<IHTMLElementRender> m_htmlElement;
-	GraphTypes::SizeF m_size;
+    CComPtr<IHTMLElementRender> m_htmlElement;
+    GraphTypes::SizeF m_size;
 
 public:
-	HTMLElement() 
-	{
-	}
-	HTMLElement(const HTMLElement & c) 
-	{
-		*this = c;
-	}
-	HTMLElement & operator = (const HTMLElement & c)
-	{
-		m_htmlElement = c.m_htmlElement;
-		m_size = c.m_size;
-		return *this;
-	}
-	bool operator < (const HTMLElement & c) const
-	{
-		return m_htmlElement.p < c.m_htmlElement.p;
-	}
+    HTMLElement() 
+    {
+    }
+    HTMLElement(const HTMLElement & c) 
+    {
+        *this = c;
+    }
+    HTMLElement & operator = (const HTMLElement & c)
+    {
+        m_htmlElement = c.m_htmlElement;
+        m_size = c.m_size;
+        return *this;
+    }
+    bool operator < (const HTMLElement & c) const
+    {
+        return m_htmlElement.p < c.m_htmlElement.p;
+    }
 
-	HTMLElement(IHTMLElementRender* htmlElement, float width, float height) : m_htmlElement(htmlElement), m_size(width, height) 
-	{
-	}
-	IHTMLElementRender * GetHtmlElement() const
-	{
-		return m_htmlElement;
-	}
-	GraphTypes::SizeF GetSize() const
-	{
-		return m_size;
-	}
+    HTMLElement(IHTMLElementRender* htmlElement, float width, float height) : m_htmlElement(htmlElement), m_size(width, height) 
+    {
+    }
+    IHTMLElementRender * GetHtmlElement() const
+    {
+        return m_htmlElement;
+    }
+    GraphTypes::SizeF GetSize() const
+    {
+        return m_size;
+    }
 };
 #endif
 
 struct ImageInfo
 {
-	ImageInfo()
-		: image(0), 
-		pos(POSITION_WEST), 
-		marginX(0), 
-		marginY(0),
-		size(0,0),
-		transcolor(0),
-		opaqueness(0xFF)
-	{}
+    ImageInfo()
+        : image(0), 
+        pos(POSITION_WEST), 
+        marginX(0), 
+        marginY(0),
+        size(0,0),
+        transcolor(0),
+        opaqueness(0xFF)
+    {}
 
 #ifdef _DEBUG
-	~ImageInfo() {}
+    ~ImageInfo() {}
 #endif
 
-	ImageInfo(const ImageInfo& info)
-		: image(info.image),
-		pos(info.pos),
-		marginX(info.marginX),
-		marginY(info.marginY),
-		size(info.size),
-		transcolor(info.transcolor),
-		opaqueness(info.opaqueness)
-	{
-	}
+    ImageInfo(const ImageInfo& info)
+        : image(info.image),
+        pos(info.pos),
+        marginX(info.marginX),
+        marginY(info.marginY),
+        size(info.size),
+        transcolor(info.transcolor),
+        opaqueness(info.opaqueness)
+    {
+    }
 
-	ImageInfo& operator=(const ImageInfo& info)
-	{
-		image=info.image;
-		pos=info.pos;
-		marginX=info.marginX;
-		marginY=info.marginY;
-		size=info.size;
-		transcolor=info.transcolor;
-		opaqueness=info.opaqueness;
+    ImageInfo& operator=(const ImageInfo& info)
+    {
+        image=info.image;
+        pos=info.pos;
+        marginX=info.marginX;
+        marginY=info.marginY;
+        size=info.size;
+        transcolor=info.transcolor;
+        opaqueness=info.opaqueness;
 
-		return *this;
-	}
+        return *this;
+    }
 
-	void SetTransparentColor(COLORREF tc) 
-	{
-		transcolor=tc;
-		opaqueness=0;
-	}
+    void SetTransparentColor(COLORREF tc) 
+    {
+        transcolor=tc;
+        opaqueness=0;
+    }
 
-	bool IsTransparent() const { return opaqueness==0; }
+    bool IsTransparent() const { return opaqueness==0; }
 
-	void GetSize(SIZE& size_) const
-	{ 
-		if(size.cx==0 && size.cy==0)
-		  image->GetSize(size);
-		size_=size;
-	}
+    void GetSize(SIZE& size_) const
+    { 
+        if(size.cx==0 && size.cy==0)
+          image->GetSize(size);
+        size_=size;
+    }
 
-	void SetSize(const SIZE& size_) 
-	{
-		size=size_;
-	}
+    void SetSize(const SIZE& size_) 
+    {
+        size=size_;
+    }
 
-	void GetSourceSize(SIZE& size_) const
-	{
-		image->GetSize(size_);
-	}
+    void GetSourceSize(SIZE& size_) const
+    {
+        image->GetSize(size_);
+    }
 
-	CComPtr<GraphTypes::IBitmap> image;
-	IMAGE_POSITION pos;
-	int marginX;
-	int marginY;
-	mutable CSize size;
-	COLORREF transcolor;
-	// if 0xFF fully opaque, if 0x00, then transcolor is transparent color
-	unsigned int opaqueness; 
+    CComPtr<GraphTypes::IBitmap> image;
+    IMAGE_POSITION pos;
+    int marginX;
+    int marginY;
+    mutable CSize size;
+    COLORREF transcolor;
+    // if 0xFF fully opaque, if 0x00, then transcolor is transparent color
+    unsigned int opaqueness; 
 
 };
 

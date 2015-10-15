@@ -216,113 +216,113 @@ public:
 
 ///// LUC ///////////////////////////////////////////////////////////////////////
 
-	//// LUC : MergeCell////////
-	
-	INT_PTR MergeCells(CCellRange& mergedCellRange);
-	void SplitCells(INT_PTR nMergeID);
+    //// LUC : MergeCell////////
+    
+    INT_PTR MergeCells(CCellRange& mergedCellRange);
+    void SplitCells(INT_PTR nMergeID);
 
-	BOOL IsMergedCell(int row, int col, CCellRange& mergedCellRange);
-	BOOL GetMergedCellRect(int row, int col, CRect& rect);
-	BOOL GetMergedCellRect(CCellRange& mergedCell, CRect& rect);
-	BOOL GetTopLeftMergedCell(int& row, int& col, CRect& mergeRect);
-	BOOL GetBottomRightMergedCell(int& row, int& col, CRect& mergeRect);
-	virtual BOOL IsFocused(CGridCellBase& cell, int nRow, int nCol);
-	virtual BOOL IsSelected(CGridCellBase& cell, int nRow, int nCol);
+    BOOL IsMergedCell(int row, int col, CCellRange& mergedCellRange);
+    BOOL GetMergedCellRect(int row, int col, CRect& rect);
+    BOOL GetMergedCellRect(CCellRange& mergedCell, CRect& rect);
+    BOOL GetTopLeftMergedCell(int& row, int& col, CRect& mergeRect);
+    BOOL GetBottomRightMergedCell(int& row, int& col, CRect& mergeRect);
+    virtual BOOL IsFocused(CGridCellBase& cell, int nRow, int nCol);
+    virtual BOOL IsSelected(CGridCellBase& cell, int nRow, int nCol);
 
-	BOOL	m_bDrawingMergedCell;
-	INT_PTR	m_nCurrentMergeID;
+    BOOL	m_bDrawingMergedCell;
+    INT_PTR	m_nCurrentMergeID;
 
-	static CRect rectNull;		
-	static CCellID cellNull;
+    static CRect rectNull;		
+    static CCellID cellNull;
 
-	// LUC : Smooth scroll
-	void EnableSmoothScroll(BOOL bEnable = TRUE);
+    // LUC : Smooth scroll
+    void EnableSmoothScroll(BOOL bEnable = TRUE);
 
-	// LUC : Freeze Rows	
+    // LUC : Freeze Rows	
 
-	BOOL SetFreezedRowCount(int nFreezedRows)
-	{
-		BOOL bRet = FALSE;
-		if( (nFreezedRows >= 0) && ((nFreezedRows + m_nFixedRows) <= m_nRows) )
-		{
-			m_nFreezedRows = nFreezedRows;
-			ResetScrollBars();
-			Refresh();
-			bRet = TRUE;
-		}
-	
-		return bRet;
-		
-	}
-	
-	BOOL SetFreezedColumnCount(int nFreezedCols)
-	{
-		BOOL bRet = FALSE;
-		if( (nFreezedCols >= 0) && ((nFreezedCols + m_nFixedCols) <= m_nCols) )
-		{
-			m_nFreezedCols = nFreezedCols;
-			ResetScrollBars();
-			Refresh();
-			bRet = TRUE;
-		}
-	
-		return bRet;
-	}
+    BOOL SetFreezedRowCount(int nFreezedRows)
+    {
+        BOOL bRet = FALSE;
+        if( (nFreezedRows >= 0) && ((nFreezedRows + m_nFixedRows) <= m_nRows) )
+        {
+            m_nFreezedRows = nFreezedRows;
+            ResetScrollBars();
+            Refresh();
+            bRet = TRUE;
+        }
+    
+        return bRet;
+        
+    }
+    
+    BOOL SetFreezedColumnCount(int nFreezedCols)
+    {
+        BOOL bRet = FALSE;
+        if( (nFreezedCols >= 0) && ((nFreezedCols + m_nFixedCols) <= m_nCols) )
+        {
+            m_nFreezedCols = nFreezedCols;
+            ResetScrollBars();
+            Refresh();
+            bRet = TRUE;
+        }
+    
+        return bRet;
+    }
 
-	// To avoid calling ResetScrollBars twice you can use SetFreezedFrame
-	BOOL SetFreezedFrame(int nFreezedRows, int nFreezedCols)
-	{
-		BOOL bRet = FALSE;
-		if( (nFreezedRows >= 0) && ((nFreezedRows + m_nFixedRows) <= m_nRows) )
-		{
-			m_nFreezedRows = nFreezedRows;			
-			bRet = TRUE;
-		}
-		if( (nFreezedCols >= 0) && ((nFreezedCols + m_nFixedCols) <= m_nCols) )
-		{
-			m_nFreezedCols = nFreezedCols;
-			bRet = TRUE;
-		}
-		else
-		{
-			bRet = FALSE;
-		}
+    // To avoid calling ResetScrollBars twice you can use SetFreezedFrame
+    BOOL SetFreezedFrame(int nFreezedRows, int nFreezedCols)
+    {
+        BOOL bRet = FALSE;
+        if( (nFreezedRows >= 0) && ((nFreezedRows + m_nFixedRows) <= m_nRows) )
+        {
+            m_nFreezedRows = nFreezedRows;			
+            bRet = TRUE;
+        }
+        if( (nFreezedCols >= 0) && ((nFreezedCols + m_nFixedCols) <= m_nCols) )
+        {
+            m_nFreezedCols = nFreezedCols;
+            bRet = TRUE;
+        }
+        else
+        {
+            bRet = FALSE;
+        }
 
-		ResetScrollBars();
-			
-		return bRet;			
-	}	
-	
-	int  GetFreezedRowCount() const                    { return m_nFreezedRows; }
+        ResetScrollBars();
+            
+        return bRet;			
+    }	
+    
+    int  GetFreezedRowCount() const                    { return m_nFreezedRows; }
     int  GetFreezedColumnCount() const                 { return m_nFreezedCols; }	
 
-	void ShowHorzNonGridArea(BOOL bShow)
-	{
-		m_bShowHorzNonGridArea = bShow;
-	}
+    void ShowHorzNonGridArea(BOOL bShow)
+    {
+        m_bShowHorzNonGridArea = bShow;
+    }
 
-	BOOL IsShowingHorzNonGridArea()
-	{
-		return m_bShowHorzNonGridArea;
-	}
+    BOOL IsShowingHorzNonGridArea()
+    {
+        return m_bShowHorzNonGridArea;
+    }
 
 ///////////////////////////////////////////////////////////////////////////////////////    
-	
+    
     int  GetRowCount() const                    { return m_nRows; }
     int  GetColumnCount() const                 { return m_nCols; }
     int  GetFixedRowCount(BOOL bIncludeFreezedRows = FALSE) const
-	{ 
-		return (bIncludeFreezedRows) ? (m_nFixedRows + m_nFreezedRows) : m_nFixedRows;
-	}
+    { 
+        return (bIncludeFreezedRows) ? (m_nFixedRows + m_nFreezedRows) : m_nFixedRows;
+    }
     int  GetFixedColumnCount(BOOL bIncludeFreezedCols = FALSE) const            
-	{
-		return (bIncludeFreezedCols) ? (m_nFixedCols + m_nFreezedCols) : m_nFixedCols; 
-	}	
-	
-	BOOL SetRowCount(int nRows = 10);
+    {
+        return (bIncludeFreezedCols) ? (m_nFixedCols + m_nFreezedCols) : m_nFixedCols; 
+    }	
+    
+    BOOL SetRowCount(int nRows = 10);
     BOOL SetColumnCount(int nCols = 10);
     
-	BOOL SetFixedRowCount(int nFixedRows = 1);
+    BOOL SetFixedRowCount(int nFixedRows = 1);
     BOOL SetFixedColumnCount(int nFixedCols = 1);	
 
 public:
@@ -340,14 +340,14 @@ public:
     BOOL GetTextRect(int nRow, int nCol, LPRECT pRect);
 
     // LUC
-	// Change for MergeCell
-	CCellID GetCellFromPt(CPoint point, BOOL bAllowFixedCellCheck = TRUE, CCellID& cellOriginal = cellNull);
+    // Change for MergeCell
+    CCellID GetCellFromPt(CPoint point, BOOL bAllowFixedCellCheck = TRUE, CCellID& cellOriginal = cellNull);
 
-	// LUC
+    // LUC
     //int  GetFixedRowHeight() const;
     //int  GetFixedColumnWidth() const;	    
-	int	GetFixedRowHeight(BOOL bIncludeFreezedRows = FALSE) const;
-	int GetFixedColumnWidth(BOOL bIncludeFreezedCols = FALSE) const;
+    int	GetFixedRowHeight(BOOL bIncludeFreezedRows = FALSE) const;
+    int GetFixedColumnWidth(BOOL bIncludeFreezedCols = FALSE) const;
 
     long GetVirtualWidth() const;
     long GetVirtualHeight() const;
@@ -361,10 +361,10 @@ public:
     void     SetGridLineColor(COLORREF clr)       { m_crGridLineColour = clr;         }
     COLORREF GetGridLineColor() const             { return m_crGridLineColour;        }
 
-	void	 SetTitleTipBackClr(COLORREF clr = CLR_DEFAULT) { m_crTTipBackClr = clr;  }
-	COLORREF GetTitleTipBackClr()				            { return m_crTTipBackClr; }
-	void	 SetTitleTipTextClr(COLORREF clr = CLR_DEFAULT) { m_crTTipTextClr = clr;  }
-	COLORREF GetTitleTipTextClr()				            { return m_crTTipTextClr; }
+    void	 SetTitleTipBackClr(COLORREF clr = CLR_DEFAULT) { m_crTTipBackClr = clr;  }
+    COLORREF GetTitleTipBackClr()				            { return m_crTTipBackClr; }
+    void	 SetTitleTipTextClr(COLORREF clr = CLR_DEFAULT) { m_crTTipTextClr = clr;  }
+    COLORREF GetTitleTipTextClr()				            { return m_crTTipTextClr; }
 
     // ***************************************************************************** //
     // These have been deprecated. Use GetDefaultCell and then set the colors
@@ -534,7 +534,7 @@ public:
     BOOL DeleteNonFixedRows();
     BOOL DeleteAllItems();
 
-	void ClearCells(CCellRange Selection);
+    void ClearCells(CCellRange Selection);
 
     BOOL AutoSizeRow(int nRow, BOOL bResetScroll = TRUE);
     BOOL AutoSizeColumn(int nCol, UINT nAutoSizeStyle = GVS_DEFAULT, BOOL bResetScroll = TRUE);
@@ -566,11 +566,11 @@ public:
     BOOL RedrawRow(int row);
     BOOL RedrawColumn(int col);
 
-	//GJS
-	void SelectNone();
-	void SelectRow(int row, bool clearPrevious);
-	void SelectColumn(int col);
-	//GJS
+    //GJS
+    void SelectNone();
+    void SelectRow(int row, bool clearPrevious);
+    void SelectColumn(int col);
+    //GJS
 
 #ifndef _WIN32_WCE
     BOOL Save(LPCTSTR filename, TCHAR chSeparator = _T(','));
@@ -621,15 +621,15 @@ public:
 public:
     CCellID GetNextItem(CCellID& cell, int nFlags) const;
 
-	BOOL SortItems(int nCol, BOOL bAscending, LPARAM data = 0);
+    BOOL SortItems(int nCol, BOOL bAscending, LPARAM data = 0);
     BOOL SortTextItems(int nCol, BOOL bAscending, LPARAM data = 0);
     BOOL SortItems(PFNLVCOMPARE pfnCompare, int nCol, BOOL bAscending, LPARAM data = 0);
 
-	void SetCompareFunction(PFNLVCOMPARE pfnCompare);
+    void SetCompareFunction(PFNLVCOMPARE pfnCompare);
 
-	// in-built sort functions
-	static int CALLBACK pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
-	static int CALLBACK pfnCellNumericCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
+    // in-built sort functions
+    static int CALLBACK pfnCellTextCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
+    static int CALLBACK pfnCellNumericCompare(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Printing
@@ -667,7 +667,7 @@ public:
 // Implementation
 public:
     virtual ~CGridCtrl();
-	LRESULT SetCellFont(HFONT hFont);
+    LRESULT SetCellFont(HFONT hFont);
 
 protected:
     BOOL RegisterWindowClass();
@@ -715,7 +715,7 @@ protected:  //GJS
 
     CPoint GetPointClicked(int nRow, int nCol, const CPoint& point);
 
-	void ValidateAndModifyCellContents(int nRow, int nCol, LPCTSTR strText);
+    void ValidateAndModifyCellContents(int nRow, int nCol, LPCTSTR strText);
 
 // Overrrides
     // ClassWizard generated virtual function overrides
@@ -727,7 +727,7 @@ protected:  //GJS
 protected:
 #if !defined(_WIN32_WCE_NO_PRINTING) && !defined(GRIDCONTROL_NO_PRINTING)
     // Printing
-	virtual void PrintFixedRowCells(int nStartColumn, int nStopColumn, int& row, CRect& rect,
+    virtual void PrintFixedRowCells(int nStartColumn, int nStopColumn, int& row, CRect& rect,
                                     CDC *pDC, BOOL& bFirst);
     virtual void PrintColumnHeadings(CDC *pDC, CPrintInfo *pInfo);
     virtual void PrintHeader(CDC *pDC, CPrintInfo *pInfo);
@@ -747,7 +747,7 @@ protected:
     // Editing
     virtual void  OnEditCell(int nRow, int nCol, CPoint point, UINT nChar);
     virtual void  OnEndEditCell(int nRow, int nCol, CString str);
-	virtual BOOL  ValidateEdit(int nRow, int nCol, LPCTSTR str);
+    virtual BOOL  ValidateEdit(int nRow, int nCol, LPCTSTR str);
     virtual void  EndEditing();
 
     // Drawing
@@ -795,22 +795,22 @@ protected:
 
     // Cell size details
     int         m_nRows, m_nFixedRows, m_nCols, m_nFixedCols;
-	// LUC
-	int			m_nFreezedRows, m_nFreezedCols;
-	BOOL m_bExcludeFreezedRowsFromSelection;
-	BOOL m_bExcludeFreezedColsFromSelection;
-	
-	// LUC
-	CArray<CCellRange, CCellRange&> m_arMergedCells;
-	
+    // LUC
+    int			m_nFreezedRows, m_nFreezedCols;
+    BOOL m_bExcludeFreezedRowsFromSelection;
+    BOOL m_bExcludeFreezedColsFromSelection;
+    
+    // LUC
+    CArray<CCellRange, CCellRange&> m_arMergedCells;
+    
     CUIntArray  m_arRowHeights, m_arColWidths;
     int         m_nVScrollMax, m_nHScrollMax;
 
-	// LUC
-	int m_nScrollX;
-	
-	// LUC
-	BOOL m_bShowHorzNonGridArea;	
+    // LUC
+    int m_nScrollX;
+    
+    // LUC
+    BOOL m_bShowHorzNonGridArea;	
 
     // Fonts and images
     CRuntimeClass*   m_pRtcDefault; // determines kind of Grid Cell created by default
@@ -860,7 +860,7 @@ protected:
     // sorting
     int          m_bAscending;
     int          m_nSortColumn;
-	PFNLVCOMPARE m_pfnCompare;
+    PFNLVCOMPARE m_pfnCompare;
 
     // EFW - Added to support shaded/unshaded printout.  If true, colored
     // cells will print as-is.  If false, all text prints as black on white.
@@ -890,7 +890,7 @@ protected:
     afx_msg void OnTimer(UINT nIDEvent);
     afx_msg UINT OnGetDlgCode();
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
@@ -923,7 +923,7 @@ protected:
     afx_msg LRESULT OnGetFont(WPARAM hFont, LPARAM lParam);
     afx_msg LRESULT OnImeChar(WPARAM wCharCode, LPARAM lParam);
     afx_msg void OnEndInPlaceEdit(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnSetFocus(CWnd*);
+    afx_msg void OnSetFocus(CWnd*);
     DECLARE_MESSAGE_MAP()
 
     enum eMouseModes { MOUSE_NOTHING, MOUSE_SELECT_ALL, MOUSE_SELECT_COL, MOUSE_SELECT_ROW,
@@ -937,31 +937,31 @@ protected:
     };
 //      for sort in virtual mode, and column order, save and load layer
 public:
-	typedef std::vector<int> intlist;
-	void Reorder(int From, int To);
-	void SetVirtualCompare(PVIRTUALCOMPARE VirtualCompare) { m_pfnVirtualCompare = VirtualCompare;}
-	int m_CurCol;
-	void AllowReorderColumn(bool b=true) { m_AllowReorderColumn = b;}
-	void EnableDragRowMode(bool b=true) { m_bDragRowMode = b; if(b) EnableDragAndDrop(); } // to change row order
-	int GetLayer(int** pLayer); //  gives back the number of ints of the area (do not forget to delete *pLayer)
-	void SetLayer(int* pLayer); // coming from a previous GetLayer (ignored if not same number of column, or the same revision number)
-	void ForceQuitFocusOnTab(bool b=true) { m_QuitFocusOnTab = b;} // use only if GetParent() is a CDialog
-	void AllowSelectRowInFixedCol(bool b=true) { m_AllowSelectRowInFixedCol = b;} // 
+    typedef std::vector<int> intlist;
+    void Reorder(int From, int To);
+    void SetVirtualCompare(PVIRTUALCOMPARE VirtualCompare) { m_pfnVirtualCompare = VirtualCompare;}
+    int m_CurCol;
+    void AllowReorderColumn(bool b=true) { m_AllowReorderColumn = b;}
+    void EnableDragRowMode(bool b=true) { m_bDragRowMode = b; if(b) EnableDragAndDrop(); } // to change row order
+    int GetLayer(int** pLayer); //  gives back the number of ints of the area (do not forget to delete *pLayer)
+    void SetLayer(int* pLayer); // coming from a previous GetLayer (ignored if not same number of column, or the same revision number)
+    void ForceQuitFocusOnTab(bool b=true) { m_QuitFocusOnTab = b;} // use only if GetParent() is a CDialog
+    void AllowSelectRowInFixedCol(bool b=true) { m_AllowSelectRowInFixedCol = b;} // 
 //    allow acces?
-	intlist m_arRowOrder, m_arColOrder;
-	static CGridCtrl* m_This;
+    intlist m_arRowOrder, m_arColOrder;
+    static CGridCtrl* m_This;
 protected:
-	virtual void AddSubVirtualRow(int Num, int Nb);
-	bool m_bDragRowMode;
-	int m_CurRow;
+    virtual void AddSubVirtualRow(int Num, int Nb);
+    bool m_bDragRowMode;
+    int m_CurRow;
 private:
-	void ResetVirtualOrder();
-	PVIRTUALCOMPARE m_pfnVirtualCompare;
-	static bool NotVirtualCompare(int c1, int c2);
-	bool m_InDestructor;
-	bool m_AllowReorderColumn;
-	bool m_QuitFocusOnTab;
-	bool m_AllowSelectRowInFixedCol;
+    void ResetVirtualOrder();
+    PVIRTUALCOMPARE m_pfnVirtualCompare;
+    static bool NotVirtualCompare(int c1, int c2);
+    bool m_InDestructor;
+    bool m_AllowReorderColumn;
+    bool m_QuitFocusOnTab;
+    bool m_AllowSelectRowInFixedCol;
 
 };
 
@@ -1001,18 +1001,18 @@ inline CGridCellBase* CGridCtrl::GetCell(int nRow, int nCol) const
         if (nRow < GetFixedRowCount())    gvdi.item.nState |= (GVIS_FIXED | GVIS_FIXEDROW);
         if (nCol < GetFixedColumnCount()) gvdi.item.nState |= (GVIS_FIXED | GVIS_FIXEDCOL);
         if (GetFocusCell() == CCellID(nRow, nCol)) gvdi.item.nState |= GVIS_FOCUSED;
-		if(!m_InDestructor)
-		{
-			gvdi.item.row = m_arRowOrder[nRow];
-			gvdi.item.col = m_arColOrder[nCol];
+        if(!m_InDestructor)
+        {
+            gvdi.item.row = m_arRowOrder[nRow];
+            gvdi.item.col = m_arColOrder[nCol];
 
-			if (m_pfnCallback)
-				m_pfnCallback(&gvdi, m_lParam);
-			else
-				SendDisplayRequestToParent(&gvdi);
-			gvdi.item.row = nRow;        
-			gvdi.item.col = nCol;
-		}
+            if (m_pfnCallback)
+                m_pfnCallback(&gvdi, m_lParam);
+            else
+                SendDisplayRequestToParent(&gvdi);
+            gvdi.item.row = nRow;        
+            gvdi.item.col = nCol;
+        }
         static CGridCell cell;
         cell.SetState(gvdi.item.nState);
         cell.SetFormat(gvdi.item.nFormat);
