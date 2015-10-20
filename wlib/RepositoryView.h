@@ -50,9 +50,13 @@ public:
             DWORD_PTR data = item.GetData();
             if (CComQIPtr<CModuleNode> modNode = reinterpret_cast<CTreeNode*>(data))
             {
-                if (modNode->GetModule()->IsPlugin())
+                if (modNode->GetModule()->IsPlugin()) 
+                {
                     s.plugins.push_back(modNode->GetModule());
-                else
+                    if (CComQIPtr<IDiskModule> diskModule = reinterpret_cast<IDiskModule*>(modNode->GetModule()))
+                        s.diskReps.push_back(diskModule.p);
+                }
+                else 
                     s.mods.push_back(modNode->GetModule());
             }
             else if (CComQIPtr<CAttributeNode> attrNode = reinterpret_cast<CTreeNode*>(data))

@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "repository.h"
 
-#include "Module.h"
 #include "clib.h"
 #include "cache.h"
 #include "logger.h"

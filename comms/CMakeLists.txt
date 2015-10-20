@@ -34,8 +34,10 @@ set ( SRCS
 		dfuServer.h
 		#DfuWorkunit.cpp
 		#DfuWorkunit.h
+		DiskAttribute.h
 		DiskAttribute.cpp
 		DiskAttributeHistory.cpp
+		DiskModule.h
 		DiskModule.cpp
 		DiskRepository.cpp
 		DiskRepository.h

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 
-#include "module.h"
+#include "DiskModule.h"
 #include "DiskRepository.h"
 #include "clib.h"
 #include "cache.h"
@@ -288,7 +288,7 @@ using namespace WsAttributes;
 class CDiskModule;
 void DeleteModule(CDiskModule * module);
 
-class CDiskModule : public IModule, public clib::CLockableUnknown
+class CDiskModule : public IDiskModule, public clib::CLockableUnknown
 {
 protected:
     IRepository * m_repository;
