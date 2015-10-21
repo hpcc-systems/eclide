@@ -12,7 +12,10 @@
 CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_attribute(attribute), baseClass(owner)
 {
     if (m_attribute)
+    {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
+        m_attrMonitor = new CAttributeMonitor(m_attribute);
+    }
 }
 
 void CAttributeDlg::GetTitle(CString & title)
@@ -147,11 +150,17 @@ void CAttributeDlg::DoCheckDependency()
 void CAttributeDlg::SetAttribute(IAttribute *attribute)
 {
     if (m_attribute)
+    {
         m_sigConn.disconnect();
+        m_attrMonitor = NULL;
+    }
 
     m_attribute = attribute;
     if (m_attribute)
+    {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
+        m_attrMonitor = new CAttributeMonitor(m_attribute);
+    }
 }
 
 IAttribute *CAttributeDlg::GetAttribute()

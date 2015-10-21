@@ -64,6 +64,7 @@ __interface ISourceSlot
     void PostStatus(const TCHAR *status, PANE pane = PANE_DEFAULT);
     void RefreshSyntax(ISciSyntaxMarker *errors, size_t curErr, bool forceShow);
     void NewSel();
+    void Close();
 };
 
 class CSourceSlotImpl : public ISourceSlot
@@ -75,6 +76,7 @@ public:
     void PostStatus(const TCHAR * /*status*/, PANE pane = PANE_DEFAULT) {(pane);}
     void RefreshSyntax(ISciSyntaxMarker * /*errors*/, size_t /*curErr*/, bool /*forceShow*/) {}
     void NewSel() {}
+    void Close() {}
 };
 
 class CMacroEvent : public CUnknown

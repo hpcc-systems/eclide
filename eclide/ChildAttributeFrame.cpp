@@ -238,6 +238,7 @@ public:
     virtual void DoCheckSyntax();
     virtual void UIUpdateTitle();
     virtual bool UIUpdateMenuItems(CCmdUI * cui);
+    virtual void Close();
     virtual void LinesAdded(int lines);
     void DoCheckAttributeSyntax(const CString &attr, IAttributeType * type, const CSyntaxErrorVector & errors);
     void RefreshSyntax(ISciSyntaxMarker *errors, size_t curErr, bool forceShow);
@@ -393,6 +394,11 @@ bool CAttributeFrame::UIUpdateMenuItems(CCmdUI * cui)
             return true;
     }
     return false;
+}
+
+void CAttributeFrame::Close()
+{
+    GetParent().SendMessage(WM_CLOSE);
 }
 
 void CAttributeFrame::LinesAdded(int lines)

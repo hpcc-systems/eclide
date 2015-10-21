@@ -73,3 +73,26 @@ CLIB_API std::wstring stringToWString(const std::wstring & str)
 {
     return str;
 }
+
+namespace clib {
+    namespace filesystem {
+        CLIB_API bool exists(const boost::filesystem::path & path)
+        {
+            try {
+                return boost::filesystem::exists(path);
+            }
+            catch (boost::filesystem::filesystem_error &) {
+            }
+            return false;
+        }
+        CLIB_API bool is_directory(const boost::filesystem::path & path)
+        {
+            try {
+                return boost::filesystem::is_directory(path);
+            }
+            catch (boost::filesystem::filesystem_error &) {
+            }
+            return false;
+        }
+    }
+}

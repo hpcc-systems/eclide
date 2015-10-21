@@ -140,7 +140,7 @@ BOOL CQueryBuilderApp::InitInstance()
     //	{
     //		boost::filesystem::wpath eclccPath = hpccbin;
     //		eclccPath /= _T("eclcc.exe");
-    //		if (boost::filesystem::exists(eclccPath))
+    //		if (clib::filesystem::exists(eclccPath))
     //		{
     //			std::_tstring envVar = _T("PATH=");
     //			envVar += hpccbin;
@@ -152,7 +152,7 @@ BOOL CQueryBuilderApp::InitInstance()
 
     //		boost::filesystem::wpath stdLibPath = hpccbin;
     //		stdLibPath /= _T("ecllib");
-    //		if (boost::filesystem::exists(stdLibPath))
+    //		if (clib::filesystem::exists(stdLibPath))
     //		{
     //			ini->Set(GLOBAL_COMPILER_STDLIB, stdLibPath.native_file_string());
     //		}

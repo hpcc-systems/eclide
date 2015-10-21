@@ -89,7 +89,7 @@ bool CPersistMap::deserialize(const std::_tstring & path)
 
 bool CPersistMap::deserialize(const std::_tstring & xml_path, bool isPath)
 {
-    if (isPath && !boost::filesystem::exists(stringToPath(xml_path)))
+    if (isPath && !clib::filesystem::exists(stringToPath(xml_path)))
         return false;
 
     CComInitialize com;
@@ -161,10 +161,10 @@ void CPersistWindow::SetPath(const std::string & path, const boost::filesystem::
     else
     {
         m_filePath = boost::filesystem::path(path, boost::filesystem::native);
-        if (!(boost::filesystem::exists(m_filePath) && m_file.Open(m_filePath.string().c_str(), GENERIC_WRITE)))
+        if (!(clib::filesystem::exists(m_filePath) && m_file.Open(m_filePath.string().c_str(), GENERIC_WRITE)))
             GenerateTmpFile(folder);
     }
-    //ATLASSERT(boost::filesystem::exists(m_filePath));
+    //ATLASSERT(clib::filesystem::exists(m_filePath));
 }
 
 void CPersistWindow::Save()
@@ -246,10 +246,10 @@ void CPersistWindow::GenerateTmpFile(const boost::filesystem::path & folder)
     //	fileName += ".xml";
     //	m_filePath = folder / fileName;
     //	CString wideFilePath = m_filePath.native_file_string().c_str();
-    //	if (!boost::filesystem::exists(m_filePath) && m_file.Create(wideFilePath))
+    //	if (!clib::filesystem::exists(m_filePath) && m_file.Create(wideFilePath))
     //		break;
     //}
-    //ATLASSERT(boost::filesystem::exists(m_filePath));
+    //ATLASSERT(clib::filesystem::exists(m_filePath));
 
     //CPersistMap map;
     //DoAutoSave(&m_file, &map);

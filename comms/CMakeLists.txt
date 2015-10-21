@@ -39,6 +39,8 @@ set ( SRCS
 		DiskAttributeHistory.cpp
 		DiskModule.h
 		DiskModule.cpp
+		DiskMonitor.h
+		DiskMonitor.cpp
 		DiskRepository.cpp
 		DiskRepository.h
 		DropZone.cpp

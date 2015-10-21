@@ -335,7 +335,7 @@ public:
     bool Delete()
     {
         try {
-            if (boost::filesystem::exists(m_path))
+            if (clib::filesystem::exists(m_path))
             {
                 SetText(_T(""), true);
                 int retVal = MoveToRecycleBin(pathToWString(m_path));
@@ -354,7 +354,7 @@ public:
     bool Exists() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return boost::filesystem::exists(m_path);
+        return clib::filesystem::exists(m_path);
     }
 
     bool Create()

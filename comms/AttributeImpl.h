@@ -25,7 +25,7 @@ public:
         GetProgramFolder(folder);
         folder /= "plugin";
         path = folder / batchFile;
-        if (boost::filesystem::exists(path))
+        if (clib::filesystem::exists(path))
         {
             foundFolder = folder;
             return true;
@@ -40,7 +40,7 @@ public:
                 folder = folder.parent_path();
                 folder /= stringToPath(GetType()->GetRepositoryCode());
                 path = folder / batchFile;
-                if (boost::filesystem::exists(path))
+                if (clib::filesystem::exists(path))
                 {
                     foundFolder = folder;
                     return true;

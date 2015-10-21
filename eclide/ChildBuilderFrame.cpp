@@ -292,6 +292,7 @@ public:
 
     virtual void UIUpdateTitle();
     virtual bool UIUpdateMenuItems(CCmdUI * cui);
+    virtual void Close();
 
     //  File Access  ---
     bool DoFileOpen(const CString & sPathName);	
@@ -834,7 +835,12 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
     return false;
 }
 
-bool CBuilderFrame::DoFileOpen(const CString & sPathNameX) 
+void CBuilderFrame::Close()
+{
+    GetParent().SendMessage(WM_CLOSE);
+}
+
+bool CBuilderFrame::DoFileOpen(const CString & sPathNameX)
 {
     return m_dlgview.DoFileOpen(sPathNameX);
 }
@@ -868,8 +874,6 @@ void CBuilderFrame::operator()(IAttribute *attr, bool eclChanged, IAttribute * n
     {
         UpdateAttribute(newAttrAsOldOneMoved);
     }
-    //TODO handle renamed and deleted.
-    ATLASSERT(!deleted);
 }
 
 void CBuilderFrame::SavePersistInfo(CPersistMap & persistInfo)

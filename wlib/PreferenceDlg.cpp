@@ -712,7 +712,7 @@ public:
 		clientToolsPath /= "clienttools";
 		boost::filesystem::path eclccPath = clientToolsPath / "bin" / "eclcc.exe";
 
-		if (boost::filesystem::exists(eclccPath)) 
+		if (clib::filesystem::exists(eclccPath)) 
 		{
 			m_Location = pathToWString(eclccPath).c_str();
 
@@ -730,7 +730,7 @@ public:
 			m_listFolders.AddString(pathToWString(repositoryPath).c_str());
 
 			boost::filesystem::path samplesPath = clientToolsPath / "examples";
-			if (boost::filesystem::exists(samplesPath))
+			if (clib::filesystem::exists(samplesPath))
 				m_listFolders.AddString(pathToWString(samplesPath).c_str());
 		}
 		else
@@ -740,7 +740,7 @@ public:
 			{
 				boost::filesystem::wpath eclccPath = hpccbin;
 				eclccPath /= _T("eclcc.exe");
-				if (boost::filesystem::exists(eclccPath))
+				if (clib::filesystem::exists(eclccPath))
 					m_Location = pathToWString(eclccPath).c_str();
 			}
 

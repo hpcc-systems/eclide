@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "DLLVersion.h"
+#include "UtilFileSystem.h"
 
 /////////////////////////////////////////////////////////////////////////////
 /* 
@@ -160,7 +161,7 @@ BOOL CDLLVersion::Open( IN LPCTSTR lpszFileName )
 BOOL CDLLVersion::GetVersionInfo( IN LPCTSTR lpszFileName )
 {
     m_bValid = false;
-    if (boost::filesystem::exists(lpszFileName))
+    if (clib::filesystem::exists(lpszFileName))
     {
         DWORD dwDummy = 0;
         DWORD dwSize  = ::GetFileVersionInfoSize(const_cast< LPTSTR >( lpszFileName ), &dwDummy);

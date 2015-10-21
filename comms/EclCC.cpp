@@ -92,14 +92,14 @@ public:
                 text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER09);
                 break;
             }
-            if (text.GetLength() > 0 && boost::filesystem::exists(static_cast<const TCHAR *>(text)) && boost::filesystem::is_directory(static_cast<const TCHAR *>(text)))
+            if (text.GetLength() > 0 && clib::filesystem::exists(static_cast<const TCHAR *>(text)) && clib::filesystem::is_directory(static_cast<const TCHAR *>(text)))
                 m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
         }
 
         m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
 
         //  Patch for 3.10 temporary weirdness (directory structure changes).
-        if (!boost::filesystem::exists(m_compilerFilePath) && boost::algorithm::icontains(m_compilerFile, "\\bin\\ver_3_6")) 
+        if (!clib::filesystem::exists(m_compilerFilePath) && boost::algorithm::icontains(m_compilerFile, "\\bin\\ver_3_6")) 
         {
             boost::algorithm::replace_all(m_compilerFile, "\\bin\\ver_3_6", "\\ver_3_6\\bin");
             m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
@@ -116,13 +116,13 @@ public:
         //  Patch for 3.10 temporary weirdness (directory structure changes).
         boost::filesystem::wpath clientToolsFolderPath =  m_compilerFolderPath.parent_path();
 
-        if (!boost::filesystem::exists(stdLibPath))
+        if (!clib::filesystem::exists(stdLibPath))
             stdLibPath = clientToolsFolderPath / _T("share") / _T("ecllibrary");
-        if (boost::filesystem::exists(stdLibPath))
+        if (clib::filesystem::exists(stdLibPath))
             m_eclFolders.push_back(std::make_pair(pathToWString(stdLibPath), false));
 
         boost::filesystem::wpath pluginsPath = clientToolsFolderPath / _T("plugins");
-        if (boost::filesystem::exists(pluginsPath))
+        if (clib::filesystem::exists(pluginsPath))
             m_eclFolders.push_back(std::make_pair(pathToWString(pluginsPath), false));
 
         StringPathMap paths;
@@ -179,12 +179,12 @@ public:
         errors = m_errors;
         if (!errors.empty())
             errors += _T("\r\n");
-        if (!boost::filesystem::exists(m_compilerFilePath))
+        if (!clib::filesystem::exists(m_compilerFilePath))
             errors += (boost::_tformat(_T("Compiler path invalid:  %1%")) % m_compilerFile).str() + _T("\r\n");
-        else if (boost::filesystem::is_directory(m_compilerFilePath))
+        else if (clib::filesystem::is_directory(m_compilerFilePath))
             errors += (boost::_tformat(_T("Compiler path does not specify eclcc.exe:  %1%")) % m_compilerFile).str() + _T("\r\n");
 
-        if (!m_workingFolder.empty() && !boost::filesystem::exists(m_workingFolder))
+        if (!m_workingFolder.empty() && !clib::filesystem::exists(m_workingFolder))
         {
             std::_tstring error_msg = (boost::_tformat(_T("Working folder invalid:  %1%")) % m_workingFolder).str() + _T("\r\nCreate?");
             if (::MessageBox(NULL, error_msg.c_str(), _T("ECL IDE"), MB_ICONASTERISK | MB_YESNO) == IDYES)
@@ -363,7 +363,7 @@ public:
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         std::_tstring filePath = pathToWString((m_workingFolderPath / (wuid + _T(".xml"))));
-        if (!boost::filesystem::exists(filePath))
+        if (!clib::filesystem::exists(filePath))
         {
             std::_tstring command = _T("wuget.exe \"");
             command += pathToWString((m_workingFolderPath / (wuid + _T(".exe"))));
@@ -387,7 +387,7 @@ public:
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         filePath = pathToWString((m_workingFolderPath / (wuid + _T(".xml"))));
-        if (!boost::filesystem::exists(filePath))
+        if (!clib::filesystem::exists(filePath))
         {
             std::_tstring wuXml;
             GetWorkunitXML(wuid, wuXml);
@@ -406,7 +406,7 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         boost::filesystem::wpath resultPath = m_workingFolderPath / (wuid + _T("-result.xml"));
         boost::filesystem::wpath exePath = m_workingFolderPath / (wuid + _T(".exe"));
-        if (boost::filesystem::exists(exePath) && !boost::filesystem::exists(resultPath))
+        if (clib::filesystem::exists(exePath) && !clib::filesystem::exists(resultPath))
         {
             if (compileOnly)
             {
@@ -426,7 +426,7 @@ public:
             file.Create(pathToWString(resultPath).c_str());
             file.Write(results);
         }
-        else if (boost::filesystem::exists(resultPath))
+        else if (clib::filesystem::exists(resultPath))
         {
             CUnicodeFile file;
             file.Open(pathToWString(resultPath).c_str());
@@ -472,11 +472,11 @@ public:
     {
         manifestPath = file;
         manifestPath.replace_extension("manifest");
-        if (boost::filesystem::exists(manifestPath))
+        if (clib::filesystem::exists(manifestPath))
             return true;
 
         manifestPath = manifestPath.remove_filename() / "files" / "manifest.xml";
-        if (boost::filesystem::exists(manifestPath))
+        if (clib::filesystem::exists(manifestPath))
             return true;
 
         return false;

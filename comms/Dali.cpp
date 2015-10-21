@@ -947,12 +947,12 @@ protected:
         if (eclcc)
         {
             boost::filesystem::path path = stringToPath(eclcc->GetWorkingFolder());
-            if (boost::filesystem::exists(path))
+            if (clib::filesystem::exists(path))
             {
                 boost::filesystem::directory_iterator attr_itr_end;
                 for (boost::filesystem::directory_iterator attr_itr(path); attr_itr != attr_itr_end; ++attr_itr)
                 {
-                    if (!boost::filesystem::is_directory(*attr_itr))
+                    if (!clib::filesystem::is_directory(*attr_itr))
                     {  
                         std::_tstring fromWU = fromUTC;
                         std::_tstring toWU = toUTC;
@@ -1054,7 +1054,7 @@ protected:
             {
                 boost::filesystem::wpath path = eclcc->GetWorkingFolder();
                 path /= (const TCHAR *)(wuid + _T(".exe"));
-                if (boost::filesystem::exists(path))
+                if (clib::filesystem::exists(path))
                 {
                     IWorkunitAdapt wu = CreateLocalWorkunit(eclcc->GetWorkingFolder(), wuid);
                     if (wu->GetGraphCount() == 0)
@@ -1516,7 +1516,7 @@ protected:
 
     static bool DeleteFile(const boost::filesystem::wpath & file)
     {
-        if (boost::filesystem::exists(file))
+        if (clib::filesystem::exists(file))
         {
             try {
                 if (boost::filesystem::remove(file))

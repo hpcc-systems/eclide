@@ -4,6 +4,7 @@
 #include "CtlColor.h"
 #include "Migration.h"
 #include "ButtonMenu.h"
+#include <DiskMonitor.h>    //clib
 
 enum BUM
 {
@@ -52,6 +53,7 @@ protected:
     
     //  AttributeDlg Stuff  ---
     CComPtr<IAttribute> m_attribute;
+    CComPtr<CAttributeMonitor> m_attrMonitor;
     CComPtr<IMigration> m_migrator;
     boost::signals::connection m_sigConn;
 
