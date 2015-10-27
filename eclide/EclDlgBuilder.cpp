@@ -10,8 +10,12 @@
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
 {
+    ATLASSERT(m_attribute);
     if (m_attribute)
+    {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
+        m_attrMonitor = new CAttributeMonitor(m_attribute);
+    }
 
     m_comboQueueClusterCtrl = new CComboQueueCluster();
     m_comboLabelCtrl = new CComboLabel();
@@ -475,11 +479,17 @@ void CBuilderDlg::DoCheckDependency()
 void CBuilderDlg::SetAttribute(IAttribute *attribute)
 {
     if (m_attribute)
+    {
         m_sigConn.disconnect();
+        m_attrMonitor = NULL;
+    }
 
     m_attribute = attribute;
     if (m_attribute)
+    {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
+        m_attrMonitor = new CAttributeMonitor(m_attribute);
+    }
 }
 
 IAttribute *CBuilderDlg::GetAttribute()
@@ -726,22 +736,43 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
     {
         CString ecl;
         m_view.GetText(ecl);
-        if (ecl.Compare(attr->GetText(false)) != 0)
-        {
-            CString message = m_name + _T("\r\n\r\n") + _T("This file has been modified outside of the source editor.\r\nDo you want to reload it and lose the changes made in the source editor?");
-            if (MessageBox(message, CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with ChildBduilderFrame.cpp
+        if (m_view.IsDirty()) {
+            if (ecl.Compare(attr->GetText(false)) != 0)
             {
-                m_view.SetText(attr->GetText(false));
-                ResetSavePoint();
-            }
-            else
-            {
-                m_view.SetText(ecl);  // Force dirty flag
+                CString message = _T("This file has been modified outside of the source editor.\r\nDo you want to reload it and lose the changes made in the source editor?");
+                if (MessageBox(message, m_name, MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)	//Keep in sync with ChildBduilderFrame.cpp
+                {
+                    m_view.SetText(attr->GetText(false));
+                    ResetSavePoint();
+                }
+                else
+                {
+                    m_view.SetText(ecl);  // Force dirty flag
+                }
             }
         }
+        else
+        {
+            m_view.SetText(attr->GetText(false));
+            ResetSavePoint();
+        }
     }
-    //TODO handle renamed and deleted.
-    ATLASSERT(!newAttrAsOldOneMoved && !deleted);
+    else if (deleted) {
+        int doSaveAs = IDNO;
+        if (m_view.IsDirty()) {
+            CString message = _T("This file has been deleted outside of the source editor.\r\nDo you want to save your local changes?");
+            doSaveAs = MessageBox(message, m_name, MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION);
+        }
+        if (doSaveAs == IDYES)
+            DoFileSaveAs();
+        else if (doSaveAs == IDNO)
+            m_owner->Close();
+    }
+    else 
+    {
+        //TODO handle renamed.
+        //ATLASSERT(FALSE);
+    }
 }
 
     //  IMigrationCallback  ---

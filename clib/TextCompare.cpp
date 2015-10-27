@@ -474,7 +474,7 @@ void CAnchors::GetResults(CLineVector & baseResult, CLineVector & compResult)
 
 void AppendTable(CLineVector & lineVector, const CTable & table, CLine::TYPE type)
 {
-    for (size_t i = 1; i < table.size() - 1; ++i)
+    for (int i = 1; i < (int)table.size() - 1; ++i)
     {
         CLine line = table[i];
         line.SetType(type);
@@ -484,7 +484,7 @@ void AppendTable(CLineVector & lineVector, const CTable & table, CLine::TYPE typ
 
 void AppendBlankLines(CLineVector & lineVector, const CTable & otherTable, CLine::TYPE type)
 {
-    for (size_t i = 1; i < otherTable.size() - 1; ++i)
+    for (int i = 1; i < (int)otherTable.size() - 1; ++i)
     {
         CLine line;
         if (!IsDummyLine(line))
@@ -523,7 +523,7 @@ void CAnchors::GetPaddedResults(CLineVector & baseResult, CLineVector & compResu
         {
             CTable baseTable, compTable;
             GetMatch(matchPos, baseTable, compTable);
-            for (size_t i = 1; i < baseTable.size() - 1; ++i)
+            for (int i = 1; i < (int)baseTable.size() - 1; ++i)
             {
                 CLine baseLine = baseTable[i];
                 CLine compLine = compTable[i];

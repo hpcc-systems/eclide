@@ -2201,7 +2201,7 @@ void CMainFrame::RestoreState()
     boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
     for (boost::filesystem::directory_iterator itr(folder); itr != end_itr; ++itr)
     {
-        if (!boost::filesystem::is_directory(*itr))
+        if (!clib::filesystem::is_directory(*itr))
         {
             if (boost::algorithm::iequals(pathToWString(itr->path().extension()), _T(".xml")))
                 m_persistedWindows.push_back(new CPersistedItem(this, itr->path().string()));
@@ -2799,7 +2799,7 @@ void CMainFrame::OpenBuilder(IAttribute * attribute)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, eclcc->GetAttributeLabel(attribute, label), eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
         ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER));

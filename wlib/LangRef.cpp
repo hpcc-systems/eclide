@@ -362,7 +362,7 @@ public:
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
 		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
-		if (boost::filesystem::exists(file))
+		if (clib::filesystem::exists(file))
 		{
 			CategoryLanguageColorMap userColors;
 			restore(userColors, file.string().c_str());
@@ -380,7 +380,7 @@ public:
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
 		boost::filesystem::path file = binFolder / stringToPath(fileName);
-		if (!boost::filesystem::exists(file))
+		if (!clib::filesystem::exists(file))
 		{
 			return false;
 		}
@@ -398,7 +398,7 @@ public:
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
 		boost::filesystem::path file = binFolder / stringToPath(fileName);
-		if (!boost::filesystem::exists(file))
+		if (!clib::filesystem::exists(file))
 		{
 			ATLASSERT(!"Unable to locate LanguageReference.xml");
 		}
@@ -447,7 +447,7 @@ public:
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
 		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
-		if (boost::filesystem::exists(file))
+		if (clib::filesystem::exists(file))
 			boost::filesystem::remove(file);
 		loadMergedColor();
 	}

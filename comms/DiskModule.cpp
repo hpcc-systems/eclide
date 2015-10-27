@@ -458,7 +458,7 @@ public:
     bool Exists() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return boost::filesystem::exists(m_path);
+        return clib::filesystem::exists(m_path);
     }
 
     bool Create()
@@ -475,13 +475,13 @@ public:
 
     bool HasChildren() const
     {
-        if (!boost::filesystem::exists(m_path))
+        if (!clib::filesystem::exists(m_path))
             return false;
 
         boost::filesystem::directory_iterator end_itr;
         for (boost::filesystem::directory_iterator itr(wpathToPath(m_path)); itr != end_itr; ++itr)
         {
-            if (boost::filesystem::is_directory(*itr))
+            if (clib::filesystem::is_directory(*itr))
                 return true;
             else
             {

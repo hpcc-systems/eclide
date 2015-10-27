@@ -3,6 +3,7 @@
 #include "EclDlg.h"
 #include "CtlColor.h"
 #include "Migration.h"
+#include <DiskMonitor.h>    //clib
 
 //  ===========================================================================
 class CAttributeDlg : 
@@ -17,6 +18,7 @@ class CAttributeDlg :
     typedef CEclDlgQBImpl<thisClass> baseClass;
 protected:
     CComPtr<IAttribute> m_attribute;
+    CComPtr<CAttributeMonitor> m_attrMonitor;
     CComPtr<IMigration> m_migrator;
     std::_tstring m_cluster;
     boost::signals::connection m_sigConn;

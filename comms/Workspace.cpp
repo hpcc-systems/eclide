@@ -42,7 +42,7 @@ void save(const T &s, const char * filename)
             if (i > 1)	
                 prevBakFilepath.replace_extension((boost::format("bak00%1%") % (i - 1)).str());
 
-            if (boost::filesystem::exists(bakFilepath))
+            if (clib::filesystem::exists(bakFilepath))
             {
                 try {
                     boost::filesystem::remove(bakFilepath);
@@ -52,7 +52,7 @@ void save(const T &s, const char * filename)
                 }
             }
 
-            if (boost::filesystem::exists(prevBakFilepath))
+            if (clib::filesystem::exists(prevBakFilepath))
             {
                 try
                 {
@@ -199,7 +199,7 @@ public:
     void Restore()
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        if (boost::filesystem::exists(stringToPath(m_id)))
+        if (clib::filesystem::exists(stringToPath(m_id)))
             restore(*this, CT2A(m_id.c_str()));
     }
     bool Remove()
@@ -363,7 +363,7 @@ unsigned int GetWorkspaces(IRepository * repository, IWorkspaceVector * results,
         boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
         for (boost::filesystem::directory_iterator itr(environmentFolder); itr != end_itr; ++itr)
         {
-            if (!boost::filesystem::is_directory(*itr))
+            if (!clib::filesystem::is_directory(*itr))
             {
                 if (boost::algorithm::iequals(pathToWString(itr->path().extension()), _T(".ecl_ws")))
                 {
@@ -389,7 +389,7 @@ bool WorkspaceExists(IRepository * repository, const std::_tstring & label)
     boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
     for (boost::filesystem::directory_iterator itr(environmentFolder); itr != end_itr; ++itr)
     {
-        if (!boost::filesystem::is_directory(*itr))
+        if (!clib::filesystem::is_directory(*itr))
         {
             if (boost::algorithm::iequals(pathToWString(itr->path().stem()), label))
                 return true;
@@ -406,7 +406,7 @@ bool RemoveWorkspace(IRepository * repository, const std::_tstring & label)
     boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
     for (boost::filesystem::directory_iterator itr(environmentFolder); itr != end_itr; ++itr)
     {
-        if (!boost::filesystem::is_directory(*itr))
+        if (!clib::filesystem::is_directory(*itr))
         {
             if (boost::algorithm::iequals(pathToWString(itr->path().stem()), label))
             {
