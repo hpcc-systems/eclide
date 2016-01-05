@@ -105,6 +105,7 @@ include_directories (
 	../comms
 	../wtlex
 	../dockingwindows
+	../EclEditor
 	
 	${WTL_INCLUDE_DIR}/include
 	${SCINTILLA_INCLUDE_DIRS}/include
