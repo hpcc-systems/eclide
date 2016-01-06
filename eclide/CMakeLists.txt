@@ -172,6 +172,7 @@ include_directories (
 		../wtlex
 		../tabctrls
 		../dockingwindows
+		../EclEditor
 
 		${WTL_INCLUDE_DIR}/include
 		${SCINTILLA_INCLUDE_DIR}/include
