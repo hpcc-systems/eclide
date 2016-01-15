@@ -15,7 +15,7 @@ typedef agg::conv_clip_polyline<conv_path_trans_type>				conv_path_clip_trans_ty
 #ifndef _WIN32_WCE
 struct CAggFonts
 {
-	CAggFonts(HDC hdc) : m_feng(hdc), m_fman(m_feng) {};
+    CAggFonts(HDC hdc) : m_feng(hdc), m_fman(m_feng) {};
 
     font_engine_type	m_feng;
     font_manager_type	m_fman;
@@ -23,7 +23,7 @@ struct CAggFonts
 #else
 struct CAggFonts
 {
-	CAggFonts(HDC hdc) {};
+    CAggFonts(HDC hdc) {};
 };
 #endif
 
@@ -34,28 +34,28 @@ struct CAggFonts
 
 template <class Rasterizer, class Path>
 void AddPathWithArrowHead(
-	Rasterizer& ras,
-	Path& path,
-	agg::trans_affine& trans,
-	double length,
-	double halfwidth,
-	double inset,
-	double scale=1.0)
+    Rasterizer& ras,
+    Path& path,
+    agg::trans_affine& trans,
+    double length,
+    double halfwidth,
+    double inset,
+    double scale=1.0)
 {
     double k = ::pow(path.width(), 0.7)*scale;
 
-	path.shorten(k*(length-inset));
+    path.shorten(k*(length-inset));
 
-	typedef agg::conv_transform<Path, agg::trans_affine> conv_trans_type;
-	conv_trans_type pathtrans(path, trans);
-	ras.add_path(pathtrans);
+    typedef agg::conv_transform<Path, agg::trans_affine> conv_trans_type;
+    conv_trans_type pathtrans(path, trans);
+    ras.add_path(pathtrans);
 
     agg::arrowhead ah;
     ah.head(0, (length-inset) * k, halfwidth * k, inset * k);
-	typedef agg::conv_marker<agg::vcgen_markers_term, agg::arrowhead> arrow_type;
+    typedef agg::conv_marker<agg::vcgen_markers_term, agg::arrowhead> arrow_type;
     arrow_type arrow(path.markers(), ah);
-	typedef agg::conv_transform<arrow_type, agg::trans_affine> arrow_trans_type;
-	arrow_trans_type arrowtrans(arrow, trans); 
+    typedef agg::conv_transform<arrow_type, agg::trans_affine> arrow_trans_type;
+    arrow_trans_type arrowtrans(arrow, trans); 
     ras.add_path(arrowtrans);
 }
 
@@ -65,29 +65,29 @@ namespace agg
 class curve_casteljau
 {
 public:
-	curve_casteljau();
-	curve_casteljau(unsigned int num_points);
+    curve_casteljau();
+    curve_casteljau(unsigned int num_points);
 
-	void approximation_scale(double s) { m_scale = s; }
-	double approximation_scale() const { return m_scale;  }
+    void approximation_scale(double s) { m_scale = s; }
+    double approximation_scale() const { return m_scale;  }
 
-	void remove_all();
-	void add_vertex(double x, double y);
+    void remove_all();
+    void add_vertex(double x, double y);
 
-	void rewind(unsigned);
-	unsigned vertex(double* x, double* y);
+    void rewind(unsigned);
+    unsigned vertex(double* x, double* y);
 
-	typedef curve_casteljau source_type;
+    typedef curve_casteljau source_type;
 
 private:
-	double                   m_scale;
-	double                   m_length;
-	pod_vector<point_d>		 m_vertices;
-	pod_vector<point_d>		 m_tree;
-	double                   m_mu;
-	double                   m_dmu;
-	int                      m_num_steps;
-	int                      m_step;
+    double                   m_scale;
+    double                   m_length;
+    pod_vector<point_d>		 m_vertices;
+    pod_vector<point_d>		 m_tree;
+    double                   m_mu;
+    double                   m_dmu;
+    int                      m_num_steps;
+    int                      m_step;
 };
 
 

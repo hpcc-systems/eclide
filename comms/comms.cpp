@@ -18,47 +18,47 @@ LONG g_CommsInitializeCount = 0;
 
 void CommsInitialize()
 {
-	if (::InterlockedIncrement(&g_CommsInitializeCount) > 1)
-		return;
+    if (::InterlockedIncrement(&g_CommsInitializeCount) > 1)
+        return;
 
-	DWORD dwData = 0;
-	DWORD dwSize = sizeof(dwData);
+    DWORD dwData = 0;
+    DWORD dwSize = sizeof(dwData);
 
-	InternetQueryOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_SERVER, &dwData, &dwSize);
+    InternetQueryOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_SERVER, &dwData, &dwSize);
 
-	dwData = MAX_CONNECTIONS;
-	BOOL didit = InternetSetOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_SERVER,&dwData, sizeof(dwData));
+    dwData = MAX_CONNECTIONS;
+    BOOL didit = InternetSetOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_SERVER,&dwData, sizeof(dwData));
 
-	didit = InternetQueryOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER, &dwData, &dwSize);
+    didit = InternetQueryOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER, &dwData, &dwSize);
 
-	dwData = MAX_CONNECTIONS;
-	didit = InternetSetOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER, &dwData, sizeof(dwData));
+    dwData = MAX_CONNECTIONS;
+    didit = InternetSetOption(NULL, INTERNET_OPTION_MAX_CONNS_PER_1_0_SERVER, &dwData, sizeof(dwData));
 }
 
 #ifndef SEISINT_LIBEXPORTS
 class CATLDllModule : public CAtlDllModuleT< CATLDllModule >
 {
 public:
-	CATLDllModule()
-	{
-		int d = 0;
-	}
-	~CATLDllModule()
-	{
-		int d = 0;
-	}
+    CATLDllModule()
+    {
+        int d = 0;
+    }
+    ~CATLDllModule()
+    {
+        int d = 0;
+    }
 } _AtlModule;
 
 BOOL APIENTRY DllMain( HANDLE /*hModule*/, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-	switch (ul_reason_for_call)
-	{
-	case DLL_PROCESS_ATTACH:
-	case DLL_PROCESS_DETACH:
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-		break;
-	}
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+    case DLL_PROCESS_DETACH:
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+        break;
+    }
     return _AtlModule.DllMain(ul_reason_for_call, lpReserved); 
 }
 #endif
@@ -87,60 +87,60 @@ static const TCHAR dfuRoot[]		= _T("8010/WsDfu");
 
 struct ServerAndRoot
 {
-	const SectionLabelDefault& label; 
-	const TCHAR* root;
+    const SectionLabelDefault& label; 
+    const TCHAR* root;
 };
 
 #define nSERVERS 7
 static ServerAndRoot Servers[nSERVERS] = 
 { 
-	{GLOBAL_SERVER_TOPOLOGY,topologyRoot},
-	{GLOBAL_SERVER_WORKUNIT,workunitRoot},
-	{GLOBAL_SERVER_ATTRIBUTE,attributeRoot},
-	{GLOBAL_SERVER_ACCOUNT,accountRoot},
-	{GLOBAL_SERVER_SMC,smcRoot},
-	{GLOBAL_SERVER_FILESPRAY,filesprayRoot},
-	{GLOBAL_SERVER_DFU,dfuRoot}
+    {GLOBAL_SERVER_TOPOLOGY,topologyRoot},
+    {GLOBAL_SERVER_WORKUNIT,workunitRoot},
+    {GLOBAL_SERVER_ATTRIBUTE,attributeRoot},
+    {GLOBAL_SERVER_ACCOUNT,accountRoot},
+    {GLOBAL_SERVER_SMC,smcRoot},
+    {GLOBAL_SERVER_FILESPRAY,filesprayRoot},
+    {GLOBAL_SERVER_DFU,dfuRoot}
 };
 
 COMMS_API bool VerifyCommsServerConfig()
 {
-	IConfig* config = GetIConfig(QUERYBUILDER_CFG);
+    IConfig* config = GetIConfig(QUERYBUILDER_CFG);
 
-	bool bAdvanced = config->Get(GLOBAL_SERVER_ADVANCED);
+    bool bAdvanced = config->Get(GLOBAL_SERVER_ADVANCED);
 
-	if ( bAdvanced )
-	{
-		//see if any are the default, return false if that is the case
-		for (unsigned i=0; i<nSERVERS; i++ )
-		{
-			CString server = config->Get(Servers[i].label);
-			if ( server.Compare(CString(Servers[i].label.second)) == 0 )
-				return false;
-		}
-	}
-	else
-	{
-		bool bSSL = config->Get(GLOBAL_SERVER_SSL);
-		CString serverIP = config->Get(GLOBAL_SERVER_IP);
-		std::_tstring url = bSSL ? _T("https://") : _T("http://");
-		url += serverIP;
-		url += (bSSL ? _T(":1") : _T(":"));
+    if ( bAdvanced )
+    {
+        //see if any are the default, return false if that is the case
+        for (unsigned i=0; i<nSERVERS; i++ )
+        {
+            CString server = config->Get(Servers[i].label);
+            if ( server.Compare(CString(Servers[i].label.second)) == 0 )
+                return false;
+        }
+    }
+    else
+    {
+        bool bSSL = config->Get(GLOBAL_SERVER_SSL);
+        CString serverIP = config->Get(GLOBAL_SERVER_IP);
+        std::_tstring url = bSSL ? _T("https://") : _T("http://");
+        url += serverIP;
+        url += (bSSL ? _T(":1") : _T(":"));
 
-		//just set them all to the proper value
-		for (unsigned i=0; i<nSERVERS; i++ )
-		{
-			config->Set(Servers[i].label, url + Servers[i].root);
-		}
-	}
-	return true;
+        //just set them all to the proper value
+        for (unsigned i=0; i<nSERVERS; i++ )
+        {
+            config->Set(Servers[i].label, url + Servers[i].root);
+        }
+    }
+    return true;
 }
 
 COMMS_API void ReleaseAllSingletons()
 {
-	ClearRepositorySingletons(false);
-	Dfu::ClearSingletons();
-	Dali::ClearSingletons();
-	SMC::ClearSingletons();
-	Topology::ClearSingletons();
+    ClearRepositorySingletons(false);
+    Dfu::ClearSingletons();
+    Dali::ClearSingletons();
+    SMC::ClearSingletons();
+    Topology::ClearSingletons();
 }

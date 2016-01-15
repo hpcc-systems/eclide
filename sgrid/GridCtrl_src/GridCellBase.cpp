@@ -76,7 +76,7 @@ void CGridCellBase::Reset()
 
 void CGridCellBase::operator=(const CGridCellBase& cell)
 {
-	if (this == &cell) return;
+    if (this == &cell) return;
 
     SetGrid(cell.GetGrid());    // do first in case of dependencies
 
@@ -149,17 +149,17 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 
     // Draw cell background and highlighting (if necessary)
     // LUC
-	//if ( IsFocused() || IsDropHighlighted() )
-	if( GetGrid()->IsFocused(*this, nRow, nCol) || IsDropHighlighted() )
+    //if ( IsFocused() || IsDropHighlighted() )
+    if( GetGrid()->IsFocused(*this, nRow, nCol) || IsDropHighlighted() )
     {
         // Always draw even in list mode so that we can tell where the
         // cursor is at.  Use the highlight colors though.
-		// LUC
+        // LUC
         if(GetGrid()->IsSelected(*this, nRow, nCol))
         {
             TextBkClr = ::GetSysColor(COLOR_HIGHLIGHT);
-			TextClr = ::GetSysColor(COLOR_HIGHLIGHTTEXT);			
-			
+            TextClr = ::GetSysColor(COLOR_HIGHLIGHTTEXT);			
+            
             bEraseBkgnd = TRUE;
         }
 
@@ -210,11 +210,11 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
             rect.bottom--;
         }
 
-		//rect.DeflateRect(0,1,1,1);  - Removed by Yogurt
+        //rect.DeflateRect(0,1,1,1);  - Removed by Yogurt
     }
-	// LUC
+    // LUC
     //else if ((GetState() & GVIS_SELECTED))
-	else if(GetGrid()->IsSelected(*this, nRow, nCol))
+    else if(GetGrid()->IsSelected(*this, nRow, nCol))
     {
         rect.right++; rect.bottom++;    // FillRect doesn't draw RHS or bottom
         pDC->FillSolidRect(rect, ::GetSysColor(COLOR_HIGHLIGHT));
@@ -278,7 +278,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 #endif
     {
         CFont *pFont = GetFontObject();
-		ASSERT(pFont);
+        ASSERT(pFont);
         if (pFont)
             pDC->SelectObject(pFont);
     }
@@ -470,13 +470,13 @@ BOOL CGridCellBase::OnSetCursor()
 
 void CGridCellBase::OnEndEdit() 
 {
-	ASSERT( FALSE); 
+    ASSERT( FALSE); 
 }
 
 BOOL CGridCellBase::ValidateEdit(LPCTSTR str)
 {
     UNUSED_ALWAYS(str);
-	return TRUE;
+    return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -511,7 +511,7 @@ CSize CGridCellBase::GetTextExtent(LPCTSTR szText, CDC* pDC /*= NULL*/)
     if (pDC == NULL || szText == NULL)
     {
         if (szText)
-			pDC = pGrid->GetDC();
+            pDC = pGrid->GetDC();
         if (pDC == NULL || szText == NULL) 
         {
             CGridDefaultCell* pDefCell = (CGridDefaultCell*) GetDefaultCell();
@@ -757,7 +757,7 @@ BOOL CGridCellBase::PrintCell(CDC* pDC, int /*nRow*/, int /*nCol*/, CRect rect)
     }
 
     // Draw without clipping so as not to lose text when printed for real
-	// DT_NOCLIP removed 01.01.01. Slower, but who cares - we are printing!
+    // DT_NOCLIP removed 01.01.01. Slower, but who cares - we are printing!
     DrawText(pDC->m_hDC, GetText(), -1, rect,
         GetFormat() | /*DT_NOCLIP | */ DT_NOPREFIX);
 

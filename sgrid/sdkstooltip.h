@@ -5,9 +5,9 @@ namespace STOOLTIP
 //------------------------------------------------------------------------------
 enum STOOLTIP_MESSAGE 
 {
-	STOOLTIP_START = 2000,
+    STOOLTIP_START = 2000,
 
-	STOOLTIP_LAST
+    STOOLTIP_LAST
 };
 //------------------------------------------------------------------------------
 }

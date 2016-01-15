@@ -476,7 +476,7 @@ public:
 		}
 		if (m_modeLHS == MODE_FOLDER)
 		{
-			if (!boost::filesystem::exists((const char *)CT2A(m_PathLHS)))
+			if (!clib::filesystem::exists((const char *)CT2A(m_PathLHS)))
 			{
 				MessageBox(_T("Source folder does not exist."), _T("AMT Login"));
 				return;
@@ -484,7 +484,7 @@ public:
 		}
 		if (m_modeRHS == MODE_FOLDER)
 		{
-			if (!boost::filesystem::exists((const char *)CT2A(m_PathRHS)))
+			if (!clib::filesystem::exists((const char *)CT2A(m_PathRHS)))
 			{
 				MessageBox(_T("Target folder does not exist."), _T("AMT Login"));
 				return;
@@ -746,7 +746,7 @@ public:
 			boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
 			for ( boost::filesystem::directory_iterator folder_itr(folder); folder_itr != end_itr; ++folder_itr)
 			{
-				if (boost::filesystem::is_directory(*folder_itr))
+				if (clib::filesystem::is_directory(*folder_itr))
 				{
 					hasChildFolder = true;
 					break;
@@ -860,7 +860,7 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 	boost::filesystem::directory_iterator end_itr; 
 	for (boost::filesystem::directory_iterator itr(folder); itr != end_itr; ++itr)
 	{
-		if (!boost::filesystem::is_directory(*itr))
+		if (!clib::filesystem::is_directory(*itr))
 		{
 			if (boost::algorithm::iequals(pathToString(itr->path().extension()), _T(".cfg")))
 			{

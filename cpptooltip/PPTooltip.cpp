@@ -463,86 +463,86 @@
 template< class T, class TBase, class TWinTraits >
 void CPPToolTipImpl<T, TBase, TWinTraits>::OnEnterIdle(UINT nWhy, CWindow* pWho)
 {
-	if ((MSGF_MENU == nWhy))
-	{
-		if (m_nTooltipType == PPTOOLTIP_MENU)
-		{
-			if (PPTOOLTIP_STATE_SHOWN == m_nTooltipState)
-			{
-				CPoint pt;
-				GetCursorPos(&pt);
-				if (pWho->GetSafeHwnd() != ::WindowFromPoint(pt)) 
-				{
-					HideTooltip();
-				} //if
-			} //if
-		} //if
-	} //if
+    if ((MSGF_MENU == nWhy))
+    {
+        if (m_nTooltipType == PPTOOLTIP_MENU)
+        {
+            if (PPTOOLTIP_STATE_SHOWN == m_nTooltipState)
+            {
+                CPoint pt;
+                GetCursorPos(&pt);
+                if (pWho->GetSafeHwnd() != ::WindowFromPoint(pt)) 
+                {
+                    HideTooltip();
+                } //if
+            } //if
+        } //if
+    } //if
 } //End of OnEnterIdle
 
 template< class T, class TBase, class TWinTraits >
 void CPPToolTipImpl<T, TBase, TWinTraits>::OnMenuSelect(UINT nItemID, UINT nFlags, HMENU hSubMenu)
 {
-	if (((nFlags & 0xFFFF) == 0xFFFF) || (nFlags & MF_POPUP) || (nFlags & MF_SEPARATOR))
-	{
-		//HideTooltip();
-		Pop();
-	} 
-	else if (nItemID && hSubMenu) 
-	{
-		HWND hwndMenu = GetRunningMenuWnd(); //CWindow::WindowFromPoint(pt);
-		if (NULL != hwndMenu)
-		{
-			CRect rcMenu;
-			::GetWindowRect(hwndMenu, rcMenu); // whole menu rect
-			
-			// find Item Rectangle and position
-			int count = ::GetMenuItemCount(hSubMenu);
-			int cy = rcMenu.top + GetSystemMetrics(SM_CYEDGE) + 1;
-			for(int nItem = 0; nItem < count; nItem++) 
-			{
-				CRect rect;
-				::GetMenuItemRect(m_hParentWnd, hSubMenu, nItem, &rect);
-				if(nItemID == ::GetMenuItemID(hSubMenu, nItem)) 
-				{
-					UINT nState = GetMenuState(hSubMenu, nItemID, MF_BYCOMMAND);
-					CString str;
-					if (MF_DISABLED & nState)
-						str = m_drawer.GetResCommandPrompt(nItemID, 2); //String for disabled item
-					else
-						str = m_drawer.GetResCommandPrompt(nItemID, 0);
+    if (((nFlags & 0xFFFF) == 0xFFFF) || (nFlags & MF_POPUP) || (nFlags & MF_SEPARATOR))
+    {
+        //HideTooltip();
+        Pop();
+    } 
+    else if (nItemID && hSubMenu) 
+    {
+        HWND hwndMenu = GetRunningMenuWnd(); //CWindow::WindowFromPoint(pt);
+        if (NULL != hwndMenu)
+        {
+            CRect rcMenu;
+            ::GetWindowRect(hwndMenu, rcMenu); // whole menu rect
+            
+            // find Item Rectangle and position
+            int count = ::GetMenuItemCount(hSubMenu);
+            int cy = rcMenu.top + GetSystemMetrics(SM_CYEDGE) + 1;
+            for(int nItem = 0; nItem < count; nItem++) 
+            {
+                CRect rect;
+                ::GetMenuItemRect(m_hParentWnd, hSubMenu, nItem, &rect);
+                if(nItemID == ::GetMenuItemID(hSubMenu, nItem)) 
+                {
+                    UINT nState = GetMenuState(hSubMenu, nItemID, MF_BYCOMMAND);
+                    CString str;
+                    if (MF_DISABLED & nState)
+                        str = m_drawer.GetResCommandPrompt(nItemID, 2); //String for disabled item
+                    else
+                        str = m_drawer.GetResCommandPrompt(nItemID, 0);
 
-					CPoint pt;
-					// found menu item: adjust rectangle to right and down
-					pt.x = rcMenu.left;
-					pt.y = cy;
-					if (m_dwMenuToolPos & PPTOOLTIP_MENU_CENTER)
-						pt.x += rect.Width() / 2;
-					else if (m_dwMenuToolPos & PPTOOLTIP_MENU_RIGHT)
-						pt.x += rect.Width();
-					
-					if (m_dwMenuToolPos & PPTOOLTIP_MENU_VCENTER)
-						pt.y += rect.Height() / 2;
-					else if (m_dwMenuToolPos & PPTOOLTIP_MENU_BOTTOM)
-						pt.y += rect.Height();
+                    CPoint pt;
+                    // found menu item: adjust rectangle to right and down
+                    pt.x = rcMenu.left;
+                    pt.y = cy;
+                    if (m_dwMenuToolPos & PPTOOLTIP_MENU_CENTER)
+                        pt.x += rect.Width() / 2;
+                    else if (m_dwMenuToolPos & PPTOOLTIP_MENU_RIGHT)
+                        pt.x += rect.Width();
+                    
+                    if (m_dwMenuToolPos & PPTOOLTIP_MENU_VCENTER)
+                        pt.y += rect.Height() / 2;
+                    else if (m_dwMenuToolPos & PPTOOLTIP_MENU_BOTTOM)
+                        pt.y += rect.Height();
 
-					PPTOOLTIP_INFO ti;
-					ti.rectBounds = rect;
-					ti.nMask = 0;
-					ti.sTooltip = str;
-					m_nNextTooltipType = PPTOOLTIP_MENU;
-					m_ptOriginal = pt;
-					SetNewTooltip(hwndMenu, ti, TRUE, PPTOOLTIP_MENU);
+                    PPTOOLTIP_INFO ti;
+                    ti.rectBounds = rect;
+                    ti.nMask = 0;
+                    ti.sTooltip = str;
+                    m_nNextTooltipType = PPTOOLTIP_MENU;
+                    m_ptOriginal = pt;
+                    SetNewTooltip(hwndMenu, ti, TRUE, PPTOOLTIP_MENU);
 
-					return;
-				} //if
-				cy += rect.Height(); // add height
-			} //for
-		} //if
-		//ENG: Menu item was not found
-		//RUS: Ёлемент меню не найден.
-		Pop();
-	} //if
+                    return;
+                } //if
+                cy += rect.Height(); // add height
+            } //for
+        } //if
+        //ENG: Menu item was not found
+        //RUS: Ёлемент меню не найден.
+        Pop();
+    } //if
 } //End of OnMenuSelect
 
 ////////////////////////////////////////////////////////////////////
@@ -552,9 +552,9 @@ void CPPToolTipImpl<T, TBase, TWinTraits>::OnMenuSelect(UINT nItemID, UINT nFlag
 template< class T, class TBase, class TWinTraits >
 HWND CPPToolTipImpl<T, TBase, TWinTraits>::GetRunningMenuWnd()
 {
-	HWND hwnd = NULL;
-	EnumWindows(MyEnumProc,(LPARAM)&hwnd);
-	return hwnd;
+    HWND hwnd = NULL;
+    EnumWindows(MyEnumProc,(LPARAM)&hwnd);
+    return hwnd;
 } //End of GetRunningMenuWnd
 
 ////////////////////////////////////////////////////////////////////
@@ -576,7 +576,7 @@ HWND CPPToolTipImpl<T, TBase, TWinTraits>::GetRunningMenuWnd()
 template< class T, class TBase, class TWinTraits >
 void CPPToolTipImpl<T, TBase, TWinTraits>::MenuToolPosition(DWORD nPos /* = PPTOOLTIP_MENU_LEFT | PPTOOLTIP_MENU_TOP */)
 {
-	m_dwMenuToolPos = nPos;
+    m_dwMenuToolPos = nPos;
 } //End of MenuToolPosition
 
 // End of menu methods block

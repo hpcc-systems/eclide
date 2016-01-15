@@ -69,35 +69,35 @@
 namespace boost
 {
 #ifdef _UNICODE
-	typedef tokenizer<boost::char_separator<WCHAR>, std::wstring::const_iterator, std::wstring> wtokenizer;
-	#define _tformat wformat
-	#define _ttokenizer wtokenizer
-	//#define _tregex wregex
-	#define _tcommand_line_parser wcommand_line_parser
-	namespace archive
-	{
-		#define xml__toarchive xml_woarchive
-		#define xml__tiarchive xml_wiarchive
-	}
-	namespace filesystem
-	{
-		#define _tpath wpath;
-	}
+    typedef tokenizer<boost::char_separator<WCHAR>, std::wstring::const_iterator, std::wstring> wtokenizer;
+    #define _tformat wformat
+    #define _ttokenizer wtokenizer
+    //#define _tregex wregex
+    #define _tcommand_line_parser wcommand_line_parser
+    namespace archive
+    {
+        #define xml__toarchive xml_woarchive
+        #define xml__tiarchive xml_wiarchive
+    }
+    namespace filesystem
+    {
+        #define _tpath wpath;
+    }
 #else
-	typedef tokenizer<boost::char_separator<char>, std::string::const_iterator, std::string> ntokenizer;
-	#define _tformat format
-	#define _ttokenizer ntokenizer
-	//#define _tregex regex
-	#define _tcommand_line_parser command_line_parser
-	namespace archive
-	{
-		#define xml__toarchive xml_oarchive
-		#define xml__tiarchive xml_iarchive
-	}
-	namespace filesystem
-	{
-		#define _tpath path;
-	}
+    typedef tokenizer<boost::char_separator<char>, std::string::const_iterator, std::string> ntokenizer;
+    #define _tformat format
+    #define _ttokenizer ntokenizer
+    //#define _tregex regex
+    #define _tcommand_line_parser command_line_parser
+    namespace archive
+    {
+        #define xml__toarchive xml_oarchive
+        #define xml__tiarchive xml_iarchive
+    }
+    namespace filesystem
+    {
+        #define _tpath path;
+    }
 #endif
 }
 #pragma warning(pop)

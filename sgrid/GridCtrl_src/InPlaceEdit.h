@@ -46,11 +46,11 @@ public:
 // Overrides
      // ClassWizard generated virtual function overrides
      //{{AFX_VIRTUAL(CInPlaceEdit)
-	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	protected:
-	virtual void PostNcDestroy();
-	//}}AFX_VIRTUAL
+    public:
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
+    protected:
+    virtual void PostNcDestroy();
+    //}}AFX_VIRTUAL
  
 // Implementation
 public:
@@ -62,8 +62,8 @@ protected:
     afx_msg void OnKillFocus(CWnd* pNewWnd);
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg UINT OnGetDlgCode();
-	//}}AFX_MSG
+    afx_msg UINT OnGetDlgCode();
+    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
 private:

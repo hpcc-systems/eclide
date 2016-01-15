@@ -7,9 +7,9 @@ namespace Topology
 {
 __interface IEclServer : public IUnknown
 {
-	const TCHAR *GetID() const;
-	const TCHAR *GetName() const;
-	const TCHAR *GetQueue() const;
+    const TCHAR *GetID() const;
+    const TCHAR *GetName() const;
+    const TCHAR *GetQueue() const;
 };
 
 typedef StlLinked<IEclServer> IEclServerAdapt;

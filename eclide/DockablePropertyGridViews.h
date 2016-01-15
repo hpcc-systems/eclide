@@ -12,51 +12,51 @@ class CDockablePropertyGridViews : public CDockablePane//, public CResultSlotImp
 {
 // Construction
 public:
-	CDockablePropertyGridViews();
-	DECLARE_DYNCREATE(CDockablePropertyGridViews)
+    CDockablePropertyGridViews();
+    DECLARE_DYNCREATE(CDockablePropertyGridViews)
 
 // Attributes
 public:
-	IGraphViewSlot * m_owner;
+    IGraphViewSlot * m_owner;
 
-	CMFCTabCtrl	m_wndTab;
+    CMFCTabCtrl	m_wndTab;
 
-	typedef std::map<std::_tstring, CPropertyGridViewAdapt> StringPropertyGridMap;
-	StringPropertyGridMap m_propertyGridTabs;
+    typedef std::map<std::_tstring, CPropertyGridViewAdapt> StringPropertyGridMap;
+    StringPropertyGridMap m_propertyGridTabs;
 
 // Operations
 public:
-	void SetOwner(IGraphViewSlot * owner);
+    void SetOwner(IGraphViewSlot * owner);
 
-	void ActivateTab(const CWnd * wnd);
+    void ActivateTab(const CWnd * wnd);
 
-	void PrepTabPropertyGrid(const SGV::CGraphViewCtrl * globalGraphView, const SGV::CGraphViewCtrl * activeGraphView);
-	void SetTabPropertyGrid(const std::_tstring & label, const ITable* data);
-	void ClearTabSetTabPropertyGrid();
+    void PrepTabPropertyGrid(const SGV::CGraphViewCtrl * globalGraphView, const SGV::CGraphViewCtrl * activeGraphView);
+    void SetTabPropertyGrid(const std::_tstring & label, const ITable* data);
+    void ClearTabSetTabPropertyGrid();
 
-	void CloseAllTabs();
+    void CloseAllTabs();
 
-	void Send_Clear();
-	void Post_Reset();
+    void Send_Clear();
+    void Post_Reset();
 
 // Overrides
 protected:
-	BOOL PreTranslateMessage(MSG* pMsg);
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+    BOOL PreTranslateMessage(MSG* pMsg);
+    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 // Implementation
 public:
-	virtual ~CDockablePropertyGridViews();
-	//void SetWU(Dali::IWorkunit * wu);
-	//bool WorkunitDeleted(Dali::IWorkunit *);
+    virtual ~CDockablePropertyGridViews();
+    //void SetWU(Dali::IWorkunit * wu);
+    //bool WorkunitDeleted(Dali::IWorkunit *);
 
-	// Generated message map functions
+    // Generated message map functions
 protected:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg BOOL OnEraseBkgnd(CDC*);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg BOOL OnEraseBkgnd(CDC*);
+    afx_msg void OnSize(UINT nType, int cx, int cy);
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 //  ===========================================================================
