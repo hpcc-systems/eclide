@@ -1859,13 +1859,7 @@ void CMainFrame::OnWorkspaceSelEndOk()
 
 void CMainFrame::OnHelpLanguageReference()
 {
-    std::_tstring url = _T("http://hpccsystems.com/download");
-    if (IsRemoteDaliEnabled())
-    {
-        url = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-        boost::algorithm::ireplace_first(url, _T("/WsWorkunits"), _T("/WsSMC/BrowseResources"));
-    }
-    ::ShellExecute(0, _T("open"), url.c_str(), 0, 0, SW_SHOWNORMAL);
+    ::ShellExecute(0, _T("open"), _T("http://hpccsystems.com/download"), 0, 0, SW_SHOWNORMAL);
 }
 
 LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp)
