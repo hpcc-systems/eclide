@@ -134,7 +134,9 @@ void CTitleTip::Show(CRect rectTitle, LPCTSTR lpszTitleText, int xoffset /*=0*/,
                      LPRECT lpHoverRect /*=NULL*/,
                      const LOGFONT* lpLogFont /*=NULL*/,
                      COLORREF crTextClr /* CLR_DEFAULT */,
-                     COLORREF crBackClr /* CLR_DEFAULT */)
+                     COLORREF crBackClr /* CLR_DEFAULT */,
+                     int nMaxChars /*=-1*/
+    )
 {
     if (!IsWindow(m_hWnd))
         Create(m_pParentWnd);
@@ -330,7 +332,9 @@ void CTitleTip::Show(CRect rectTitle, LPCTSTR lpszTitleText, int xoffset /*=0*/,
 
     rectCalc.top += 1;
 
-    int nHeight = dc.DrawText(m_strTitle,&rectCalc,0 
+    m_strTitle = ToolTipString(m_strTitle, rectClient, tm, nMaxChars);
+
+    int nHeight = dc.DrawText(m_strTitle, &rectCalc, 0
         | DT_CALCRECT
         | DT_LEFT
         | DT_NOCLIP
@@ -378,6 +382,27 @@ void CTitleTip::Show(CRect rectTitle, LPCTSTR lpszTitleText, int xoffset /*=0*/,
     //dc.TextOut( 0, 0, m_strTitle );
     SetCapture();
     dc.SelectObject(pOldFont);
+}
+
+CString CTitleTip::ToolTipString(CString tipStr, CRect rectDisplay, TEXTMETRIC tm, int nMaxChars)
+{
+    int len = tipStr.GetLength();
+
+    ATLASSERT(len <= 50000);
+
+    int rowCharCount = rectDisplay.Width() / tm.tmAveCharWidth;
+    int numRows = rectDisplay.Height() / tm.tmHeight;
+    // -3 for the added spaces in the display of the tooltip string which translate into lines
+    int maxCharCount = rowCharCount * (numRows - 3) + 1;
+
+    if (nMaxChars > 0 && len > nMaxChars && nMaxChars < maxCharCount) {
+        tipStr = tipStr.Mid(0, nMaxChars);
+    }
+    else if (len > maxCharCount) {
+        tipStr = tipStr.Mid(0, maxCharCount);
+    }
+
+    return tipStr;
 }
 
 void CTitleTip::Hide()
