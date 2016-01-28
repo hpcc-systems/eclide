@@ -144,7 +144,7 @@ public:
     // Editing
     virtual BOOL Edit( int /* nRow */, int /* nCol */, CRect /* rect */, CPoint /* point */, 
                        UINT /* nID */, UINT /* nChar */) { ASSERT( FALSE); return FALSE;}
-	virtual BOOL ValidateEdit(LPCTSTR str);
+    virtual BOOL ValidateEdit(LPCTSTR str);
     virtual void EndEdit() {}
 
     // EFW - Added to print cells properly
@@ -160,7 +160,7 @@ protected:
     virtual void OnMouseLeave();
     virtual void OnClick(CRect cellRect, CPoint PointCellRelative);
     virtual void OnClickDown(CRect cellRect, CPoint PointCellRelative);
-	virtual void OnDblClick(CRect cellRect, CPoint PointCellRelative);
+    virtual void OnDblClick(CRect cellRect, CPoint PointCellRelative);
     virtual void OnRClick(CRect cellRect, CPoint PointCellRelative);
     
     virtual BOOL OnSetCursor();

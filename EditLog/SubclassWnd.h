@@ -43,94 +43,94 @@
 class CSubclassWnd
 {
 private:
-	class WndProcThunk
-	{
-	public:
+    class WndProcThunk
+    {
+    public:
 #if defined(_M_IX86)
 #pragma pack(push,1)
-		struct Thunk
-		{
-			DWORD   m_mov;          // mov dword ptr [esp+0x4], pThis (esp+0x4 is hWnd)
-			DWORD   m_this;         //
-			BYTE    m_jmp;          // jmp WndProc
-			DWORD   m_relproc;      // relative jmp
-		};
+        struct Thunk
+        {
+            DWORD   m_mov;          // mov dword ptr [esp+0x4], pThis (esp+0x4 is hWnd)
+            DWORD   m_this;         //
+            BYTE    m_jmp;          // jmp WndProc
+            DWORD   m_relproc;      // relative jmp
+        };
 #pragma pack(pop)
 #elif defined (_M_ALPHA)
-	// For ALPHA we will stick the this pointer into a0, which is where
-	// the HWND is.  However, we don't actually need the HWND so this is OK.
+    // For ALPHA we will stick the this pointer into a0, which is where
+    // the HWND is.  However, we don't actually need the HWND so this is OK.
 #pragma pack(push,4)
-		struct Thunk //this should come out to 20 bytes
-		{
-			DWORD ldah_at;      //  ldah    at, HIWORD(func)
-			DWORD ldah_a0;      //  ldah    a0, HIWORD(this)
-			DWORD lda_at;       //  lda     at, LOWORD(func)(at)
-			DWORD lda_a0;       //  lda     a0, LOWORD(this)(a0)
-			DWORD jmp;          //  jmp     zero,(at),0
-		};
+        struct Thunk //this should come out to 20 bytes
+        {
+            DWORD ldah_at;      //  ldah    at, HIWORD(func)
+            DWORD ldah_a0;      //  ldah    a0, HIWORD(this)
+            DWORD lda_at;       //  lda     at, LOWORD(func)(at)
+            DWORD lda_a0;       //  lda     a0, LOWORD(this)(a0)
+            DWORD jmp;          //  jmp     zero,(at),0
+        };
 #pragma pack(pop)
 #else
 #error Only Alpha and X86 supported
 #endif
 
-		Thunk thunk;
+        Thunk thunk;
 
-		void Init(WNDPROC proc, void* pThis)
-		{
+        void Init(WNDPROC proc, void* pThis)
+        {
 #if defined (_M_IX86)
-			thunk.m_mov = 0x042444C7;  //C7 44 24 0C
-			thunk.m_this = (DWORD)pThis;
-			thunk.m_jmp = 0xe9;
-			thunk.m_relproc = (int)proc - ((int)this+sizeof(Thunk));
+            thunk.m_mov = 0x042444C7;  //C7 44 24 0C
+            thunk.m_this = (DWORD)pThis;
+            thunk.m_jmp = 0xe9;
+            thunk.m_relproc = (int)proc - ((int)this+sizeof(Thunk));
 #elif defined (_M_ALPHA)
-			thunk.ldah_at = (0x279f0000 | HIWORD(proc)) + (LOWORD(proc)>>15);
-			thunk.ldah_a0 = (0x261f0000 | HIWORD(pThis)) + (LOWORD(pThis)>>15);
-			thunk.lda_at = 0x239c0000 | LOWORD(proc);
-			thunk.lda_a0 = 0x22100000 | LOWORD(pThis);
-			thunk.jmp = 0x6bfc0000;
+            thunk.ldah_at = (0x279f0000 | HIWORD(proc)) + (LOWORD(proc)>>15);
+            thunk.ldah_a0 = (0x261f0000 | HIWORD(pThis)) + (LOWORD(pThis)>>15);
+            thunk.lda_at = 0x239c0000 | LOWORD(proc);
+            thunk.lda_a0 = 0x22100000 | LOWORD(pThis);
+            thunk.jmp = 0x6bfc0000;
 #endif
-			// write block from data cache and
-			//  flush from instruction cache
-			FlushInstructionCache(GetCurrentProcess(), &thunk, sizeof(thunk));
-		}
-	};
+            // write block from data cache and
+            //  flush from instruction cache
+            FlushInstructionCache(GetCurrentProcess(), &thunk, sizeof(thunk));
+        }
+    };
 
 protected:
-	CSubclassWnd();
-	virtual ~CSubclassWnd();
+    CSubclassWnd();
+    virtual ~CSubclassWnd();
 
-	virtual BOOL ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM lParam,
-		LRESULT& lResult);
-	virtual void OnFinalMessage();
+    virtual BOOL ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM lParam,
+        LRESULT& lResult);
+    virtual void OnFinalMessage();
 
-	LRESULT DefWindowProc();
-	LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+    LRESULT DefWindowProc();
+    LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 #ifdef _MFC_VER
-	BOOL SubclassWindow(CWnd* pWnd, BOOL bReflect=TRUE);
+    BOOL SubclassWindow(CWnd* pWnd, BOOL bReflect=TRUE);
 #endif
-	BOOL SubclassWindow(HWND hWnd, BOOL bReflect=TRUE);
-	HWND UnsubclassWindow();
+    BOOL SubclassWindow(HWND hWnd, BOOL bReflect=TRUE);
+    HWND UnsubclassWindow();
 
 public:
-	const MSG* GetCurrentMessage() const;
+    const MSG* GetCurrentMessage() const;
 
-	HWND GetHandle() const;
+    HWND GetHandle() const;
 
-	LRESULT SendMessage(UINT message, WPARAM wParam=0, LPARAM lParam=0);
-	BOOL PostMessage(UINT message, WPARAM wParam=0, LPARAM lParam=0);
-	void SendMessageToDescendants(UINT message, WPARAM wParam, LPARAM lParam,
-		BOOL bDeep=TRUE);
-
-private:
-	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam,
-		LPARAM lParam);
+    LRESULT SendMessage(UINT message, WPARAM wParam=0, LPARAM lParam=0);
+    BOOL PostMessage(UINT message, WPARAM wParam=0, LPARAM lParam=0);
+    void SendMessageToDescendants(UINT message, WPARAM wParam, LPARAM lParam,
+        BOOL bDeep=TRUE);
 
 private:
-	WndProcThunk m_thunk;
-	WNDPROC m_pfnSuperWindowProc;
-	const MSG* m_pCurrentMsg;
-	HWND m_hWnd;
+    static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam,
+        LPARAM lParam);
+
+private:
+    WndProcThunk m_thunk;
+    WNDPROC m_pfnSuperWindowProc;
+    const MSG* m_pCurrentMsg;
+    HWND m_hWnd;
 };
 
 #ifdef	_MFC_VER
@@ -148,7 +148,7 @@ private:
 
 inline BOOL CSubclassWnd::SubclassWindow(CWnd* pWnd, BOOL bReflect)
 {
-	return SubclassWindow(pWnd->GetSafeHwnd(), bReflect);
+    return SubclassWindow(pWnd->GetSafeHwnd(), bReflect);
 }
 #endif
 
@@ -159,7 +159,7 @@ inline BOOL CSubclassWnd::SubclassWindow(CWnd* pWnd, BOOL bReflect)
  */
 inline const MSG* CSubclassWnd::GetCurrentMessage() const
 {
-	return m_pCurrentMsg;
+    return m_pCurrentMsg;
 }
 
 /**
@@ -173,11 +173,11 @@ inline const MSG* CSubclassWnd::GetCurrentMessage() const
 
 inline LRESULT CSubclassWnd::DefWindowProc()
 {
-	const MSG* pMsg = m_pCurrentMsg;
-	LRESULT lRes = 0;
-	if (pMsg != NULL)
-		lRes = DefWindowProc(pMsg->message, pMsg->wParam, pMsg->lParam);
-	return lRes;
+    const MSG* pMsg = m_pCurrentMsg;
+    LRESULT lRes = 0;
+    if (pMsg != NULL)
+        lRes = DefWindowProc(pMsg->message, pMsg->wParam, pMsg->lParam);
+    return lRes;
 }
 
 /**
@@ -195,9 +195,9 @@ inline LRESULT CSubclassWnd::DefWindowProc()
 inline LRESULT CSubclassWnd::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 #ifdef STRICT
-	return ::CallWindowProc(m_pfnSuperWindowProc, m_hWnd, message, wParam, lParam);
+    return ::CallWindowProc(m_pfnSuperWindowProc, m_hWnd, message, wParam, lParam);
 #else
-	return ::CallWindowProc((FARPROC)m_pfnSuperWindowProc, m_hWnd, message, wParam, lParam);
+    return ::CallWindowProc((FARPROC)m_pfnSuperWindowProc, m_hWnd, message, wParam, lParam);
 #endif
 }
 
@@ -209,7 +209,7 @@ inline LRESULT CSubclassWnd::DefWindowProc(UINT message, WPARAM wParam, LPARAM l
 
 inline HWND CSubclassWnd::GetHandle() const
 {
-	return m_hWnd;
+    return m_hWnd;
 }
 
 /**
@@ -225,7 +225,7 @@ inline HWND CSubclassWnd::GetHandle() const
 
 inline LRESULT CSubclassWnd::SendMessage(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	return ::SendMessage(GetHandle(), message, wParam, lParam);
+    return ::SendMessage(GetHandle(), message, wParam, lParam);
 }
 
 /**
@@ -242,13 +242,13 @@ inline LRESULT CSubclassWnd::SendMessage(UINT message, WPARAM wParam, LPARAM lPa
 
 inline BOOL CSubclassWnd::PostMessage(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	return ::PostMessage(GetHandle(), message, wParam, lParam);
+    return ::PostMessage(GetHandle(), message, wParam, lParam);
 }
 
 template <typename T>
 struct DISPATCH_TRAITS
 {
-	typedef T type;
+    typedef T type;
 };
 
 /** @def BEGIN_MSG_DISPATCH(className, rootClass)
@@ -256,15 +256,15 @@ struct DISPATCH_TRAITS
  * Begins the message dispatch map.
  */
 #define	BEGIN_MSG_DISPATCH(className, rootClass)	\
-	virtual BOOL ProcessWindowMessage(UINT message, WPARAM wParam, \
-		LPARAM lParam, LRESULT& lResult) {	\
-		typedef DISPATCH_TRAITS<##rootClass>::type root_type;	\
-		if (FALSE) ;
+    virtual BOOL ProcessWindowMessage(UINT message, WPARAM wParam, \
+        LPARAM lParam, LRESULT& lResult) {	\
+        typedef DISPATCH_TRAITS<##rootClass>::type root_type;	\
+        if (FALSE) ;
 /**
  * Ends the message dispatch map.
  */
 #define	END_MSG_DISPATCH()	\
-		return root_type::ProcessWindowMessage(message, wParam, lParam, lResult); }
+        return root_type::ProcessWindowMessage(message, wParam, lParam, lResult); }
 
 /**
  * Dispatches a message to a member function from within the message map.  If you
@@ -273,7 +273,7 @@ struct DISPATCH_TRAITS
  * such macros.
  */
 #define DISPATCH_MSG(msg, mfn)    \
-	else if (message == msg)  { lResult = DISPATCH_##msg((wParam), (lParam), (mfn)); return TRUE; }
+    else if (message == msg)  { lResult = DISPATCH_##msg((wParam), (lParam), (mfn)); return TRUE; }
 
 /* void Class::OnCompacting(UINT compactRatio) */
 #define DISPATCH_WM_COMPACTING(wParam, lParam, fn) \
@@ -606,15 +606,15 @@ struct DISPATCH_TRAITS
 
 /* void Class::OnCommandReflect(UINT codeNotify) */
 #define	DISPATCH_OCM_COMMAND(wParam, lParam, fn)	\
-	((fn)((int)((UINT)HIWORD(wParam)), 0L)
+    ((fn)((int)((UINT)HIWORD(wParam)), 0L)
 
 /* LRESULT Class::OnNotify(int id, LPNMHDR pnmh) */
 #define	DISPATCH_WM_NOTIFY(wParam, lParam, fn)	\
-	((fn)((int)wParam, (LPNMHDR)lParam))
+    ((fn)((int)wParam, (LPNMHDR)lParam))
 
 /* LRESULT Class::OnNotifyReflect(LPNMHDR pnmh) */
 #define DISPATCH_OCM_NOTIFY(wParam, lParam, fn)	\
-	((fn)((LPNMHDR)lParam))
+    ((fn)((LPNMHDR)lParam))
 
 /* void Class::OnHScroll(HWND hwndCtl, UINT code, int pos) */
 #define DISPATCH_WM_HSCROLL(wParam, lParam, fn) \
@@ -763,7 +763,7 @@ struct DISPATCH_TRAITS
 
 /* void Class:OnParentNotifyReflect(UINT msg) */
 #define DISPATCH_OCM_PARENTNOTIFY(wParam, lParam, fn) \
-	((fn)((UINT)LOWORD(wParam)), 0L)
+    ((fn)((UINT)LOWORD(wParam)), 0L)
 
 /* void Class::OnEnterIdle(UINT source, HWND hwndSource) */
 #define DISPATCH_WM_ENTERIDLE(wParam, lParam, fn) \

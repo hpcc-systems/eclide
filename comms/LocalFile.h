@@ -12,12 +12,12 @@ typedef localfile_signal_type::slot_type localfile_slot_type;
 
 __interface ILocalFile : public IUnknown
 {
-	const TCHAR *GetID() const;
-	int GetType() const;
-	const TCHAR *GetSource() const;
-	const TCHAR *GetDestination() const;
+    const TCHAR *GetID() const;
+    int GetType() const;
+    const TCHAR *GetSource() const;
+    const TCHAR *GetDestination() const;
 
-	boost::signals::connection on_refresh_connect(const localfile_slot_type& s);
+    boost::signals::connection on_refresh_connect(const localfile_slot_type& s);
 };
 
 typedef StlLinked<ILocalFile> ILocalFileAdapt;

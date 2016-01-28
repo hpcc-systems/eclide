@@ -9,40 +9,40 @@ int kMaxLeaves = 20;
 class Leaf : public CUnknown
 {
 protected:
-	int m_value;
+    int m_value;
 
 public:
-	IMPLEMENT_CUNKNOWN;
+    IMPLEMENT_CUNKNOWN;
 
-	Leaf() : m_value(0)
-	{
-	}
+    Leaf() : m_value(0)
+    {
+    }
 
-	Leaf(int value) : m_value(value)
-	{
-	}
+    Leaf(int value) : m_value(value)
+    {
+    }
 
-	int value() const
-	{
-		return m_value;
-	}
+    int value() const
+    {
+        return m_value;
+    }
 
-	bool operator < (const Leaf & l) const
-	{
-		return (m_value < l.value());
-	}
+    bool operator < (const Leaf & l) const
+    {
+        return (m_value < l.value());
+    }
 
-	bool operator == (const Leaf & l) const
-	{
-		return (m_value == l.value());
-	}
+    bool operator == (const Leaf & l) const
+    {
+        return (m_value == l.value());
+    }
 };
 
 typedef StlLinked<Leaf> LeafAdapt;
 
 void fun2()
 {
-	clib::tree<LeafAdapt> leafTree;
+    clib::tree<LeafAdapt> leafTree;
 }
 
 void fun()

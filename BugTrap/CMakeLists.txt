@@ -113,28 +113,29 @@ set ( SRCS
 		${BUGTRAP_INCLUDE_DIR}/XmlWriter.cpp
 		${BUGTRAP_INCLUDE_DIR}/XmlWriter.h
 
-		${ZLIB_INCLUDE_DIR}/src/adler32.c
-		${ZLIB_INCLUDE_DIR}/src/compress.c
-		${ZLIB_INCLUDE_DIR}/src/crc32.c
-		${ZLIB_INCLUDE_DIR}/src/deflate.c
-		${ZLIB_INCLUDE_DIR}/src/gzio.c
-		${ZLIB_INCLUDE_DIR}/src/infback.c
-		${ZLIB_INCLUDE_DIR}/src/inffast.c
-		${ZLIB_INCLUDE_DIR}/src/inflate.c
-		${ZLIB_INCLUDE_DIR}/src/inftrees.c
-		${ZLIB_INCLUDE_DIR}/src/ioapi.c
-		${ZLIB_INCLUDE_DIR}/src/iowin32.c
-		${ZLIB_INCLUDE_DIR}/src/mztools.c
-		${ZLIB_INCLUDE_DIR}/src/trees.c
-		${ZLIB_INCLUDE_DIR}/src/uncompr.c
-		${ZLIB_INCLUDE_DIR}/src/unzip.c
-		${ZLIB_INCLUDE_DIR}/src/zip.c
-		${ZLIB_INCLUDE_DIR}/src/zutil.c
+		${ZLIB_INCLUDE_DIR}/adler32.c
+		${ZLIB_INCLUDE_DIR}/compress.c
+		${ZLIB_INCLUDE_DIR}/crc32.c
+		${ZLIB_INCLUDE_DIR}/deflate.c
+		${ZLIB_INCLUDE_DIR}/gzio.c
+		${ZLIB_INCLUDE_DIR}/infback.c
+		${ZLIB_INCLUDE_DIR}/inffast.c
+		${ZLIB_INCLUDE_DIR}/inflate.c
+		${ZLIB_INCLUDE_DIR}/inftrees.c
+		${ZLIB_INCLUDE_DIR}/contrib/minizip/ioapi.c
+		${ZLIB_INCLUDE_DIR}/contrib/minizip/iowin32.c
+		${ZLIB_INCLUDE_DIR}/contrib/minizip/mztools.c
+		${ZLIB_INCLUDE_DIR}/trees.c
+		${ZLIB_INCLUDE_DIR}/uncompr.c
+		${ZLIB_INCLUDE_DIR}/contrib/minizip/unzip.c
+		${ZLIB_INCLUDE_DIR}/contrib/minizip/zip.c
+		${ZLIB_INCLUDE_DIR}/zutil.c
 	)
 
 include_directories (
 	${BUGTRAP_INCLUDE_DIR}
-	${ZLIB_INCLUDE_DIR}/Include
+	${ZLIB_INCLUDE_DIR}
+	${ZLIB_INCLUDE_DIR}/contrib/minizip
 	)
 
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:zlibSD.lib" )

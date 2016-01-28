@@ -5,6 +5,7 @@
 #include "msxml2.h"
 #include "SAXHandlers.h"
 #include "UnicodeFile.h"
+#include <UtilFilesystem.h>
 
 //  ===========================================================================
 class DependencyTreeHandlerImpl : public StackHandlerImpl
@@ -179,7 +180,7 @@ bool CDependency::CacheExists() const
 	fileName = "dependencies_" + fileName + ".xml";
 	boost::filesystem::path p = m_envFolder;
 	p = p / fileName;
-	return boost::filesystem::exists(p);
+	return clib::filesystem::exists(p);
 }
 
 void CDependency::SaveCache() const

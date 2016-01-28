@@ -21,9 +21,9 @@
 // Converts a UNICODE string to ANSI using the stack for buffering
 #define _W2A(lpw) ( (lpw == NULL ) ? NULL : _W2AHelp(lpw, (LPSTR) _alloca( wcslen( lpw ) + 1 ) ) )
 inline LPSTR _W2AHelp(LPCWSTR pwsz, LPSTR psz ) {
-	int n = wcslen( pwsz ) + 1;
-	WideCharToMultiByte( CP_ACP, 0, pwsz, n, psz, n, NULL, NULL );
-	return psz;
+    int n = wcslen( pwsz ) + 1;
+    WideCharToMultiByte( CP_ACP, 0, pwsz, n, psz, n, NULL, NULL );
+    return psz;
 }
 
 // true, if we are running on a NT/2k System
@@ -31,231 +31,231 @@ bool g_bIsWinNT = ( GetVersion() < 0x80000000 );
 
 
 CEditLog::CEditLog( 
-		HWND hEdit,
-		UINT nTimerDelay
-		)
+        HWND hEdit,
+        UINT nTimerDelay
+        )
 {
-	m_bMessagePending = false;
-	m_nTimerID		= 0;
-	m_nTimerDelay	= nTimerDelay;
-	::InitializeCriticalSection( &m_csLock );
-	if ( hEdit )
-		SetEditCtrl( hEdit );
+    m_bMessagePending = false;
+    m_nTimerID		= 0;
+    m_nTimerDelay	= nTimerDelay;
+    ::InitializeCriticalSection( &m_csLock );
+    if ( hEdit )
+        SetEditCtrl( hEdit );
 }
 
 CEditLog::~CEditLog()
 {
-	::DeleteCriticalSection( &m_csLock );
+    ::DeleteCriticalSection( &m_csLock );
 }
 
 
 void CEditLog::AddText( 
-		LPCWSTR pwszAdd,
-		bool bLFtoCRLF	// = false
-		)
+        LPCWSTR pwszAdd,
+        bool bLFtoCRLF	// = false
+        )
 {
-	if( pwszAdd ) {
-		::EnterCriticalSection( &m_csLock );
-		if( bLFtoCRLF ) {
-			// Add text to our buffer, but convert each LF to a CRLF pair
-			int cchAdd = ::wcslen( pwszAdd );
-			// Ensure no buffer enlargement operations are necessary 			
-			m_wsStore.reserve( m_wsStore.length() + cchAdd * 2 );
-			for( int i = 0; i < cchAdd; ++i ) {
-				if( pwszAdd[ i ] == L'\n' )
-					m_wsStore += L'\r';
-				m_wsStore += pwszAdd[ i ];
-			}
-		}
-		else
-			// Simly add text
-			m_wsStore += pwszAdd;
+    if( pwszAdd ) {
+        ::EnterCriticalSection( &m_csLock );
+        if( bLFtoCRLF ) {
+            // Add text to our buffer, but convert each LF to a CRLF pair
+            int cchAdd = ::wcslen( pwszAdd );
+            // Ensure no buffer enlargement operations are necessary 			
+            m_wsStore.reserve( m_wsStore.length() + cchAdd * 2 );
+            for( int i = 0; i < cchAdd; ++i ) {
+                if( pwszAdd[ i ] == L'\n' )
+                    m_wsStore += L'\r';
+                m_wsStore += pwszAdd[ i ];
+            }
+        }
+        else
+            // Simly add text
+            m_wsStore += pwszAdd;
 
-		// If the log is filled really fast or the UI thread is doing something
-		// else, the WM_ADDTEXT messages may not get processed for a long period.
-		// To avoid floating the UI threads message queue, we post only one message.
-		if( !m_bMessagePending && GetHandle() != NULL ) {
-			::PostMessage( GetHandle(), UM_ADDTEXT, 0, 0 );
-			m_bMessagePending = true;
-		}
-		::LeaveCriticalSection( &m_csLock );
-	}
+        // If the log is filled really fast or the UI thread is doing something
+        // else, the WM_ADDTEXT messages may not get processed for a long period.
+        // To avoid floating the UI threads message queue, we post only one message.
+        if( !m_bMessagePending && GetHandle() != NULL ) {
+            ::PostMessage( GetHandle(), UM_ADDTEXT, 0, 0 );
+            m_bMessagePending = true;
+        }
+        ::LeaveCriticalSection( &m_csLock );
+    }
 }
 
 void CEditLog::AddText( 
-		LPCSTR pszAdd, 
-		bool bLFtoCRLF	// = false
-		)
+        LPCSTR pszAdd, 
+        bool bLFtoCRLF	// = false
+        )
 {
-	if( pszAdd ) {
-		int n = ::strlen( pszAdd ) + 1;
+    if( pszAdd ) {
+        int n = ::strlen( pszAdd ) + 1;
 
-		if( n <= 1024 ) {
-			// Allocate conversion buffer for 1k max on the stack (very fast!)
-			LPWSTR pwsz = (LPWSTR) ::_alloca( n * 2 );
-			::MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pszAdd, n, pwsz, n );
-			AddText( pwsz, bLFtoCRLF );
-		}
-		else {
-			// Allocate conversion buffer on the heap
-			LPWSTR pwsz = new WCHAR[ n ];
-			::MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pszAdd, n, pwsz, n );
-			AddText( pwsz, bLFtoCRLF );
-			delete pwsz;
-		}
-	}
+        if( n <= 1024 ) {
+            // Allocate conversion buffer for 1k max on the stack (very fast!)
+            LPWSTR pwsz = (LPWSTR) ::_alloca( n * 2 );
+            ::MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pszAdd, n, pwsz, n );
+            AddText( pwsz, bLFtoCRLF );
+        }
+        else {
+            // Allocate conversion buffer on the heap
+            LPWSTR pwsz = new WCHAR[ n ];
+            ::MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pszAdd, n, pwsz, n );
+            AddText( pwsz, bLFtoCRLF );
+            delete pwsz;
+        }
+    }
 }
 
 void CEditLog::SetEditCtrl(HWND hEdit)
 {
-	ATLASSERT(hEdit != NULL);
-	if ( baseClass::SubclassWindow(hEdit) )
-	{
-		// We want to support a lot of text...
-		// Note that Win9x supports no more than 64kb of text! - just too bad...
-		// Tip: Use NT/2k :-)
-		::SendMessage( hEdit, EM_LIMITTEXT, 0, 0 );
-	}
+    ATLASSERT(hEdit != NULL);
+    if ( baseClass::SubclassWindow(hEdit) )
+    {
+        // We want to support a lot of text...
+        // Note that Win9x supports no more than 64kb of text! - just too bad...
+        // Tip: Use NT/2k :-)
+        ::SendMessage( hEdit, EM_LIMITTEXT, 0, 0 );
+    }
 }
 
 void CEditLog::OnTimer(UINT_PTR id)
 {
-	if( id == m_nTimerID && DoAddText( true ) ) 
-	{
-		::KillTimer( GetHandle(), m_nTimerID );
-		m_nTimerID = 0;
-	}
-		
+    if( id == m_nTimerID && DoAddText( true ) ) 
+    {
+        ::KillTimer( GetHandle(), m_nTimerID );
+        m_nTimerID = 0;
+    }
+        
 }
 
 LRESULT CEditLog::OnAddText(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	if( !DoAddText() && m_nTimerID == 0 )
-		m_nTimerID = ::SetTimer( GetHandle(), 4711, m_nTimerDelay, NULL );
-	return 0;
+    if( !DoAddText() && m_nTimerID == 0 )
+        m_nTimerID = ::SetTimer( GetHandle(), 4711, m_nTimerDelay, NULL );
+    return 0;
 }
 
 
 bool CEditLog::DoAddText(bool bForce)
 {
-	bool		 bAdded = false;
-	std::wstring wsText;
-	int			 cchText;
+    bool		 bAdded = false;
+    std::wstring wsText;
+    int			 cchText;
 
-	HWND hEdit = GetHandle();
+    HWND hEdit = GetHandle();
 
-	// Retrieve the text from our buffer
-	// We store it in a local variable to prevent long time locking
-	::EnterCriticalSection( &m_csLock );
-	wsText = m_wsStore;
-	m_bMessagePending = false; 
-	::LeaveCriticalSection( &m_csLock );
+    // Retrieve the text from our buffer
+    // We store it in a local variable to prevent long time locking
+    ::EnterCriticalSection( &m_csLock );
+    wsText = m_wsStore;
+    m_bMessagePending = false; 
+    ::LeaveCriticalSection( &m_csLock );
 
-	cchText = wsText.length();
-
-
-	// Get Edit contents dimensions and cursor position
-	int nStartChar, nEndChar, nSize;
-	::SendMessage( hEdit, EM_GETSEL, (WPARAM) &nStartChar, (LPARAM) &nEndChar );
-	nSize = (int) ::SendMessage( hEdit, WM_GETTEXTLENGTH, 0, 0 );
+    cchText = wsText.length();
 
 
-	if( nStartChar == nSize && nSize == nEndChar  ) {
-		// The cursor resides at the end of text
-	
-		SCROLLINFO si;
-		si.cbSize	= sizeof si;
-		si.fMask	= SIF_ALL;
-		::GetScrollInfo( GetHandle(), SB_VERT, &si );
-		if( si.nPos >= si.nMax - (int) si.nPage + 1  ) {
-			// Not scrolled away
-			::SendMessage( hEdit, EM_SETSEL, (WPARAM) nSize, (LPARAM) nSize );
-			if( g_bIsWinNT )
-				::SendMessageW( hEdit, EM_REPLACESEL, 0, (LPARAM) wsText.c_str() );
-			else 
-				::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM) _W2A( wsText.c_str() ) );
-			bAdded = true;
-		}
-		else if( bForce ) {
-			int nFirstLine, nFirstLineNow;
+    // Get Edit contents dimensions and cursor position
+    int nStartChar, nEndChar, nSize;
+    ::SendMessage( hEdit, EM_GETSEL, (WPARAM) &nStartChar, (LPARAM) &nEndChar );
+    nSize = (int) ::SendMessage( hEdit, WM_GETTEXTLENGTH, 0, 0 );
 
-			// Reduce flicker by ignoring WM_PAINT
-			::SendMessage( hEdit, WM_SETREDRAW, false, 0 );
 
-			// Remember where we are
-			nFirstLine = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
-		
-			// Select at the end of text and replace the selection
-			// This is a very fast way to add text to an edit control
-			::SendMessage( hEdit, EM_SETSEL, (WPARAM) nSize, (LPARAM) nSize );
-			if( g_bIsWinNT )
-				::SendMessageW( hEdit, EM_REPLACESEL, 0, (LPARAM) wsText.c_str() );
-			else 
-				::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM) _W2A( wsText.c_str() ) );
+    if( nStartChar == nSize && nSize == nEndChar  ) {
+        // The cursor resides at the end of text
+    
+        SCROLLINFO si;
+        si.cbSize	= sizeof si;
+        si.fMask	= SIF_ALL;
+        ::GetScrollInfo( GetHandle(), SB_VERT, &si );
+        if( si.nPos >= si.nMax - (int) si.nPage + 1  ) {
+            // Not scrolled away
+            ::SendMessage( hEdit, EM_SETSEL, (WPARAM) nSize, (LPARAM) nSize );
+            if( g_bIsWinNT )
+                ::SendMessageW( hEdit, EM_REPLACESEL, 0, (LPARAM) wsText.c_str() );
+            else 
+                ::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM) _W2A( wsText.c_str() ) );
+            bAdded = true;
+        }
+        else if( bForce ) {
+            int nFirstLine, nFirstLineNow;
 
-			// Restore our previous selection
-			::SendMessage( hEdit, EM_SETSEL, (WPARAM) nStartChar, (LPARAM) nEndChar );
-			nFirstLineNow = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
-			::SendMessage( hEdit, EM_LINESCROLL, 0, (LPARAM) nFirstLine - nFirstLineNow);
+            // Reduce flicker by ignoring WM_PAINT
+            ::SendMessage( hEdit, WM_SETREDRAW, false, 0 );
 
-			::SendMessage( hEdit, WM_SETREDRAW, true, 0 );
-			bAdded = true;
-		}
-	}
-	else if( bForce ) {
-		// We should add the text anyway...
+            // Remember where we are
+            nFirstLine = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
+        
+            // Select at the end of text and replace the selection
+            // This is a very fast way to add text to an edit control
+            ::SendMessage( hEdit, EM_SETSEL, (WPARAM) nSize, (LPARAM) nSize );
+            if( g_bIsWinNT )
+                ::SendMessageW( hEdit, EM_REPLACESEL, 0, (LPARAM) wsText.c_str() );
+            else 
+                ::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM) _W2A( wsText.c_str() ) );
 
-		POINT pt;
-		int nFirstLine, nFirstLineNow, nCaretPos;
+            // Restore our previous selection
+            ::SendMessage( hEdit, EM_SETSEL, (WPARAM) nStartChar, (LPARAM) nEndChar );
+            nFirstLineNow = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
+            ::SendMessage( hEdit, EM_LINESCROLL, 0, (LPARAM) nFirstLine - nFirstLineNow);
 
-		// Reduce flicker by ignoring WM_PAINT
-		::SendMessage( hEdit, WM_SETREDRAW, false, 0 );
+            ::SendMessage( hEdit, WM_SETREDRAW, true, 0 );
+            bAdded = true;
+        }
+    }
+    else if( bForce ) {
+        // We should add the text anyway...
 
-		// Remember where we are
-		nFirstLine = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
-	
-		if( nStartChar != nEndChar ) {
-			// If we are currently selecting some text, we have to find out
-			// if the caret is near the beginning of this block or near the end.
-			// Note that this does not always work. Because of the EM_CHARFROMPOS
-			// message returning only 16 bits this will fail if the user has selected 
-			// a block with a length dividable by 64k.
-			
-			::GetCaretPos( &pt );
-			nCaretPos = (int) LOWORD(::SendMessage( hEdit, EM_CHARFROMPOS, 0, MAKELPARAM(pt.x, pt.y) ) );
-			if( abs( (nStartChar % 0xffff - nCaretPos) ) < abs( (nEndChar % 0xffff - nCaretPos) ) ) {
-				nCaretPos	= nStartChar;
-				nStartChar	= nEndChar;
-				nEndChar	= nCaretPos;
-			}
-		}
+        POINT pt;
+        int nFirstLine, nFirstLineNow, nCaretPos;
 
-		// Note: This will flicker, if someone has a good idea how to prevent this - let me know
-		
-		// Select at the end of text and replace the selection
-		// This is a very fast way to add text to an edit control
-		::SendMessage( hEdit, EM_SETSEL, (WPARAM) nSize, (LPARAM) nSize );
-		if( g_bIsWinNT )
-			::SendMessageW( hEdit, EM_REPLACESEL, 0, (LPARAM) wsText.c_str() );
-		else 
-			::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM) _W2A( wsText.c_str() ) );
+        // Reduce flicker by ignoring WM_PAINT
+        ::SendMessage( hEdit, WM_SETREDRAW, false, 0 );
 
-		// Restore our previous selection
-		::SendMessage( hEdit, EM_SETSEL, (WPARAM) nStartChar, (LPARAM) nEndChar );
-		nFirstLineNow = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
-		::SendMessage( hEdit, EM_LINESCROLL, 0, (LPARAM) nFirstLine - nFirstLineNow);
+        // Remember where we are
+        nFirstLine = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
+    
+        if( nStartChar != nEndChar ) {
+            // If we are currently selecting some text, we have to find out
+            // if the caret is near the beginning of this block or near the end.
+            // Note that this does not always work. Because of the EM_CHARFROMPOS
+            // message returning only 16 bits this will fail if the user has selected 
+            // a block with a length dividable by 64k.
+            
+            ::GetCaretPos( &pt );
+            nCaretPos = (int) LOWORD(::SendMessage( hEdit, EM_CHARFROMPOS, 0, MAKELPARAM(pt.x, pt.y) ) );
+            if( abs( (nStartChar % 0xffff - nCaretPos) ) < abs( (nEndChar % 0xffff - nCaretPos) ) ) {
+                nCaretPos	= nStartChar;
+                nStartChar	= nEndChar;
+                nEndChar	= nCaretPos;
+            }
+        }
 
-		::SendMessage( hEdit, WM_SETREDRAW, true, 0 );
-		bAdded = true;
-	}
+        // Note: This will flicker, if someone has a good idea how to prevent this - let me know
+        
+        // Select at the end of text and replace the selection
+        // This is a very fast way to add text to an edit control
+        ::SendMessage( hEdit, EM_SETSEL, (WPARAM) nSize, (LPARAM) nSize );
+        if( g_bIsWinNT )
+            ::SendMessageW( hEdit, EM_REPLACESEL, 0, (LPARAM) wsText.c_str() );
+        else 
+            ::SendMessage( hEdit, EM_REPLACESEL, 0, (LPARAM) _W2A( wsText.c_str() ) );
 
-	if( bAdded ) {
-		// Delete the processed text from our buffer
-		::EnterCriticalSection( &m_csLock );
-		m_wsStore.erase( 0, cchText );
-		::LeaveCriticalSection( &m_csLock );
-	}
-	return bAdded;
+        // Restore our previous selection
+        ::SendMessage( hEdit, EM_SETSEL, (WPARAM) nStartChar, (LPARAM) nEndChar );
+        nFirstLineNow = (int)::SendMessage( hEdit, EM_GETFIRSTVISIBLELINE, 0, 0 );
+        ::SendMessage( hEdit, EM_LINESCROLL, 0, (LPARAM) nFirstLine - nFirstLineNow);
+
+        ::SendMessage( hEdit, WM_SETREDRAW, true, 0 );
+        bAdded = true;
+    }
+
+    if( bAdded ) {
+        // Delete the processed text from our buffer
+        ::EnterCriticalSection( &m_csLock );
+        m_wsStore.erase( 0, cchText );
+        ::LeaveCriticalSection( &m_csLock );
+    }
+    return bAdded;
 }
 
 

@@ -69,6 +69,8 @@ set ( SRCS
 		RepositoryView.h
 		SciSyntaxMarker.h
 		scite.h
+		ShellContextMenu.h
+		ShellContextMenu.cpp
 		SimplePromptDlg.cpp
 		SimplePromptDlg.h
 		SourceView.cpp
@@ -103,6 +105,7 @@ include_directories (
 	../comms
 	../wtlex
 	../dockingwindows
+	../EclEditor
 	
 	${WTL_INCLUDE_DIR}/include
 	${SCINTILLA_INCLUDE_DIRS}/include

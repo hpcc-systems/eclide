@@ -37,9 +37,9 @@
 namespace std
 {
 #ifdef _UNICODE
-	#define	_tstring wstring
+    #define	_tstring wstring
 #else
-	#define	_tstring string
+    #define	_tstring string
 #endif
 }
 
@@ -83,9 +83,9 @@ namespace std
 namespace boost
 {
 #ifdef _UNICODE
-	#define _tformat wformat
+    #define _tformat wformat
 #else
-	#define _tformat format
+    #define _tformat format
 #endif
 }
 

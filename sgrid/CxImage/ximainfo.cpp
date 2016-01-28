@@ -11,8 +11,8 @@
  */
 RGBQUAD	CxImage::GetTransColor()
 {
-	if (head.biBitCount<24 && info.nBkgndIndex != -1) return GetPaletteColor((BYTE)info.nBkgndIndex);
-	return info.nBkgndColor;
+    if (head.biBitCount<24 && info.nBkgndIndex != -1) return GetPaletteColor((BYTE)info.nBkgndIndex);
+    return info.nBkgndColor;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -20,7 +20,7 @@ RGBQUAD	CxImage::GetTransColor()
  */
 long CxImage::GetTransIndex() const
 {
-	return info.nBkgndIndex;
+    return info.nBkgndIndex;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -28,7 +28,7 @@ long CxImage::GetTransIndex() const
  */
 void CxImage::SetTransIndex(long idx)
 {
-	info.nBkgndIndex = idx;
+    info.nBkgndIndex = idx;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -37,13 +37,13 @@ void CxImage::SetTransIndex(long idx)
  */
 void CxImage::SetTransColor(RGBQUAD rgb)
 {
-	rgb.rgbReserved=0;
-	info.nBkgndColor = rgb;
+    rgb.rgbReserved=0;
+    info.nBkgndColor = rgb;
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool CxImage::IsTransparent() const
 {
-	return info.nBkgndIndex>=0; // <vho>
+    return info.nBkgndIndex>=0; // <vho>
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -51,7 +51,7 @@ bool CxImage::IsTransparent() const
  */
 bool CxImage::IsIndexed() const
 {
-	return head.biClrUsed!=0;
+    return head.biClrUsed!=0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -59,11 +59,11 @@ bool CxImage::IsIndexed() const
  */
 BYTE CxImage::GetColorType()
 {
-	BYTE b = (BYTE)((head.biBitCount>8) ? 2 /*COLORTYPE_COLOR*/ : 1 /*COLORTYPE_PALETTE*/);
+    BYTE b = (BYTE)((head.biBitCount>8) ? 2 /*COLORTYPE_COLOR*/ : 1 /*COLORTYPE_PALETTE*/);
 #if CXIMAGE_SUPPORT_ALPHA
-	if (AlphaIsValid()) b = 4 /*COLORTYPE_ALPHA*/;
+    if (AlphaIsValid()) b = 4 /*COLORTYPE_ALPHA*/;
 #endif //CXIMAGE_SUPPORT_ALPHA
-	return b;
+    return b;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -71,7 +71,7 @@ BYTE CxImage::GetColorType()
  */
 long CxImage::GetXDPI() const
 {
-	return info.xDPI;
+    return info.xDPI;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -79,7 +79,7 @@ long CxImage::GetXDPI() const
  */
 long CxImage::GetYDPI() const
 {
-	return info.yDPI;
+    return info.yDPI;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -87,9 +87,9 @@ long CxImage::GetYDPI() const
  */
 void CxImage::SetXDPI(long dpi)
 {
-	if (dpi<=0) dpi=96;
-	info.xDPI = dpi;
-	head.biXPelsPerMeter = (long) floor(dpi * 10000.0 / 254.0 + 0.5);
+    if (dpi<=0) dpi=96;
+    info.xDPI = dpi;
+    head.biXPelsPerMeter = (long) floor(dpi * 10000.0 / 254.0 + 0.5);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -97,9 +97,9 @@ void CxImage::SetXDPI(long dpi)
  */
 void CxImage::SetYDPI(long dpi)
 {
-	if (dpi<=0) dpi=96;
-	info.yDPI = dpi;
-	head.biYPelsPerMeter = (long) floor(dpi * 10000.0 / 254.0 + 0.5);
+    if (dpi<=0) dpi=96;
+    info.yDPI = dpi;
+    head.biYPelsPerMeter = (long) floor(dpi * 10000.0 / 254.0 + 0.5);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -107,7 +107,7 @@ void CxImage::SetYDPI(long dpi)
  */
 DWORD CxImage::GetFlags() const
 {
-	return info.dwFlags;
+    return info.dwFlags;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -121,8 +121,8 @@ DWORD CxImage::GetFlags() const
  */
 void CxImage::SetFlags(DWORD flags, bool bLockReservedFlags)
 {
-	if (bLockReservedFlags) info.dwFlags = flags & 0x0000ffff;
-	else info.dwFlags = flags;
+    if (bLockReservedFlags) info.dwFlags = flags & 0x0000ffff;
+    else info.dwFlags = flags;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -130,13 +130,13 @@ void CxImage::SetFlags(DWORD flags, bool bLockReservedFlags)
  */
 DWORD CxImage::GetCodecOption(DWORD imagetype)
 {
-	if (imagetype<CMAX_IMAGE_FORMATS){
-		if (imagetype==0){
-			imagetype = GetType();
-		}
-		return info.dwCodecOpt[imagetype];
-	}
-	return 0;
+    if (imagetype<CMAX_IMAGE_FORMATS){
+        if (imagetype==0){
+            imagetype = GetType();
+        }
+        return info.dwCodecOpt[imagetype];
+    }
+    return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -149,14 +149,14 @@ DWORD CxImage::GetCodecOption(DWORD imagetype)
  */
 bool CxImage::SetCodecOption(DWORD opt, DWORD imagetype)
 {
-	if (imagetype<CMAX_IMAGE_FORMATS){
-		if (imagetype==0){
-			imagetype = GetType();
-		}
-		info.dwCodecOpt[imagetype] = opt;
-		return true;
-	}
-	return false;
+    if (imagetype<CMAX_IMAGE_FORMATS){
+        if (imagetype==0){
+            imagetype = GetType();
+        }
+        info.dwCodecOpt[imagetype] = opt;
+        return true;
+    }
+    return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -164,17 +164,17 @@ bool CxImage::SetCodecOption(DWORD opt, DWORD imagetype)
  */
 void* CxImage::GetDIB() const
 {
-	return pDib;
+    return pDib;
 }
 ////////////////////////////////////////////////////////////////////////////////
 DWORD CxImage::GetHeight() const
 {
-	return head.biHeight;
+    return head.biHeight;
 }
 ////////////////////////////////////////////////////////////////////////////////
 DWORD CxImage::GetWidth() const
 {
-	return head.biWidth;
+    return head.biWidth;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -182,7 +182,7 @@ DWORD CxImage::GetWidth() const
  */
 DWORD CxImage::GetEffWidth() const
 {
-	return info.dwEffWidth;
+    return info.dwEffWidth;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -190,7 +190,7 @@ DWORD CxImage::GetEffWidth() const
  */
 DWORD CxImage::GetNumColors() const
 {
-	return head.biClrUsed;
+    return head.biClrUsed;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -198,7 +198,7 @@ DWORD CxImage::GetNumColors() const
  */
 WORD CxImage::GetBpp() const
 {
-	return head.biBitCount;
+    return head.biBitCount;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -207,7 +207,7 @@ WORD CxImage::GetBpp() const
  */
 DWORD CxImage::GetType() const
 {
-	return info.dwType;
+    return info.dwType;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -215,7 +215,7 @@ DWORD CxImage::GetType() const
  */
 DWORD CxImage::GetFrameDelay() const
 {
-	return info.dwFrameDelay;
+    return info.dwFrameDelay;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -224,19 +224,19 @@ DWORD CxImage::GetFrameDelay() const
  */
 void CxImage::SetFrameDelay(DWORD d)
 {
-	info.dwFrameDelay=d;
+    info.dwFrameDelay=d;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::GetOffset(long *x,long *y)
 {
-	*x=info.xOffset;
-	*y=info.yOffset;
+    *x=info.xOffset;
+    *y=info.yOffset;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void CxImage::SetOffset(long x,long y)
 {
-	info.xOffset=x;
-	info.yOffset=y;
+    info.xOffset=x;
+    info.yOffset=y;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -244,7 +244,7 @@ void CxImage::SetOffset(long x,long y)
  */
 BYTE CxImage::GetJpegQuality() const
 {
-	return info.nQuality;
+    return info.nQuality;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -252,7 +252,7 @@ BYTE CxImage::GetJpegQuality() const
  * \param q: can be from 0 to 100
  */
 void CxImage::SetJpegQuality(BYTE q){
-	info.nQuality = q;
+    info.nQuality = q;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -260,7 +260,7 @@ void CxImage::SetJpegQuality(BYTE q){
  */
 BYTE CxImage::GetJpegScale() const
 {
-	return info.nJpegScale;
+    return info.nJpegScale;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -268,7 +268,7 @@ BYTE CxImage::GetJpegScale() const
  * \author [ignacio]
  */
 void CxImage::SetJpegScale(BYTE q){
-	info.nJpegScale = q;
+    info.nJpegScale = q;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -278,7 +278,7 @@ void CxImage::SetJpegScale(BYTE q){
  */
 long CxImage::GetProgress() const
 {
-	return info.nProgress;
+    return info.nProgress;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -287,7 +287,7 @@ long CxImage::GetProgress() const
  */
 long CxImage::GetEscape() const
 {
-	return info.nEscape;
+    return info.nEscape;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -297,7 +297,7 @@ long CxImage::GetEscape() const
  */
 void CxImage::SetProgress(long p)
 {
-	info.nProgress = p;
+    info.nProgress = p;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -307,7 +307,7 @@ void CxImage::SetProgress(long p)
  */
 void CxImage::SetEscape(long i)
 {
-	info.nEscape = i;
+    info.nEscape = i;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -315,7 +315,7 @@ void CxImage::SetEscape(long i)
  */
 bool CxImage::IsValid() const
 {
-	return pDib!=0;
+    return pDib!=0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -323,7 +323,7 @@ bool CxImage::IsValid() const
  */
 bool CxImage::IsEnabled() const
 {
-	return info.bEnabled;
+    return info.bEnabled;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -331,7 +331,7 @@ bool CxImage::IsEnabled() const
  */
 void CxImage::Enable(bool enable)
 {
-	info.bEnabled=enable;
+    info.bEnabled=enable;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -342,7 +342,7 @@ void CxImage::Enable(bool enable)
  */
 long CxImage::GetNumFrames() const
 {
-	return info.nNumFrames;
+    return info.nNumFrames;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -350,14 +350,14 @@ long CxImage::GetNumFrames() const
  */
 long CxImage::GetFrame() const
 {
-	return info.nFrame;
+    return info.nFrame;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Sets the image number that the next Decode() / Load() call will load
  */
 void CxImage::SetFrame(long nFrame){
-	info.nFrame=nFrame;
+    info.nFrame=nFrame;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -365,7 +365,7 @@ void CxImage::SetFrame(long nFrame){
  */
 const char* CxImage::GetLastError()
 {
-	return info.szLastError;
+    return info.szLastError;
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -377,12 +377,12 @@ const char* CxImage::GetLastError()
  */
 const float CxImage::GetVersionNumber()
 {
-	return 5.99003f;
+    return 5.99003f;
 }
 ////////////////////////////////////////////////////////////////////////////////
 const TCHAR* CxImage::GetVersion()
 {
-	static const TCHAR CxImageVersion[] = _T("CxImage 5.99c");
-	return (CxImageVersion);
+    static const TCHAR CxImageVersion[] = _T("CxImage 5.99c");
+    return (CxImageVersion);
 }
 ////////////////////////////////////////////////////////////////////////////////

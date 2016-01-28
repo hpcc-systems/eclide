@@ -14,20 +14,20 @@ class CRect;
 
 class CAggBitmap
 {
-	CComPtr<GraphTypes::IBitmap> m_ibmp;
+    CComPtr<GraphTypes::IBitmap> m_ibmp;
 #ifdef _DEBUG
-	bool started;
+    bool started;
 public:
-	void GetSize(CSize& size) { m_ibmp->GetSize(size); }
+    void GetSize(CSize& size) { m_ibmp->GetSize(size); }
 #endif
 
 public:
-	CAggBitmap();
-	~CAggBitmap();
+    CAggBitmap();
+    ~CAggBitmap();
 
-	void Clear();
-	CAggDC* BeginPaint(CAggDC& dc, const CSize& size, CAggFonts* fonts);
-	void EndPaint(CAggDC* dc);
-	bool IsEmpty() const;
-	void Draw(CAggDC& dc, const CRect& rc, unsigned flags);
+    void Clear();
+    CAggDC* BeginPaint(CAggDC& dc, const CSize& size, CAggFonts* fonts);
+    void EndPaint(CAggDC* dc);
+    bool IsEmpty() const;
+    void Draw(CAggDC& dc, const CRect& rc, unsigned flags);
 };

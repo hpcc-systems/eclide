@@ -11,17 +11,17 @@ class WLIB_API CWindowNoRedraw
 public:
    CWindowNoRedraw(HWND hWnd)
    {
-	  m_hWnd = hWnd;
+      m_hWnd = hWnd;
       ATLASSERT(::IsWindow(m_hWnd));
       ::SendMessage(m_hWnd,WM_SETREDRAW,0,0);
    }
    ~CWindowNoRedraw()
    {
       ::SendMessage(m_hWnd,WM_SETREDRAW,1,0);
-	  ::InvalidateRect(m_hWnd,0,1);
+      ::InvalidateRect(m_hWnd,0,1);
    }
 protected:
-	HWND m_hWnd;
+    HWND m_hWnd;
 };
 
 
