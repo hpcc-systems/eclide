@@ -52,7 +52,7 @@ public:
     void Show(CRect rectTitle, LPCTSTR lpszTitleText, 
               int xoffset = 0, LPRECT lpHoverRect = NULL, 
               const LOGFONT* lpLogFont = NULL,
-              COLORREF crTextClr = CLR_DEFAULT, COLORREF crBackClr = CLR_DEFAULT);
+              COLORREF crTextClr = CLR_DEFAULT, COLORREF crBackClr = CLR_DEFAULT, int nMaxChars = -1);
     void Hide();
 
 // Overrides
@@ -77,6 +77,7 @@ protected:
 
 protected:
     void ProcessMouseMessage(MSG* pMsg); 
+    CString LimitTooltip(const CString & limitStr, CRect rectDisplay, TEXTMETRIC tm, int nMaxChars = -1);
 
     // Generated message map functions
 protected:
