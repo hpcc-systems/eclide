@@ -133,6 +133,7 @@ public:
                 {
                     GetAllModules(pathToWString(*itr), label, modules, moduleHierarchy, false, noBroadcast);
                 }
+                std::sort(modules.begin(), modules.end(), IModuleCompare());
             }
         }
         return modules.size();
