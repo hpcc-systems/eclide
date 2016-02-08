@@ -49,7 +49,7 @@ void restore(T &s, const char * filename)
 	catch(const boost::archive::archive_exception &)
 	{
 		//  This typically means the count is wrong...
-		ATLASSERT(false);
+		//ATLASSERT(false);
 	}
 }
 //  ===========================================================================
@@ -581,7 +581,7 @@ public:
 	}
 	int GetColorCatID(int row) const
 	{
-		ATLASSERT((unsigned int)row >= 0 && (unsigned int)row < m_colorRowToCategoryID.size());
+		ATLASSERT((unsigned int)row >= 0 && (unsigned int)row <= m_colorRowToCategoryID.size());
 		return m_colorRowToCategoryID[row];
 	}
 	int GetColorRow(int catID) const
