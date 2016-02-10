@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
 <s class_id="0" tracking_level="0" version="0">
-	<count>361</count>
+	<count>362</count>
 	<item_version>0</item_version>
 	<item class_id="1" tracking_level="0" version="0">
 		<categoryid>1</categoryid>
@@ -460,6 +460,14 @@
 		<insertaftercursor>)</insertaftercursor>
 		<canbefollowedby></canbefollowedby>
 	</item>
+    <item>
+        <categoryid>1</categoryid>
+        <name>HTTPHEADER</name>
+        <tooltip>HTTPHEADER( name, value )</tooltip>
+        <insertbeforecursor>HTTPHEADER</insertbeforecursor>
+        <insertaftercursor>)</insertaftercursor>
+        <canbefollowedby></canbefollowedby>
+    </item>
 	<item>
 		<categoryid>1</categoryid>
 		<name>IF</name>
