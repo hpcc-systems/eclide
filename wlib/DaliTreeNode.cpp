@@ -19,6 +19,15 @@ CDaliNode::CDaliNode(IDaliSlot *owner, bool allUsers, const std::_tstring & clus
 	m_bVirtualNode = bVirtualNode;
 }
 
+CDaliNode::~CDaliNode() 
+{
+	if (m_loadingNode)
+	{
+		m_loadingNode->Delete();
+		m_loadingNode = NULL;
+	}
+}
+
 HTREEITEM CDaliNode::GetRoot()
 {
 	return m_bVirtualNode ? TVI_ROOT : *this;
@@ -53,6 +62,11 @@ void CDaliNode::UpdateToday()
 	StlLinked<Dali::IDali> server = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
 	Dali::IWorkunitVector wus;
 	CString user = m_AllUsers ? _T("") : GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
+	if (m_loadingNode)
+	{
+		m_loadingNode->Delete();
+		m_loadingNode = NULL;
+	}
 	m_loadingNode = new CLoadingNode();
 	m_loadingNode->Insert(*GetTreeView(), TVI_ROOT, TVI_FIRST);
 	int fetchLimit = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
