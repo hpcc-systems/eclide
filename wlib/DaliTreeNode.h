@@ -65,6 +65,7 @@ protected:
 
 public:
     CDaliNode(IDaliSlot *owner, bool allUsers, const std::_tstring &cluster, bool bVirtualNode = false);
+    ~CDaliNode();
     virtual void ItemExpanding();
     virtual const TCHAR * GetID();
     virtual const TCHAR * GetDispText();
