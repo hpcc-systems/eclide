@@ -851,6 +851,7 @@
 #define ID_SYNTAX_LOCATEERROR           33086
 #define ID_EDIT_MODULE_CHECKSUM         33087
 #define ID_DEBUGGER_RESTART             33088
+#define ID_ECL_SEL_GO                   33089
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -879,7 +880,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61413
-#define _APS_NEXT_COMMAND_VALUE         33089
+#define _APS_NEXT_COMMAND_VALUE         33090
 #define _APS_NEXT_CONTROL_VALUE         531
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

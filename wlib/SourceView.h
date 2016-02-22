@@ -244,9 +244,12 @@ public:
         }
     }
 
-    void GetSource(CString & txt)
+    void GetSource(CString & txt, bool selected = false)
     {
-        m_view.GetText(txt);
+        if (selected)
+            m_view.GetSelText(txt);
+        else
+            m_view.GetText(txt);
     }
 
     void SetSource(const CString & txt)
