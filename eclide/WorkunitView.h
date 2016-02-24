@@ -193,7 +193,7 @@ public:
     HWND GetHWND();
     bool ShowClusterInLabel(const TCHAR *cluster);
     bool ShowUserInLabel(const TCHAR *user);
-    void UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus);
+    void UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus, int allUsers = -1);
 
     BEGIN_MSG_MAP(thisClass)
         MSG_WM_INITDIALOG(OnInitDialog)
@@ -271,7 +271,7 @@ public:
     HWND GetHWND();
     bool ShowClusterInLabel(const TCHAR *cluster);
     bool ShowUserInLabel(const TCHAR *user);
-    void UpdateWorkunits(HTREEITEM /*hItem*/, Dali::IWorkunitVectorAdapt wus) 
+    void UpdateWorkunits(HTREEITEM /*hItem*/, Dali::IWorkunitVectorAdapt wus, int allUsers = -1)
     { ATLASSERT(!_T("NOT IMPLEMENTED!"));
     }
 
@@ -443,7 +443,7 @@ public:
     HWND GetHWND();
     bool ShowClusterInLabel(const TCHAR *cluster);
     bool ShowUserInLabel(const TCHAR *user);
-    void UpdateWorkunits(HTREEITEM /*hItem*/, Dali::IWorkunitVectorAdapt wus)
+    void UpdateWorkunits(HTREEITEM /*hItem*/, Dali::IWorkunitVectorAdapt wus, int allUsers = -1)
     { ATLASSERT(!_T("NOT IMPLEMENTED!"));
     }
 
