@@ -10,7 +10,7 @@
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
 {
-    //ATLASSERT(m_attribute);
+    ATLASSERT(m_attribute);
     if (m_attribute)
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
@@ -600,6 +600,9 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
     case ID_ECL_GO:
     case ID_GO_SUBMIT:
         m_owner->OnButtonGo(Dali::WUActionRun);
+        break;
+    case ID_ECL_SEL_GO:
+        m_owner->OnButtonGo(Dali::WUActionRun, true);
         break;
     case ID_GO_COMPILE:
         m_owner->OnButtonGo(Dali::WUActionCompile);
