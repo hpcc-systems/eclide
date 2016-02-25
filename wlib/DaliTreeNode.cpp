@@ -70,7 +70,12 @@ void CDaliNode::UpdateToday()
 	m_loadingNode = new CLoadingNode();
 	m_loadingNode->Insert(*GetTreeView(), TVI_ROOT, TVI_FIRST);
 	int fetchLimit = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
-	server->GetWorkunitsAsync(m_Cluster.c_str(), user, _T(""), fromUTC.c_str(), toUTC.c_str(), fetchLimit, boost::ref(*this));
+	
+	Stub tmp;
+	tmp.m_orig = this;
+	tmp.m_allUsers = m_AllUsers ? 1 : 0;
+
+	server->GetWorkunitsAsync(m_Cluster.c_str(), user, _T(""), fromUTC.c_str(), toUTC.c_str(), fetchLimit, tmp);
 }
 
 void CDaliNode::operator()(Dali::IWorkunitVectorAdapt wus)
