@@ -15,7 +15,7 @@ enum BUM
 //  ===========================================================================
 __interface IEclBuilderSlot : public ISourceSlot
 {
-    void OnButtonGo(Dali::WUAction action);
+    void OnButtonGo(Dali::WUAction action, bool selected = false);
     void OnButtonDebug();
 };
 
@@ -138,6 +138,7 @@ public:
 
         COMMAND_ID_HANDLER_EX(ID_FILE_SAVE_AS, OnFileSaveAs)
         COMMAND_ID_HANDLER_EX(ID_ECL_GO, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_ECL_SEL_GO, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_SUBMIT, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_COMPILE, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_DEBUG, OnEclGo)
