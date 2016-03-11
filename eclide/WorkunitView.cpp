@@ -5,6 +5,7 @@
 #include "global.h"
 #include "topology.h"
 #include "RecursiveMutex.h"
+#include "Logger.h"
 #include <wlib.h>
 #include <utilDateTime.h> //clib
 #include <thread.h> //clib
@@ -268,7 +269,10 @@ LRESULT CWorkunitTreeView::OnReset(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lP
 //IDaliSlot
 void CWorkunitTreeView::UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus)
 {
-    PostMessage(CWM_NODEUPDATECOMPLETE, WPARAM(hItem),LPARAM(wus.Detach()));
+    _DBGLOG(LEVEL_INFO, (boost::_tformat(_T("All Users: passed:%1% button:%2%")) % CString(allUsers == 1 ? _T("true") : _T("false")) % CString(m_AllUsers ? _T("true") : _T("false"))).str().c_str());
+    if (allUsers == -1 || allUsers == (int)m_AllUsers) {
+        PostMessage(CWM_NODEUPDATECOMPLETE, WPARAM(hItem), LPARAM(wus.Detach()));
+    }
 }
 
 
