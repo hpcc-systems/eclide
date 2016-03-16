@@ -19,10 +19,28 @@ CDaliNode::CDaliNode(IDaliSlot *owner, bool allUsers, const std::_tstring & clus
 	m_bVirtualNode = bVirtualNode;
 }
 
+CDaliNode::~CDaliNode()
+{
+	if (m_loadingNode)
+		{
+			m_loadingNode->Delete();
+			m_loadingNode = NULL;
+		}
+}
+
 HTREEITEM CDaliNode::GetRoot()
 {
 	return m_bVirtualNode ? TVI_ROOT : *this;
 }
+
+class Stub {
+	public:
+		CDaliNode * m_orig;
+		int m_allUsers;
+		void operator() (Dali::IWorkunitVectorAdapt wus) {
+			m_orig->callback(wus, m_allUsers);
+		}
+};
 
 void CDaliNode::UpdateToday()
 {
@@ -53,20 +71,35 @@ void CDaliNode::UpdateToday()
 	StlLinked<Dali::IDali> server = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
 	Dali::IWorkunitVector wus;
 	CString user = m_AllUsers ? _T("") : GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
+	if (m_loadingNode)
+		{
+		m_loadingNode->Delete();
+		m_loadingNode = NULL;
+		}
 	m_loadingNode = new CLoadingNode();
 	m_loadingNode->Insert(*GetTreeView(), TVI_ROOT, TVI_FIRST);
 	int fetchLimit = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
-	server->GetWorkunitsAsync(m_Cluster.c_str(), user, _T(""), fromUTC.c_str(), toUTC.c_str(), fetchLimit, boost::ref(*this));
+
+	Stub tmp;
+	tmp.m_orig = this;
+	tmp.m_allUsers = m_AllUsers ? 1 : -1;
+
+	server->GetWorkunitsAsync(m_Cluster.c_str(), user, _T(""), fromUTC.c_str(), toUTC.c_str(), fetchLimit, tmp);
 }
 
 void CDaliNode::operator()(Dali::IWorkunitVectorAdapt wus)
+{
+	callback(wus, -1);
+}
+
+void CDaliNode::callback(Dali::IWorkunitVectorAdapt wus, int allUsers)
 {
 	if (m_loadingNode)
 	{
 		m_loadingNode->Delete();
 		m_loadingNode = NULL;
 	}
-	m_Owner->UpdateWorkunits(GetRoot(), wus);
+	m_Owner->UpdateWorkunits(GetRoot(), wus, allUsers);
 }
 
 void CDaliNode::AddItems(WTL::CTreeViewCtrlEx &tv)
