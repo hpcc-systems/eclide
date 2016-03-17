@@ -267,14 +267,14 @@ LRESULT CWorkunitTreeView::OnReset(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lP
 }
 
 //IDaliSlot
-void CWorkunitTreeView::UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus)
+void CWorkunitTreeView::UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus, int allUsers)
 {
-    _DBGLOG(LEVEL_INFO, (boost::_tformat(_T("All Users: passed:%1% button:%2%")) % CString(allUsers == 1 ? _T("true") : _T("false")) % CString(m_AllUsers ? _T("true") : _T("false"))).str().c_str());
-    if (allUsers == -1 || allUsers == (int)m_AllUsers) {
+    bool allUsersBool = allUsers == 1 ? true : false;
+    ATLTRACE(_T("All Users: passed:%s button:%s\r\n"), allUsersBool ? _T("true") : _T("false"), m_AllUsers ? _T("true") : _T("false"));
+    if (allUsersBool == m_AllUsers) {
         PostMessage(CWM_NODEUPDATECOMPLETE, WPARAM(hItem), LPARAM(wus.Detach()));
     }
 }
-
 
 LRESULT CWorkunitTreeView::OnNodeUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
 {

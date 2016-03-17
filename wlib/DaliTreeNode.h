@@ -11,7 +11,7 @@ __interface IDaliSlot
     HWND GetHWND();
     bool ShowClusterInLabel(const TCHAR *cluster);
     bool ShowUserInLabel(const TCHAR *user);
-    void UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus);
+    void UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus, int allUsers = -1);
 };
 class CDaliSlotImpl : public IDaliSlot
 {
@@ -34,7 +34,7 @@ public:
     {
         return false;
     }
-    void UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus)
+    void UpdateWorkunits(HTREEITEM hItem, Dali::IWorkunitVectorAdapt wus, int allUsers = -1)
     {
     }
 };
@@ -73,6 +73,7 @@ public:
     void AddItems(WTL::CTreeViewCtrlEx &tv);
     void AddItem(WTL::CTreeViewCtrlEx &tv, Dali::IWorkunit * wu);
     void operator()(Dali::IWorkunitVectorAdapt wus);
+    void CDaliNode::callback(Dali::IWorkunitVectorAdapt wus, int allUsers = -1);
 };
 
 class WLIB_API __declspec(uuid("d985a935-4152-4703-8e5a-0e3bc9268ff2")) CDateFolderNode : public CDaliBaseNode, public boost::signals::trackable

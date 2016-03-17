@@ -33,6 +33,17 @@ HTREEITEM CDaliNode::GetRoot()
 	return m_bVirtualNode ? TVI_ROOT : *this;
 }
 
+class Stub
+{
+public:
+	CDaliNode * m_orig;
+	int m_allUsers;
+	void operator() (Dali::IWorkunitVectorAdapt wus) 
+	{
+		m_orig->callback(wus, m_allUsers);
+	}
+};
+
 void CDaliNode::UpdateToday()
 {
 	using namespace boost::gregorian;
@@ -80,12 +91,17 @@ void CDaliNode::UpdateToday()
 
 void CDaliNode::operator()(Dali::IWorkunitVectorAdapt wus)
 {
+	callback(wus, -1);
+}
+
+void CDaliNode::callback(Dali::IWorkunitVectorAdapt wus, int allUsers)
+{
 	if (m_loadingNode)
 	{
 		m_loadingNode->Delete();
 		m_loadingNode = NULL;
 	}
-	m_Owner->UpdateWorkunits(GetRoot(), wus);
+	m_Owner->UpdateWorkunits(GetRoot(), wus, allUsers);
 }
 
 void CDaliNode::AddItems(WTL::CTreeViewCtrlEx &tv)
