@@ -14,6 +14,7 @@
 #include "LimitSingleInstance.h"
 #include "Thread.h"
 #include "ChildGraphFrame.h"
+#include "BookmarksFrame.h"
 
 #include "DockableDataViews.h"
 #include "DockableBreakpointView.h"
@@ -394,6 +395,7 @@ public:
     CDockablePropertiesView *m_debugPropertiesView;
     CDockablePropertyGridViews *m_debugPropertyGridViews;
     CDockableSearchView *m_debugSearchView;
+    CBookmarksFrame *m_Bookmarks;
 
     bool m_tabbedMDI;
     CMFCTabCtrl::Style m_tabbedStyle;

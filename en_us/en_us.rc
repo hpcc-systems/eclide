@@ -78,7 +78,6 @@ BEGIN
     VK_F11,         ID_ECL_GOTOSYNCTOC,     VIRTKEY, NOINVERT
     VK_F4,          ID_ECL_NEXTERROR,       VIRTKEY, NOINVERT
     VK_F4,          ID_ECL_PREVIOUSERROR,   VIRTKEY, SHIFT, NOINVERT
-    VK_F8,          ID_EDIT_LOCATEFILEINEXPLORER, VIRTKEY, NOINVERT
     VK_F9,          ID_ECL_SYNCTOC,         VIRTKEY, NOINVERT
     "Q",            ID_EDIT_BLOCKCOMMENT,   VIRTKEY, CONTROL, NOINVERT
     "Q",            ID_EDIT_BOXCOMMENT,     VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -93,6 +92,7 @@ BEGIN
     VK_F3,          ID_EDIT_FINDNEXT,       VIRTKEY, NOINVERT
     VK_F3,          ID_EDIT_FINDPREV,       VIRTKEY, SHIFT, NOINVERT
     "G",            ID_EDIT_GOTO,           VIRTKEY, CONTROL, NOINVERT
+    VK_F8,          ID_EDIT_LOCATEFILEINEXPLORER, VIRTKEY, NOINVERT
     "U",            ID_EDIT_LOWERCASE,      VIRTKEY, CONTROL, NOINVERT
     "E",            ID_EDIT_MATCHBRACE,     VIRTKEY, CONTROL, NOINVERT
     "V",            ID_EDIT_PASTE,          VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
@@ -112,12 +112,16 @@ BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE_ALL,       VIRTKEY, SHIFT, CONTROL, NOINVERT
     "P",            ID_MACRO_PLAY,          VIRTKEY, SHIFT, CONTROL, NOINVERT
     "R",            ID_MACRO_RECORD,        VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
     "C",            ID_REPOSITORY_COPY,     VIRTKEY, CONTROL, ALT, NOINVERT
-    "S",            ID_FILE_SAVE_ALL,       VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "O",            ID_BOOKMARKS_OPEN,      VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "S",            ID_BOOKMARKS_SAVE,      VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "L",            ID_BOOKMARKS_LOAD,      VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "C",            ID_BOOKMARKS_CLEAR,     VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     VK_RETURN,      ID_ECL_SEL_GO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_RWIN,        ID_ECL_SEL_GO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
 END
@@ -921,6 +925,16 @@ BEGIN
     PUSHBUTTON      "&Reset",IDC_BUTTON_DEFAULTS,9,145,50,14
     PUSHBUTTON      "&Add",IDC_BUTTON_ECLFOLDERADD,164,145,50,14
     PUSHBUTTON      "&Delete",IDC_BUTTON_ECLFOLDERDELETE,215,145,50,14
+END
+
+IDD_BOOKMARKS DIALOGEX 0, 0, 249, 50
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "0 [BM]",IDC_CHECK_MINE,"Button",BS_AUTOCHECKBOX,7,37,37,10
+    CONTROL         "0 TODO:",IDC_CHECK_TODOS,"Button",BS_AUTOCHECKBOX,61,37,44,10
+    CONTROL         "0 HACK:",IDC_CHECK_HACKS,"Button",BS_AUTOCHECKBOX,117,37,43,10
+    GROUPBOX        "<placeholder>",IDC_BOOKMARKS_PLACEHOLDER,0,0,249,33,WS_TABSTOP
 END
 
 
@@ -2168,6 +2182,16 @@ BEGIN
     END
 END
 
+IDR_POPUP_BOOKMARKS MENU
+BEGIN
+    POPUP "Bookmarks"
+    BEGIN
+        MENUITEM "&Open",                       ID_BOOKMARKS_OPEN
+        MENUITEM "&Save",                       ID_BOOKMARKS_SAVE
+        MENUITEM "&Load",                       ID_BOOKMARKS_LOAD
+        MENUITEM "&Clear",                      ID_BOOKMARKS_CLEAR
+    END
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2208,6 +2232,7 @@ END
 //
 
 IDC_MARGIN              CURSOR                  "res\\Margin.cur"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -217,6 +217,7 @@
 #define IDB_MENU_IMAGES_24              223
 #define IDD_PREF_COMPILER               223
 #define IDB_AMT_WRITELARGE              224
+#define IDD_BOOKMARKS                   224
 #define IDB_AMT_WRITESMALL              225
 #define IDB_AMT_FILESMALL               226
 #define IDB_AMT_FILELARGE               227
@@ -545,6 +546,11 @@
 #define IDC_EDIT_WORKUNITPERSISTLIMIT   528
 #define IDC_SPIN_WORKUNITPERSISTLIMIT   529
 #define IDC_STATIC_PERSISTLIMIT         530
+#define IDC_BOOKMARKS_PLACEHOLDER       531
+#define IDC_CHECK_MINE                  532
+#define IDC_CHECK_TODOS                 533
+#define IDC_CHECK_HACKS                 534
+#define IDC_BM_HINT                     535
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -635,9 +641,9 @@
 #define ID_REPOSITORY_ROLLBACK          32861
 #define ID_EDIT_MATCHBRACE              32862
 #define ID_EDIT_SELECTTOBRACE           32863
-#if _WTL_VER < 0x0900
+//#if _WTL_VER < 0x0900
 #define ID_EDIT_DELETE                  32864
-#endif
+//#endif
 #define ID_EDIT_COMPLETEWORD            32865
 #define ID_EDIT_BLOCKCOMMENT            32866
 #define ID_EDIT_BOXCOMMENT              32867
@@ -852,6 +858,12 @@
 #define ID_EDIT_MODULE_CHECKSUM         33087
 #define ID_DEBUGGER_RESTART             33088
 #define ID_ECL_SEL_GO                   33089
+#define ID_BOOKMARKS_DELETE             33090
+#define ID_BOOKMARKS_OPEN               33091
+#define ID_BOOKMARKS_SAVE               33092
+#define ID_BOOKMARKS_LOAD               33093
+#define ID_VIEW_BOOKMARKS               33094
+#define ID_BOOKMARKS_CLEAR              33095
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -874,14 +886,15 @@
 #define IDR_POPUP_EEGO2                 61410
 #define IDR_POPUP_ERRORLOG              61411
 #define IDR_POPUP_SYNTAX                61412
+#define IDR_POPUP_BOOKMARKS             61413
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        61413
-#define _APS_NEXT_COMMAND_VALUE         33090
-#define _APS_NEXT_CONTROL_VALUE         531
+#define _APS_NEXT_RESOURCE_VALUE        61414
+#define _APS_NEXT_COMMAND_VALUE         33096
+#define _APS_NEXT_CONTROL_VALUE         536
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

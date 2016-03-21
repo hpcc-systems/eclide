@@ -7,6 +7,8 @@
 #include "Logger.h"
 #include <EclCC.h>
 #include <UtilFilesystem.h>
+#include "BookmarksFrame.h"
+#include "BookmarksView.h"
 
 //  ===========================================================================
 CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_attribute(attribute), baseClass(owner)
@@ -15,7 +17,23 @@ CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_att
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
         m_attrMonitor = new CAttributeMonitor(m_attribute);
+
+        CBookmarksFrame * pFrame = GetBookmarksFrame();
+        if (pFrame)
+        {
+            pFrame->ParseBookmarksEcl(attribute);
+        }
     }
+}
+
+CBookmarksFrame *CAttributeDlg::GetBookmarksFrame() {
+    CBookmarksFrame *pFrame = (CBookmarksFrame *)GetIMainFrame()->m_Bookmarks;
+    if (!pFrame)
+	{
+        return NULL;
+    }
+
+    return pFrame;
 }
 
 void CAttributeDlg::GetTitle(CString & title)
@@ -33,6 +51,18 @@ bool CAttributeDlg::DoSave(bool attrOnly)
     CWaitCursor wait;
     CString ecl;
     m_view.GetText(ecl);
+
+    CString user = m_attribute->GetModifiedBy();
+    CString module = m_attribute->GetModuleQualifiedLabel();
+    CString attributeName = m_attribute->GetLabel();
+    IAttributeType* attrType = m_attribute->GetType();
+
+    CBookmarksFrame * pFrame = GetBookmarksFrame();
+    if (pFrame)
+    {
+        pFrame->ParseBookmarksEcl((LPCTSTR)ecl, (LPCTSTR)user, (LPCTSTR)module, (LPCTSTR)attributeName, attrType);
+    }
+
     if (m_attribute->SetText(ecl))
     {
         //  Save local item for history  ---
@@ -225,8 +255,9 @@ void CAttributeDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * 
     {
         CString ecl;
         m_view.GetText(ecl);
-        if (ecl.Compare(attr->GetText(false)) != 0)
+        if (ecl.Compare(attr->GetText(false)) != 0) {
             m_view.SetText(attr->GetText(false));
+        }
     }
     //TODO handle renamed and deleted.
     ATLASSERT(!newAttrAsOldOneMoved && !deleted);
