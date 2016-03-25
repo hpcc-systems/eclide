@@ -143,12 +143,9 @@ set ( SRCS
 		WtlMDIChildFrame.cpp
 		WtlMDIChildFrame.h
 
-		../EditLog/debug.h
 		../EditLog/EditLog.cpp
 		../EditLog/EditLog.h
 		../EditLog/editlog_stream.h
-		../EditLog/SubclassWnd.cpp
-		../EditLog/SubclassWnd.h
 
 		../wlib/diffview.cpp
 		../wlib/diffview.h

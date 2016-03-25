@@ -232,15 +232,6 @@ agg::line_profile_aa CAggMemoryDC::s_lineprof;
 
 //*****************************************************************************
 
-#ifdef __PROFILE_DIRECTX__
-#define PROFILE	&Profile
-#include "HWProf.h"
-CHWProfile Profile;
-bool CAggMemoryDC::ddrawprofilingtoggle;
-#endif
-
-//*****************************************************************************
-
 using namespace GraphTypes;
 
 //*****************************************************************************
