@@ -3,7 +3,7 @@
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "include 'stdafx.h' before including this file for PCH"
+    #error "include 'stdafx.h' before including this file for PCH"
 #endif
 
 #include "..\en_us\resource.h"
@@ -16,25 +16,25 @@
 class CAMTApp : public CWinAppEx
 {
 public:
-	CAMTApp();
+    CAMTApp();
 
 
 // Overrides
 public:
-	virtual BOOL InitInstance();
-	virtual int ExitInstance();
+    virtual BOOL InitInstance();
+    virtual int ExitInstance();
 
 // Implementation
 
 public:
-	UINT  m_nAppLook;
-	virtual void PreLoadState();
-	virtual void LoadCustomState();
-	virtual void SaveCustomState();
+    UINT  m_nAppLook;
+    virtual void PreLoadState();
+    virtual void LoadCustomState();
+    virtual void SaveCustomState();
 
-	afx_msg void OnAppAbout();
-	afx_msg void OnFileNew();
-	DECLARE_MESSAGE_MAP()
+    afx_msg void OnAppAbout();
+    afx_msg void OnFileNew();
+    DECLARE_MESSAGE_MAP()
 };
 
 extern CAMTApp theApp;

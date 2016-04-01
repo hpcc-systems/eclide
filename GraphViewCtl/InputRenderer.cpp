@@ -3,13 +3,13 @@
 
 IRenderer* CreateInputRenderer(CCanvas& canvas)
 {
-	IRenderer* ir=CreateTextboxRenderer(canvas);
-	if(ir)
-	{
-		ITextboxRenderer* itr=static_cast<ITextboxRenderer*>(ir);
-		itr->SetIOMode(ITextboxRenderer::iomIn);
-	}
+    IRenderer* ir=CreateTextboxRenderer(canvas);
+    if(ir)
+    {
+        ITextboxRenderer* itr=static_cast<ITextboxRenderer*>(ir);
+        itr->SetIOMode(ITextboxRenderer::iomIn);
+    }
 
-	return ir;
+    return ir;
 }
 

@@ -21,65 +21,65 @@
 
 class CEditLog : public CWindowImpl<CEditLog>
 {
-	typedef CWindowImpl<CEditLog> baseClass;
+    typedef CWindowImpl<CEditLog> baseClass;
 public:
 
-	// Constructs the CEditLog. You can pass the edit controls handle
-	// here or set it later using the SetEditCtrl() function.
-	// To increase performance CEditLog repaints the edit-control
-	// only if the caret resides in the last line. Otherwise the
-	// control will be refreshed only every nMaxRefreshDelay msec.
-	CEditLog( HWND hEdit = NULL, UINT nMaxRefreshDelay = 500 );
-	
-	virtual ~CEditLog();
+    // Constructs the CEditLog. You can pass the edit controls handle
+    // here or set it later using the SetEditCtrl() function.
+    // To increase performance CEditLog repaints the edit-control
+    // only if the caret resides in the last line. Otherwise the
+    // control will be refreshed only every nMaxRefreshDelay msec.
+    CEditLog( HWND hEdit = NULL, UINT nMaxRefreshDelay = 500 );
+    
+    virtual ~CEditLog();
 
-	#define UM_ADDTEXT (WM_USER + 500)
+    #define UM_ADDTEXT (WM_USER + 500)
 
-	BEGIN_MSG_MAP(CEditLog)
-		MSG_WM_TIMER(OnTimer)
-		MESSAGE_HANDLER(UM_ADDTEXT, OnAddText)
-	END_MSG_MAP()
+    BEGIN_MSG_MAP(CEditLog)
+        MSG_WM_TIMER(OnTimer)
+        MESSAGE_HANDLER(UM_ADDTEXT, OnAddText)
+    END_MSG_MAP()
 
 
-	// Adds some text to the end of the edit control. Works asynchronously
-	// (using PostMessage()) and is save to be called by multiple threads.
-	// If you pass true for bLFtoCRLF every LF (ASCII 10) (as it is used in
-	// most cases for end-of-line) will be converted to a CR/LF (ASCII 10/13)
-	// sequence as it is needed by the windows edit control. 
-	virtual void AddText( LPCWSTR pwszAdd, bool bLFtoCRLF = false );
-	
-	// Converts pszAdd to UNICODE and calls the above
-	void AddText( LPCSTR pszAdd, bool bLFtoCRLF = false );
+    // Adds some text to the end of the edit control. Works asynchronously
+    // (using PostMessage()) and is save to be called by multiple threads.
+    // If you pass true for bLFtoCRLF every LF (ASCII 10) (as it is used in
+    // most cases for end-of-line) will be converted to a CR/LF (ASCII 10/13)
+    // sequence as it is needed by the windows edit control. 
+    virtual void AddText( LPCWSTR pwszAdd, bool bLFtoCRLF = false );
+    
+    // Converts pszAdd to UNICODE and calls the above
+    void AddText( LPCSTR pszAdd, bool bLFtoCRLF = false );
 
-	// Sets the edit-control to be used for logging.
-	// Pass NULL to stop text logging.
-	virtual void SetEditCtrl( HWND hEdit );
+    // Sets the edit-control to be used for logging.
+    // Pass NULL to stop text logging.
+    virtual void SetEditCtrl( HWND hEdit );
 
-	HWND GetEditCtrl() const
-	{
-		return GetHandle();
-	}
+    HWND GetEditCtrl() const
+    {
+        return GetHandle();
+    }
 
 protected:
-	void OnTimer(UINT_PTR nIDEvent);
+    void OnTimer(UINT_PTR nIDEvent);
 
-	LRESULT OnAddText(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	bool DoAddText( bool bForce = false);
-	
-	// This members are used by the GUI thread only
-	UINT			m_nTimerID;
-	UINT			m_nTimerDelay;
+    LRESULT OnAddText(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    bool DoAddText( bool bForce = false);
+    
+    // This members are used by the GUI thread only
+    UINT			m_nTimerID;
+    UINT			m_nTimerDelay;
 
-	HWND GetHandle() const
-	{
-		return m_hWnd;
-	}
+    HWND GetHandle() const
+    {
+        return m_hWnd;
+    }
 
-	// This members are used by the GUI thread and 
-	// every thread calling AddText, so we protect them with
-	// a Critical Section.
-	CRITICAL_SECTION	m_csLock;
-	bool				m_bMessagePending;
-	std::wstring		m_wsStore;
+    // This members are used by the GUI thread and 
+    // every thread calling AddText, so we protect them with
+    // a Critical Section.
+    CRITICAL_SECTION	m_csLock;
+    bool				m_bMessagePending;
+    std::wstring		m_wsStore;
 };
 

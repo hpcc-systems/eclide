@@ -10,22 +10,22 @@ static char THIS_FILE[] = __FILE__;
 class CSGridApp : public CWinApp
 {
 public:
-	CSGridApp()
-	{
-	}
-	virtual BOOL InitInstance()
-	{
-		CWinApp::InitInstance();
-		SGRID::Register(AfxGetInstanceHandle());
-		return TRUE;
-	}
-	virtual int CSGridApp::ExitInstance()
-	{
-		SGRID::Unregister();
-		return CWinApp::ExitInstance();
-	}
+    CSGridApp()
+    {
+    }
+    virtual BOOL InitInstance()
+    {
+        CWinApp::InitInstance();
+        SGRID::Register(AfxGetInstanceHandle());
+        return TRUE;
+    }
+    virtual int CSGridApp::ExitInstance()
+    {
+        SGRID::Unregister();
+        return CWinApp::ExitInstance();
+    }
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 } theApp;
 
 BEGIN_MESSAGE_MAP(CSGridApp, CWinApp)

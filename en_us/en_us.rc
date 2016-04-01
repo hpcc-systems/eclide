@@ -118,6 +118,8 @@ BEGIN
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
     "C",            ID_REPOSITORY_COPY,     VIRTKEY, CONTROL, ALT, NOINVERT
     "S",            ID_FILE_SAVE_ALL,       VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_RETURN,      ID_ECL_SEL_GO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_RWIN,        ID_ECL_SEL_GO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
 END
 
 
@@ -1335,6 +1337,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Submit ECL\tCtrl+Enter",     ID_ECL_GO
+        MENUITEM "Submit Selected ECL\tCtrl+Alt+Enter", ID_ECL_SEL_GO
         POPUP "Syntax"
         BEGIN
             MENUITEM "&Check Syntax\tF7",           ID_ECL_CHECKSYNTAX
@@ -2614,6 +2617,11 @@ END
 STRINGTABLE
 BEGIN
     ATL_IDS_MRU_FILE        "No Spray Service Call Found."
+END
+
+STRINGTABLE
+BEGIN
+    ID_ECL_SEL_GO           "Execute Selected ECL\nExecute"
 END
 
 #endif    // English (United States) resources

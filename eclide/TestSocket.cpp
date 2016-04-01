@@ -73,71 +73,71 @@ CTestSocket::~CTestSocket(void)
 
 const TCHAR * CTestSocket::SendRequest(const std::_tstring & request, std::_tstring & response) const 
 {
-	std::string nrequest = CT2A(request.c_str(), CP_UTF8);
-	std::string nresponse;
-	SendRequest(nrequest, nresponse);
-	response = CA2T(nresponse.c_str(), CP_UTF8);
-	return response.c_str();
+    std::string nrequest = CT2A(request.c_str(), CP_UTF8);
+    std::string nresponse;
+    SendRequest(nrequest, nresponse);
+    response = CA2T(nresponse.c_str(), CP_UTF8);
+    return response.c_str();
 }
 
 const char * CTestSocket::SendRequest(const std::string & request, std::string & response) const 
 {
 #ifdef ASIO
-	try
-	{
-		boost::asio::io_service io_service;
-		tcp::resolver resolver(io_service);
-		tcp::resolver::query query(tcp::v4(), m_ip, m_port);
-		tcp::resolver::iterator iterator = resolver.resolve(query);
+    try
+    {
+        boost::asio::io_service io_service;
+        tcp::resolver resolver(io_service);
+        tcp::resolver::query query(tcp::v4(), m_ip, m_port);
+        tcp::resolver::iterator iterator = resolver.resolve(query);
 
-		tcp::socket s(io_service);
-		s.connect(*iterator);
-		//Send
-		union
-		{
-			unsigned int request_length;
-			char request_buffer[4];
-		} requestinfo, responseinfo;
+        tcp::socket s(io_service);
+        s.connect(*iterator);
+        //Send
+        union
+        {
+            unsigned int request_length;
+            char request_buffer[4];
+        } requestinfo, responseinfo;
 
-		requestinfo.request_length = request.length();
-		requestinfo.request_length = SwapEndian(requestinfo.request_length);
+        requestinfo.request_length = request.length();
+        requestinfo.request_length = SwapEndian(requestinfo.request_length);
 
-		std::vector<char> d2(request.begin(), request.end());
+        std::vector<char> d2(request.begin(), request.end());
 
-		s.write_some(boost::asio::buffer((void *)requestinfo.request_buffer, 4));
-		s.write_some(boost::asio::buffer(d2));
+        s.write_some(boost::asio::buffer((void *)requestinfo.request_buffer, 4));
+        s.write_some(boost::asio::buffer(d2));
 
-		std::vector<char> buff;
-		for(;;)
-		{
-			responseinfo.request_length = 0;
-			boost::system::error_code error;
-			std::size_t readSize = boost::asio::read(s, boost::asio::buffer((void *)responseinfo.request_buffer, 4));
-			responseinfo.request_length = SwapEndian(responseinfo.request_length);
-			if (responseinfo.request_length == 0)
-				break;
+        std::vector<char> buff;
+        for(;;)
+        {
+            responseinfo.request_length = 0;
+            boost::system::error_code error;
+            std::size_t readSize = boost::asio::read(s, boost::asio::buffer((void *)responseinfo.request_buffer, 4));
+            responseinfo.request_length = SwapEndian(responseinfo.request_length);
+            if (responseinfo.request_length == 0)
+                break;
 
-			buff.resize(responseinfo.request_length);
-			readSize = boost::asio::read(s, boost::asio::buffer((void *)&buff[0], responseinfo.request_length));
-			response.append(&buff[0], responseinfo.request_length);
-		}
-	}
-	catch (std::exception& e)
-	{
-		response.append((boost::format("<Exception><Source>Roxie</Source><Code>%1%</Code><Message>%2%</Message></Exception>") % "999" % e.what()).str().c_str());
-	}
-	catch(...)
-	{
-		std::cerr << "exception: ???\n";
-	}
+            buff.resize(responseinfo.request_length);
+            readSize = boost::asio::read(s, boost::asio::buffer((void *)&buff[0], responseinfo.request_length));
+            response.append(&buff[0], responseinfo.request_length);
+        }
+    }
+    catch (std::exception& e)
+    {
+        response.append((boost::format("<Exception><Source>Roxie</Source><Code>%1%</Code><Message>%2%</Message></Exception>") % "999" % e.what()).str().c_str());
+    }
+    catch(...)
+    {
+        std::cerr << "exception: ???\n";
+    }
 #endif
-	return response.c_str();
+    return response.c_str();
 }
 
 const char * CTestSocket::SendRequest2(const std::string & request, std::string & response) const 
 {
 #ifdef ASIO
-	response = "";
+    response = "";
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
     struct addrinfo *result = NULL,
@@ -196,15 +196,15 @@ const char * CTestSocket::SendRequest2(const std::string & request, std::string 
         return NULL;
     }
 
-	// Send an initial buffer
-	union  
-	{
-		unsigned long length; 
-		char buffer[sizeof(unsigned long)];
-	} requestinfo, responseInfo;
+    // Send an initial buffer
+    union  
+    {
+        unsigned long length; 
+        char buffer[sizeof(unsigned long)];
+    } requestinfo, responseInfo;
 
-	requestinfo.length = request.length();
-	requestinfo.length = SwapEndian(requestinfo.length);
+    requestinfo.length = request.length();
+    requestinfo.length = SwapEndian(requestinfo.length);
 
     iResult = send(ConnectSocket, requestinfo.buffer, 4, 0);
     if (iResult == SOCKET_ERROR) {
@@ -214,7 +214,7 @@ const char * CTestSocket::SendRequest2(const std::string & request, std::string 
         return NULL;
     }
     ATLTRACE("Bytes Sent: %ld\n", iResult);
-	iResult = send(ConnectSocket, request.c_str(), request.length(), 0);
+    iResult = send(ConnectSocket, request.c_str(), request.length(), 0);
     if (iResult == SOCKET_ERROR) {
         ATLTRACE("send failed: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);
@@ -223,49 +223,49 @@ const char * CTestSocket::SendRequest2(const std::string & request, std::string 
     }
     ATLTRACE("Bytes Sent: %ld\n", iResult);
 
-	// Receive until the peer closes the connection
-	std::vector<char> buff;
+    // Receive until the peer closes the connection
+    std::vector<char> buff;
     do {
         iResult = recv(ConnectSocket, responseInfo.buffer, 4, 0);
-		if (iResult != 4)
+        if (iResult != 4)
             ATLTRACE("Bytes expected, received: %d, %d\n", 4, iResult);
 
-		if ( iResult > 0 )
+        if ( iResult > 0 )
             ATLTRACE("Bytes received: %d\n", iResult);
         else if ( iResult == 0 )
-		{
+        {
             ATLTRACE("Connection closed\n");
-			break;
-		}
+            break;
+        }
         else
-		{
+        {
             ATLTRACE("recv failed: %d\n", WSAGetLastError());
-			break;
-		}
-		responseInfo.length = SwapEndian(responseInfo.length);
-		buff.resize(responseInfo.length);
-		if (responseInfo.length == 0)
-			break;
+            break;
+        }
+        responseInfo.length = SwapEndian(responseInfo.length);
+        buff.resize(responseInfo.length);
+        if (responseInfo.length == 0)
+            break;
         iResult = recv(ConnectSocket, &buff[0], responseInfo.length, 0);
-		if (iResult != responseInfo.length)
+        if (iResult != responseInfo.length)
             ATLTRACE("Bytes expected, received: %d, %d\n", responseInfo.length, iResult);
 
-		if ( iResult > 0 )
+        if ( iResult > 0 )
             ATLTRACE("Bytes received: %d\n", iResult);
         else if ( iResult == 0 )
-		{
+        {
             ATLTRACE("Connection closed\n");
-			break;
-		}
+            break;
+        }
         else
-		{
+        {
             ATLTRACE("recv failed: %d\n", WSAGetLastError());
-			break;
-		}
-		response.append(&buff[0], responseInfo.length);
+            break;
+        }
+        response.append(&buff[0], responseInfo.length);
     } while( iResult > 0 );
 
-	// cleanup
+    // cleanup
     iResult = shutdown(ConnectSocket, SD_BOTH);
     if (iResult == SOCKET_ERROR) {
         ATLTRACE("shutdown failed: %d\n", WSAGetLastError());
@@ -274,11 +274,11 @@ const char * CTestSocket::SendRequest2(const std::string & request, std::string 
         return NULL;
     }
 
-	closesocket(ConnectSocket);
+    closesocket(ConnectSocket);
     WSACleanup();
 #endif
 
-	return response.c_str();
+    return response.c_str();
 }
 //  ===========================================================================
 CSessionID::CSessionID()
@@ -287,24 +287,24 @@ CSessionID::CSessionID()
 
 void CSessionID::GenerateID() const
 {
-	boost::mt19937 rng;
-	time_t now_time;
-	rng.seed(time(&now_time));
-	boost::uniform_int<> range(0, INT_MAX);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<> > generator(rng, range);
-	m_id = boost::lexical_cast<std::_tstring>(generator());
+    boost::mt19937 rng;
+    time_t now_time;
+    rng.seed(time(&now_time));
+    boost::uniform_int<> range(0, INT_MAX);
+    boost::variate_generator<boost::mt19937&, boost::uniform_int<> > generator(rng, range);
+    m_id = boost::lexical_cast<std::_tstring>(generator());
 }
 
 void CSessionID::SetID(const std::_tstring & id)
 {
-	m_id = id;
+    m_id = id;
 }
 
 const TCHAR * CSessionID::GetID() const
 {
-	if (m_id.empty())
-		GenerateID();
+    if (m_id.empty())
+        GenerateID();
 
-	return m_id.c_str();
+    return m_id.c_str();
 }
 //  ===========================================================================

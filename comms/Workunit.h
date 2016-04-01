@@ -17,10 +17,10 @@ __interface IWorkunit;
 
 enum WUEvent
 {
-	WUEventUnknown = 0,
-	WUEventUpdated,
-	WUEventDeleted,
-	WUEventLast
+    WUEventUnknown = 0,
+    WUEventUpdated,
+    WUEventDeleted,
+    WUEventLast
 };
 
 typedef boost::signal<void(WUEvent, IWorkunit *)> workunit_signal_type;
@@ -28,57 +28,57 @@ typedef workunit_signal_type::slot_type workunit_slot_type;
 
 enum WUState 
 {
-	WUStateUnknown = 0,
-	WUStateCompiled,
-	WUStateRunning,
-	WUStateCompleted,
-	WUStateFailed,
-	WUStateArchived,
-	WUStateAborting,
-	WUStateAborted,
-	WUStateBlocked,
-	WUStateSubmitted,
-	WUStateScheduled,
-	WUStateCompiling,
-	WUStateWait,
-	WUStateWaitingForUpload,
-	WUStateDebugPaused,
-	WUStateDebugRunning,
-	WUStateSize	//Don't forget to update the string table below..
+    WUStateUnknown = 0,
+    WUStateCompiled,
+    WUStateRunning,
+    WUStateCompleted,
+    WUStateFailed,
+    WUStateArchived,
+    WUStateAborting,
+    WUStateAborted,
+    WUStateBlocked,
+    WUStateSubmitted,
+    WUStateScheduled,
+    WUStateCompiling,
+    WUStateWait,
+    WUStateWaitingForUpload,
+    WUStateDebugPaused,
+    WUStateDebugRunning,
+    WUStateSize	//Don't forget to update the string table below..
 };
 
 const TCHAR * const WUState_TEXT[] =
 {
-	_T("Unknown"), 
-	_T("Compiled"), 
-	_T("Running"), 
-	_T("Completed"), 
-	_T("Failed"), 
-	_T("Archived"), 
-	_T("Aborting"), 
-	_T("Aborted"), 
-	_T("Blocked"), 
-	_T("Submitted"), 
-	_T("Scheduled"), 
-	_T("Compiling"), 
-	_T("Waiting"), 
-	_T("uploading_files"), 
-	_T("Debug Paused"), 
-	_T("Debug Running"), 
-	_T("ERROR-Please Report"),
+    _T("Unknown"), 
+    _T("Compiled"), 
+    _T("Running"), 
+    _T("Completed"), 
+    _T("Failed"), 
+    _T("Archived"), 
+    _T("Aborting"), 
+    _T("Aborted"), 
+    _T("Blocked"), 
+    _T("Submitted"), 
+    _T("Scheduled"), 
+    _T("Compiling"), 
+    _T("Waiting"), 
+    _T("uploading_files"), 
+    _T("Debug Paused"), 
+    _T("Debug Running"), 
+    _T("ERROR-Please Report"),
 };
 
 struct CGraphTiming : public CUnknown
 {
 public:
-	std::_tstring m_name;
-	int m_graphNum;
-	int m_subGraphNum;
+    std::_tstring m_name;
+    int m_graphNum;
+    int m_subGraphNum;
     int m_gid;
     int m_minutes;
     int m_milliseconds;
 
-	IMPLEMENT_CUNKNOWN;
+    IMPLEMENT_CUNKNOWN;
 };
 typedef StlLinked<CGraphTiming> CGraphTimingAdapt;
 typedef std::vector<CGraphTimingAdapt>CGraphTimingVector;
@@ -86,8 +86,8 @@ typedef std::vector<CGraphTimingAdapt>CGraphTimingVector;
 class COMMS_API CEclException : public CUnknown
 {
 public:
-	static const TCHAR * const ECL_EXCEPTION_ERROR;
-	static const TCHAR * const ECL_EXCEPTION_WARNING;
+    static const TCHAR * const ECL_EXCEPTION_ERROR;
+    static const TCHAR * const ECL_EXCEPTION_WARNING;
     CString m_severity;
     int m_code;
     CString m_message;
@@ -96,9 +96,9 @@ public:
     int m_lineNo;
     int m_column;
 
-	IMPLEMENT_CUNKNOWN;
+    IMPLEMENT_CUNKNOWN;
 
-	CEclException();
+    CEclException();
 };
 
 typedef StlLinked<CEclException> CEclExceptionAdapt;
@@ -107,58 +107,58 @@ typedef CUnknownT<CEclExceptionVector> CEclExceptionVectorCom;
 
 __interface IWorkunit : public clib::ILockableUnknown
 {
-	const TCHAR *GetID() const;
-	const TCHAR *GetWuid() const;
-	const TCHAR *GetDateTime() const;
-	const TCHAR *GetScheduledDateTime() const;
-	const TCHAR *GetLabel() const;
-	const TCHAR *GetOwner() const;
-	const TCHAR *GetQueue() const;
-	const TCHAR *GetCluster() const;
-	WUState GetState() const;
-	const TCHAR *GetStateLabel() const;
-	const TCHAR *GetEcl() const;
-	const TCHAR *GetSnapshot() const;
-	bool GetProtected() const;
-	bool GetFollowup() const;
-	bool GetArchived() const;
-	bool IsComplete() const;
-	bool IsDebugging() const;
-	int GetResultLimit() const;
-	int GetMaxRuntime() const;
-	const TCHAR *GetDebugString() const;
-	bool GetArchiveCpp() const;
-	bool GetNoCommonPrivateAttributes() const;
+    const TCHAR *GetID() const;
+    const TCHAR *GetWuid() const;
+    const TCHAR *GetDateTime() const;
+    const TCHAR *GetScheduledDateTime() const;
+    const TCHAR *GetLabel() const;
+    const TCHAR *GetOwner() const;
+    const TCHAR *GetQueue() const;
+    const TCHAR *GetCluster() const;
+    WUState GetState() const;
+    const TCHAR *GetStateLabel() const;
+    const TCHAR *GetEcl() const;
+    const TCHAR *GetSnapshot() const;
+    bool GetProtected() const;
+    bool GetFollowup() const;
+    bool GetArchived() const;
+    bool IsComplete() const;
+    bool IsDebugging() const;
+    int GetResultLimit() const;
+    int GetMaxRuntime() const;
+    const TCHAR *GetDebugString() const;
+    bool GetArchiveCpp() const;
+    bool GetNoCommonPrivateAttributes() const;
 
-	unsigned int GetResultCount() const;
-	std::pair<IResultVector::const_iterator, IResultVector::const_iterator> GetResultIterator() const;
-	IResult * GetResult(const std::_tstring & id) const;
+    unsigned int GetResultCount() const;
+    std::pair<IResultVector::const_iterator, IResultVector::const_iterator> GetResultIterator() const;
+    IResult * GetResult(const std::_tstring & id) const;
 
-	void Refresh(bool noBroadcast);
-	void RefreshGraph();	
-	unsigned int GetGraphCount() const;	
-	unsigned int GetGraphNames(StdStringVector & results) const;
-	IGraph * GetGraph(const std::_tstring & graphName) const;
-	const TCHAR * GetGraphXGMML(const std::_tstring & graphName, std::_tstring & xgmml) const;
-	const TCHAR * GetAllGraphXGMML(std::_tstring & xgmml) const;
-	WUVisualState GetVisualState() const;
+    void Refresh(bool noBroadcast);
+    void RefreshGraph();	
+    unsigned int GetGraphCount() const;	
+    unsigned int GetGraphNames(StdStringVector & results) const;
+    IGraph * GetGraph(const std::_tstring & graphName) const;
+    const TCHAR * GetGraphXGMML(const std::_tstring & graphName, std::_tstring & xgmml) const;
+    const TCHAR * GetAllGraphXGMML(std::_tstring & xgmml) const;
+    WUVisualState GetVisualState() const;
 
-	void RefreshGraphTiming();
-	int GetGraphTimingCount() const;
-	const CGraphTiming * GetGraphTiming(unsigned item) const;
-	int GetGraphTimings(CGraphTimingVector & results) const;
+    void RefreshGraphTiming();
+    int GetGraphTimingCount() const;
+    const CGraphTiming * GetGraphTiming(unsigned item) const;
+    int GetGraphTimings(CGraphTimingVector & results) const;
 
-	int GetExceptionCount() const;
-	const CEclException * GetException(unsigned item) const;
-	const CEclException * GetCurrException(unsigned lineNo) const;
-	const CEclException * GetNextException(unsigned lineNo) const;
-	const CEclException * GetPrevException(unsigned lineNo) const;
-	int GetExceptions(CEclExceptionVector & results) const;
+    int GetExceptionCount() const;
+    const CEclException * GetException(unsigned item) const;
+    const CEclException * GetCurrException(unsigned lineNo) const;
+    const CEclException * GetNextException(unsigned lineNo) const;
+    const CEclException * GetPrevException(unsigned lineNo) const;
+    int GetExceptions(CEclExceptionVector & results) const;
 
-	void MonitorState();	//Notifications come thru "on_refresh_connect"
-	void ForceBroadcast(WUEvent evt = WUEventUpdated);	
+    void MonitorState();	//Notifications come thru "on_refresh_connect"
+    void ForceBroadcast(WUEvent evt = WUEventUpdated);	
 
-	boost::signals::connection on_refresh_connect(const workunit_slot_type& s);
+    boost::signals::connection on_refresh_connect(const workunit_slot_type& s);
 };
 
 typedef StlLinked<IWorkunit> IWorkunitAdapt;
@@ -169,14 +169,14 @@ typedef CComPtr<IWorkunitVectorCom> IWorkunitVectorAdapt;
 class IWorkunitCompare
 {
 public:
-	bool operator ()(IWorkunitAdapt & l, IWorkunitAdapt & r)
-	{
-		int compare = _tcsicmp(l->GetWuid(), r->GetWuid());
-		if (compare < 0)
-			return true;
+    bool operator ()(IWorkunitAdapt & l, IWorkunitAdapt & r)
+    {
+        int compare = _tcsicmp(l->GetWuid(), r->GetWuid());
+        if (compare < 0)
+            return true;
 
-		return false;
-	}
+        return false;
+    }
 };
 
 }

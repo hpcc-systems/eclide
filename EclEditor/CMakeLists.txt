@@ -8,7 +8,7 @@ set ( SRCS
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h
 		${SCINTILLA_INCLUDE_DIR}/Src/CallTip.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/CallTip.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Catalogue.cxx
+		./Catalogue.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/Catalogue.h
 		${SCINTILLA_INCLUDE_DIR}/Src/CellBuffer.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/CellBuffer.h
@@ -87,6 +87,7 @@ set ( SRCS
 	)
 
 include_directories (
+	.
 	${SCINTILLA_INCLUDE_DIR}/Include
 	${SCINTILLA_INCLUDE_DIR}/LexLib
 	${SCINTILLA_INCLUDE_DIR}/Src

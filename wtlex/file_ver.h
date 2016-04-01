@@ -157,9 +157,9 @@ CString	GetApplicationMajorVersion();
 #define SFI_FIRST				SFI_COMPANYNAME
 #define SFI_LAST				SFI_SPECIALBUILD
 
-		
-		
-		
+        
+        
+        
 //*****************************************************************************
 //*****************************************************************************
 //
@@ -173,85 +173,85 @@ class CFileVersionInfo
 {
 // Construction/destruction
 public:
-	CFileVersionInfo();
-	CFileVersionInfo(const CFileVersionInfo& fvi);
-	CFileVersionInfo(LPCTSTR lpszFile);
-	~CFileVersionInfo();
+    CFileVersionInfo();
+    CFileVersionInfo(const CFileVersionInfo& fvi);
+    CFileVersionInfo(LPCTSTR lpszFile);
+    ~CFileVersionInfo();
 
 // Operations
 public:
-	BOOL		ReadVersionInfo(const CString& strFile);
-	BOOL		RefreshVersionInfo();						// inline		
-	void		Clear();
+    BOOL		ReadVersionInfo(const CString& strFile);
+    BOOL		RefreshVersionInfo();						// inline		
+    void		Clear();
 
 // Attributes
 public:
 
-	const CString&	GetFilename()				const;		// inline
-	BOOL			IsValid()					const;		// inline
+    const CString&	GetFilename()				const;		// inline
+    BOOL			IsValid()					const;		// inline
 
-	// Language and Charset
-	// ********************
-	WORD		GetCharSet()					const;		// inline
-	CString		GetCharSetName()				const;		// inline
-	WORD		GetLanguageId ()				const;		// inline
-	CString		GetLanguageName()				const;		// inline
+    // Language and Charset
+    // ********************
+    WORD		GetCharSet()					const;		// inline
+    CString		GetCharSetName()				const;		// inline
+    WORD		GetLanguageId ()				const;		// inline
+    CString		GetLanguageName()				const;		// inline
 
-	// File Version
-	// ************
-	DWORD		GetMajorFileVersion()			const;		// inline
-	DWORD		GetMinorFileVersion()			const;		// inline
-	CString		GetFileVersionString()			const;		// inline
-	CString		GetMajorFileVersionString()		const;		// inline
-	CString		GetMinorFileVersionString()		const;		// inline
+    // File Version
+    // ************
+    DWORD		GetMajorFileVersion()			const;		// inline
+    DWORD		GetMinorFileVersion()			const;		// inline
+    CString		GetFileVersionString()			const;		// inline
+    CString		GetMajorFileVersionString()		const;		// inline
+    CString		GetMinorFileVersionString()		const;		// inline
 
-	// Product Version
-	// ***************
-	DWORD		GetMajorProductVersion()		const;		// inline
-	DWORD		GetMinorProductVersion()		const;		// inline
-	CString		GetProductVersionString()		const;		// inline
-	CString		GetMajorProductVersionString()	const;		// inline
-	CString		GetMinorProductVersionString()	const;		// inline
+    // Product Version
+    // ***************
+    DWORD		GetMajorProductVersion()		const;		// inline
+    DWORD		GetMinorProductVersion()		const;		// inline
+    CString		GetProductVersionString()		const;		// inline
+    CString		GetMajorProductVersionString()	const;		// inline
+    CString		GetMinorProductVersionString()	const;		// inline
 
-	// Date
-	// ****
-	FILETIME	GetFileDate()					const;		// inline
+    // Date
+    // ****
+    FILETIME	GetFileDate()					const;		// inline
 
-	// Operating System
-	// ****************
-	CString		GetTargetOs(UINT nID)			const;
-	DWORD		GetTargetOs()					const;		// inline
+    // Operating System
+    // ****************
+    CString		GetTargetOs(UINT nID)			const;
+    DWORD		GetTargetOs()					const;		// inline
 
-	// Filetype
-	// ********
-	CString		GetFileType(UINT nID)			const;
-	DWORD		GetFileType()					const;		// inline
-	DWORD		GetFileSubtype()				const;		// inline
+    // Filetype
+    // ********
+    CString		GetFileType(UINT nID)			const;
+    DWORD		GetFileType()					const;		// inline
+    DWORD		GetFileSubtype()				const;		// inline
 
-	CString		GetVersionInfo(int nIndex)			const;
-	BOOL		IsVersionInfoAvailable(int nIndex)	const;
+    CString		GetVersionInfo(int nIndex)			const;
+    BOOL		IsVersionInfoAvailable(int nIndex)	const;
 
-	// Boolean file attributes
-	// ***********************
-	BOOL		IsDebugVersion()				const;		// inline
-	BOOL		IsPatched()						const;		// inline
-	BOOL		IsPreRelease()					const;		// inline
-	BOOL		IsPrivateBuild()				const;		// inline
-	BOOL		IsSpecialBuild()				const;		// inline
+    // Boolean file attributes
+    // ***********************
+    BOOL		IsDebugVersion()				const;		// inline
+    BOOL		IsPatched()						const;		// inline
+    BOOL		IsPreRelease()					const;		// inline
+    BOOL		IsPrivateBuild()				const;		// inline
+    BOOL		IsSpecialBuild()				const;		// inline
 
 // Implementation
 protected:
-	CString				m_strFilename;
-	LPBYTE				m_pVersionInfo;
-	DWORD				m_dwTransInfo;
-	VS_FIXEDFILEINFO	m_fixedFileInfo;
+    CString				m_strFilename;
+    LPBYTE				m_pVersionInfo;
+    DWORD				m_dwTransInfo;
+    VS_FIXEDFILEINFO	m_fixedFileInfo;
 
-	BOOL		IsFlagSet(DWORD dwFlag)			const;		// inline
+    BOOL		IsFlagSet(DWORD dwFlag)			const;		// inline
 
 // Static data members
 private:
-	static const LPCTSTR m_lpszFmtStringFileInfo;
-	static const LPCTSTR m_lpszStringFileInfos[];
+    static const LPCTSTR m_lpszFmtStringFileInfo;
+    static const LPCTSTR m_lpszStringFileInfos[];
 
 };	// CFileVersionInfo
 

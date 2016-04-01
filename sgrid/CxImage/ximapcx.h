@@ -39,23 +39,23 @@ typedef struct tagPCXHEADER
 #pragma pack()
 
 public:
-	CxImagePCX(): CxImage(CXIMAGE_FORMAT_PCX) {}
+    CxImagePCX(): CxImage(CXIMAGE_FORMAT_PCX) {}
 
 //	bool Load(const char * imageFileName){ return CxImage::Load(imageFileName,CXIMAGE_FORMAT_PCX);}
 //	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_PCX);}
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
-	void PCX_PlanesToPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel);
-	void PCX_UnpackPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel);
-	void PCX_PackPixels(const long p,BYTE &c, BYTE &n, CxFile &f);
-	void PCX_PackPlanes(BYTE* buff, const long size, CxFile &f);
-	void PCX_PixelsToPlanes(BYTE* raw, long width, BYTE* buf, long plane);
+    void PCX_PlanesToPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel);
+    void PCX_UnpackPixels(BYTE * pixels, BYTE * bitplanes, short bytesperline, short planes, short bitsperpixel);
+    void PCX_PackPixels(const long p,BYTE &c, BYTE &n, CxFile &f);
+    void PCX_PackPlanes(BYTE* buff, const long size, CxFile &f);
+    void PCX_PixelsToPlanes(BYTE* raw, long width, BYTE* buf, long plane);
 };
 
 #endif

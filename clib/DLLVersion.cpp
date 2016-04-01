@@ -1,105 +1,106 @@
 #include "stdafx.h"
 
 #include "DLLVersion.h"
+#include "UtilFileSystem.h"
 
 /////////////////////////////////////////////////////////////////////////////
 /* 
 DESCRIPTION:
-	CDLLVersion - Class for getting file version information
-	http://www.codeproject.com/file/VersionInfo.asp
+    CDLLVersion - Class for getting file version information
+    http://www.codeproject.com/file/VersionInfo.asp
 
 NOTES:
-	Copyright(C) Armen Hakobyan, 2003
-	mailto:armen.h@web.am
-	
+    Copyright(C) Armen Hakobyan, 2003
+    mailto:armen.h@web.am
+    
 VERSION HISTORY:
-	25 Jul 2003 - Posted the article
-	27 Jul 2003 - Added DLLVERSIONINFO2 support to DllGetVersion
-	21 Jan 2004 - Added GetFileVersionMajor, GetFileVersionMinor,
-				  GetFileVersionBuild, GetFileVersionQFE functions
-	29 Jan 2004 - Added GetProductVersionMajor, GetProductVersionMinor,
-				  GetProductVersionBuild, GetProductVersionQFE functions
+    25 Jul 2003 - Posted the article
+    27 Jul 2003 - Added DLLVERSIONINFO2 support to DllGetVersion
+    21 Jan 2004 - Added GetFileVersionMajor, GetFileVersionMinor,
+                  GetFileVersionBuild, GetFileVersionQFE functions
+    29 Jan 2004 - Added GetProductVersionMajor, GetProductVersionMinor,
+                  GetProductVersionBuild, GetProductVersionQFE functions
 */
 /////////////////////////////////////////////////////////////////////////////
 
 HRESULT STDAPICALLTYPE DllGetVersion( IN  HMODULE hModule, 
-									  OUT DLLVERSIONINFO* lpDVI )
+                                      OUT DLLVERSIONINFO* lpDVI )
 {
-	if( hModule == NULL || 
-		::IsBadReadPtr( lpDVI, sizeof( DLLVERSIONINFO* ) ) )
-	{
-		ASSERT_RETURN( S_FALSE );
-	}
+    if( hModule == NULL || 
+        ::IsBadReadPtr( lpDVI, sizeof( DLLVERSIONINFO* ) ) )
+    {
+        ASSERT_RETURN( S_FALSE );
+    }
 
-	CONST DWORD cbSize = lpDVI->cbSize;
+    CONST DWORD cbSize = lpDVI->cbSize;
 
-	if(
+    if(
 #ifdef DLLVERSIONINFO2
-		(
+        (
 #endif
-		cbSize != sizeof( DLLVERSIONINFO  )
+        cbSize != sizeof( DLLVERSIONINFO  )
 #ifdef DLLVERSIONINFO2
-		&& cbSize != sizeof( DLLVERSIONINFO2 ) ) 
+        && cbSize != sizeof( DLLVERSIONINFO2 ) ) 
 #endif
-		|| ::IsBadWritePtr( lpDVI, cbSize ) )
-	{
-		ASSERT_RETURN( S_FALSE );
-	}
+        || ::IsBadWritePtr( lpDVI, cbSize ) )
+    {
+        ASSERT_RETURN( S_FALSE );
+    }
 
-	::ZeroMemory( lpDVI, cbSize );
-	lpDVI->cbSize = cbSize;
-	
-	CDLLVersion fvi;
-	if( fvi.Open( hModule ) )
-	{
-		VS_FIXEDFILEINFO vsffi = fvi.GetVSFFI();
+    ::ZeroMemory( lpDVI, cbSize );
+    lpDVI->cbSize = cbSize;
+    
+    CDLLVersion fvi;
+    if( fvi.Open( hModule ) )
+    {
+        VS_FIXEDFILEINFO vsffi = fvi.GetVSFFI();
 
-		if( vsffi.dwFileType == VFT_DLL ||
-			vsffi.dwFileType == VFT_STATIC_LIB )
-		{
-			switch( vsffi.dwFileOS )
-			{			
-			case VOS__WINDOWS32:
-			case VOS_NT_WINDOWS32:
-				lpDVI->dwPlatformID = DLLVER_PLATFORM_WINDOWS;
-				break;
-			case VOS_NT:
-				lpDVI->dwPlatformID = DLLVER_PLATFORM_NT;
-				break;			
-			default:
-				return ( S_FALSE );
-			}
-			
-			lpDVI->dwMajorVersion = HIWORD( vsffi.dwFileVersionMS );
-			lpDVI->dwMinorVersion = LOWORD( vsffi.dwFileVersionMS );
-			lpDVI->dwBuildNumber  = HIWORD( vsffi.dwFileVersionLS );
-			
-		#ifdef DLLVERSIONINFO2
+        if( vsffi.dwFileType == VFT_DLL ||
+            vsffi.dwFileType == VFT_STATIC_LIB )
+        {
+            switch( vsffi.dwFileOS )
+            {			
+            case VOS__WINDOWS32:
+            case VOS_NT_WINDOWS32:
+                lpDVI->dwPlatformID = DLLVER_PLATFORM_WINDOWS;
+                break;
+            case VOS_NT:
+                lpDVI->dwPlatformID = DLLVER_PLATFORM_NT;
+                break;			
+            default:
+                return ( S_FALSE );
+            }
+            
+            lpDVI->dwMajorVersion = HIWORD( vsffi.dwFileVersionMS );
+            lpDVI->dwMinorVersion = LOWORD( vsffi.dwFileVersionMS );
+            lpDVI->dwBuildNumber  = HIWORD( vsffi.dwFileVersionLS );
+            
+        #ifdef DLLVERSIONINFO2
 
-			if( cbSize == sizeof( DLLVERSIONINFO2 ) )
-			{
-				DLLVERSIONINFO2* lpDVI2 = (DLLVERSIONINFO2*)lpDVI;
-				lpDVI2->ullVersion = MAKEDLLVERULL( 
-					lpDVI->dwMajorVersion,
-					lpDVI->dwMinorVersion,
-					lpDVI->dwBuildNumber ,
-					LOWORD( vsffi.dwFileVersionLS )
-				);
-			}
+            if( cbSize == sizeof( DLLVERSIONINFO2 ) )
+            {
+                DLLVERSIONINFO2* lpDVI2 = (DLLVERSIONINFO2*)lpDVI;
+                lpDVI2->ullVersion = MAKEDLLVERULL( 
+                    lpDVI->dwMajorVersion,
+                    lpDVI->dwMinorVersion,
+                    lpDVI->dwBuildNumber ,
+                    LOWORD( vsffi.dwFileVersionLS )
+                );
+            }
 
-		#endif
+        #endif
 
-			return ( S_OK );
-		}
-	#ifdef _DEBUG
-		else
-			ASSERT( 0 );
-	#endif
+            return ( S_OK );
+        }
+    #ifdef _DEBUG
+        else
+            ASSERT( 0 );
+    #endif
 
-		fvi.Close();
-	}
+        fvi.Close();
+    }
 
-	return ( S_FALSE );
+    return ( S_FALSE );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -110,24 +111,24 @@ HRESULT STDAPICALLTYPE DllGetVersion( IN  HMODULE hModule,
 /////////////////////////////////////////////////////////////////////////////
 
 CDLLVersion::CDLLVersion( void )
-				: m_lpbyVIB( NULL )
+                : m_lpbyVIB( NULL )
 {		
-	Close();
+    Close();
 }
 
 CDLLVersion::~CDLLVersion( void )
 {
-	Close();
+    Close();
 }
 
 LPCTSTR CDLLVersion::s_ppszStr[] = { 
-	_T( "Comments" ),			_T( "CompanyName" ),      
-	_T( "FileDescription" ),	_T( "FileVersion" ),
-	_T( "InternalName" ),		_T( "LegalCopyright" ),
-	_T( "LegalTrademarks" ),	_T( "OriginalFilename" ),
-	_T( "PrivateBuild" ),		_T( "ProductName" ),
-	_T( "ProductVersion" ),		_T( "SpecialBuild" ),
-	_T( "OLESelfRegister" )
+    _T( "Comments" ),			_T( "CompanyName" ),      
+    _T( "FileDescription" ),	_T( "FileVersion" ),
+    _T( "InternalName" ),		_T( "LegalCopyright" ),
+    _T( "LegalTrademarks" ),	_T( "OriginalFilename" ),
+    _T( "PrivateBuild" ),		_T( "ProductName" ),
+    _T( "ProductVersion" ),		_T( "SpecialBuild" ),
+    _T( "OLESelfRegister" )
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -135,188 +136,188 @@ LPCTSTR CDLLVersion::s_ppszStr[] = {
 
 BOOL CDLLVersion::Open( IN HINSTANCE hInstance )
 {
-	if( hInstance == NULL )
-		ASSERT_RETURN( FALSE );
+    if( hInstance == NULL )
+        ASSERT_RETURN( FALSE );
 
-	TCHAR szFileName[ MAX_PATH ] = { 0 };
-	if( ::GetModuleFileName( hInstance, szFileName, MAX_PATH ) )
-		return Open( szFileName );
+    TCHAR szFileName[ MAX_PATH ] = { 0 };
+    if( ::GetModuleFileName( hInstance, szFileName, MAX_PATH ) )
+        return Open( szFileName );
 
-	return FALSE;
+    return FALSE;
 };
 
 BOOL CDLLVersion::Open( IN LPCTSTR lpszFileName )
 {
-	if( lpszFileName == NULL )
-		ASSERT_RETURN( FALSE );
+    if( lpszFileName == NULL )
+        ASSERT_RETURN( FALSE );
 
-	Close();
-	if( !GetVersionInfo( lpszFileName ) || !QueryVersionTrans() )
-		Close();
+    Close();
+    if( !GetVersionInfo( lpszFileName ) || !QueryVersionTrans() )
+        Close();
 
-	return m_bValid;
+    return m_bValid;
 };
 
 BOOL CDLLVersion::GetVersionInfo( IN LPCTSTR lpszFileName )
 {
-	m_bValid = false;
-	if (boost::filesystem::exists(lpszFileName))
-	{
-		DWORD dwDummy = 0;
-		DWORD dwSize  = ::GetFileVersionInfoSize(const_cast< LPTSTR >( lpszFileName ), &dwDummy);
+    m_bValid = false;
+    if (clib::filesystem::exists(lpszFileName))
+    {
+        DWORD dwDummy = 0;
+        DWORD dwSize  = ::GetFileVersionInfoSize(const_cast< LPTSTR >( lpszFileName ), &dwDummy);
 
-		if (dwSize > 0)
-		{		
-			m_lpbyVIB = (LPBYTE)malloc( dwSize );
+        if (dwSize > 0)
+        {		
+            m_lpbyVIB = (LPBYTE)malloc( dwSize );
 
-			if (m_lpbyVIB != NULL && ::GetFileVersionInfo( const_cast< LPTSTR >( lpszFileName ), 0, dwSize, m_lpbyVIB ))
-			{
-				UINT   uLen    = 0;
-				LPVOID lpVSFFI = NULL;
-			
-				if (::VerQueryValue( m_lpbyVIB, _T( "\\" ), (LPVOID*)&lpVSFFI, &uLen ))
-				{
-					::CopyMemory( &m_vsffi, lpVSFFI, sizeof( VS_FIXEDFILEINFO ) );
-					m_bValid = ( m_vsffi.dwSignature == VS_FFI_SIGNATURE );
-				}
-			}
-		}
-	}
-	return m_bValid;
+            if (m_lpbyVIB != NULL && ::GetFileVersionInfo( const_cast< LPTSTR >( lpszFileName ), 0, dwSize, m_lpbyVIB ))
+            {
+                UINT   uLen    = 0;
+                LPVOID lpVSFFI = NULL;
+            
+                if (::VerQueryValue( m_lpbyVIB, _T( "\\" ), (LPVOID*)&lpVSFFI, &uLen ))
+                {
+                    ::CopyMemory( &m_vsffi, lpVSFFI, sizeof( VS_FIXEDFILEINFO ) );
+                    m_bValid = ( m_vsffi.dwSignature == VS_FFI_SIGNATURE );
+                }
+            }
+        }
+    }
+    return m_bValid;
 }
 
 BOOL CDLLVersion::QueryVersionTrans( void )
 {
-	if( m_bValid == FALSE )
-		ASSERT_RETURN( FALSE );
+    if( m_bValid == FALSE )
+        ASSERT_RETURN( FALSE );
 
-	UINT   uLen  = 0;
-	LPVOID lpBuf = NULL;
+    UINT   uLen  = 0;
+    LPVOID lpBuf = NULL;
   
-	if( ::VerQueryValue( m_lpbyVIB, _T( "\\VarFileInfo\\Translation" ), (LPVOID*)&lpBuf, &uLen ) )
-	{
-		m_lpdwTrans = (LPDWORD)lpBuf;
-		m_nTransCnt = ( uLen / sizeof( DWORD ) );		
-	}	
-	return (BOOL)( m_lpdwTrans != NULL );
+    if( ::VerQueryValue( m_lpbyVIB, _T( "\\VarFileInfo\\Translation" ), (LPVOID*)&lpBuf, &uLen ) )
+    {
+        m_lpdwTrans = (LPDWORD)lpBuf;
+        m_nTransCnt = ( uLen / sizeof( DWORD ) );		
+    }	
+    return (BOOL)( m_lpdwTrans != NULL );
 }
 
 void CDLLVersion::Close( void )
 {
-	m_nTransCnt  = 0;
-	m_nTransCur  = 0;
-	m_bValid	 = FALSE;	
-	m_lpdwTrans  = NULL;
-		
-	::ZeroMemory( &m_vsffi, sizeof( VS_FIXEDFILEINFO ) );
-	_free( m_lpbyVIB );
+    m_nTransCnt  = 0;
+    m_nTransCur  = 0;
+    m_bValid	 = FALSE;	
+    m_lpdwTrans  = NULL;
+        
+    ::ZeroMemory( &m_vsffi, sizeof( VS_FIXEDFILEINFO ) );
+    _free( m_lpbyVIB );
 }
 
 BOOL CDLLVersion::QueryStringValue( IN  LPCTSTR lpszItem,
-										 OUT LPTSTR  lpszValue, 
-										 IN  INT     nBuf ) const
+                                         OUT LPTSTR  lpszValue, 
+                                         IN  INT     nBuf ) const
 {
-	if( m_bValid  == FALSE || lpszItem == NULL )
-		ASSERT_RETURN( FALSE );
-	
-	if( lpszValue != NULL && nBuf <= 0 )
-		ASSERT_RETURN( FALSE );
+    if( m_bValid  == FALSE || lpszItem == NULL )
+        ASSERT_RETURN( FALSE );
+    
+    if( lpszValue != NULL && nBuf <= 0 )
+        ASSERT_RETURN( FALSE );
 
-	::ZeroMemory( lpszValue, nBuf * sizeof( TCHAR ) );
+    ::ZeroMemory( lpszValue, nBuf * sizeof( TCHAR ) );
 
-	TCHAR szSFI[ MAX_PATH ] = { 0 };
-	::wsprintf( szSFI, _T( "\\StringFileInfo\\%04X%04X\\%s" ), 
-		GetCurLID(), GetCurCP(), lpszItem );
+    TCHAR szSFI[ MAX_PATH ] = { 0 };
+    ::wsprintf( szSFI, _T( "\\StringFileInfo\\%04X%04X\\%s" ), 
+        GetCurLID(), GetCurCP(), lpszItem );
 
-	BOOL   bRes    = FALSE;
-	UINT   uLen    = 0;
-	LPTSTR lpszBuf = NULL;
+    BOOL   bRes    = FALSE;
+    UINT   uLen    = 0;
+    LPTSTR lpszBuf = NULL;
 
-	if( ::VerQueryValue( m_lpbyVIB, (LPTSTR)szSFI, (LPVOID*)&lpszBuf, &uLen ) )
-	{
-		if( lpszValue != NULL && nBuf > 0 )
-			bRes = (BOOL)( ::lstrcpyn( lpszValue, lpszBuf, nBuf ) != NULL );
-		else
-			bRes = TRUE;
-	}
-	
-	return ( bRes );
+    if( ::VerQueryValue( m_lpbyVIB, (LPTSTR)szSFI, (LPVOID*)&lpszBuf, &uLen ) )
+    {
+        if( lpszValue != NULL && nBuf > 0 )
+            bRes = (BOOL)( ::lstrcpyn( lpszValue, lpszBuf, nBuf ) != NULL );
+        else
+            bRes = TRUE;
+    }
+    
+    return ( bRes );
 }
 
 BOOL CDLLVersion::QueryStringValue( IN  INT    nIndex, 
-										 OUT LPTSTR lpszValue,
-										 IN  INT    nBuf ) const
+                                         OUT LPTSTR lpszValue,
+                                         IN  INT    nBuf ) const
 {
-	if( nIndex < VI_STR_COMMENTS || 
-		nIndex > VI_STR_OLESELFREGISTER ) 
-	{ 
-		ASSERT_RETURN( FALSE );
-	}	
-	return QueryStringValue( s_ppszStr[ nIndex ], lpszValue, nBuf );
+    if( nIndex < VI_STR_COMMENTS || 
+        nIndex > VI_STR_OLESELFREGISTER ) 
+    { 
+        ASSERT_RETURN( FALSE );
+    }	
+    return QueryStringValue( s_ppszStr[ nIndex ], lpszValue, nBuf );
 }
 
 LPCTSTR CDLLVersion::GetVerStringName( IN INT nIndex )
 { 
-	if( nIndex < VI_STR_COMMENTS || 
-		nIndex > VI_STR_OLESELFREGISTER ) 
-	{ 
-		ASSERT_RETURN( FALSE );
-	}
-	return (LPCTSTR)s_ppszStr[ nIndex ];
+    if( nIndex < VI_STR_COMMENTS || 
+        nIndex > VI_STR_OLESELFREGISTER ) 
+    { 
+        ASSERT_RETURN( FALSE );
+    }
+    return (LPCTSTR)s_ppszStr[ nIndex ];
 }
 
 INT CDLLVersion::FindTrans( IN LANGID wLID,
-								 IN WORD   wCP ) const
+                                 IN WORD   wCP ) const
 {	
-	if( m_bValid == FALSE )
-		ASSERT_RETURN( -1 );
+    if( m_bValid == FALSE )
+        ASSERT_RETURN( -1 );
 
-	for( UINT n = 0; n < m_nTransCnt; n++ )
-	{
-		if( LOWORD( m_lpdwTrans[ n ] ) == wLID && 
-			HIWORD( m_lpdwTrans[ n ] ) == wCP  )
-		{		
-			return n;
-		}
-	}
-	return -1;
+    for( UINT n = 0; n < m_nTransCnt; n++ )
+    {
+        if( LOWORD( m_lpdwTrans[ n ] ) == wLID && 
+            HIWORD( m_lpdwTrans[ n ] ) == wCP  )
+        {		
+            return n;
+        }
+    }
+    return -1;
 }
 
 BOOL CDLLVersion::SetTrans( IN LANGID wLID /*LANG_NEUTRAL*/, 
-								 IN WORD   wCP  /*WSLVI_CP_UNICODE*/ )
+                                 IN WORD   wCP  /*WSLVI_CP_UNICODE*/ )
 {	
-	if( m_bValid == FALSE )
-		ASSERT_RETURN( FALSE );
+    if( m_bValid == FALSE )
+        ASSERT_RETURN( FALSE );
 
-	if( GetCurLID() == wLID && GetCurCP() == wCP )
-		return TRUE;
+    if( GetCurLID() == wLID && GetCurCP() == wCP )
+        return TRUE;
 
-	INT nPos = FindTrans( wLID, wCP );
-	if( nPos != -1 ) m_nTransCur = nPos;
+    INT nPos = FindTrans( wLID, wCP );
+    if( nPos != -1 ) m_nTransCur = nPos;
 
-	return ( m_nTransCur == (UINT)nPos );
+    return ( m_nTransCur == (UINT)nPos );
 }
 
 DWORD CDLLVersion::GetTransByIndex( IN UINT nIndex ) const
 {
-	if( m_bValid == FALSE || nIndex < 0 || nIndex > m_nTransCnt )
-		ASSERT_RETURN( 0 );
+    if( m_bValid == FALSE || nIndex < 0 || nIndex > m_nTransCnt )
+        ASSERT_RETURN( 0 );
 
-	return m_lpdwTrans[ nIndex ];
+    return m_lpdwTrans[ nIndex ];
 }
 
 BOOL CDLLVersion::SetTransIndex( IN UINT nIndex /*0*/ )
 {
-	if( m_bValid == FALSE )
-		ASSERT_RETURN( FALSE );
+    if( m_bValid == FALSE )
+        ASSERT_RETURN( FALSE );
 
-	if( m_nTransCur == nIndex )
-		return TRUE;
+    if( m_nTransCur == nIndex )
+        return TRUE;
 
-	if( nIndex >= 0 && nIndex <= m_nTransCnt )
-		m_nTransCur = nIndex;
-	
-	return ( m_nTransCur == nIndex );
+    if( nIndex >= 0 && nIndex <= m_nTransCnt )
+        m_nTransCur = nIndex;
+    
+    return ( m_nTransCur == nIndex );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -326,43 +327,43 @@ BOOL CDLLVersion::SetTransIndex( IN UINT nIndex /*0*/ )
 // default string ("Language Neutral"):
 
 BOOL CDLLVersion::GetLIDName( IN  WORD   wLID, 
-								   OUT LPTSTR lpszName, 
-								   IN  INT    nBuf )
+                                   OUT LPTSTR lpszName, 
+                                   IN  INT    nBuf )
 {
-	if( lpszName == NULL || nBuf <= 0 )
-		ASSERT_RETURN( FALSE );
+    if( lpszName == NULL || nBuf <= 0 )
+        ASSERT_RETURN( FALSE );
 
-	return (BOOL)::VerLanguageName( wLID, lpszName, nBuf );
+    return (BOOL)::VerLanguageName( wLID, lpszName, nBuf );
 }
 
 // If the CP identifier is unknown, it returns a 
 // default string ("Unknown"):
 
 BOOL CDLLVersion::GetCPName( IN  WORD	   wCP,
-								  OUT LPCTSTR* ppszName )
+                                  OUT LPCTSTR* ppszName )
 {
-	if( ppszName == NULL )
-		ASSERT_RETURN( FALSE );
+    if( ppszName == NULL )
+        ASSERT_RETURN( FALSE );
 
-	BOOL bRes = TRUE;	
-	*ppszName  = NULL;
+    BOOL bRes = TRUE;	
+    *ppszName  = NULL;
 
-	switch ( wCP )
-	{
-		case VI_CP_ASCII:	 *ppszName = _T( "7-bit ASCII" );				break;
-		case VI_CP_JAPAN:	 *ppszName = _T( "Japan (Shift – JIS X-0208)" );break;
-		case VI_CP_KOREA:	 *ppszName = _T( "Korea (Shift – KSC 5601)" );	break;
-		case VI_CP_TAIWAN:	 *ppszName = _T( "Taiwan (Big5)" );				break;
-		case VI_CP_UNICODE:	 *ppszName = _T( "Unicode" );					break;
-		case VI_CP_LATIN2:	 *ppszName = _T( "Latin-2 (Eastern European)" );break;
-		case VI_CP_CYRILLIC: *ppszName = _T( "Cyrillic" );					break;
-		case VI_CP_MULTILNG: *ppszName = _T( "Multilingual" );				break;
-		case VI_CP_GREEK:	 *ppszName = _T( "Greek" );						break;
-		case VI_CP_TURKISH:	 *ppszName = _T( "Turkish" );					break;
-		case VI_CP_HEBREW:	 *ppszName = _T( "Hebrew" );					break;
-		case VI_CP_ARABIC:	 *ppszName = _T( "Arabic" );					break;		
-		default:			 *ppszName = _T( "Unknown" ); bRes = FALSE;		break;
-	}
-	return bRes;
+    switch ( wCP )
+    {
+        case VI_CP_ASCII:	 *ppszName = _T( "7-bit ASCII" );				break;
+        case VI_CP_JAPAN:	 *ppszName = _T( "Japan (Shift – JIS X-0208)" );break;
+        case VI_CP_KOREA:	 *ppszName = _T( "Korea (Shift – KSC 5601)" );	break;
+        case VI_CP_TAIWAN:	 *ppszName = _T( "Taiwan (Big5)" );				break;
+        case VI_CP_UNICODE:	 *ppszName = _T( "Unicode" );					break;
+        case VI_CP_LATIN2:	 *ppszName = _T( "Latin-2 (Eastern European)" );break;
+        case VI_CP_CYRILLIC: *ppszName = _T( "Cyrillic" );					break;
+        case VI_CP_MULTILNG: *ppszName = _T( "Multilingual" );				break;
+        case VI_CP_GREEK:	 *ppszName = _T( "Greek" );						break;
+        case VI_CP_TURKISH:	 *ppszName = _T( "Turkish" );					break;
+        case VI_CP_HEBREW:	 *ppszName = _T( "Hebrew" );					break;
+        case VI_CP_ARABIC:	 *ppszName = _T( "Arabic" );					break;		
+        default:			 *ppszName = _T( "Unknown" ); bRes = FALSE;		break;
+    }
+    return bRes;
 }
 /////////////////////////////////////////////////////////////////////////////

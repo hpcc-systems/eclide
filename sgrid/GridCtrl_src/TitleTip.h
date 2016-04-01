@@ -38,9 +38,9 @@ class CTitleTip : public CWnd
 {
 // Construction
 public:
-	CTitleTip();
-	virtual ~CTitleTip();
-	virtual BOOL Create( CWnd *pParentWnd);
+    CTitleTip();
+    virtual ~CTitleTip();
+    virtual BOOL Create( CWnd *pParentWnd);
 
 // Attributes
 public:
@@ -49,49 +49,50 @@ public:
 
 // Operations
 public:
-	void Show(CRect rectTitle, LPCTSTR lpszTitleText, 
+    void Show(CRect rectTitle, LPCTSTR lpszTitleText, 
               int xoffset = 0, LPRECT lpHoverRect = NULL, 
               const LOGFONT* lpLogFont = NULL,
-              COLORREF crTextClr = CLR_DEFAULT, COLORREF crBackClr = CLR_DEFAULT);
+              COLORREF crTextClr = CLR_DEFAULT, COLORREF crBackClr = CLR_DEFAULT, int nMaxChars = -1);
     void Hide();
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTitleTip)
-	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual BOOL DestroyWindow();
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CTitleTip)
+    public:
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
+    virtual BOOL DestroyWindow();
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
-	CWnd  *m_pParentWnd;
-	CRect  m_rectTitle;
+    CWnd  *m_pParentWnd;
+    CRect  m_rectTitle;
     CRect  m_rectHover;
     DWORD  m_dwLastLButtonDown;
     DWORD  m_dwDblClickMsecs;
     BOOL   m_bCreated;
     CRect m_rectDisplay;
     CString m_strTitle;		// for use in OnPaint()
-	LOGFONT* m_lpLogFont;
+    LOGFONT* m_lpLogFont;
 
 protected:
-	void ProcessMouseMessage(MSG* pMsg); 
+    void ProcessMouseMessage(MSG* pMsg); 
+    CString LimitTooltip(const CString & limitStr, CRect rectDisplay, TEXTMETRIC tm, int nMaxChars = -1);
 
-	// Generated message map functions
+    // Generated message map functions
 protected:
 
-	//{{AFX_MSG(CTitleTip)
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    //{{AFX_MSG(CTitleTip)
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnPaint();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    afx_msg void OnPaint();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

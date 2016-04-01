@@ -3,7 +3,7 @@
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "include 'stdafx.h' before including this file for PCH"
+    #error "include 'stdafx.h' before including this file for PCH"
 #endif
 
 #include "..\en_us\resource.h"       // main symbols
@@ -16,29 +16,29 @@
 class CQueryBuilderApp : public CWinAppEx
 {
 public:
-	CQueryBuilderApp();
+    CQueryBuilderApp();
 
 
 // Overrides
 public:
-	virtual BOOL InitInstance();
-	virtual int ExitInstance();
+    virtual BOOL InitInstance();
+    virtual int ExitInstance();
 
 // Implementation
 protected:
-	HMENU  m_hMDIMenu;
-	HACCEL m_hMDIAccel;
+    HMENU  m_hMDIMenu;
+    HACCEL m_hMDIAccel;
 
 public:
-	UINT  m_nAppLook;
-	BOOL  m_bHiColorIcons;
+    UINT  m_nAppLook;
+    BOOL  m_bHiColorIcons;
 
-	virtual void PreLoadState();
-	virtual void LoadCustomState();
-	virtual void SaveCustomState();
+    virtual void PreLoadState();
+    virtual void LoadCustomState();
+    virtual void SaveCustomState();
 
-	afx_msg void OnAppAbout();
-	DECLARE_MESSAGE_MAP()
+    afx_msg void OnAppAbout();
+    DECLARE_MESSAGE_MAP()
 };
 
 extern CQueryBuilderApp theApp;

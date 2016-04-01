@@ -8,17 +8,17 @@ typedef bool (__stdcall * LPFNDLLSTOP)();
 class CLIB_API CDaFileSrv : CUnknown
 {
 protected:
-	LPFNDLLSTART m_start;
-	LPFNDLLSTOP m_stop;
+    LPFNDLLSTART m_start;
+    LPFNDLLSTOP m_stop;
 
 public:
-	BEGIN_CUNKNOWN;
-	END_CUNKNOWN(CUnkown);
+    BEGIN_CUNKNOWN;
+    END_CUNKNOWN(CUnkown);
 
-	CDaFileSrv();
-	~CDaFileSrv();
+    CDaFileSrv();
+    ~CDaFileSrv();
 
-	bool Available();
-	bool Start();
-	bool Stop();
+    bool Available();
+    bool Start();
+    bool Stop();
 };

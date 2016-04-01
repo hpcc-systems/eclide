@@ -15,14 +15,14 @@
 class GRAPHVIEWCTL_API CAESCrypto
 {
 private:
-	AESdecrypt m_decryptor;
-	AESencrypt m_encryptor;
+    AESdecrypt m_decryptor;
+    AESencrypt m_encryptor;
 public:
-	CAESCrypto();
+    CAESCrypto();
 
-	std::string& Decode(std::string& buff);
-	std::string& Decrypt(std::string& buff);
+    std::string& Decode(std::string& buff);
+    std::string& Decrypt(std::string& buff);
 
-	std::string& Encode(std::string& buff);
-	std::string& Encrypt(std::string& buff);
+    std::string& Encode(std::string& buff);
+    std::string& Encrypt(std::string& buff);
 };

@@ -24,34 +24,34 @@
 
 namespace
 {
-	/*
-	 * Sends a message to all child controls of a specified window.
-	 *
-	 * @param message [in] Specifies the message id.
-	 * @param wParam [in] Specifies additional message-specific information.
-	 * @param lParam [in] Specifies additional message-specific information.
-	 * @param bDeep [in] Specifies whether or not the message should be sent
-	 *		recursively to all children.
-	 */
+    /*
+     * Sends a message to all child controls of a specified window.
+     *
+     * @param message [in] Specifies the message id.
+     * @param wParam [in] Specifies additional message-specific information.
+     * @param lParam [in] Specifies additional message-specific information.
+     * @param bDeep [in] Specifies whether or not the message should be sent
+     *		recursively to all children.
+     */
 
-	void SendMessageToDescendantsImp(HWND hWnd, UINT message, WPARAM wParam,
-		LPARAM lParam, BOOL bDeep)
-	{
-		// walk through HWNDs to avoid creating temporary CWnd objects
-		// unless we need to call this function recursively
-		for (HWND hWndChild = ::GetTopWindow(hWnd); hWndChild != NULL;
-			hWndChild = ::GetNextWindow(hWndChild, GW_HWNDNEXT))
-		{
-			// send message with Windows SendMessage API
-			::SendMessage(hWndChild, message, wParam, lParam);
-			if (bDeep && ::GetTopWindow(hWndChild) != NULL)
-			{
-				// send to child windows after parent
-				SendMessageToDescendantsImp(hWndChild, message, wParam, lParam,
-					bDeep);
-			}
-		}
-	}
+    void SendMessageToDescendantsImp(HWND hWnd, UINT message, WPARAM wParam,
+        LPARAM lParam, BOOL bDeep)
+    {
+        // walk through HWNDs to avoid creating temporary CWnd objects
+        // unless we need to call this function recursively
+        for (HWND hWndChild = ::GetTopWindow(hWnd); hWndChild != NULL;
+            hWndChild = ::GetNextWindow(hWndChild, GW_HWNDNEXT))
+        {
+            // send message with Windows SendMessage API
+            ::SendMessage(hWndChild, message, wParam, lParam);
+            if (bDeep && ::GetTopWindow(hWndChild) != NULL)
+            {
+                // send to child windows after parent
+                SendMessageToDescendantsImp(hWndChild, message, wParam, lParam,
+                    bDeep);
+            }
+        }
+    }
 };
 
 /*
@@ -72,10 +72,10 @@ const UINT WM_GETREFLECTOR = RegisterWindowMessage(_T("{9688DAE6-3736-11D4-A48C-
  */
 struct MSGREFLECTSTRUCT
 {
-	UINT message;
-	WPARAM wParam;
-	LPARAM lParam;
-	BOOL bHandled;
+    UINT message;
+    WPARAM wParam;
+    LPARAM lParam;
+    BOOL bHandled;
 };
 
 /*
@@ -84,13 +84,13 @@ struct MSGREFLECTSTRUCT
 class CMessageReflector : public CSubclassWnd
 {
 private:
-	CMessageReflector(HWND hWnd);
+    CMessageReflector(HWND hWnd);
 
 public:
-	static CMessageReflector* FromHandle(HWND hWnd);
-	virtual BOOL ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM lParam,
-		LRESULT& lResult);
-	virtual void OnFinalMessage();
+    static CMessageReflector* FromHandle(HWND hWnd);
+    virtual BOOL ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM lParam,
+        LRESULT& lResult);
+    virtual void OnFinalMessage();
 };
 
 /*
@@ -101,8 +101,8 @@ public:
 
 CMessageReflector::CMessageReflector(HWND hWnd)
 {
-	ASSERT(::IsWindow(hWnd));
-	SubclassWindow(hWnd, FALSE);
+    ASSERT(::IsWindow(hWnd));
+    SubclassWindow(hWnd, FALSE);
 }
 
 /*
@@ -117,11 +117,11 @@ CMessageReflector::CMessageReflector(HWND hWnd)
 
 CMessageReflector* CMessageReflector::FromHandle(HWND hWnd)
 {
-	CMessageReflector* pReflector =
-		(CMessageReflector*)::SendMessage(hWnd, WM_GETREFLECTOR, 0, 0);
-	if (!pReflector)
-		pReflector = new CMessageReflector(hWnd);
-	return pReflector;
+    CMessageReflector* pReflector =
+        (CMessageReflector*)::SendMessage(hWnd, WM_GETREFLECTOR, 0, 0);
+    if (!pReflector)
+        pReflector = new CMessageReflector(hWnd);
+    return pReflector;
 }
 
 /*
@@ -140,86 +140,86 @@ CMessageReflector* CMessageReflector::FromHandle(HWND hWnd)
  */
 
 BOOL CMessageReflector::ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM lParam,
-											 LRESULT& lResult)
+                                             LRESULT& lResult)
 {
-	if (message == WM_GETREFLECTOR)
-	{
-		lResult = (LRESULT)this;
-		return TRUE;
-	}
+    if (message == WM_GETREFLECTOR)
+    {
+        lResult = (LRESULT)this;
+        return TRUE;
+    }
 
-	HWND hWndChild = NULL;
+    HWND hWndChild = NULL;
 
-	switch (message)
-	{
-	case WM_COMMAND:
-		if (lParam != NULL)	// not from a menu
-			hWndChild = (HWND)lParam;
-		break;
-	case WM_NOTIFY:
-		hWndChild = ((LPNMHDR)lParam)->hwndFrom;
-		break;
-	case WM_PARENTNOTIFY:
-		switch (LOWORD(wParam))
-		{
-		case WM_CREATE:
-		case WM_DESTROY:
-			hWndChild = (HWND)lParam;
-			break;
-		default:
-			hWndChild = GetDlgItem(GetHandle(), HIWORD(wParam));
-			break;
-		}
-		break;
-	case WM_DRAWITEM:
-		if (wParam)		// not from a menu
-			hWndChild = ((LPDRAWITEMSTRUCT)lParam)->hwndItem;
-		break;
-	case WM_MEASUREITEM:
-		if (wParam)		// not from a menu
-			hWndChild = GetDlgItem(GetHandle(), ((LPMEASUREITEMSTRUCT)lParam)->CtlID);
-		break;
-	case WM_COMPAREITEM:
-		if (wParam)		// not from a menu
-			hWndChild = GetDlgItem(GetHandle(), ((LPCOMPAREITEMSTRUCT)lParam)->CtlID);
-		break;
-	case WM_DELETEITEM:
-		if (wParam)		// not from a menu
-			hWndChild = GetDlgItem(GetHandle(), ((LPDELETEITEMSTRUCT)lParam)->CtlID);
-		break;
-	case WM_VKEYTOITEM:
-	case WM_CHARTOITEM:
-	case WM_HSCROLL:
-	case WM_VSCROLL:
-		hWndChild = (HWND)lParam;
-		break;
-	case WM_CTLCOLORBTN:
-	case WM_CTLCOLORDLG:
-	case WM_CTLCOLOREDIT:
-	case WM_CTLCOLORLISTBOX:
-	case WM_CTLCOLORMSGBOX:
-	case WM_CTLCOLORSCROLLBAR:
-	case WM_CTLCOLORSTATIC:
-		hWndChild = (HWND)lParam;
-		break;
-	default:
-		break;
-	}
+    switch (message)
+    {
+    case WM_COMMAND:
+        if (lParam != NULL)	// not from a menu
+            hWndChild = (HWND)lParam;
+        break;
+    case WM_NOTIFY:
+        hWndChild = ((LPNMHDR)lParam)->hwndFrom;
+        break;
+    case WM_PARENTNOTIFY:
+        switch (LOWORD(wParam))
+        {
+        case WM_CREATE:
+        case WM_DESTROY:
+            hWndChild = (HWND)lParam;
+            break;
+        default:
+            hWndChild = GetDlgItem(GetHandle(), HIWORD(wParam));
+            break;
+        }
+        break;
+    case WM_DRAWITEM:
+        if (wParam)		// not from a menu
+            hWndChild = ((LPDRAWITEMSTRUCT)lParam)->hwndItem;
+        break;
+    case WM_MEASUREITEM:
+        if (wParam)		// not from a menu
+            hWndChild = GetDlgItem(GetHandle(), ((LPMEASUREITEMSTRUCT)lParam)->CtlID);
+        break;
+    case WM_COMPAREITEM:
+        if (wParam)		// not from a menu
+            hWndChild = GetDlgItem(GetHandle(), ((LPCOMPAREITEMSTRUCT)lParam)->CtlID);
+        break;
+    case WM_DELETEITEM:
+        if (wParam)		// not from a menu
+            hWndChild = GetDlgItem(GetHandle(), ((LPDELETEITEMSTRUCT)lParam)->CtlID);
+        break;
+    case WM_VKEYTOITEM:
+    case WM_CHARTOITEM:
+    case WM_HSCROLL:
+    case WM_VSCROLL:
+        hWndChild = (HWND)lParam;
+        break;
+    case WM_CTLCOLORBTN:
+    case WM_CTLCOLORDLG:
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
+    case WM_CTLCOLORMSGBOX:
+    case WM_CTLCOLORSCROLLBAR:
+    case WM_CTLCOLORSTATIC:
+        hWndChild = (HWND)lParam;
+        break;
+    default:
+        break;
+    }
 
-	if (hWndChild == NULL)
-		return FALSE;
+    if (hWndChild == NULL)
+        return FALSE;
 
-	ASSERT(::IsWindow(hWndChild));
+    ASSERT(::IsWindow(hWndChild));
 
-	MSGREFLECTSTRUCT rs;
-	rs.message = OCM__BASE + message;
-	rs.wParam = wParam;
-	rs.lParam = lParam;
-	rs.bHandled = FALSE;
+    MSGREFLECTSTRUCT rs;
+    rs.message = OCM__BASE + message;
+    rs.wParam = wParam;
+    rs.lParam = lParam;
+    rs.bHandled = FALSE;
 
-	lResult = ::SendMessage(hWndChild, WM_REFLECT, 0, (LPARAM)&rs);
+    lResult = ::SendMessage(hWndChild, WM_REFLECT, 0, (LPARAM)&rs);
 
-	return rs.bHandled;
+    return rs.bHandled;
 }
 
 /*
@@ -228,7 +228,7 @@ BOOL CMessageReflector::ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM
 
 void CMessageReflector::OnFinalMessage()
 {
-	delete this;
+    delete this;
 }
 
 /**
@@ -236,7 +236,7 @@ void CMessageReflector::OnFinalMessage()
  */
 
 CSubclassWnd::CSubclassWnd()
-	: m_hWnd(0), m_pfnSuperWindowProc(::DefWindowProc), m_pCurrentMsg(0)
+    : m_hWnd(0), m_pfnSuperWindowProc(::DefWindowProc), m_pCurrentMsg(0)
 {
 }
 
@@ -246,8 +246,8 @@ CSubclassWnd::CSubclassWnd()
 
 CSubclassWnd::~CSubclassWnd()
 {
-	if (m_hWnd != NULL)
-		UnsubclassWindow();
+    if (m_hWnd != NULL)
+        UnsubclassWindow();
 }
 
 /**
@@ -265,26 +265,26 @@ CSubclassWnd::~CSubclassWnd()
 
 BOOL CSubclassWnd::SubclassWindow(HWND hWnd, BOOL bReflect)
 {
-	if (m_hWnd != NULL || !::IsWindow(hWnd))
-		return FALSE;
+    if (m_hWnd != NULL || !::IsWindow(hWnd))
+        return FALSE;
 
-	m_thunk.Init(WindowProc, this);
-	WNDPROC pProc = (WNDPROC)&(m_thunk.thunk);
-	WNDPROC pfnWndProc = (WNDPROC)::SetWindowLong(hWnd, GWL_WNDPROC, (LONG)pProc);
-	if (pfnWndProc == NULL)
-		return FALSE;
+    m_thunk.Init(WindowProc, this);
+    WNDPROC pProc = (WNDPROC)&(m_thunk.thunk);
+    WNDPROC pfnWndProc = (WNDPROC)::SetWindowLong(hWnd, GWL_WNDPROC, (LONG)pProc);
+    if (pfnWndProc == NULL)
+        return FALSE;
 
-	m_pfnSuperWindowProc = pfnWndProc;
-	m_hWnd = hWnd;
+    m_pfnSuperWindowProc = pfnWndProc;
+    m_hWnd = hWnd;
 
-	if (bReflect && (GetWindowLong(hWnd, GWL_STYLE) & WS_CHILD) == WS_CHILD)
-	{
-		HWND hWndParent = GetParent(hWnd);
-		ASSERT(::IsWindow(hWndParent));
-		CMessageReflector::FromHandle(hWndParent);
-	}
+    if (bReflect && (GetWindowLong(hWnd, GWL_STYLE) & WS_CHILD) == WS_CHILD)
+    {
+        HWND hWndParent = GetParent(hWnd);
+        ASSERT(::IsWindow(hWndParent));
+        CMessageReflector::FromHandle(hWndParent);
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 /**
@@ -295,7 +295,7 @@ BOOL CSubclassWnd::SubclassWindow(HWND hWnd, BOOL bReflect)
 
 HWND CSubclassWnd::UnsubclassWindow()
 {
-	return (HWND)SendMessage(WM_UNSUBCLASS, 0, (LPARAM)this);
+    return (HWND)SendMessage(WM_UNSUBCLASS, 0, (LPARAM)this);
 }
 
 /**
@@ -312,55 +312,55 @@ HWND CSubclassWnd::UnsubclassWindow()
  */
 
 LRESULT CALLBACK CSubclassWnd::WindowProc(HWND hWnd, UINT message, WPARAM wParam,
-										  LPARAM lParam)
+                                          LPARAM lParam)
 {
-	CSubclassWnd* pThis = (CSubclassWnd*)hWnd;
+    CSubclassWnd* pThis = (CSubclassWnd*)hWnd;
 
-	// set a ptr to this message and save the old value
-	MSG msg = { pThis->m_hWnd, message, wParam, lParam, 0, { 0, 0 } };
+    // set a ptr to this message and save the old value
+    MSG msg = { pThis->m_hWnd, message, wParam, lParam, 0, { 0, 0 } };
 
-	// check to see if this is a reflected message and adjust accordingly
-	MSGREFLECTSTRUCT* rs = 0;
-	if (message == WM_REFLECT)
-	{
-		rs = (MSGREFLECTSTRUCT*)lParam;
-		ASSERT(rs);
-		msg.message = rs->message;
-		msg.wParam = rs->wParam;
-		msg.lParam = rs->lParam;
-	}
+    // check to see if this is a reflected message and adjust accordingly
+    MSGREFLECTSTRUCT* rs = 0;
+    if (message == WM_REFLECT)
+    {
+        rs = (MSGREFLECTSTRUCT*)lParam;
+        ASSERT(rs);
+        msg.message = rs->message;
+        msg.wParam = rs->wParam;
+        msg.lParam = rs->lParam;
+    }
 
-	// save the message information and set the new current
-	const MSG* pOldMsg = pThis->m_pCurrentMsg;
-	pThis->m_pCurrentMsg = &msg;
+    // save the message information and set the new current
+    const MSG* pOldMsg = pThis->m_pCurrentMsg;
+    pThis->m_pCurrentMsg = &msg;
 
-	// pass to the message map to process
-	LRESULT lRes;
-	BOOL bRet = pThis->ProcessWindowMessage(msg.message, msg.wParam, msg.lParam, lRes);
+    // pass to the message map to process
+    LRESULT lRes;
+    BOOL bRet = pThis->ProcessWindowMessage(msg.message, msg.wParam, msg.lParam, lRes);
 
-	// if this is a reflected message let parent know if it was handled
-	if (rs)
-		rs->bHandled = bRet;
+    // if this is a reflected message let parent know if it was handled
+    if (rs)
+        rs->bHandled = bRet;
 
-	// restore saved value for the current message
-	pThis->m_pCurrentMsg = pOldMsg;
+    // restore saved value for the current message
+    pThis->m_pCurrentMsg = pOldMsg;
 
-	// do the default processing if message was not handled
-	// note that we need to use the original values, so that reflected
-	// messages can properly set the 'bHandled' flag.
-	if (!bRet)
-		lRes = pThis->DefWindowProc(message, wParam, lParam);
+    // do the default processing if message was not handled
+    // note that we need to use the original values, so that reflected
+    // messages can properly set the 'bHandled' flag.
+    if (!bRet)
+        lRes = pThis->DefWindowProc(message, wParam, lParam);
 
-	if (message == WM_NCDESTROY)
-	{
-		// unsubclass, if needed
-		pThis->UnsubclassWindow();
+    if (message == WM_NCDESTROY)
+    {
+        // unsubclass, if needed
+        pThis->UnsubclassWindow();
 
-		// clean up after window is destroyed
-		pThis->OnFinalMessage();
-	}
+        // clean up after window is destroyed
+        pThis->OnFinalMessage();
+    }
 
-	return lRes;
+    return lRes;
 }
 
 /**
@@ -374,9 +374,9 @@ LRESULT CALLBACK CSubclassWnd::WindowProc(HWND hWnd, UINT message, WPARAM wParam
  */
 
 void CSubclassWnd::SendMessageToDescendants(UINT message, WPARAM wParam, LPARAM lParam,
-											BOOL bDeep)
+                                            BOOL bDeep)
 {
-	SendMessageToDescendantsImp(GetHandle(), message, wParam, lParam, bDeep);
+    SendMessageToDescendantsImp(GetHandle(), message, wParam, lParam, bDeep);
 }
 
 /**
@@ -404,46 +404,46 @@ void CSubclassWnd::OnFinalMessage()
  */
 
 BOOL CSubclassWnd::ProcessWindowMessage(UINT message, WPARAM wParam, LPARAM lParam,
-										LRESULT& lResult)
+                                        LRESULT& lResult)
 {
-	if (message == WM_UNSUBCLASS)
-	{
-		if ((CSubclassWnd*)lParam == this)
-		{
-			if (m_hWnd == NULL)
-				lResult = NULL;
-			else
-			{
-				if (wParam)
-				{
-					CSubclassWnd* pPrevious = (CSubclassWnd*)wParam;
-					ASSERT(pPrevious->m_pfnSuperWindowProc == (WNDPROC)&(m_thunk.thunk));
-					pPrevious->m_pfnSuperWindowProc = m_pfnSuperWindowProc;
-					lResult = (LRESULT)m_hWnd;
-					m_pfnSuperWindowProc = ::DefWindowProc;
-					m_hWnd = NULL;
-				}
-				else
-				{
-					WNDPROC pOurProc = (WNDPROC)&(m_thunk.thunk);
-					WNDPROC pActiveProc = (WNDPROC)::GetWindowLong(m_hWnd, GWL_WNDPROC);
-					ASSERT(pOurProc == pActiveProc);
-					if (!::SetWindowLong(m_hWnd, GWL_WNDPROC, (LONG)m_pfnSuperWindowProc))
-						lResult = NULL;
-					else
-					{
-						m_pfnSuperWindowProc = ::DefWindowProc;
-						lResult = (LRESULT)m_hWnd;
-						m_hWnd = NULL;
-					}
-				}
-			}
-		}
-		else
-			lResult = DefWindowProc(message, (WPARAM)this, lParam);
+    if (message == WM_UNSUBCLASS)
+    {
+        if ((CSubclassWnd*)lParam == this)
+        {
+            if (m_hWnd == NULL)
+                lResult = NULL;
+            else
+            {
+                if (wParam)
+                {
+                    CSubclassWnd* pPrevious = (CSubclassWnd*)wParam;
+                    ASSERT(pPrevious->m_pfnSuperWindowProc == (WNDPROC)&(m_thunk.thunk));
+                    pPrevious->m_pfnSuperWindowProc = m_pfnSuperWindowProc;
+                    lResult = (LRESULT)m_hWnd;
+                    m_pfnSuperWindowProc = ::DefWindowProc;
+                    m_hWnd = NULL;
+                }
+                else
+                {
+                    WNDPROC pOurProc = (WNDPROC)&(m_thunk.thunk);
+                    WNDPROC pActiveProc = (WNDPROC)::GetWindowLong(m_hWnd, GWL_WNDPROC);
+                    ASSERT(pOurProc == pActiveProc);
+                    if (!::SetWindowLong(m_hWnd, GWL_WNDPROC, (LONG)m_pfnSuperWindowProc))
+                        lResult = NULL;
+                    else
+                    {
+                        m_pfnSuperWindowProc = ::DefWindowProc;
+                        lResult = (LRESULT)m_hWnd;
+                        m_hWnd = NULL;
+                    }
+                }
+            }
+        }
+        else
+            lResult = DefWindowProc(message, (WPARAM)this, lParam);
 
-		return TRUE;
-	}
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }

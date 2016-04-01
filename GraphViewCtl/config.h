@@ -7,9 +7,9 @@
 class Config
 {
 protected:
-	static CComPtr<IConfig> m_config;
+    static CComPtr<IConfig> m_config;
 public:
-	Config();
+    Config();
 };
 
 #endif

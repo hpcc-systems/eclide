@@ -145,59 +145,59 @@ extern "C"{
 typedef /* [helpstring] */ 
 enum LayoutType
     {	LayoutSpring	= 0,
-	LayoutCircle	= ( LayoutSpring + 1 ) ,
-	LayoutNeato	= ( LayoutCircle + 1 ) ,
-	LayoutTwoPi	= ( LayoutNeato + 1 ) ,
-	LayoutDot	= ( LayoutTwoPi + 1 ) ,
-	LayoutCirco	= ( LayoutDot + 1 ) ,
-	LayoutNone	= ( LayoutCirco + 1 ) ,
-	LayoutFDR	= ( LayoutNone + 1 ) ,
-	LayoutBoostSpring	= ( LayoutFDR + 1 ) ,
-	LayoutLee	= ( LayoutBoostSpring + 1 ) ,
-	LayoutSplines	= ( LayoutLee + 1 ) 
+    LayoutCircle	= ( LayoutSpring + 1 ) ,
+    LayoutNeato	= ( LayoutCircle + 1 ) ,
+    LayoutTwoPi	= ( LayoutNeato + 1 ) ,
+    LayoutDot	= ( LayoutTwoPi + 1 ) ,
+    LayoutCirco	= ( LayoutDot + 1 ) ,
+    LayoutNone	= ( LayoutCirco + 1 ) ,
+    LayoutFDR	= ( LayoutNone + 1 ) ,
+    LayoutBoostSpring	= ( LayoutFDR + 1 ) ,
+    LayoutLee	= ( LayoutBoostSpring + 1 ) ,
+    LayoutSplines	= ( LayoutLee + 1 ) 
     } 	LayoutType;
 
 typedef /* [helpstring] */ 
 enum ImagePosition
     {	PositionNorthWest	= 0,
-	PositionNorth	= ( PositionNorthWest + 1 ) ,
-	PositionNorthEast	= ( PositionNorth + 1 ) ,
-	PositionWest	= ( PositionNorthEast + 1 ) ,
-	PositionCenter	= ( PositionWest + 1 ) ,
-	PositionEast	= ( PositionCenter + 1 ) ,
-	PositionSouthWest	= ( PositionEast + 1 ) ,
-	PositionSouth	= ( PositionSouthWest + 1 ) ,
-	PositionSouthEast	= ( PositionSouth + 1 ) 
+    PositionNorth	= ( PositionNorthWest + 1 ) ,
+    PositionNorthEast	= ( PositionNorth + 1 ) ,
+    PositionWest	= ( PositionNorthEast + 1 ) ,
+    PositionCenter	= ( PositionWest + 1 ) ,
+    PositionEast	= ( PositionCenter + 1 ) ,
+    PositionSouthWest	= ( PositionEast + 1 ) ,
+    PositionSouth	= ( PositionSouthWest + 1 ) ,
+    PositionSouthEast	= ( PositionSouth + 1 ) 
     } 	ImagePosition;
 
 typedef /* [helpstring] */ 
 enum MouseModes
     {	MouseModeGrab	= 0,
-	MouseModeSelection	= ( MouseModeGrab + 1 ) ,
-	MouseModeDrawLinks	= ( MouseModeSelection + 1 ) 
+    MouseModeSelection	= ( MouseModeGrab + 1 ) ,
+    MouseModeDrawLinks	= ( MouseModeSelection + 1 ) 
     } 	MouseModes;
 
 typedef /* [helpstring] */ 
 enum DISPID_DSeisintGraphControlEvents
     {	DISPID_EdgeContextMenu	= 1,
-	DISPID_EdgeDoubleClick	= ( DISPID_EdgeContextMenu + 1 ) ,
-	DISPID_GraphContextMenu	= ( DISPID_EdgeDoubleClick + 1 ) ,
-	DISPID_GraphDoubleClick	= ( DISPID_GraphContextMenu + 1 ) ,
-	DISPID_VertexContextMenu	= ( DISPID_GraphDoubleClick + 1 ) ,
-	DISPID_VertexDoubleClick	= ( DISPID_VertexContextMenu + 1 ) ,
-	DISPID_VertexSingleClick	= ( DISPID_VertexDoubleClick + 1 ) ,
-	DISPID_VertexMouseOver	= ( DISPID_VertexSingleClick + 1 ) ,
-	DISPID_GraphMouseOver	= ( DISPID_VertexMouseOver + 1 ) ,
-	DISPID_MetaDataLoaded	= ( DISPID_GraphMouseOver + 1 ) ,
-	DISPID_LayoutFinished	= ( DISPID_MetaDataLoaded + 1 ) ,
-	DISPID_SubgraphMinClick	= ( DISPID_LayoutFinished + 1 ) 
+    DISPID_EdgeDoubleClick	= ( DISPID_EdgeContextMenu + 1 ) ,
+    DISPID_GraphContextMenu	= ( DISPID_EdgeDoubleClick + 1 ) ,
+    DISPID_GraphDoubleClick	= ( DISPID_GraphContextMenu + 1 ) ,
+    DISPID_VertexContextMenu	= ( DISPID_GraphDoubleClick + 1 ) ,
+    DISPID_VertexDoubleClick	= ( DISPID_VertexContextMenu + 1 ) ,
+    DISPID_VertexSingleClick	= ( DISPID_VertexDoubleClick + 1 ) ,
+    DISPID_VertexMouseOver	= ( DISPID_VertexSingleClick + 1 ) ,
+    DISPID_GraphMouseOver	= ( DISPID_VertexMouseOver + 1 ) ,
+    DISPID_MetaDataLoaded	= ( DISPID_GraphMouseOver + 1 ) ,
+    DISPID_LayoutFinished	= ( DISPID_MetaDataLoaded + 1 ) ,
+    DISPID_SubgraphMinClick	= ( DISPID_LayoutFinished + 1 ) 
     } 	DISPID_DSeisintGraphControlEvents;
 
 typedef /* [helpstring] */ 
 enum AppStyle
     {	AppStyleRelavint	= 0,
-	AppStyleGrETL	= ( AppStyleRelavint + 1 ) ,
-	AppStyleQBGraph	= ( AppStyleGrETL + 1 ) 
+    AppStyleGrETL	= ( AppStyleRelavint + 1 ) ,
+    AppStyleQBGraph	= ( AppStyleGrETL + 1 ) 
     } 	AppStyle;
 
 

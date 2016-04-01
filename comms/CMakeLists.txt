@@ -34,9 +34,13 @@ set ( SRCS
 		dfuServer.h
 		#DfuWorkunit.cpp
 		#DfuWorkunit.h
+		DiskAttribute.h
 		DiskAttribute.cpp
 		DiskAttributeHistory.cpp
+		DiskModule.h
 		DiskModule.cpp
+		DiskMonitor.h
+		DiskMonitor.cpp
 		DiskRepository.cpp
 		DiskRepository.h
 		DropZone.cpp

@@ -39,46 +39,46 @@ extern "C" {
 
 typedef struct tagmngstuff 
 {
-	CxFile		*file;
-	BYTE		*image;
-	HANDLE		thread;
-	mng_uint32	delay;
-	mng_uint32  width;
-	mng_uint32  height;
-	mng_uint32  effwdt;
-	mng_int16	bpp;
-	mng_bool	animation;
-	mng_bool	animation_enabled;
-	float		speed;
-	long		nBkgndIndex;
-	RGBQUAD		nBkgndColor;
+    CxFile		*file;
+    BYTE		*image;
+    HANDLE		thread;
+    mng_uint32	delay;
+    mng_uint32  width;
+    mng_uint32  height;
+    mng_uint32  effwdt;
+    mng_int16	bpp;
+    mng_bool	animation;
+    mng_bool	animation_enabled;
+    float		speed;
+    long		nBkgndIndex;
+    RGBQUAD		nBkgndColor;
 } mngstuff;
 
 class CxImageMNG: public CxImage
 {
 public:
-	CxImageMNG();
-	~CxImageMNG();
+    CxImageMNG();
+    ~CxImageMNG();
 
-	bool Load(const char * imageFileName);
-	bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_MNG);}
+    bool Load(const char * imageFileName);
+    bool Save(const char * imageFileName){ return CxImage::Save(imageFileName,CXIMAGE_FORMAT_MNG);}
 
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+    bool Decode(CxFile * hFile);
+    bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+    bool Encode(CxFile * hFile);
+    bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 
-	long Resume();
-	void SetSpeed(float speed);
-	
-	mng_handle hmng;
-	mngstuff mnginfo;
+    long Resume();
+    void SetSpeed(float speed);
+    
+    mng_handle hmng;
+    mngstuff mnginfo;
 protected:
-	void WritePNG(mng_handle hMNG, int Frame, int FrameCount );
-	void SetCallbacks(mng_handle mng);
+    void WritePNG(mng_handle hMNG, int Frame, int FrameCount );
+    void SetCallbacks(mng_handle mng);
 };
 
 #endif
