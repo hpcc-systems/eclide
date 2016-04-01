@@ -343,10 +343,13 @@ public:
         return true;
     }
 
-    void OnButtonGo(Dali::WUAction action)
+    void OnButtonGo(Dali::WUAction action, bool selected)
     {
         CString ecl;
-        m_dlgview.GetSource(ecl);
+        if (selected)
+            m_dlgview.GetSource(ecl, selected);
+        else
+            m_dlgview.GetSource(ecl);
         ExecEcl(action, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled());
     }
 
