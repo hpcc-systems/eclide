@@ -76,6 +76,10 @@ public:
         ti.lpszText = const_cast<TCHAR *>(text.c_str());
 
         int xpos = mousePos.x + 15;
+
+        if (xpos > screenWidth) {
+            screenWidth = (int(xpos / screenWidth) + 1) * screenWidth;
+        }
         int width = screenWidth - xpos;
         if (width < MIN_TIP_WIDTH)
         {
