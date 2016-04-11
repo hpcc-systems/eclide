@@ -26,10 +26,9 @@ public:
     bool m_sortAscending;
 
     CSortMFCListCtrl();
-    ~CSortMFCListCtrl();
 
-    void DeleteAll();
     void DoSort(int col, bool ascending);
+    void OnDeleteItem(int row);
 
     DECLARE_MESSAGE_MAP()
 

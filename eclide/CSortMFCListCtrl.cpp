@@ -10,11 +10,16 @@ CSortMFCListCtrl::CSortMFCListCtrl()
     m_sortAscending = TRUE;
 }
 
-CSortMFCListCtrl::~CSortMFCListCtrl() {
-    for (int i = 0; i < GetItemCount(); ++i)
+void CSortMFCListCtrl::OnDeleteItem(int row)
+{
+    if (GetItemCount() > 0)
     {
-        BookmarkItemData *data = (BookmarkItemData *)GetItemData(i);
-        delete data;
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(GetItemData(row));
+        if (data)
+        {
+            delete data;
+            SetItemData(row, NULL);
+        }
     }
 }
 
@@ -77,13 +82,4 @@ void CSortMFCListCtrl::OnItemclickList(NMHDR* pNMHDR, LRESULT* pResult)
     }
 
     *pResult = 0;
-}
-
-void CSortMFCListCtrl::DeleteAll()
-{
-    for (int i = 0; i < GetItemCount(); ++i) {
-        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(GetItemData(i));
-        delete data;
-    }
-    DeleteAllItems();
 }

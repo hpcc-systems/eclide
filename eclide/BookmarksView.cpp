@@ -132,8 +132,8 @@ void CBookmarksView::OnDestroy()
     iniFile->Set(GLOBAL_BOOKMARKS_SORTCOLUMN, m_list.m_sortedCol);
     iniFile->Set(GLOBAL_BOOKMARKS_SORTASCENDING, m_list.m_sortAscending);
 
-    m_list.DeleteAll();
-    m_listMaster.DeleteAll();
+    m_list.DeleteAllItems();
+    m_listMaster.DeleteAllItems();
 
     SetMsgHandled(false);
 }
@@ -182,6 +182,13 @@ LRESULT CBookmarksView::OnLvnItemchangedListHistory(int /*idCtrl*/, LPNMHDR pNMH
     if (pNMLV->uChanged & LVIF_STATE)
         d = m_list.GetSelectionMark();
 
+    return 0;
+}
+
+LRESULT CBookmarksView::OnLvnItemDelete(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHandled*/)
+{
+    LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+    m_list.OnDeleteItem(pNMLV->iItem);
     return 0;
 }
 
@@ -291,7 +298,6 @@ void CBookmarksView::DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModul
         BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
         if (data->bookmarkType == inType && module == inModule && attributeName == inAttributeName && data->marked == val)
         {
-            delete data;
             m_list.DeleteItem(i);
         }
     }
@@ -535,7 +541,7 @@ void CBookmarksView::OnLoadFile()
             index = 0;
             int col = 0;
 
-            m_listMaster.DeleteAll();
+            m_listMaster.DeleteAllItems();
 
             std::_tstring bookmark, line, type, user, lineNum, column, module, attribute, attributeType, description;
 
@@ -576,9 +582,8 @@ void CBookmarksView::OnLoadFile()
                 }
             }
 
-            for (int i = 0; i < col; ++i)
-            {
-                m_listMaster.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
+            for (int i = 0; i < m_listMaster.GetItemCount(); ++i) {
+                m_list.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
             }
         }
 
@@ -593,8 +598,8 @@ void CBookmarksView::OnLoadFile()
 LRESULT CBookmarksView::OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     DoDataExchange();
-    m_list.DeleteAll();
-    m_listMaster.DeleteAll();
+    m_list.DeleteAllItems();
+    m_listMaster.DeleteAllItems();
     m_prevBookmarksMarker = NULL;
     return 0;
 }
@@ -602,8 +607,8 @@ LRESULT CBookmarksView::OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 LRESULT CBookmarksView::OnReset(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     DoDataExchange();
-    m_list.DeleteAll();
-    m_listMaster.DeleteAll();
+    m_list.DeleteAllItems();
+    m_listMaster.DeleteAllItems();
     m_prevBookmarksMarker = NULL;
     return 0;
 }
@@ -633,7 +638,7 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
         int todoCount = 0;
         int hackCount = 0;
 
-        m_list.DeleteAll();
+        m_list.DeleteAllItems();
 
         if (m_listMaster.GetItemCount() > 0)
         {

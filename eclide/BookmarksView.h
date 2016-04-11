@@ -55,6 +55,7 @@ public:
         MSG_WM_CONTEXTMENU(OnContextMenu)
 
         NOTIFY_HANDLER(IDC_BOOKMARKS_PLACEHOLDER, LVN_ITEMCHANGED, OnLvnItemchangedListHistory)
+        NOTIFY_HANDLER(IDC_BOOKMARKS_PLACEHOLDER, LVN_DELETEITEM, OnLvnItemDelete)
         NOTIFY_HANDLER(IDC_BOOKMARKS_PLACEHOLDER, NM_DBLCLK, OnNmDblClk)
 
         COMMAND_HANDLER(IDC_CHECK_MINE, BN_CLICKED, OnBnClickedCheckFilter)
@@ -98,6 +99,7 @@ protected:
     void OnContextMenu(HWND phWnd, CPoint pPoint);
 
     LRESULT OnLvnItemchangedListHistory(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHandled*/);
+    LRESULT OnLvnItemDelete(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHandled*/);
     LRESULT OnNmDblClk(int /*idCtrl*/, LPNMHDR pNMHDR, BOOL& /*bHandled*/);
     LRESULT OnBnClickedCheckFilter(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
