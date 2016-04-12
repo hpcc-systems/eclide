@@ -9,6 +9,7 @@
 #include "WorkunitFrame.h"
 #include "WorkspaceFrame.h"
 #include "SyntaxFrame.h"
+#include "BookmarksFrame.h"
 #include "ErrorFrame.h"
 
 #include "ChangePasswordDlg.h"
@@ -161,6 +162,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_COMMAND_EX(ID_VIEW_DEBUGPROPERTIES, OnViewDockedPane)
     ON_UPDATE_COMMAND_UI(ID_VIEW_DEBUGSEARCH, OnUpdateViewDockedPane)
     ON_COMMAND_EX(ID_VIEW_DEBUGSEARCH, OnViewDockedPane)
+    ON_UPDATE_COMMAND_UI(ID_VIEW_BOOKMARKS, OnUpdateViewDockedPane)
+    ON_COMMAND_EX(ID_VIEW_BOOKMARKS, OnViewDockedPane)
 
     ON_COMMAND_EX(ID_VIEW_RESETDOCKEDWINDOWS_DEFAULT_LEFT, OnViewResetDockedToolbars)
     ON_COMMAND_EX(ID_VIEW_RESETDOCKEDWINDOWS_DEFAULT_RIGHT, OnViewResetDockedToolbars)
@@ -218,6 +221,7 @@ CMainFrame::CMainFrame() : m_threadSave(5)
     m_DfuFilter = new CDfuFilterFrame();
 #endif
     m_Syntax = new CSyntaxFrame();
+    m_Bookmarks = new CBookmarksFrame();
     m_debugDataViews = new CDockableDataViews();
     m_debugBreakpointView = new CDockableBreakpointView();
     m_debugPropertiesView = new CDockablePropertiesView();
@@ -249,6 +253,7 @@ CMainFrame::~CMainFrame()
     delete m_debugPropertyGridViews;
     delete m_debugSearchView;	//Causes leak, but it is preventing the clean closedown...
     delete m_Syntax;
+    delete m_Bookmarks;
 #ifdef DFU_WINDOWS
     delete m_DfuFilter;
     delete m_Dfu;
@@ -487,6 +492,7 @@ void CMainFrame::SetWorkspaceMode(WORKSPACE workspaceMode)
                 m_DfuFilter->ShowPane(FALSE, FALSE, TRUE);
 #endif
                 m_Syntax->ShowPane(FALSE, FALSE, TRUE);
+                m_Bookmarks->ShowPane(FALSE, FALSE, TRUE);
                 m_Error->ShowPane(FALSE, FALSE, TRUE);
                 break;
 
@@ -511,6 +517,7 @@ void CMainFrame::SetWorkspaceMode(WORKSPACE workspaceMode)
                 m_DfuFilter->ShowPane(TRUE, FALSE, TRUE);
 #endif
                 m_Syntax->ShowPane(TRUE, FALSE, TRUE);
+                m_Bookmarks->ShowPane(TRUE, FALSE, TRUE);
                 m_Error->ShowPane(TRUE, FALSE, TRUE);
                 break;
 
@@ -1202,6 +1209,8 @@ void CMainFrame::InitializeRibbon()
         pPanelNormal->Add(new CMFCRibbonSeparator());
         pPanelNormal->Add(new CMFCRibbonCheckBox(ID_VIEW_SYNTAX, _T("Syntax Errors\ns")));
         pPanelNormal->Add(new CMFCRibbonSeparator());
+        pPanelNormal->Add(new CMFCRibbonCheckBox(ID_VIEW_BOOKMARKS, _T("Bookmarks\ns")));
+        pPanelNormal->Add(new CMFCRibbonSeparator());
         pPanelNormal->Add(new CMFCRibbonCheckBox(ID_VIEW_ERROR, _T("Error Log\ne")));
         pPanelNormal->Add(new CMFCRibbonSeparator());
         strTemp.LoadString(IDS_RIBBON_STATUSBAR);
@@ -1448,7 +1457,7 @@ void CMainFrame::InitializeDocking(UINT nID)
         hiddenPanes.push_back(HiddenPane(m_debugPropertiesView));
         hiddenPanes.push_back(HiddenPane(m_debugSearchView));
     }
-    ATLASSERT(mainPanes.size() + neighbourPanes.size() + tabbedPanes.size() == 15);
+    ATLASSERT(mainPanes.size() + neighbourPanes.size() + tabbedPanes.size() == 18);
     DockToMainframe(mainPanes);
     DockToPane(neighbourPanes);
     TabDockToPane(tabbedPanes);
@@ -1476,13 +1485,16 @@ void CMainFrame::InitializeDockingDefaultRight(WinPaneVector & mainPanes, Neighb
     }
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM));
+    mainPanes.push_back(WinPane(m_Bookmarks, CBRS_ALIGN_BOTTOM));
     {
         neighbourPanes.push_back(NeighbourPane(m_Syntax, m_Error, CBRS_ALIGN_RIGHT));
+        neighbourPanes.push_back(NeighbourPane(m_Bookmarks, m_Error, CBRS_ALIGN_RIGHT));
         {
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
     }
 }
 
@@ -1569,6 +1581,7 @@ void CMainFrame::InitializeDockingDefaultLeft(WinPaneVector & mainPanes, Neighbo
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
@@ -1602,6 +1615,7 @@ void CMainFrame::InitializeDockingPinnedLeft(WinPaneVector & mainPanes, Neighbou
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
@@ -1622,6 +1636,7 @@ void CMainFrame::InitializeDockingUnpinnedLeft(WinPaneVector & mainPanes, Neighb
     mainPanes.push_back(WinPane(m_debugSearchView, CBRS_ALIGN_LEFT, false));
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM, false));
+    mainPanes.push_back(WinPane(m_Bookmarks, CBRS_ALIGN_BOTTOM, false));
     mainPanes.push_back(WinPane(m_debugBreakpointView, CBRS_ALIGN_BOTTOM, false));
     mainPanes.push_back(WinPane(m_debugPropertyGridViews, CBRS_ALIGN_BOTTOM, false));
 
@@ -1711,6 +1726,12 @@ BOOL CMainFrame::CreateDockingWindows()
         return FALSE; // failed to create
     }
     m_debugBreakpointView->EnableDocking(CBRS_ALIGN_ANY);
+    if (!m_Bookmarks->Create(_T("Bookmarks"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_BOOKMARKS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_HIDE_INPLACE))
+    {
+        TRACE0("Failed to create Bookmarks window\n");
+        return FALSE; // failed to create
+    }
+    m_Bookmarks->EnableDocking(CBRS_ALIGN_ANY);
     if (!m_Error->Create(_T("Error Log"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_ERROR, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_HIDE_INPLACE))
     {
         TRACE0("Failed to create Error window\n");
@@ -1770,6 +1791,7 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
     m_Dfu->SetIcon(hPropertiesBarIcon, FALSE);
     m_DfuFilter->SetIcon(hPropertiesBarIcon, FALSE);
     m_Syntax->SetIcon(hPropertiesBarIcon, FALSE);
+    m_Bookmarks->SetIcon(hPropertiesBarIcon, FALSE);
     m_debugDataViews->SetIcon(hPropertiesBarIcon, FALSE);
     m_debugBreakpointView->SetIcon(hPropertiesBarIcon, FALSE);
     m_debugPropertiesView->SetIcon(hPropertiesBarIcon, FALSE);
@@ -2170,6 +2192,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 #endif
 
         m_Syntax->Post_Reset();
+        m_Bookmarks->Post_Reset();
         m_debugDataViews->Post_Reset();
         m_debugBreakpointView->Post_Reset();
         m_debugPropertiesView->Post_Reset();
@@ -3604,6 +3627,7 @@ BOOL CMainFrame::OnViewResetDockedToolbars(UINT nID)
     Undock(m_Dfu);
     Undock(m_DfuFilter);
     Undock(m_Syntax);
+    Undock(m_Bookmarks);
     Undock(m_debugDataViews);
     Undock(m_debugBreakpointView);
     Undock(m_debugPropertiesView);
