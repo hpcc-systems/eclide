@@ -408,7 +408,7 @@ public:
 		for(CLanguageReferenceVector::iterator itr = m_lang.begin(); itr != m_lang.end(); ++itr)
 		{
 			std::_tstring name = itr->GetName();
-			std::transform(name.begin(), name.end(), name.begin(), std::tolower);
+			std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 			m_langNameIndex[name].m_cat = itr->GetCategoryID();
 			m_langNameIndex[name].m_row = row;
 			m_langCatNameIndex[itr->GetCategoryID()][name].m_cat = itr->GetCategoryID();
@@ -555,7 +555,7 @@ public:
 	const TCHAR * GetLangTooltip(const std::_tstring &label)
 	{
 		std::_tstring lower = label;
-		std::transform(label.begin(), label.end(), lower.begin(), std::tolower);
+		std::transform(label.begin(), label.end(), lower.begin(), ::tolower);
 		if (m_langNameIndex.find(lower) != m_langNameIndex.end())
 			return GetLangTooltip(m_langNameIndex[lower].m_row);
 		return m_emptyStr.c_str();
