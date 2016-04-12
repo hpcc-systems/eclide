@@ -10,13 +10,6 @@
 #include "DrawVertexHelper.h"
 #include "SizeTracker.h"
 
-//#define __CUSTOM_PROFILE__
-#ifdef __CUSTOM_PROFILE__
-#define PROFILE	&Profile
-#include "HWProf.h"
-CHWProfile Profile;
-#endif
-
 #define __SKIP_INVISIBLE__
 
 class CLegacyEdgeRenderer : public ILegacyEdgeRenderer,	public CScaledWindow, public boost::signals::trackable

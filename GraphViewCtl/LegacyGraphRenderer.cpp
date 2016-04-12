@@ -7,14 +7,6 @@
 #include "AggDC.h"
 #include "AggHitTest.h"
 
-//#define __CUSTOM_PROFILE__
-#ifdef __CUSTOM_PROFILE__
-#define PROFILE	&Profile
-#include "HWProf.h"
-CHWProfile Profile;
-#endif
-
-
 class CLegacyGraphRenderer : public ILegacyGraphRenderer, public CScaledWindow, public CScrollSupport
 {
 protected:

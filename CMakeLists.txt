@@ -70,7 +70,7 @@ set ( DOC_FILES
     ${PROJECT_SOURCE_DIR}/docs/LanguageReference.xml
   )
 install ( FILES ${DOC_FILES} DESTINATION bin )
-Install ( FILES ${PROJECT_SOURCE_DIR}/License.txt DESTINATION "." )
+Install ( FILES ${PROJECT_SOURCE_DIR}/LICENSE.txt DESTINATION "." )
 
 ##############################################
 # Build tag generation
@@ -121,7 +121,7 @@ set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "HPCC Systems ECL IDE." )
 
 set ( CPACK_PACKAGE_CONTACT "HPCCSystems <ossdevelopment@lexisnexis.com>" )
 
-set ( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/License.txt" )
+set ( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.txt" )
 set ( CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/CPackReadMe.txt" )
 
 set ( CPACK_RPM_PACKAGE_VERSION "${projname}" )

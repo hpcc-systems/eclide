@@ -36,8 +36,6 @@ set ( SRCS
 		GridFocus.h
 		GridSelection.cpp
 		GridSelection.h
-		Hwprof.cpp
-		Hwprof.h
 		#IEFileCache.cpp
 		#IEFileCache.h
 		#iface.cpp

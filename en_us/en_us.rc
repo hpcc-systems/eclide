@@ -501,7 +501,7 @@ BEGIN
     LTEXT           "Version:",IDC_STATIC_VERSION,101,24,255,12
     LTEXT           "Server:",IDC_STATIC_SERVER,101,36,255,12
     LTEXT           "Compiler:",IDC_STATIC_COMPILER,101,48,255,12
-    LTEXT           "Copyright (c) 2000-2013",IDC_STATIC,100,60,180,12
+    LTEXT           "Copyright (c) 2000-2016",IDC_STATIC,100,60,180,12
     LTEXT           "---------",IDC_STATIC_BEVEL,6,92,350,8
     LTEXT           "Warning: ",IDC_STATIC_WARNING,10,100,280,40
     DEFPUSHBUTTON   "OK",IDOK,300,100,50,14
