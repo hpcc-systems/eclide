@@ -8,7 +8,19 @@
 #include "LoginDlg.h"
 #include <EclCC.h>
 
-const TCHAR * const warning = _T("Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distrubution of this program, or any protion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.");
+const TCHAR * const warning = _T("HPCC SYSTEMS software Copyright (C) 2016 HPCC Systems®.\r\n"
+"\r\n"
+"Licensed under the Apache License, Version 2.0 (the \"License\");\r\n"
+"you may not use this file except in compliance with the License.\r\n"
+"You may obtain a copy of the License at\r\n"
+"\r\n"
+"http ://www.apache.org/licenses/LICENSE-2.0\r\n"
+"\r\n"
+"Unless required by applicable law or agreed to in writing, software\r\n"
+"distributed under the License is distributed on an \"AS IS\" BASIS,\r\n"
+"WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n"
+"See the License for the specific language governing permissions and\r\n"
+"limitations under the License.");
 
 //  ===========================================================================
 class CAboutDlg : public CDialogImpl<CAboutDlg>, 
@@ -45,7 +57,7 @@ public:
 
 	BEGIN_DDX_MAP(CAboutDlg)
 		DDX_TEXT(IDC_STATIC_PRODUCT, m_product)
-		DDX_TEXT(IDC_STATIC_WARNING, m_warning)
+		DDX_TEXT(IDC_EDIT_WARNING, m_warning)
 	END_DDX_MAP()
 
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
