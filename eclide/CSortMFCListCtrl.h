@@ -29,6 +29,7 @@ public:
 
     void DoSort(int col, bool ascending);
     void OnDeleteItem(int row);
+    BM_TYPE StringToType(std::_tstring bmStr);
 
     DECLARE_MESSAGE_MAP()
 
