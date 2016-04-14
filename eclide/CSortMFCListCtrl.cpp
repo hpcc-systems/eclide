@@ -10,6 +10,22 @@ CSortMFCListCtrl::CSortMFCListCtrl()
     m_sortAscending = TRUE;
 }
 
+BM_TYPE CSortMFCListCtrl::StringToType(std::_tstring bmStr)
+{
+    BM_TYPE bmType = BM_NONE;
+
+    for (int b = 0; b < m_bookmarks.size(); b++)
+    {
+        if (m_bookmarks[b] == bmStr)
+        {
+            bmType = (BM_TYPE)b;
+            break;
+        }
+    }
+
+    return bmType;
+}
+
 void CSortMFCListCtrl::OnDeleteItem(int row)
 {
     if (GetItemCount() > 0)

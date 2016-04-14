@@ -575,7 +575,7 @@ void CBookmarksView::OnLoadFile()
                         m_listMaster.SetItemText(row, col++, description.c_str());
                         BookmarkItemData *data = new BookmarkItemData;
                         data->marked = true;
-                        data->bookmarkType = BM_MINE;
+                        data->bookmarkType = m_listMaster.StringToType(type);;
                         data->column = boost::lexical_cast<int>(column);
                         m_listMaster.SetItemData(row, (DWORD_PTR)data);
                     }
