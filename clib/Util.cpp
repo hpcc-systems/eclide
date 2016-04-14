@@ -425,7 +425,7 @@ const TCHAR* Format(std::_tstring& str, const TCHAR* fmt ...)
 
 std::_tstring& MakeLower(std::_tstring& str)
 {
-    std::transform(str.begin(),str.end(),str.begin(), std::tolower);
+    std::transform(str.begin(),str.end(),str.begin(), ::tolower);
     return str;
 }
 
