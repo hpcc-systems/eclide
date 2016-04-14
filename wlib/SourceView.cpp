@@ -757,15 +757,22 @@ void CSourceCtrl::SetStyle(signed style, unsigned fore, unsigned back, const std
         face = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_FONT);
 
     int size = _size >= 1 ? _size : GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_FONTSIZE);
-    if (fore)
-        StyleSetFore(style, fore);
-    StyleSetBack(style, back);
-    if (size >= 1)
-        StyleSetSize(style, size);
-    if (face)
-        StyleSetFont(style, face);
-    StyleSetBold(style, bold);
-    StyleSetEOLFilled(style, true);
+    if (style == 38)
+    {
+        SetCaretFore(fore);
+    }
+    else
+    {
+        if (fore)
+            StyleSetFore(style, fore);
+        StyleSetBack(style, back);
+        if (size >= 1)
+            StyleSetSize(style, size);
+        if (face)
+            StyleSetFont(style, face);
+        StyleSetBold(style, bold);
+        StyleSetEOLFilled(style, true);
+    }
 }
 
 void CSourceCtrl::SetMarker(int marker, int markerType, COLORREF fore, COLORREF back)
