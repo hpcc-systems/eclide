@@ -76,6 +76,16 @@ public:
         ti.lpszText = const_cast<TCHAR *>(text.c_str());
 
         int xpos = mousePos.x + 15;
+
+        POINT p;
+        p.x = mousePos.x;
+        p.y = mousePos.y;
+        HMONITOR monitor = ::MonitorFromPoint(p, MONITOR_DEFAULTTONEAREST);
+        MONITORINFO mi;
+        mi.cbSize = sizeof(mi);
+        ::GetMonitorInfo(monitor, &mi);
+        screenWidth = mi.rcMonitor.right;
+
         int width = screenWidth - xpos;
         if (width < MIN_TIP_WIDTH)
         {

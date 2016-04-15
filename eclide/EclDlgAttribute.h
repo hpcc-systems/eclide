@@ -37,6 +37,7 @@ public:
     IAttribute * GetAttribute();
     const TCHAR * GetCluster();
     bool CanExecute();
+    CBookmarksFrame *GetBookmarksFrame();
 
     BEGIN_MSG_MAP(thisClass)
         MSG_WM_INITDIALOG(OnInitDialog)
