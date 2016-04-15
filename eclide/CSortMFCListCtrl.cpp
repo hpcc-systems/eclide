@@ -39,6 +39,18 @@ void CSortMFCListCtrl::OnDeleteItem(int row)
     }
 }
 
+void CSortMFCListCtrl::SetMark(int row, bool val)
+{
+    if (GetItemCount() > 0)
+    {
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(GetItemData(row));
+        if (data)
+        {
+            data->marked = val;
+        }
+    }
+}
+
 int CALLBACK SortMe(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 {
     CSortMFCListCtrl* pListCtrl = (CSortMFCListCtrl*)lParamSort;
