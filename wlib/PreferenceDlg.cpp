@@ -1166,6 +1166,21 @@ public:
 		font = m_comboFont.SetWindowText(m_langRef->GetFontName(catID));
 		m_comboFontSize.SetWindowText(boost::lexical_cast<std::_tstring>(m_langRef->GetFontSize(catID)).c_str());
 		m_checkBold.SetCheck(m_langRef->GetFontBold(catID));
+
+		if (catID == 38) // Caret
+		{
+			m_buttBackground.EnableWindow(false);
+			m_comboFont.EnableWindow(false);
+			m_comboFontSize.EnableWindow(false);
+			m_checkBold.EnableWindow(false);
+		}
+		else
+		{
+			m_buttBackground.EnableWindow(true);
+			m_comboFont.EnableWindow(true);
+			m_comboFontSize.EnableWindow(true);
+			m_checkBold.EnableWindow(true);
+		}
 	}
 
 	void DoSaveElement()
