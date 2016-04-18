@@ -641,9 +641,9 @@
 #define ID_REPOSITORY_ROLLBACK          32861
 #define ID_EDIT_MATCHBRACE              32862
 #define ID_EDIT_SELECTTOBRACE           32863
-//#if _WTL_VER < 0x0900
+#if _WTL_VER < 0x0900
 #define ID_EDIT_DELETE                  32864
-//#endif
+#endif
 #define ID_EDIT_COMPLETEWORD            32865
 #define ID_EDIT_BLOCKCOMMENT            32866
 #define ID_EDIT_BOXCOMMENT              32867

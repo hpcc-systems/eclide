@@ -4,6 +4,10 @@ set ( SRCS
 		#AttributeView.cpp
 		#AttributeView.h
 		BasicExcel.cpp
+		BookmarksFrame.cpp
+		BookmarksFrame.h
+		BookmarksView.cpp
+		BookmarksView.h
 		ChildAttributeFrame.cpp
 		ChildAttributeFrame.h
 		ChildBuilderFrame.cpp
@@ -22,6 +26,8 @@ set ( SRCS
 		#CommandManager.h
 		CommentDlg.cpp
 		CommentDlg.h
+		CSortMFCListCtrl.cpp
+		CSortMFCListCtrl.h
 		DataView.cpp
 		DataView.h
 		DebugGraphView.cpp
