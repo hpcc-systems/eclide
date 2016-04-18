@@ -1457,7 +1457,6 @@ void CMainFrame::InitializeDocking(UINT nID)
         hiddenPanes.push_back(HiddenPane(m_debugPropertiesView));
         hiddenPanes.push_back(HiddenPane(m_debugSearchView));
     }
-    ATLASSERT(mainPanes.size() + neighbourPanes.size() + tabbedPanes.size() == 18);
     DockToMainframe(mainPanes);
     DockToPane(neighbourPanes);
     TabDockToPane(tabbedPanes);
@@ -1485,16 +1484,14 @@ void CMainFrame::InitializeDockingDefaultRight(WinPaneVector & mainPanes, Neighb
     }
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM));
-    mainPanes.push_back(WinPane(m_Bookmarks, CBRS_ALIGN_BOTTOM));
     {
         neighbourPanes.push_back(NeighbourPane(m_Syntax, m_Error, CBRS_ALIGN_RIGHT));
-        neighbourPanes.push_back(NeighbourPane(m_Bookmarks, m_Error, CBRS_ALIGN_RIGHT));
         {
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
     }
 }
 
@@ -1526,6 +1523,7 @@ void CMainFrame::InitializeDockingPinnedRight(WinPaneVector & mainPanes, Neighbo
         {
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
@@ -1547,6 +1545,7 @@ void CMainFrame::InitializeDockingUnpinnedRight(WinPaneVector & mainPanes, Neigh
     mainPanes.push_back(WinPane(m_debugSearchView, CBRS_ALIGN_RIGHT, false));
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM, false));
+    mainPanes.push_back(WinPane(m_Bookmarks, CBRS_ALIGN_BOTTOM, false));
     mainPanes.push_back(WinPane(m_debugBreakpointView, CBRS_ALIGN_BOTTOM, false));
     mainPanes.push_back(WinPane(m_debugPropertyGridViews, CBRS_ALIGN_BOTTOM, false));
 
@@ -1580,8 +1579,8 @@ void CMainFrame::InitializeDockingDefaultLeft(WinPaneVector & mainPanes, Neighbo
         {
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
@@ -1614,8 +1613,8 @@ void CMainFrame::InitializeDockingPinnedLeft(WinPaneVector & mainPanes, Neighbou
         {
             tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
         }
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
+        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
