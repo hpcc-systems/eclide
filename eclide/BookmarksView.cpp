@@ -59,7 +59,7 @@ LRESULT CBookmarksView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     ScreenToClient(rc);
     wndPlaceholder.DestroyWindow();
 
-    const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_SORTASCENDING | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     if (!m_list.Create(dwViewStyle, rc, CWnd::FromHandle(m_hWnd), IDC_BOOKMARKS_PLACEHOLDER))
     {
         TRACE0("Failed to create Class View\n");
@@ -164,6 +164,16 @@ void CBookmarksView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
         OnLoadFile();
     }
     break;
+    case ID_BOOKMARKS_LOADMERGE:
+    {
+        OnLoadFile(true);
+    }
+    break;
+    case ID_BOOKMARKS_DELETEFROMLIST:
+    {
+        OnDeleteLines();
+    }
+    break;
     case ID_BOOKMARKS_CLEAR:
     {
         if (MessageBox(CLEAR_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
@@ -208,15 +218,62 @@ void CBookmarksView::OnUpdateButtonRemoveBookmarks(CCmdUI* pCmdUI)
 {
 }
 
+void CBookmarksView::OnDeleteLines()
+{
+    if (MessageBox(DELETE_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
+    {
+        return;
+    }
+    SetMarks(false);
+
+    POSITION pos = m_list.GetFirstSelectedItemPosition();
+    while (pos)
+    {
+        int sel = m_list.GetNextSelectedItem(pos);
+        m_list.SetMark(sel, true);
+    }
+    DeleteMarkedBookmarks(true);
+}
+
 void CBookmarksView::OnOpen()
 {
-    int sel = m_list.GetSelectionMark();
-    if (sel >= 0) {
-        std::_tstring line = m_list.GetItemText(sel, 0);
-        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(sel));
+    std::vector<std::_tstring> opens;
+    std::vector<int> rows;
+
+    POSITION pos = m_list.GetFirstSelectedItemPosition();
+
+    while (pos)
+    {
+        int sel = m_list.GetNextSelectedItem(pos);
         std::_tstring module = m_list.GetItemText(sel, 3);
         std::_tstring attribute = m_list.GetItemText(sel, 4);
-        std::_tstring attributeType = m_list.GetItemText(sel, 5);
+        std::_tstring unique = module + attribute;
+
+        bool found = false;
+        for (std::vector<std::_tstring>::iterator it = opens.begin(); it != opens.end(); ++it)
+        {
+            if (*it == unique)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            opens.push_back(unique);
+            rows.push_back(sel);
+        }
+    }
+
+    for (std::vector<int>::iterator it = rows.begin(); it != rows.end(); ++it)
+    {
+        int row = *it;
+        std::_tstring line = m_list.GetItemText(row, 0);
+        std::_tstring module = m_list.GetItemText(row, 3);
+        std::_tstring attribute = m_list.GetItemText(row, 4);
+        std::_tstring attributeType = m_list.GetItemText(row, 5);
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(row));
 
         OpenAttribute(line, data->column + 1, module, attribute, attributeType);
     }
@@ -275,7 +332,29 @@ void CBookmarksView::ParseBookmarks(IAttribute *attribute)
     }
 }
 
-void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val) {
+void CBookmarksView::SetMarks(bool val) {
+    for (int i = 0; i < m_list.GetItemCount(); ++i)
+    {
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
+        data->marked = val;
+    }
+}
+
+void CBookmarksView::DeleteMarkedBookmarks(bool val) {
+    for (int i = m_list.GetItemCount() - 1; i >= 0; --i)
+    {
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
+        if (data)
+        {
+            if (data->marked == val) {
+                m_list.DeleteItem(i);
+            }
+        }
+    }
+}
+
+void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val)
+{
     for (int i = 0; i < m_list.GetItemCount(); ++i)
     {
         std::_tstring module = m_list.GetItemText(i, 3);
@@ -289,7 +368,8 @@ void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeN
     }
 }
 
-void CBookmarksView::DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModule, std::_tstring inAttributeName, bool val) {
+void CBookmarksView::DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModule, std::_tstring inAttributeName, bool val)
+{
     for (int i = m_list.GetItemCount() - 1; i >= 0; --i)
     {
         std::_tstring module = m_list.GetItemText(i, 3);
@@ -303,21 +383,25 @@ void CBookmarksView::DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModul
     }
 }
 
-static inline std::_tstring &ltrim(std::_tstring &s) {
+static inline std::_tstring &ltrim(std::_tstring &s)
+{
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
     return s;
 }
 
-static inline std::_tstring &rtrim(std::_tstring &s) {
+static inline std::_tstring &rtrim(std::_tstring &s)
+{
     s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
     return s;
 }
 
-static inline std::_tstring &trim(std::_tstring &s) {
+static inline std::_tstring &trim(std::_tstring &s)
+{
     return ltrim(rtrim(s));
 }
 
-void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType) {
+void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType)
+{
     int i = 0;
     int col = 0;
     int row = 0;
@@ -512,11 +596,17 @@ std::_tstring CBookmarksView::FindTag(std::_tstring str, std::_tstring tag, int 
     return foundStr;
 }
 
-void CBookmarksView::OnLoadFile()
+void CBookmarksView::OnLoadFile(bool mergeFlag)
 {
     if (m_list.GetItemCount() > 0)
     {
-        if (MessageBox(LOAD_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
+        if (mergeFlag) {
+            if (MessageBox(LOAD_MERGE_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
+            {
+                return;
+            }
+        }
+        else if (MessageBox(LOAD_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
         {
             return;
         }
@@ -541,7 +631,10 @@ void CBookmarksView::OnLoadFile()
             index = 0;
             int col = 0;
 
-            m_listMaster.DeleteAllItems();
+            if (!mergeFlag)
+            {
+                m_listMaster.DeleteAllItems();
+            }
 
             std::_tstring bookmark, line, type, user, lineNum, column, module, attribute, attributeType, description;
 
@@ -562,27 +655,42 @@ void CBookmarksView::OnLoadFile()
                     attributeType = FindTag(bookmark, _T("attrtype"), bookmarkIndex);
                     description = FindTag(bookmark, _T("description"), bookmarkIndex);
 
-                    if (lineNum.length() > 0 && attribute.length() > 0 && description.length() > 0)
+                    bool foundDupe = false;
+                    for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
                     {
-                        int row = 0;
-                        col = 0;
-                        row = m_listMaster.InsertItem(col++, lineNum.c_str());
-                        m_listMaster.SetItemText(row, col++, type.c_str());
-                        m_listMaster.SetItemText(row, col++, user.c_str());
-                        m_listMaster.SetItemText(row, col++, module.c_str());
-                        m_listMaster.SetItemText(row, col++, attribute.c_str());
-                        m_listMaster.SetItemText(row, col++, attributeType.c_str());
-                        m_listMaster.SetItemText(row, col++, description.c_str());
-                        BookmarkItemData *data = new BookmarkItemData;
-                        data->marked = true;
-                        data->bookmarkType = m_listMaster.StringToType(type);;
-                        data->column = boost::lexical_cast<int>(column);
-                        m_listMaster.SetItemData(row, (DWORD_PTR)data);
+                        std::_tstring lineDupe = m_listMaster.GetItemText(i, 0);
+                        std::_tstring moduleDupe = m_listMaster.GetItemText(i, 3);
+                        std::_tstring attributeDupe = m_listMaster.GetItemText(i, 4);
+
+                        if (lineDupe == lineNum && moduleDupe == module && attributeDupe == attribute)
+                        {
+                            foundDupe = true;
+                        }
+                    }
+
+                    if (!foundDupe) {
+                        if (lineNum.length() > 0 && attribute.length() > 0 && description.length() > 0)
+                        {
+                            int row = 0;
+                            col = 0;
+                            row = m_listMaster.InsertItem(col++, lineNum.c_str());
+                            m_listMaster.SetItemText(row, col++, type.c_str());
+                            m_listMaster.SetItemText(row, col++, user.c_str());
+                            m_listMaster.SetItemText(row, col++, module.c_str());
+                            m_listMaster.SetItemText(row, col++, attribute.c_str());
+                            m_listMaster.SetItemText(row, col++, attributeType.c_str());
+                            m_listMaster.SetItemText(row, col++, description.c_str());
+                            BookmarkItemData *data = new BookmarkItemData;
+                            data->marked = true;
+                            data->bookmarkType = m_listMaster.StringToType(type);
+                            data->column = boost::lexical_cast<int>(column);
+                            m_listMaster.SetItemData(row, (DWORD_PTR)data);
+                        }
                     }
                 }
             }
 
-            for (int i = 0; i < m_listMaster.GetItemCount(); ++i) {
+            for (int i = 0; i < col; ++i) {
                 m_list.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
             }
         }
@@ -637,6 +745,7 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
         int mineCount = 0;
         int todoCount = 0;
         int hackCount = 0;
+        int col = 0;
 
         m_list.DeleteAllItems();
 
@@ -671,7 +780,7 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
                     std::_tstring description = m_listMaster.GetItemText(i, 6);
                     BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
 
-                    int col = 0;
+                    col = 0;
 
                     int row = m_list.InsertItem(col++, line.c_str());
                     m_list.SetItemText(row, col++, type.c_str());
@@ -689,7 +798,7 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
             }
         }
 
-        for (int i = 0; i < m_list.GetItemCount(); ++i) {
+        for (int i = 0; i < col; ++i) {
             m_list.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
         }
 

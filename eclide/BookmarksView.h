@@ -10,8 +10,9 @@
 const TCHAR * const CLEAR_BOOKMARKS_MSG = _T("Are you sure you want clear the displayed bookmarks?");
 const TCHAR * const SAVE_BOOKMARKS_MSG = _T("Are you sure you want overwrite the current bookmarks file?");
 const TCHAR * const LOAD_BOOKMARKS_MSG = _T("Are you sure you want replace the current list of bookmarks with what's saved?");
+const TCHAR * const LOAD_MERGE_BOOKMARKS_MSG = _T("Are you sure you want to merge your saved bookmarks with the current bookmark list?");
 const TCHAR * const LOAD_UNFOUND_BOOKMARKS_MSG = _T("No bookmarks file found");
-const TCHAR * const DELETE_BOOKMARKS_MSG = _T("Do you want to delete the selected bookmark?");
+const TCHAR * const DELETE_BOOKMARKS_MSG = _T("Do you want to delete the selected bookmark(s) from the list?");
 
 __interface ISciBookmarksMarker;
 
@@ -84,6 +85,8 @@ public:
     END_DDX_MAP()
 
     std::_tstring FindTag(std::_tstring line, std::_tstring tag, int &index);
+    void SetMarks(bool val);
+    void DeleteMarkedBookmarks(bool val);
     void SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
     void DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModule, std::_tstring inAttributeName, bool val);
     void ParseBookmarks(IAttribute *attribute);
@@ -109,10 +112,12 @@ protected:
     afx_msg void OnUpdateButtonRemoveBookmarks(CCmdUI* pCmdUI);
 
     afx_msg void OnOpen();
+    afx_msg void OpenMarkedBookmarks(bool val);
     afx_msg void OnUpdateOpen(CCmdUI* pCmdUI);
     afx_msg void OnSaveFile();
     afx_msg void OnUpdateSaveFile(CCmdUI* pCmdUI);
-    afx_msg void OnLoadFile();
+    afx_msg void OnLoadFile(bool mergeFlag=false);
+    afx_msg void OnDeleteLines();
     afx_msg void OnUpdateLoadFile(CCmdUI* pCmdUI);
 
     LRESULT OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);

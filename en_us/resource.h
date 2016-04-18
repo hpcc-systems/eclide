@@ -641,9 +641,9 @@
 #define ID_REPOSITORY_ROLLBACK          32861
 #define ID_EDIT_MATCHBRACE              32862
 #define ID_EDIT_SELECTTOBRACE           32863
-//#if _WTL_VER < 0x0900
+#if _WTL_VER < 0x0900
 #define ID_EDIT_DELETE                  32864
-//#endif
+#endif
 #define ID_EDIT_COMPLETEWORD            32865
 #define ID_EDIT_BLOCKCOMMENT            32866
 #define ID_EDIT_BOXCOMMENT              32867
@@ -864,6 +864,8 @@
 #define ID_BOOKMARKS_LOAD               33093
 #define ID_VIEW_BOOKMARKS               33094
 #define ID_BOOKMARKS_CLEAR              33095
+#define ID_BOOKMARKS_LOADMERGE          33096
+#define ID_BOOKMARKS_DELETEFROMLIST     33097
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -893,7 +895,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33096
+#define _APS_NEXT_COMMAND_VALUE         33098
 #define _APS_NEXT_CONTROL_VALUE         537
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

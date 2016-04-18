@@ -10,7 +10,6 @@
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
 {
-    ATLASSERT(m_attribute);
     if (m_attribute)
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));

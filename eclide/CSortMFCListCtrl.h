@@ -30,6 +30,7 @@ public:
     void DoSort(int col, bool ascending);
     void OnDeleteItem(int row);
     BM_TYPE StringToType(std::_tstring bmStr);
+    void SetMark(int row, bool val);
 
     DECLARE_MESSAGE_MAP()
 
