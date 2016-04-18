@@ -617,9 +617,9 @@ unsigned int CAnchors::GetMatchCount() const
     return m_anchors.size();
 }
 
-void CAnchors::GetMatch(unsigned int match, CTable & baseTable, CTable & compTable) const
+void CAnchors::GetMatch(int match, CTable & baseTable, CTable & compTable) const
 {
-    ATLASSERT(match >= 0 && match < GetMatchCount());
+    ATLASSERT(match >= 0 && (unsigned int)match < GetMatchCount());
     for (CMatchBlockVector::const_iterator anchors_itr = m_anchors.begin(); anchors_itr != m_anchors.end(); ++anchors_itr)
     {				
         if (--match < 0)
@@ -637,9 +637,9 @@ unsigned int CAnchors::GetGapCount() const
     return m_anchors.size() - 1;
 }
 
-void CAnchors::GetGap(unsigned int gap, CTable & baseTable, CTable & compTable) const
+void CAnchors::GetGap(int gap, CTable & baseTable, CTable & compTable) const
 {
-    ATLASSERT(gap >= 0 && gap < GetGapCount());
+    ATLASSERT(gap >= 0 && (unsigned int)gap < GetGapCount());
     for (CMatchBlockVector::const_iterator anchors_next_itr = m_anchors.begin(); anchors_next_itr != m_anchors.end();)
     {				
         CMatchBlockVector::const_iterator anchors_itr = anchors_next_itr++;
