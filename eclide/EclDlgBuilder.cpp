@@ -770,10 +770,10 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
         else if (doSaveAs == IDNO)
             m_owner->Close();
     }
-    else 
+    else if (newAttrAsOldOneMoved)
     {
-        //TODO handle renamed.
-        //ATLASSERT(FALSE);
+        SetAttribute(newAttrAsOldOneMoved);
+        SetNamePath(newAttrAsOldOneMoved->GetPath());
     }
 }
 
