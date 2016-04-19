@@ -161,6 +161,7 @@ public:
     void InitColors(ILangRef * langRef);
 
     int GetText(CString & pstrText) const;
+    bool IsTextSelected();
     unsigned GetPosition(unsigned lineNo, unsigned column);
     int SetSelLineCol(int lineNo, int colNo);
     void SetSelLine(int lineNo);

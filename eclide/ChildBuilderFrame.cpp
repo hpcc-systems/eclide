@@ -812,6 +812,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
         UPDATEUI(cui, ID_HELP, TRUE);
         UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
         UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
+        UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
         UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
         UPDATEUI(cui, ID_GO_DEBUG, IsRemoteDaliEnabled());
         if (m_dlgview.CanExecute())

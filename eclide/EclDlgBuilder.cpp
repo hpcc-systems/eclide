@@ -602,6 +602,7 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
         m_owner->OnButtonGo(Dali::WUActionRun);
         break;
     case ID_ECL_SEL_GO:
+    case ID_GO_SUBMITSELECTED:
         m_owner->OnButtonGo(Dali::WUActionRun, true);
         break;
     case ID_GO_COMPILE:

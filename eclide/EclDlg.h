@@ -118,7 +118,8 @@ public:
         GetTitle(titleStr);
         titleStr.TrimLeft(_T("*"));
         copyStr.Format(_T("&Copy \"%s\"\tCtrl+Alt+C"), titleStr);
-        m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr); 
+        m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr);
+        edit.EnableMenuItem(ID_ECL_SEL_GO, MF_BYCOMMAND | (m_view.IsTextSelected() ? MF_ENABLED : MF_DISABLED | MF_GRAYED));
         BOOL id = edit.TrackPopupMenuEx(TPM_RETURNCMD, pt.x, pt.y, phWnd, NULL);
         m.DestroyMenu();
         if (id)
