@@ -288,7 +288,7 @@ void CGraphView3::CenterOnItem(const CUniqueID & id)
 
 void CGraphView3::CenterOnTiming(const Dali::CGraphTiming * timing)
 {
-    CUniqueID id(guidDefault, XGMML_CAT_SUBGRAPH, boost::lexical_cast<std::_tstring>(timing->m_gid));
+    CUniqueID id(guidDefault, XGMML_CAT_SUBGRAPH, boost::lexical_cast<std::_tstring>(m_wndLNGVC.GetItem(timing->m_gid)));
     CenterOnItem(id);
 }
 
