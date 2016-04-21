@@ -203,6 +203,11 @@ public:
         return boost::lexical_cast<int>(uid.GetID());
     }
 
+    int GetItem(int globalID)
+    {
+        return GetItem(boost::lexical_cast<std::_tstring>(globalID));
+    }
+
     int GetItem(const std::_tstring globalID)
     {
         CComVariant vaResult;
@@ -219,10 +224,10 @@ public:
         return vaResult;
     }
 
-    void CenterGraphItem(int item, bool scaleToFit = true)
+    void CenterGraphItem(int item, bool scaleToFit = true, bool widthOnly = false)
     {
         CComVariant vaResult;
-        bool retVal = InvokeScript(_T("centerOnItem"), boost::lexical_cast<std::_tstring>(item), boost::lexical_cast<std::_tstring>(scaleToFit), vaResult);
+        bool retVal = InvokeScript(_T("centerOnItem"), boost::lexical_cast<std::_tstring>(item), boost::lexical_cast<std::_tstring>(scaleToFit), boost::lexical_cast<std::_tstring>(widthOnly), vaResult);
         ATLASSERT(retVal);
     }
 
