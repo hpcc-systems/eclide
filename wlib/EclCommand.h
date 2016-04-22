@@ -154,6 +154,7 @@ public:
         UPDATEUI(cui, ID_ECL_PREVIOUSERROR, m_ecl->SyntaxHasPrevious());
         UPDATEUI(cui, ID_ECL_CLEARERRORS, m_ecl->SyntaxGetCount() > 0);
         UPDATEUI(cui, ID_ECL_GOTO, bHasContents);
+        UPDATEUI(cui, ID_ECL_SEL_GO, bHasSelection);
         UPDATEUI(cui, ID_ECL_CHECKCOMPLEXITY, bCanSubmit);
         UPDATEUI(cui, ID_ECL_CHECKDEPENDENCY, bCanSubmit);
 

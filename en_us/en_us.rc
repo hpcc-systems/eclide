@@ -2143,6 +2143,7 @@ BEGIN
     POPUP "Go"
     BEGIN
         MENUITEM "&Submit",                     ID_GO_SUBMIT
+        MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
         MENUITEM "&Compile",                    ID_GO_COMPILE
         MENUITEM "&Debug",                      ID_GO_DEBUG
     END
@@ -2157,6 +2158,7 @@ END
 IDR_POPUP_EEGO2 MENU
 BEGIN
     MENUITEM "&Submit",                     ID_GO_SUBMIT
+    MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
     MENUITEM "&Compile",                    ID_GO_COMPILE
     MENUITEM "&Debug",                      ID_GO_DEBUG
 END

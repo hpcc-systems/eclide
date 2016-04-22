@@ -601,6 +601,7 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
         m_owner->OnButtonGo(Dali::WUActionRun);
         break;
     case ID_ECL_SEL_GO:
+    case ID_GO_SUBMITSELECTED:
         m_owner->OnButtonGo(Dali::WUActionRun, true);
         break;
     case ID_GO_COMPILE:
@@ -770,10 +771,10 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
         else if (doSaveAs == IDNO)
             m_owner->Close();
     }
-    else 
+    else if (newAttrAsOldOneMoved)
     {
-        //TODO handle renamed.
-        //ATLASSERT(FALSE);
+        SetAttribute(newAttrAsOldOneMoved);
+        SetNamePath(newAttrAsOldOneMoved->GetPath());
     }
 }
 
