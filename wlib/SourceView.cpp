@@ -575,6 +575,12 @@ int CSourceCtrl::GetText(CString & result) const
     return retVal;
 }
 
+bool CSourceCtrl::IsTextSelected()
+{
+    Scintilla::CharacterRange chrg = GetSelection();
+    return chrg.cpMax == chrg.cpMin ? false : true;
+}
+
 unsigned CSourceCtrl::GetPosition(unsigned lineNo, unsigned column)
 {
     return PositionFromLine(lineNo) + column;
