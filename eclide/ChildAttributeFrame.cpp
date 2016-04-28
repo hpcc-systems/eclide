@@ -173,6 +173,8 @@ public:
         MSG_WM_SETFOCUS(OnSetFocus)
         NOTIFY_CODE_HANDLER(CTCN_SELCHANGE, OnTabSelected)
 
+        COMMAND_ID_HANDLER_EX(ID_HELP, OnEclHelp)
+
         CHAIN_COMMANDS_MEMBER(m_tabbedChildWindow)
         CHAIN_MSG_MAP(baseClass)
         REFLECT_NOTIFICATIONS()
@@ -180,6 +182,14 @@ public:
 
     #define	TABID_ATTRIBUTE 0
     #define	TABID_HISTORY 1
+
+    void OnEclHelp(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+    {
+        CString message;
+        m_dlgview.GetWordAtCurPosNoPeriodPlusHash(message);
+        if (message[0])
+            ShowHelp((const TCHAR *)message);
+    }
 
     void OnSize(UINT nType, CSize size)
     {
