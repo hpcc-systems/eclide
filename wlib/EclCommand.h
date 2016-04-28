@@ -284,7 +284,7 @@ public:
         //ATLASSERT(lParam == (LPARAM)&GetFindReplace);
         if(m_findReplace->GetFindReplace().FindNext())
         {
-            if(!m_ecl->DoFind(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_dwFlags, m_findReplace->GetFindReplace().m_mode, false, m_findReplace->GetFindReplace().SearchDown())) {
+            if(!m_ecl->DoFind(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_dwFlags, m_findReplace->GetFindReplace().m_mode, false, m_findReplace->GetFindReplace().SearchDown(), m_findReplace->GetFindReplace().IsFindWrap())) {
                 //m_eclSlot->PostStatus(_T("Error. Can't found '%s'"), m_findReplace->GetFindReplace().m_szFindWhat); 
                 ::MessageBeep(MB_ICONEXCLAMATION);
             }
