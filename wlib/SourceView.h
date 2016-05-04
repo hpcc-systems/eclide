@@ -171,7 +171,7 @@ public:
     void SetFoldStyle(FOLD_STYLE style);
     bool StartAutoComplete();
 
-    bool DoFind(const std::_tstring & findText, DWORD flags, FINDMODE findmode, BOOL bAll = FALSE, BOOL bNext = TRUE);
+    bool DoFind(const std::_tstring & findText, DWORD flags, FINDMODE findmode, BOOL bAll = FALSE, BOOL bNext = TRUE, BOOL bFindWrap = FALSE);
     bool DoReplaceCurrent(const std::_tstring & findText, const CString & replaceText, DWORD flags, BOOL matchCase, BOOL bNext = TRUE);
     bool DoReplaceAll(const std::_tstring & findText, const CString & replaceText, DWORD flags);
     static const TCHAR* RFind (const TCHAR* str, const TCHAR ch);
