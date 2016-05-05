@@ -6,6 +6,7 @@
 #include "EclErrorParser.h"
 #include <UtilFilesystem.h>
 #include "logger.h"
+#include "EclCC.h"
 
 class CAttributeBase : public clib::CLockableUnknown
 {
@@ -54,6 +55,15 @@ public:
     virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
+        CComPtr<IEclCC> eclcc = CreateIEclCC();
+        std::_tstring eclFolders;
+        int eclFolderTotal = eclcc->GetEclFolderCount();
+        for (int i = 0; i < eclFolderTotal; ++i) 
+        {
+            if (i > 0) 
+                eclFolders += _T(";");
+            eclFolders += eclcc->GetEclFolder(i);
+        }
         std::string batchFile = CT2A(GetType()->GetRepositoryCode());
         batchFile += ".bat";
         boost::filesystem::path folder;
@@ -120,9 +130,9 @@ public:
             errorFile.Create(NULL, GENERIC_READ);
             errorFile.HandsOff();
             
-            std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7% %8%")) % 
+            std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7% %8% \"%9%\"")) % 
                 batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel(true) % GetLabel() % 
-                inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName() % static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER)))).str();
+                inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName() % static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))) % eclFolders).str();
 
             //_DBGLOG(m_url, LEVEL_INFO, cmd.c_str());
             std::_tstring in;

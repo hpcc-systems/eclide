@@ -88,7 +88,7 @@ public:
     void SetMarks(bool val);
     void DeleteMarkedBookmarks(bool val);
     void SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
-    void DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModule, std::_tstring inAttributeName, bool val);
+    void DeleteMarkedBookmarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
     void ParseBookmarks(IAttribute *attribute);
     void ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType);
     void OpenAttribute(std::_tstring line, int column, std::_tstring module, std::_tstring attribute, std::_tstring attributeType);

@@ -43,7 +43,8 @@ public:
     FINDMODE m_mode;
 
     bool m_enableWildcardRegex;
-    
+    bool m_findWrap;
+
     bool m_bPinned;
 
     FindReplace(bool bPinned = true) 
@@ -57,6 +58,7 @@ public:
         m_dwFlags = FR_DOWN;
         m_mode = FINDMODE_NONE;
         m_enableWildcardRegex = false;
+        m_findWrap = false;
 
         m_hPinned = LoadIcon(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE(IDI_PINNED));			
         m_hUnpinned = LoadIcon(_AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE(IDI_UNPINNED));
@@ -87,6 +89,7 @@ public:
     BOOL ReplaceCurrent() const { return m_dwFlags & FR_REPLACE ? TRUE : FALSE; }
     BOOL ReplaceAll() const	{ return m_dwFlags & FR_REPLACEALL ? TRUE : FALSE;	}
     BOOL IsTerminating() const { return m_dwFlags & FR_DIALOGTERM ? TRUE : FALSE; }
+    BOOL IsFindWrap() const { return m_findWrap; }
 
     static DWORD RegisteredFindReplaceMsg() 
     {
@@ -251,6 +254,7 @@ private:
         CheckDlgButton(IDC_CHECK_REGEX, m_fr->Regex() ? BST_CHECKED : BST_UNCHECKED);
         CheckRadioButton(IDC_RADIO_UP, IDC_RADIO_DOWN, m_fr->SearchDown() ? IDC_RADIO_DOWN : IDC_RADIO_UP);		
         SetDlgItemText(IDC_COMBO_FIND, m_fr->m_szFindWhat);
+        CheckDlgButton(IDC_FINDWRAP, m_fr->IsFindWrap() ? BST_CHECKED : BST_UNCHECKED);
 
         if (m_fr->m_enableWildcardRegex)
         {
@@ -289,6 +293,8 @@ private:
         m_fr->m_dwFlags |= ((IsDlgButtonChecked(IDC_CHECK_WHOLE_WORD) == BST_CHECKED) ? FR_WHOLEWORD : 0);
         m_fr->m_dwFlags |= ((IsDlgButtonChecked(IDC_CHECK_CASE) == BST_CHECKED) ? FR_MATCHCASE : 0);
         m_fr->m_dwFlags |= ((IsDlgButtonChecked(IDC_RADIO_DOWN) == BST_CHECKED) ? FR_DOWN : 0);
+
+        m_fr->m_findWrap = IsDlgButtonChecked(IDC_FINDWRAP) == BST_CHECKED;
 
         if (IsDlgButtonChecked(IDC_CHECK_WILDCARD) == BST_CHECKED)
             m_fr->m_mode = FINDMODE_WILDCARD;

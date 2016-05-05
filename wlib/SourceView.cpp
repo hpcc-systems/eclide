@@ -487,7 +487,7 @@ const TCHAR * wildcardToRegex(const std::_tstring & wildcard, std::_tstring & re
     return regex.c_str();
 } 
 
-bool CSourceCtrl::DoFind(const std::_tstring & _searchTerm, DWORD flags, FINDMODE findmode, BOOL bAll, BOOL bNext)
+bool CSourceCtrl::DoFind(const std::_tstring & _searchTerm, DWORD flags, FINDMODE findmode, BOOL bAll, BOOL bNext, BOOL bFindWrap)
 {
     Scintilla::CharacterRange chrg = GetSelection();
     Scintilla::TextToFind ft;
@@ -522,8 +522,31 @@ bool CSourceCtrl::DoFind(const std::_tstring & _searchTerm, DWORD flags, FINDMOD
     std::string findStr = CT2A(searchTerm.c_str(), CP_UTF8);
     ft.lpstrText = const_cast<char *>(findStr.c_str());
 
-    if(_FindText(flags, &ft) == -1) 
-        return false;
+    if (_FindText(flags, &ft) == -1)
+    {
+        if (bFindWrap)
+        {
+            if (bNext)
+            {
+                ft.chrg.cpMin = 0;
+                ft.chrg.cpMax = GetLength();
+            }
+            else
+            {
+                ft.chrg.cpMin = GetLength();
+                ft.chrg.cpMax = 0;
+            }
+
+            if (_FindText(flags, &ft) == -1)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
     
     SetSel(ft.chrgText.cpMin, ft.chrgText.cpMax);
     return true;
