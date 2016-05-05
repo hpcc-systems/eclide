@@ -52,10 +52,10 @@ const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
     //tp://IP:PORT?inner=/WsWorkunits/WUInfo?Wuid=W20050302-182157
     //http://192.168.1.201:8010/esp/files/stub.htm?Widget=HPCCPlatformWidget#/stub/ECL/Workunits/W20140410-041544/Summary - TODO New EclWatch does not support this fully...
     std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=HPCCPlatformWidget#/stub/ECL/Workunits/"));
+    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Wuid="));
     url = str.c_str();
     url += wu->GetWuid();
-    url += "/Summary";
+    url += "&Widget=WUDetailsWidget";
     return url;
 }
 
