@@ -353,32 +353,32 @@ void CBookmarksView::DeleteMarkedBookmarks(bool val) {
     }
 }
 
-void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val)
+void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeName,  bool val)
 {
-    for (int i = 0; i < m_list.GetItemCount(); ++i)
+    for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
     {
-        std::_tstring module = m_list.GetItemText(i, 3);
-        std::_tstring attributeName = m_list.GetItemText(i, 4);
+        std::_tstring module = m_listMaster.GetItemText(i, 3);
+        std::_tstring attributeName = m_listMaster.GetItemText(i, 4);
 
         if (module == inModule && attributeName == inAttributeName)
         {
-            BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
+            BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
             data->marked = val;
         }
     }
 }
 
-void CBookmarksView::DeleteMarkedBookmarks(BM_TYPE inType, std::_tstring inModule, std::_tstring inAttributeName, bool val)
+void CBookmarksView::DeleteMarkedBookmarks(std::_tstring inModule, std::_tstring inAttributeName, bool val)
 {
-    for (int i = m_list.GetItemCount() - 1; i >= 0; --i)
+    for (int i = m_listMaster.GetItemCount() - 1; i >= 0; --i)
     {
-        std::_tstring module = m_list.GetItemText(i, 3);
-        std::_tstring attributeName = m_list.GetItemText(i, 4);
+        std::_tstring module = m_listMaster.GetItemText(i, 3);
+        std::_tstring attributeName = m_listMaster.GetItemText(i, 4);
 
-        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
-        if (data->bookmarkType == inType && module == inModule && attributeName == inAttributeName && data->marked == val)
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
+        if (module == inModule && attributeName == inAttributeName && data->marked == val)
         {
-            m_list.DeleteItem(i);
+            m_listMaster.DeleteItem(i);
         }
     }
 }
@@ -408,7 +408,9 @@ void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, st
 
     std::_tstring bookmark = _T("");
 
-    for (int b = 0; b < m_listMaster.m_bookmarks.size(); b++)
+    SetMarks(inModule, inAttributeName, false);
+
+    for (int b = 0; b < (int)m_listMaster.m_bookmarks.size(); b++)
     {
         bookmark = m_listMaster.m_bookmarks[b];
         if (bookmark.length() == 0) {
@@ -421,8 +423,6 @@ void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, st
             std::_tstring line;
             int index = 0;
             bool found = false;
-
-            SetMarks(inModule, inAttributeName, false);
 
             typedef std::vector<std::_tstring> split_vector_type;
             split_vector_type lines;
@@ -481,9 +481,9 @@ void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, st
                 }
             }
         }
-
-        DeleteMarkedBookmarks((BM_TYPE)b, inModule, inAttributeName, false);
     }
+
+    DeleteMarkedBookmarks(inModule, inAttributeName,false);
 
     for (int i = 0; i < col; ++i)
     {
