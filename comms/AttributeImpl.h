@@ -57,12 +57,15 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         CComPtr<IEclCC> eclcc = CreateIEclCC();
         std::_tstring eclFolders;
-        int eclFolderTotal = eclcc->GetEclFolderCount();
-        for (int i = 0; i < eclFolderTotal; ++i) 
+        if (eclcc)
         {
-            if (i > 0) 
-                eclFolders += _T(";");
-            eclFolders += eclcc->GetEclFolder(i);
+            int eclFolderTotal = eclcc->GetEclFolderCount();
+            for (int i = 0; i < eclFolderTotal; ++i)
+            {
+                if (i > 0)
+                    eclFolders += _T(";");
+                eclFolders += eclcc->GetEclFolder(i);
+            }
         }
         std::string batchFile = CT2A(GetType()->GetRepositoryCode());
         batchFile += ".bat";
