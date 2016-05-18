@@ -28,7 +28,8 @@ BM_TYPE CSortMFCListCtrl::StringToType(std::_tstring bmStr)
 
 void CSortMFCListCtrl::OnDeleteItem(int row)
 {
-    if (GetItemCount() > 0)
+    int count = GetItemCount();
+    if (count > 0 && row < count)
     {
         BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(GetItemData(row));
         if (data)
