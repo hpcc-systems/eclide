@@ -449,6 +449,14 @@ protected:
     afx_msg void OnWorkspaceRemove();
     afx_msg void OnWorkspaceSelEndOk();
 
+    afx_msg void OnMdiCloseRest();
+    afx_msg void OnMdiCloseLeft();
+    afx_msg void OnMdiCloseRight();
+
+    afx_msg void OnUpdateCloseRest(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateCloseLeft(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateCloseRight(CCmdUI* pCmdUI);
+
     afx_msg void OnMdiMoveToNextGroup();
     afx_msg void OnMdiMoveToPrevGroup();
     afx_msg void OnMdiNewHorzTabGroup();
@@ -493,6 +501,7 @@ protected:
 
     BOOL CreateDockingWindows();
     void SetDockingWindowIcons(BOOL bHiColorIcons);
+    CMFCTabCtrl* GetActiveTabGroup();
 
 public:
 //__interface IMainFrame : public IFindReplace
@@ -527,7 +536,7 @@ public:
     void MDIPrev();
 
     void operator()(SectionLabel * label);
-    int MDIGetCount();
+    int MDIGetCount(int direction = 0);
     BOOL DoFileOpen(const CString & sPathName);
     BOOL DoFileSaveAll(bool attrsOnly);
 
