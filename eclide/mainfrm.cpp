@@ -116,6 +116,13 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 
     ON_COMMAND(ID_EDIT_ADVANCED, OnEditAdvanced)
 
+    ON_COMMAND(ID_MDI_CLOSEALLOTHERS, OnMdiCloseRest)
+    ON_UPDATE_COMMAND_UI(ID_MDI_CLOSEALLOTHERS, OnUpdateCloseRest)
+    ON_COMMAND(ID_MDI_CLOSEALLLEFT, OnMdiCloseLeft)
+    ON_UPDATE_COMMAND_UI(ID_MDI_CLOSEALLLEFT, OnUpdateCloseLeft)
+    ON_COMMAND(ID_MDI_CLOSEALLRIGHT, OnMdiCloseRight)
+    ON_UPDATE_COMMAND_UI(ID_MDI_CLOSEALLRIGHT, OnUpdateCloseRight)
+
     ON_COMMAND(ID_MDI_MOVE_TO_NEXT_GROUP, OnMdiMoveToNextGroup)
     ON_COMMAND(ID_MDI_MOVE_TO_PREV_GROUP, OnMdiMoveToPrevGroup)
     ON_COMMAND(ID_MDI_NEW_HORZ_TAB_GROUP, OnMdiNewHorzTabGroup)
@@ -2693,16 +2700,61 @@ void CMainFrame::DoWorkspaceSwitch(IWorkspace * newWorkspace, bool saveCurrent)
     GetIConfig(QUERYBUILDER_CFG)->Set(WORKSPACE_CURRENT, std::_tstring(newWorkspace->GetLabel()));
 }
 
-int CMainFrame::MDIGetCount()
+int CMainFrame::MDIGetCount(int direction)
 {
-    HWND hWndChild = MDIGetActive()->GetSafeHwnd();
     int nCount = 0;
-    while ( hWndChild ) 
+    int rCount = 0;
+    int lCount = 0;
+
+    CString activetab, tabstr;
+
+    CMDIChildWnd* child = MDIGetActive();
+    if (child == NULL)
     {
-        ++nCount;
-        hWndChild = ::GetWindow(hWndChild, GW_HWNDNEXT);
-    } 
-    return nCount;
+        return 0;
+    }
+
+    child->GetWindowText(activetab);
+
+    const CObList * tabbedGroups = &GetMDITabGroups();
+    bool found = false;
+
+    for (POSITION pos = tabbedGroups->GetHeadPosition(); pos != NULL;)
+    {
+        CMFCTabCtrl* tabCtrl = DYNAMIC_DOWNCAST(CMFCTabCtrl, tabbedGroups->GetNext(pos));
+        int activeTab = tabCtrl->GetActiveTab();
+        int total = tabCtrl->GetTabsNum();
+
+        for (int i = 0; i < total; i++)
+        {
+            tabCtrl->GetTabLabel(i, tabstr);
+            if (tabstr == activetab)
+
+            {
+                found = true;
+            }
+            else if (found)
+            {
+                rCount++;
+            }
+            else
+            {
+                lCount++;
+            }
+        }
+        if (found) {
+            nCount = total;
+            break;
+        }
+        else
+        {
+            nCount = 0;
+            rCount = 0;
+            lCount = 0;
+        }
+    }
+
+    return direction == 0 ? nCount : direction < 0 ? lCount : rCount;
 }
 
 //BOOL CMainFrame::DockedWindowPreTranslate(MSG* pMsg)
@@ -3414,6 +3466,83 @@ void CMainFrame::OnEditAdvanced()
     theApp.ShowPopupMenu(IDR_POPUP_ADVANCED, pt, this);
 }
 
+CMFCTabCtrl* CMainFrame::GetActiveTabGroup()
+{
+    const CObList * tabbedGroups = &GetMDITabGroups();
+    bool found = false;
+
+    for (POSITION pos = tabbedGroups->GetHeadPosition(); pos != NULL;)
+    {
+        CMFCTabCtrl* tabGroup = DYNAMIC_DOWNCAST(CMFCTabCtrl, tabbedGroups->GetNext(pos));
+        if (tabGroup->IsActiveInMDITabGroup())
+        {
+            return tabGroup;
+        }
+    }
+    return NULL;
+}
+
+void CMainFrame::OnMdiCloseRest() 
+{
+    CMFCTabCtrl* tabGroup = GetActiveTabGroup();
+    int active = tabGroup->GetActiveTab();
+
+    for (int i = tabGroup->GetTabsNum() - 1; i >= 0; i--)
+    {
+        if (i == active)
+        {
+            tabGroup->SetActiveTab(i);
+        }
+        else
+        {
+            tabGroup->RemoveTab(i);
+        }
+    }
+}
+
+void CMainFrame::OnMdiCloseLeft()
+{
+    bool found = false;
+
+    CMFCTabCtrl* tabGroup = GetActiveTabGroup();
+    int active = tabGroup->GetActiveTab();
+
+    for (int i = tabGroup->GetTabsNum() - 1; i >= 0; i--)
+    {
+        if (i == active)
+        {
+            found = true;
+        }
+        else if (found)
+        {
+            tabGroup->RemoveTab(i);
+        }
+    }
+    if (found)
+    {
+        tabGroup->SetActiveTab(0);
+    }
+}
+
+void CMainFrame::OnMdiCloseRight()
+{
+    CMFCTabCtrl* tabGroup = GetActiveTabGroup();
+    int active = tabGroup->GetActiveTab();
+
+    for (int i = tabGroup->GetTabsNum() - 1; i >= 0; i--)
+    {
+        if (i == active)
+        {
+            tabGroup->SetActiveTab(i);
+            break;
+        }
+        else
+        {
+            tabGroup->RemoveTab(i);
+        }
+    }
+}
+
 void CMainFrame::OnMdiMoveToNextGroup()
 {
     MDITabMoveToNextGroup();
@@ -3572,6 +3701,21 @@ void CMainFrame::OnWindowsDegroup()
             m_wndClientArea.MoveWindowToTabGroup(tabCtrl, firstTab, 0);
         }
     }
+}
+
+void CMainFrame::OnUpdateCloseRest(CCmdUI* pCmdUI)
+{
+    pCmdUI->Enable(m_tabbedMDI && MDIGetCount() > 1);
+}
+
+void CMainFrame::OnUpdateCloseLeft(CCmdUI* pCmdUI)
+{
+    pCmdUI->Enable(m_tabbedMDI && MDIGetCount(-1) > 0);
+}
+
+void CMainFrame::OnUpdateCloseRight(CCmdUI* pCmdUI)
+{
+    pCmdUI->Enable(m_tabbedMDI && MDIGetCount(1) > 0);
 }
 
 void CMainFrame::OnUpdateWindowsSort(CCmdUI* pCmdUI)

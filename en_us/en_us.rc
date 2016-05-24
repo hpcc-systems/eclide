@@ -2084,6 +2084,10 @@ BEGIN
     BEGIN
         MENUITEM "&Save",                       ID_FILE_SAVE
         MENUITEM "&Close\tCtrl+F4",             ID_FILE_CLOSE
+        MENUITEM "Close &All",                  ID_WINDOW_CLOSEALL
+        MENUITEM "Close All &Others",           ID_MDI_CLOSEALLOTHERS
+        MENUITEM "Close All to &Right",         ID_MDI_CLOSEALLRIGHT
+        MENUITEM "Close All to &Left",          ID_MDI_CLOSEALLLEFT
         MENUITEM "&Tabbed Document",            ID_MDI_TABBED_DOCUMENT
         MENUITEM SEPARATOR
         MENUITEM "New &Horizontal Tab Group",   ID_MDI_NEW_HORZ_TAB_GROUP
