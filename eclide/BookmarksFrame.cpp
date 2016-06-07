@@ -35,10 +35,10 @@ bool CBookmarksFrame::OnContext(CMenu &/*menu*/, CPoint &/*pt*/)
 {
     return false;
 }
-void CBookmarksFrame::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType)
+void CBookmarksFrame::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring id, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType)
 {
     CBookmarksView &bookmarksFrame = (CBookmarksView &)m_view;
-    bookmarksFrame.ParseBookmarksEcl(ecl, user, inModule, inAttributeName, attrType);
+    bookmarksFrame.ParseBookmarksEcl(ecl, user, id, inModule, inAttributeName, attrType);
 }
 void CBookmarksFrame::ParseBookmarksEcl(IAttribute *attribute)
 {

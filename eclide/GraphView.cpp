@@ -735,7 +735,7 @@ LRESULT CGraphView::OnTooltipLinkClick(int nId, LPNMHDR nmhdr, BOOL& bHandled)
             if (parsed_def.module.size() && parsed_def.attribute.size())
             {
                 CWaitCursor wait;
-                GetIMainFrame()->OpenAttribute(parsed_def.module.c_str(), parsed_def.attribute.c_str(), CreateIAttributeECLType(), parsed_def.row, parsed_def.col);
+                GetIMainFrame()->OpenAttribute(parsed_def.module.c_str(), parsed_def.attribute.c_str(), CreateIAttributeECLType(), parsed_def.row, parsed_def.col, 0);
             }
         }
     }

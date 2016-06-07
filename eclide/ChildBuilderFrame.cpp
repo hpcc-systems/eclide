@@ -1047,7 +1047,7 @@ END_MESSAGE_MAP()
 
 // CChildBuilderFrm message handlers
 //  ===========================================================================
-bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm* pChild)
+bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm* &pChild)
 {
     FramePair win = g_builder_window[workspaceItem];
     if (win.first && win.second && win.second->IsWindow())
@@ -1122,6 +1122,26 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
         pChild->m_view->SetEcl(src->GetText(true, true), true);
     }
     return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
+}
+
+bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int row, int col, int len)
+{
+    CChildBuilderFrm* pChild = NULL;
+    if (!RestoreExisting(workspaceItem, pChild))
+    {
+        ATLASSERT(!filePath.IsEmpty());
+        pChild = new CChildBuilderFrm(workspaceItem);
+        CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
+        if (!pChild->m_view->DoFileOpen(filePath))
+        {
+            pChild->DestroyWindow();
+            return false;
+        }
+        pChild->m_view->SetReadOnly(locked);
+    }
+    unsigned int pos = pChild->m_view->m_dlgview.m_view.PositionFromLine(row - 1) + col - 1;
+    pChild->m_view->m_dlgview.m_view.SetSel(pos, pos + len);
+    return true;
 }
 
 bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked)

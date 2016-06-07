@@ -529,6 +529,7 @@ public:
     void operator()(SectionLabel * label);
     int MDIGetCount();
     BOOL DoFileOpen(const CString & sPathName);
+    BOOL DoFileOpen(const CString & sPathName, int row, int col, int len);
     BOOL DoFileSaveAll(bool attrsOnly);
 
     void DoWorkspaceRefresh();
@@ -552,7 +553,7 @@ public:
     void OpenSyntaxAttribute(IAttribute * attribute, Dali::CEclExceptionVector * errors);
 
     void OpenAttribute(const CString & modAttrLabel, IAttributeType * type, const CString & currModule = _T(""));
-    void OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col);
+    void OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len);
     void OpenAttribute(IAttribute * attribute, bool bHistoryView=false);
     void OpenAttribute(IAttribute * attribute, const std::_tstring & searchTerm, FINDMODE findmode);
     void SaveAttribute(IAttribute * attribute);

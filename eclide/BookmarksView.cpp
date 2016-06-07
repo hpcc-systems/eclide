@@ -2,10 +2,13 @@
 #include "..\en_us\resource.h"
 
 #include "BookmarksView.h"
+#include "EclCC.h"
+#include "ecldlgbuilder.h"
 #include "XmlWriter.h"
 #include "mainfrm.h"
 
 const TCHAR * const BOOKMARKS_FILE = _T("bookmarks.xml");
+const TCHAR * const BOOKMARKS_FILE_LOCAL = _T("bookmarks_local.xml");
 static const SectionLabelDefault GLOBAL_BOOKMARKS_SHOWMINE(SectionLabel(_T("Bookmarks"), _T("Mine")), true);
 static const SectionLabelDefault GLOBAL_BOOKMARKS_SHOWTODOS(SectionLabel(_T("Bookmarks"), _T("Todos")), true);
 static const SectionLabelDefault GLOBAL_BOOKMARKS_SHOWHACKS(SectionLabel(_T("Bookmarks"), _T("Hacks")), false);
@@ -77,6 +80,7 @@ LRESULT CBookmarksView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_list.InsertColumn(col++, _T("Line"));
     m_list.InsertColumn(col++, _T("Type"));
     m_list.InsertColumn(col++, _T("User"));
+    m_list.InsertColumn(col++, _T("Path"));
     m_list.InsertColumn(col++, _T("Module"));
     m_list.InsertColumn(col++, _T("Attribute"));
     m_list.InsertColumn(col++, _T("Attr Type"));
@@ -96,6 +100,7 @@ LRESULT CBookmarksView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_listMaster.InsertColumn(col++, _T("Line"));
     m_listMaster.InsertColumn(col++, _T("Type"));
     m_listMaster.InsertColumn(col++, _T("User"));
+    m_listMaster.InsertColumn(col++, _T("ID"));
     m_listMaster.InsertColumn(col++, _T("Module"));
     m_listMaster.InsertColumn(col++, _T("Attribute"));
     m_listMaster.InsertColumn(col++, _T("Attr Type"));
@@ -111,6 +116,8 @@ LRESULT CBookmarksView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 
     m_list.m_sortedCol = iniFile->Get(GLOBAL_BOOKMARKS_SORTCOLUMN);
     m_list.m_sortAscending = iniFile->Get(GLOBAL_BOOKMARKS_SORTASCENDING);
+
+    m_serverType = BM_SERVER_TYPE_UNKNOWN;
 
     DoDataExchange();
 
@@ -269,13 +276,18 @@ void CBookmarksView::OnOpen()
     for (std::vector<int>::iterator it = rows.begin(); it != rows.end(); ++it)
     {
         int row = *it;
-        std::_tstring line = m_list.GetItemText(row, 0);
-        std::_tstring module = m_list.GetItemText(row, 3);
-        std::_tstring attribute = m_list.GetItemText(row, 4);
-        std::_tstring attributeType = m_list.GetItemText(row, 5);
+        int col = 0;
+        std::_tstring id = _T("");
+        std::_tstring line = m_list.GetItemText(row, col);
+        col = 3;
+        std::_tstring module = m_list.GetItemText(row, col++);
+        std::_tstring attribute = m_list.GetItemText(row, col++);
+        std::_tstring attributeType = m_list.GetItemText(row, col++);
         BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(row));
 
-        OpenAttribute(line, data->column + 1, module, attribute, attributeType);
+        int len = m_list.m_bookmarks[data->bookmarkType].length();
+
+        OpenAttribute(line, data->column + 1, len, module, attribute, attributeType);
     }
 }
 
@@ -290,14 +302,38 @@ void CBookmarksView::OnUpdateOpen(CCmdUI* pCmdUI)
 LRESULT CBookmarksView::OnNmDblClk(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
 {
     LPNMITEMACTIVATE pNMIA = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    int col = 0;
+    std::_tstring id = _T("");
 
     std::_tstring line = m_list.GetItemText(pNMIA->iItem, 0);
     BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(pNMIA->iItem));
-    std::_tstring module = m_list.GetItemText(pNMIA->iItem, 3);
-    std::_tstring attribute = m_list.GetItemText(pNMIA->iItem, 4);
-    std::_tstring attributeType = m_list.GetItemText(pNMIA->iItem, 5);
+    col = 2;
+    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+    {
+        id = m_list.GetItemText(pNMIA->iItem, col++);
+    }
+    else
+    {
+        col++;
+    }
+    std::_tstring module = m_list.GetItemText(pNMIA->iItem, col++);
+    std::_tstring attribute = m_list.GetItemText(pNMIA->iItem, col++);
+    std::_tstring attributeType = m_list.GetItemText(pNMIA->iItem, col++);
 
-    OpenAttribute(line, data->column + 1, module, attribute, attributeType);
+    if (id.length())
+    {
+        if (id[1] == ':' && id[2] == '\\')
+        {
+            int row = boost::lexical_cast<int>(line);
+            int len = m_listMaster.m_bookmarks[data->bookmarkType].length();
+            GetIMainFrame()->DoFileOpen(id.c_str(), row, data->column + 1, len);
+        }
+    }
+    else
+    {
+        int len = m_list.m_bookmarks[data->bookmarkType].length();
+        OpenAttribute(line, data->column + 1, len, module, attribute, attributeType);
+    }
 
     return 0;
 }
@@ -307,7 +343,7 @@ CSortMFCListCtrl *CBookmarksView::GetListCtrl()
     return &m_list;
 }
 
-void CBookmarksView::OpenAttribute(std::_tstring line, int column, std::_tstring module, std::_tstring attribute, std::_tstring attributeType)
+void CBookmarksView::OpenAttribute(std::_tstring line, int column, int len, std::_tstring module, std::_tstring attribute, std::_tstring attributeType)
 {
     std::_tstring attrType(attributeType);
     IAttributeType *type = CreateIAttributeType(attrType);
@@ -316,11 +352,17 @@ void CBookmarksView::OpenAttribute(std::_tstring line, int column, std::_tstring
     std::wstring m(module);
     std::wstring a(attribute);
 
-    GetIMainFrame()->OpenAttribute(m, a, type, row, column);
+    GetIMainFrame()->OpenAttribute(m, a, type, row, column, len);
 }
 
 void CBookmarksView::ParseBookmarks(IAttribute *attribute)
 {
+    std::_tstring id = _T("");
+    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+    {
+        id = attribute->GetPath();
+    }
+    
     std::_tstring ecl = attribute->GetText(false, true);
     std::_tstring module = attribute->GetModuleQualifiedLabel();
     std::_tstring attributeName = attribute->GetLabel();
@@ -328,7 +370,7 @@ void CBookmarksView::ParseBookmarks(IAttribute *attribute)
     CComPtr<IAttributeType> attrType = attribute->GetType();
 
     if (ecl.length() > 0) {
-        ParseBookmarksEcl(ecl, user, module, attributeName, attrType);
+        ParseBookmarksEcl(ecl, user, id, module, attributeName, attrType);
     }
 }
 
@@ -355,10 +397,12 @@ void CBookmarksView::DeleteMarkedBookmarks(bool val) {
 
 void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeName,  bool val)
 {
+    int col = 0;
     for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
     {
-        std::_tstring module = m_listMaster.GetItemText(i, 3);
-        std::_tstring attributeName = m_listMaster.GetItemText(i, 4);
+        col = 3;
+        std::_tstring module = m_listMaster.GetItemText(i, col++);
+        std::_tstring attributeName = m_listMaster.GetItemText(i, col++);
 
         if (module == inModule && attributeName == inAttributeName)
         {
@@ -370,10 +414,12 @@ void CBookmarksView::SetMarks(std::_tstring inModule, std::_tstring inAttributeN
 
 void CBookmarksView::DeleteMarkedBookmarks(std::_tstring inModule, std::_tstring inAttributeName, bool val)
 {
+    int col = 0;
     for (int i = m_listMaster.GetItemCount() - 1; i >= 0; --i)
     {
-        std::_tstring module = m_listMaster.GetItemText(i, 3);
-        std::_tstring attributeName = m_listMaster.GetItemText(i, 4);
+        col = 3;
+        std::_tstring module = m_listMaster.GetItemText(i, col++);
+        std::_tstring attributeName = m_listMaster.GetItemText(i, col++);
 
         BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
         if (module == inModule && attributeName == inAttributeName && data->marked == val)
@@ -400,7 +446,7 @@ static inline std::_tstring &trim(std::_tstring &s)
     return ltrim(rtrim(s));
 }
 
-void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType)
+void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring id, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType)
 {
     int i = 0;
     int col = 0;
@@ -442,7 +488,6 @@ void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, st
                 n = static_cast<int>(line.find(bookmark, 0));
 
                 if (n >= 0) {
-                    col = 0;
 
                     std::wostringstream ss;
                     ss << (index);
@@ -452,8 +497,9 @@ void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, st
                     for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
                     {
                         std::_tstring liner = m_listMaster.GetItemText(i, 0);
-                        std::_tstring module = m_listMaster.GetItemText(i, 3);
-                        std::_tstring attributeName = m_listMaster.GetItemText(i, 4);
+                        col = 3;
+                        std::_tstring module = m_listMaster.GetItemText(i, col++);
+                        std::_tstring attributeName = m_listMaster.GetItemText(i, col++);
 
                         if (liner == nStr && module == inModule && attributeName == inAttributeName)
                         {
@@ -465,9 +511,17 @@ void CBookmarksView::ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, st
                     }
 
                     if (!found) {
+                        col = 0;
                         row = m_listMaster.InsertItem(col++, nStr.c_str());
                         m_listMaster.SetItemText(row, col++, bookmark.c_str());
-                        m_listMaster.SetItemText(row, col++, user.c_str());
+                        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+                        {
+                            m_listMaster.SetItemText(row, col++, id.c_str());
+                        }
+                        else
+                        {
+                            m_listMaster.SetItemText(row, col++, user.c_str());
+                        }
                         m_listMaster.SetItemText(row, col++, inModule.c_str());
                         m_listMaster.SetItemText(row, col++, inAttributeName.c_str());
                         m_listMaster.SetItemText(row, col++, attrType->GetRepositoryCode());
@@ -504,6 +558,10 @@ boost::filesystem::path CBookmarksView::BookmarksFilePath()
 {
     boost::filesystem::path fullpath;
     GetUserFolder(fullpath, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))));
+    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+    {
+        return fullpath / BOOKMARKS_FILE_LOCAL;
+    }
     return fullpath / BOOKMARKS_FILE;
 }
 
@@ -520,16 +578,27 @@ void CBookmarksView::OnSaveFile()
         writer->PushElement(_T("bookmarks"));
 
         std::_tstring bookmarks;
+        std::_tstring user;
+        std::_tstring id;
+        int col = 0;
 
         for (int i = 0; i < m_list.GetItemCount(); ++i)
         {
-            std::_tstring line = m_list.GetItemText(i, 0);
-            std::_tstring type = m_list.GetItemText(i, 1);
-            std::_tstring user = m_list.GetItemText(i, 2);
-            std::_tstring module = m_list.GetItemText(i, 3);
-            std::_tstring attribute = m_list.GetItemText(i, 4);
-            std::_tstring attributeType = m_list.GetItemText(i, 5);
-            std::_tstring description = m_list.GetItemText(i, 6);
+            col = 0;
+            std::_tstring line = m_list.GetItemText(i, col++);
+            std::_tstring type = m_list.GetItemText(i, col++);
+            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+            {
+                id = m_list.GetItemText(i, col++);
+            }
+            else
+            {
+                user = m_list.GetItemText(i, col++);
+            }
+            std::_tstring module = m_list.GetItemText(i, col++);
+            std::_tstring attribute = m_list.GetItemText(i, col++);
+            std::_tstring attributeType = m_list.GetItemText(i, col++);
+            std::_tstring description = m_list.GetItemText(i, col++);
 
             BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
 
@@ -544,8 +613,16 @@ void CBookmarksView::OnSaveFile()
             writer->PopElement();
             writer->PushElement(_T("column"), column);
             writer->PopElement();
-            writer->PushElement(_T("user"), user);
-            writer->PopElement();
+            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+            {
+                writer->PushElement(_T("id"), id);
+                writer->PopElement();
+            }
+            else
+            {
+                writer->PushElement(_T("user"), user);
+                writer->PopElement();
+            }
             writer->PushElement(_T("module"), module);
             writer->PopElement();
             writer->PushElement(_T("attribute"), attribute);
@@ -575,7 +652,7 @@ void CBookmarksView::OnUpdateLoadFile(CCmdUI* pCmdUI)
     pCmdUI->Enable();
 }
 
-std::_tstring CBookmarksView::FindTag(std::_tstring str, std::_tstring tag, int &index) {
+std::_tstring CBookmarksView::FindTag(std::_tstring str, std::_tstring tag, int &index, bool zeroIndex) {
     std::_tstring tagEnd = _T("</") + tag + _T(">");
     std::_tstring foundStr = _T("");
     tag = _T("<") + tag + _T(">");
@@ -590,7 +667,7 @@ std::_tstring CBookmarksView::FindTag(std::_tstring str, std::_tstring tag, int 
     }
     else
     {
-        index = -1;
+        if (zeroIndex) index = -1;
         foundStr = _T("");
     }
     return foundStr;
@@ -636,11 +713,11 @@ void CBookmarksView::OnLoadFile(bool mergeFlag)
                 m_listMaster.DeleteAllItems();
             }
 
-            std::_tstring bookmark, line, type, user, lineNum, column, module, attribute, attributeType, description;
+            std::_tstring bookmark, line, type, user, lineNum, column, id, module, attribute, attributeType, description;
 
             while (index >= 0)
             {
-                bookmark = FindTag(bookmarks, _T("bookmark"), index);
+                bookmark = FindTag(bookmarks, _T("bookmark"), index, true);
 
                 if (index >= 0)
                 {
@@ -649,7 +726,14 @@ void CBookmarksView::OnLoadFile(bool mergeFlag)
                     lineNum = FindTag(bookmark, _T("line"), bookmarkIndex);
                     type = FindTag(bookmark, _T("type"), bookmarkIndex);
                     column = FindTag(bookmark, _T("column"), bookmarkIndex);
-                    user = FindTag(bookmark, _T("user"), bookmarkIndex);
+                    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+                    {
+                        id = FindTag(bookmark, _T("id"), bookmarkIndex);
+                    }
+                    else
+                    {
+                        user = FindTag(bookmark, _T("user"), bookmarkIndex);
+                    }
                     module = FindTag(bookmark, _T("module"), bookmarkIndex);
                     attribute = FindTag(bookmark, _T("attribute"), bookmarkIndex);
                     attributeType = FindTag(bookmark, _T("attrtype"), bookmarkIndex);
@@ -659,10 +743,21 @@ void CBookmarksView::OnLoadFile(bool mergeFlag)
                     for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
                     {
                         std::_tstring lineDupe = m_listMaster.GetItemText(i, 0);
-                        std::_tstring moduleDupe = m_listMaster.GetItemText(i, 3);
-                        std::_tstring attributeDupe = m_listMaster.GetItemText(i, 4);
+                        std::_tstring idDupe = _T("");
+                        std::_tstring userDupe = _T("");
+                        col = 3;
+                        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+                        {
+                            idDupe = m_listMaster.GetItemText(i, col++);
+                        }
+                        else
+                        {
+                            userDupe = m_listMaster.GetItemText(i, col++);
+                        }
+                        std::_tstring moduleDupe = m_listMaster.GetItemText(i, col++);
+                        std::_tstring attributeDupe = m_listMaster.GetItemText(i, col++);
 
-                        if (lineDupe == lineNum && moduleDupe == module && attributeDupe == attribute)
+                        if (lineDupe == lineNum && (idDupe == id || userDupe == user) && moduleDupe == module && attributeDupe == attribute)
                         {
                             foundDupe = true;
                         }
@@ -675,7 +770,14 @@ void CBookmarksView::OnLoadFile(bool mergeFlag)
                             col = 0;
                             row = m_listMaster.InsertItem(col++, lineNum.c_str());
                             m_listMaster.SetItemText(row, col++, type.c_str());
-                            m_listMaster.SetItemText(row, col++, user.c_str());
+                            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+                            {
+                                m_listMaster.SetItemText(row, col++, id.c_str());
+                            }
+                            else
+                            {
+                                m_listMaster.SetItemText(row, col++, user.c_str());
+                            }
                             m_listMaster.SetItemText(row, col++, module.c_str());
                             m_listMaster.SetItemText(row, col++, attribute.c_str());
                             m_listMaster.SetItemText(row, col++, attributeType.c_str());
@@ -737,6 +839,22 @@ LRESULT CBookmarksView::OnBnClickedCheckFilter(WORD /*wNotifyCode*/, WORD /*wID*
 
 void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
 {
+    if (m_serverType == BM_SERVER_TYPE_UNKNOWN)
+    {
+        if (IsLocalRepositoryEnabled() != TRI_BOOL_TRUE)
+        {
+            VERIFY(m_list.SetColumnWidth(3, 0));
+            m_list.DeleteColumn(3);
+            m_serverType = BM_SERVER_TYPE_LOCAL;
+        }
+        else
+        {
+            VERIFY(m_list.SetColumnWidth(2, 0));
+            m_list.DeleteColumn(2);
+            m_serverType = BM_SERVER_TYPE_REMOTE;
+        }
+    }
+
     DoDataExchange(true);
     m_prevBookmarksMarker = bookmarks;
 
@@ -751,6 +869,9 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
 
         if (m_listMaster.GetItemCount() > 0)
         {
+            std::_tstring user;
+            std::_tstring id;
+
             for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
             {
                 BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
@@ -771,20 +892,35 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
                     || (m_checkHacks && BM_TYPE::BM_HACK == data->bookmarkType)
                     ) {
 
-                    std::_tstring line = m_listMaster.GetItemText(i, 0);
-                    std::_tstring type = m_listMaster.GetItemText(i, 1);
-                    std::_tstring user = m_listMaster.GetItemText(i, 2);
-                    std::_tstring module = m_listMaster.GetItemText(i, 3);
-                    std::_tstring attribute = m_listMaster.GetItemText(i, 4);
-                    std::_tstring attributeType = m_listMaster.GetItemText(i, 5);
-                    std::_tstring description = m_listMaster.GetItemText(i, 6);
+                    col = 0;
+                    std::_tstring line = m_listMaster.GetItemText(i, col++);
+                    std::_tstring type = m_listMaster.GetItemText(i, col++);
+                    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+                    {
+                        id = m_listMaster.GetItemText(i, col++);
+                    }
+                    else
+                    {
+                        user = m_listMaster.GetItemText(i, col++);
+                    }
+                    std::_tstring module = m_listMaster.GetItemText(i, col++);
+                    std::_tstring attribute = m_listMaster.GetItemText(i, col++);
+                    std::_tstring attributeType = m_listMaster.GetItemText(i, col++);
+                    std::_tstring description = m_listMaster.GetItemText(i, col++);
                     BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
 
                     col = 0;
 
                     int row = m_list.InsertItem(col++, line.c_str());
                     m_list.SetItemText(row, col++, type.c_str());
-                    m_list.SetItemText(row, col++, user.c_str());
+                    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+                    {
+                        m_list.SetItemText(row, col++, id.c_str());
+                    }
+                    else
+                    {
+                        m_list.SetItemText(row, col++, user.c_str());
+                    }
                     m_list.SetItemText(row, col++, module.c_str());
                     m_list.SetItemText(row, col++, attribute.c_str());
                     m_list.SetItemText(row, col++, attributeType.c_str());
