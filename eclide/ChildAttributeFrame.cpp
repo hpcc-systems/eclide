@@ -102,6 +102,12 @@ public:
         m_dlgview.SetSource(ecl);
     }
 
+    void SetSel(int row, int col, int len)
+    {
+        unsigned int pos = m_dlgview.m_view.PositionFromLine(row - 1) + col - 1;
+        m_dlgview.m_view.SetSel(pos, pos + len);
+    }
+
     void SetSyntax(const CSyntaxErrorVector & errors)
     {
         m_dlgview.SetSyntax(errors);
@@ -568,19 +574,19 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem
     return OpenAttributeMDI(pFrame, attribute, workspaceItem, bHistoryView, CSyntaxErrorVector(), errors);
 }
 
-HWND OpenAttributeMDI(CMainFrame* pFrame, const std::_tstring & module, const std::_tstring & attr, IAttributeType * type, unsigned int row, unsigned int col, IWorkspaceItem * workspaceItem)
+HWND OpenAttributeMDI(CMainFrame* pFrame, const std::_tstring & module, const std::_tstring & attr, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len, IWorkspaceItem * workspaceItem)
 {
     CComPtr<IRepository> rep = ::AttachRepository();
     CComPtr<IAttribute> attribute = rep->GetAttribute(module.c_str(), attr.c_str(), type, 0, true, true);
     if (!attribute)
         return 0;
 
-    HWND retVal = OpenAttributeMDI(pFrame, attribute, workspaceItem, false, CSyntaxErrorVector(), NULL, _T(""), FINDMODE_NONE, row, col);
+    HWND retVal = OpenAttributeMDI(pFrame, attribute, workspaceItem, false, CSyntaxErrorVector(), NULL, _T(""), FINDMODE_NONE, row, col, len);
 
     return retVal;
 }
 
-HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem * workspaceItem, bool bHistoryView, const CSyntaxErrorVector & errors, Dali::CEclExceptionVector * errors2, const std::_tstring & searchTerm, FINDMODE findmode, unsigned int row, unsigned int col)
+HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem * workspaceItem, bool bHistoryView, const CSyntaxErrorVector & errors, Dali::CEclExceptionVector * errors2, const std::_tstring & searchTerm, FINDMODE findmode, unsigned int row, unsigned int col, unsigned int len)
 {
     bool readOnly = attribute->GetAccess() < SecAccess_Write;
     WinID id(attribute->GetModuleQualifiedLabel(), attribute->GetLabel());
@@ -599,8 +605,7 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem
             win.second->ShowEcl(searchTerm, findmode);
         if (row || col)
         {
-            unsigned int pos = win.second->m_dlgview.m_view.PositionFromLine(row - 1) + col - 1;
-            win.second->m_dlgview.m_view.SetSel(pos, pos);
+            win.second->SetSel(row, col, len);
         }
 
         return win.first->GetSafeHwnd();
@@ -620,8 +625,7 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem
         pChildFrame->m_view->ShowEcl(searchTerm, findmode);
     if (row || col)
     {
-        unsigned int pos = pChildFrame->m_view->m_dlgview.m_view.PositionFromLine(row - 1) + col - 1;
-        pChildFrame->m_view->m_dlgview.m_view.SetSel(pos, pos);
+        pChildFrame->m_view->SetSel(row, col, len);
         ::SetFocus(pChildFrame->m_view->m_dlgview.m_view);
     }
 

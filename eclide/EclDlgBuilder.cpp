@@ -14,6 +14,12 @@ CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_att
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
         m_attrMonitor = new CAttributeMonitor(m_attribute);
+
+        CBookmarksFrame * pFrame = GetBookmarksFrame();
+        if (pFrame)
+        {
+            pFrame->ParseBookmarksEcl(m_attribute);
+        }
     }
 
     m_comboQueueClusterCtrl = new CComboQueueCluster();
@@ -64,6 +70,12 @@ bool CBuilderDlg::DoSave(bool attrOnly)
     m_view.GetText(ecl);
     if (m_attribute && m_attribute->SetText(ecl))
     {
+        CBookmarksFrame * pFrame = GetBookmarksFrame();
+        if (pFrame)
+        {
+            pFrame->ParseBookmarksEcl(m_attribute);
+        }
+
         m_view.SetSavePoint();
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
@@ -87,6 +99,10 @@ bool CBuilderDlg::DoSave(bool attrOnly)
     if (!attrOnly)
         return DoFileSaveAs();
     return false;
+}
+
+CBookmarksFrame *CBuilderDlg::GetBookmarksFrame() {
+    return (CBookmarksFrame *)GetIMainFrame()->m_Bookmarks;
 }
 
 void CBuilderDlg::OnTimer(UINT_PTR nIDEvent)
