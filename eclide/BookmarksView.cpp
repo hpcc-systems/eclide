@@ -142,9 +142,13 @@ void CBookmarksView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
 {
     WTL::CMenu m;
     m.LoadMenu(IDR_POPUP_BOOKMARKS);
-    m.EnableMenuItem(ID_BOOKMARKS_OPEN, m_list.GetItemCount() == 0);
-    m.EnableMenuItem(ID_BOOKMARKS_SAVE, m_list.GetItemCount() == 0);
-    m.EnableMenuItem(ID_BOOKMARKS_CLEAR, m_list.GetItemCount() == 0);
+    bool noCount = m_list.GetItemCount() == 0;
+    bool noSelection = m_list.GetSelectedCount() == 0;
+    m.EnableMenuItem(ID_BOOKMARKS_OPEN, noCount || noSelection ? MF_DISABLED : MF_ENABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_SAVE, noCount ? MF_DISABLED : MF_ENABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_CLEAR, noCount ? MF_DISABLED : MF_ENABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_LOADMERGE, noCount ? MF_DISABLED : MF_ENABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_DELETEFROMLIST, noCount || noSelection ? MF_DISABLED : MF_ENABLED);
 
     unsigned int id = m.GetSubMenu(0).TrackPopupMenuEx(TPM_RETURNCMD, pPoint.x, pPoint.y, m_hWnd, NULL);
     switch (id)
