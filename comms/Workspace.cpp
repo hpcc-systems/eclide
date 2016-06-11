@@ -25,6 +25,7 @@ public:
 };
 //  ===========================================================================
 #define BACKUP_EVERY 6 * 60
+#define BACKUP_TOTAL 7 * 24
 boost::posix_time::ptime g_lastBackupTime = boost::posix_time::second_clock::local_time();
 
 template<typename T>
@@ -34,13 +35,13 @@ void save(const T &s, const char * filename)
     if ((boost::posix_time::second_clock::local_time() - g_lastBackupTime) > boost::posix_time::time_duration(boost::posix_time::seconds(BACKUP_EVERY)))
     {
         g_lastBackupTime = boost::posix_time::second_clock::local_time();
-        for (int i = 9; i > 0; --i)
+        for (int i = BACKUP_TOTAL; i > 0; --i)
         {
             boost::filesystem::path bakFilepath = filePath;
-            bakFilepath.replace_extension((boost::format("bak00%1%") % i).str());
+            bakFilepath.replace_extension((boost::format("bak%03i") % i).str());
             boost::filesystem::path prevBakFilepath = filePath;
             if (i > 1)	
-                prevBakFilepath.replace_extension((boost::format("bak00%1%") % (i - 1)).str());
+                prevBakFilepath.replace_extension((boost::format("bak%03i") % (i - 1)).str());
 
             if (clib::filesystem::exists(bakFilepath))
             {
