@@ -63,7 +63,7 @@ BOOL CQueryBuilderApp::InitInstance()
     // Setup exception handler
     BT_SetAppName(_T("ECL IDE"));
     BT_SetSupportEMail(_T("support_eclide@hpccsystems.com"));
-    BT_SetFlags(BTF_DETAILEDMODE | BTF_EDITMAIL | BTF_ATTACHREPORT);
+    BT_SetFlags(BTF_DETAILEDMODE | BTF_EDITMAIL | BTF_ATTACHREPORT | BTF_SHOWADVANCEDUI);
     BT_SetSupportURL(_T("http://hpccsystems.com/support"));
 
     // = BugTrapServer ===========================================
