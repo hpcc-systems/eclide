@@ -19,6 +19,8 @@
 #define ATTRIBUTE_TYPE_WORKSPACE _T("ecl_ws")
 #define ATTRIBUTE_TYPE_DUD _T("dud")
 #define ATTRIBUTE_TYPE_CMP _T("cmp")
+#define ATTRIBUTE_TYPE_LUCIFAMILY _T("mff")
+#define ATTRIBUTE_TYPE_DEFT _T("dft")
 
 const TCHAR * const DUD_TEXT =
     _T("/*This is an example plugin template.\r\n")
@@ -130,6 +132,24 @@ const TCHAR * const CMP_TEXT =
     _T("Method=THOR\r\n")
     _T("END\r\n");
 
+	const TCHAR * const DEFT_TEXT =
+	_T("/*This is an example DEFT training file.\r\n")
+	_T("David Bayliss => David||Bayliss\r\n")
+	_T("Steve Baglien => Steve||Baglien\r\n")
+	_T("John Smith => John||Smith\r\n")
+	_T("David Alan & Kelly Marie Van Bayliss => David|Alan|Van Bayliss => Kelly Marie||Van Bayliss\r\n")
+	_T("David Alan   Bayliss => David|Alan|Bayliss\r\n")
+	_T("Bayliss, David Alan => David|Alan|Bayliss\r\n")
+	_T("David Lawrence-Hide => David||Lawrence Hide\r\n")
+	_T("Sean Van Allen => Sean||Van Allen\r\n")
+	_T("Jerry Mc Ever => Jerry||Mc Ever\r\n");
+
+	const TCHAR * const LUCI_FAMILY_TEXT =
+	_T("/*This is an example LUCI family file.\r\n")
+	_T("MODULE:%1%\r\n")
+	_T("luci/luci_ten_trees.csv\r\n")
+	_T("luci/LUCI_X014.csv\r\n");
+
 class CAttributeType : public IAttributeType, public CUnknown
 {
 protected:
@@ -188,6 +208,11 @@ public:
                 m_description = _T("CMP - HIPIE Composition");
             else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_WORKSPACE))
                 m_description = _T("ECL_WS - ECL Workspace Persistance File");
+			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_LUCIFAMILY))
+				m_description = _T("LUCI - Luci Family File");
+			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_DEFT))
+				m_description = _T("DEFT - Training file");
+		
             else
                 m_description = _T("???");
         }
@@ -211,6 +236,10 @@ public:
             m_defaultText = (boost::_tformat(CMP_TEXT) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_WORKSPACE))
             m_defaultText = (boost::_tformat(_T("ECL_WS:  %s;")) % attrLabel.c_str()).str();
+        else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_DEFT))
+            m_defaultText = (boost::_tformat(DEFT_TEXT) % attrLabel.c_str()).str();
+        else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_LUCIFAMILY))
+            m_defaultText = (boost::_tformat(LUCI_FAMILY_TEXT) % attrLabel.c_str()).str();
         else
             m_defaultText = _T("???");
 
@@ -273,6 +302,14 @@ IAttributeType * CreateIAttributeCMPType()
 {
     return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_CMP));
 }
+IAttributeType * CreateIAttributeDEFTType()
+{
+    return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_DEFT));
+}
+IAttributeType * CreateIAttributeLUCIFAMILYType()
+{
+    return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_LUCIFAMILY));
+}
 unsigned int GetAttributeTypes(IAttributeTypeVector & types)
 {
     types.push_back(CreateIAttributeECLType());
@@ -282,6 +319,8 @@ unsigned int GetAttributeTypes(IAttributeTypeVector & types)
     types.push_back(CreateIAttributeKELType());
     types.push_back(CreateIAttributeDUDType());
     types.push_back(CreateIAttributeCMPType());
+    types.push_back(CreateIAttributeDEFTType());
+    types.push_back(CreateIAttributeLUCIFAMILYType());
     return types.size();
 }
 bool IsValidExtension(const std::_tstring & ext)
@@ -307,6 +346,10 @@ bool IsValidExtension(const std::_tstring & ext)
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_PLUGIN))
         return true;
     else if (WildMatch(ext, std::_tstring(_T(".")) + ATTRIBUTE_TYPE_ECLOTHER, true))
+        return true;
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_DEFT))
+        return true;
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_LUCIFAMILY))
         return true;
     return false;
 }
