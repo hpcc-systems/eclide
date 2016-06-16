@@ -112,7 +112,7 @@ public:
             }
 
             CString copyStr;
-            copyStr.Format(_T("&Copy \"%s\"\tCtrl+Alt+C"), s.attrs.begin()->get()->GetQualifiedLabel(true));
+            copyStr.Format(_T("&Copy \"%s\""), s.attrs.begin()->get()->GetQualifiedLabel(true));
             m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr); 
         }
 
