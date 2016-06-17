@@ -122,11 +122,7 @@ public:
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         std::_tstring tmp = m_ecl;
-        std::_tstring search = _T("\r\n");
-        std::_tstring replace = _T("\n");
-
-        for(std::string::size_type idx = tmp.find(search); idx != std::string::npos; idx = tmp.find(search, idx + 1))
-            tmp.replace(idx, search.length(), replace);
+        boost::algorithm::replace_all(tmp, _T("\r\n"), _T("\n"));
         std::string checksum;
         std::string premd5 = CT2A(tmp.c_str());
         md5_string(premd5, checksum);
