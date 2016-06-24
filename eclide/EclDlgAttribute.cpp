@@ -29,7 +29,7 @@ CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_att
 CBookmarksFrame *CAttributeDlg::GetBookmarksFrame() {
     CBookmarksFrame *pFrame = (CBookmarksFrame *)GetIMainFrame()->m_Bookmarks;
     if (!pFrame)
-	{
+    {
         return NULL;
     }
 
@@ -52,6 +52,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
     CString ecl;
     m_view.GetText(ecl);
 
+    CString id = m_attribute->GetID();
     CString user = m_attribute->GetModifiedBy();
     CString module = m_attribute->GetModuleQualifiedLabel();
     CString attributeName = m_attribute->GetLabel();
@@ -60,7 +61,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
     CBookmarksFrame * pFrame = GetBookmarksFrame();
     if (pFrame)
     {
-        pFrame->ParseBookmarksEcl((LPCTSTR)ecl, (LPCTSTR)user, (LPCTSTR)module, (LPCTSTR)attributeName, attrType);
+        pFrame->ParseBookmarksEcl((LPCTSTR)ecl, (LPCTSTR)user, (LPCTSTR)id, (LPCTSTR)module, (LPCTSTR)attributeName, attrType);
     }
 
     if (m_attribute->SetText(ecl))

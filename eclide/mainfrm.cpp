@@ -2482,6 +2482,14 @@ bool CMainFrame::UIUpdateMenuItems()
     return mdiActive; //
 }
 
+BOOL CMainFrame::DoFileOpen(const CString & sPathName, int row, int col, int len)
+{
+    boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
+    std::_tstring filename = pathToWString(path.leaf());
+    CComPtr<IRepository> rep = AttachRepository();
+    return OpenFileBuilderMDI(this, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false, row, col, len);
+}
+
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 {
     boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
@@ -2969,7 +2977,7 @@ void CMainFrame::OpenAttribute(const CString & modAttrLabel, IAttributeType * ty
         MessageBeep(MB_ICONEXCLAMATION);
 }
 
-void CMainFrame::OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col)
+void CMainFrame::OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len)
 {
     CComPtr<IRepository> rep = AttachRepository();
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
@@ -2978,7 +2986,7 @@ void CMainFrame::OpenAttribute(const std::_tstring & module, const std::_tstring
     }
     else
     {
-        HWND hwnd = ::OpenAttributeMDI(this, module, attribute, type, row, col, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE));
+        HWND hwnd = ::OpenAttributeMDI(this, module, attribute, type, row, col, len, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE));
         if (hwnd)
             PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
     }

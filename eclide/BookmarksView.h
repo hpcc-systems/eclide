@@ -14,6 +14,13 @@ const TCHAR * const LOAD_MERGE_BOOKMARKS_MSG = _T("Are you sure you want to merg
 const TCHAR * const LOAD_UNFOUND_BOOKMARKS_MSG = _T("No bookmarks file found");
 const TCHAR * const DELETE_BOOKMARKS_MSG = _T("Do you want to delete the selected bookmark(s) from the list?");
 
+enum BM_SERVER_TYPE
+{
+    BM_SERVER_TYPE_UNKNOWN = 0,
+    BM_SERVER_TYPE_LOCAL,
+    BM_SERVER_TYPE_REMOTE,
+};
+
 __interface ISciBookmarksMarker;
 
 __interface IBookmarksSlot
@@ -37,6 +44,7 @@ protected:
     bool m_checkMine;
     bool m_checkTodos;
     bool m_checkHacks;
+    BM_SERVER_TYPE m_serverType;
 
     HWND m_hWndOrigin;
     ISciBookmarksMarker *m_prevBookmarksMarker;
@@ -84,14 +92,14 @@ public:
         DDX_CHECK(IDC_CHECK_HACKS, m_checkHacks)
     END_DDX_MAP()
 
-    std::_tstring FindTag(std::_tstring line, std::_tstring tag, int &index);
+    std::_tstring FindTag(std::_tstring line, std::_tstring tag, int &index, bool zeroIndex = false);
     void SetMarks(bool val);
     void DeleteMarkedBookmarks(bool val);
     void SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
     void DeleteMarkedBookmarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
     void ParseBookmarks(IAttribute *attribute);
-    void ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType);
-    void OpenAttribute(std::_tstring line, int column, std::_tstring module, std::_tstring attribute, std::_tstring attributeType);
+    void ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring id, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType);
+    void OpenAttribute(std::_tstring line, int column, int len, std::_tstring module, std::_tstring attribute, std::_tstring attributeType);
     boost::filesystem::path BookmarksFilePath();
 
     virtual BOOL PreTranslateMessage(MSG* pMsg);
