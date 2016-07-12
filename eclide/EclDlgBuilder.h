@@ -41,6 +41,7 @@ protected:
     bool m_schedule;
     bool m_archive;
     bool m_noCommonPrivateAttributes;
+    bool m_targetColors;
     IEclBuilderSlot * m_owner;
     WTL::CUpDownCtrl m_maxRuntime;
 

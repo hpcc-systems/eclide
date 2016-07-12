@@ -109,6 +109,31 @@ CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false
     m_other = NULL;
     m_recording = false;
     m_addedChar = '\0';
+    m_targetType = TARGET_UNKNOWN;
+}
+
+void CSourceCtrl::SetSourceType(const CString & typeStr)
+{
+    if (typeStr.Find(_T("roxie"),0) >= 0)
+    {
+        m_targetType = TARGET_ROXIE;
+    }
+    else if (typeStr.Find(_T("hthor"), 0) >= 0)
+    {
+        m_targetType = TARGET_HTHOR;
+    }
+    else if (typeStr.Find(_T("local"), 0) >= 0)
+    {
+        m_targetType = TARGET_LOCAL;
+    }
+    else if (typeStr.Find(_T("thor"), 0) >= 0)
+    {
+        m_targetType = TARGET_THOR;
+    }
+    else
+    {
+        m_targetType = TARGET_UNKNOWN;
+    }
 }
 
 void CSourceCtrl::SetOther(CSourceCtrl * other)
@@ -421,11 +446,17 @@ void CSourceCtrl::DoInit()
 
 void CSourceCtrl::InitColors(ILangRef * langRef)
 {
+    int backID;
     for(int row = 0; row < langRef->GetColorRowCount(); ++row)
     {
         ATLTRACE(_T("Row:  %i\n"), row);
-        int catID = langRef->GetColorCatID(row);
-        SetStyle(catID, langRef->GetColorFore(catID), langRef->GetColorBack(catID), langRef->GetFontName(catID), langRef->GetFontSize(catID), langRef->GetFontBold(catID));
+        int catID = backID = langRef->GetColorCatID(row);
+        if (m_targetType != TARGET_UNKNOWN && static_cast<bool>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR)) == true) {
+            backID = m_targetType;
+        }
+        unsigned back = langRef->GetColorBack(backID);
+
+        SetStyle(catID, langRef->GetColorFore(catID), back, langRef->GetFontName(catID), langRef->GetFontSize(catID), langRef->GetFontBold(catID));
     }
     AnnotationSetVisible(ANNOTATION_BOXED);
 }

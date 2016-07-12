@@ -239,6 +239,8 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_debugButton = GetDlgItem(IDC_BUTTON_DEBUG);
     m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
 
+    m_view.SetSourceType(m_comboQueueClusterCtrl->m_value);
+
     DoDataExchange();
 
     return 0;
@@ -728,6 +730,8 @@ LRESULT CBuilderDlg::OnCbnSelendokComboCluster(WORD /*wNotifyCode*/, WORD /*wID*
     m_comboQueueClusterCtrl->m_cluster = queueCluster->second.get()->GetID();
     GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_comboQueueClusterCtrl->m_queue);
     GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_comboQueueClusterCtrl->m_cluster);
+    m_view.SetSourceType(m_comboQueueClusterCtrl->m_cluster.c_str());
+    m_view.DoInit();
     PostMessage(BUM_REFRESHQUEUECLUSTER);
     return 0;
 }
