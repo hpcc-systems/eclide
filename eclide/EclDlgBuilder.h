@@ -65,6 +65,7 @@ public:
     enum { IDD = IDD_BUILDERVIEW };
 
     CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner);
+    CBookmarksFrame *GetBookmarksFrame();
 
     //  ---  CEclDlgQBImpl Virtuals  ---
     bool DoSave(bool attrOnly);
