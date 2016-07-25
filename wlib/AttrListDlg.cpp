@@ -355,6 +355,7 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 
 		AttrMap attrs;
 		std::_tstring attributeLabel;
+		std::_tstring attributeExt;
 		std::_tstring attributeComment;
 		std::_tstring attributeEcl;
 
@@ -368,15 +369,25 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 			if (boost::algorithm::istarts_with(line, IMPORT_MARKER))
 			{
 				if (attributeLabel.length() && attributeEcl.length())
-					attrs[std::make_pair(attributeLabel, CreateIAttributeECLType())] = CommentEclPair(attributeComment, attributeEcl);
+					attrs[std::make_pair(attributeLabel, CreateIAttributeType(attributeExt))] = CommentEclPair(attributeComment, attributeEcl);
 
 				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
+
 				//  Fix DABs new module bracketing
 				boost::algorithm::replace_all(line, _T("<"), _T(""));
 				boost::algorithm::replace_all(line, _T(">"), _T("."));
 				//  ---
 				boost::algorithm::trim(line);
-				attributeLabel = line;
+				std::vector<std::_tstring> parts;
+				boost::split(parts, line, boost::is_any_of(":"), boost::token_compress_on);
+				if (parts.size() > 1) {
+					attributeLabel = parts[1];
+					attributeExt = parts[0];
+				}
+				else {
+					attributeLabel = line;
+					attributeExt = _T("ECL");
+				}
 				attributeComment.clear();
 				attributeEcl.clear();
 			}
