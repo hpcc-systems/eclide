@@ -19,6 +19,8 @@
 #define ATTRIBUTE_TYPE_WORKSPACE _T("ecl_ws")
 #define ATTRIBUTE_TYPE_DUD _T("dud")
 #define ATTRIBUTE_TYPE_CMP _T("cmp")
+#define ATTRIBUTE_TYPE_HTML _T("html")
+#define ATTRIBUTE_TYPE_JS _T("js")
 
 const TCHAR * const DUD_TEXT =
     _T("/*This is an example plugin template.\r\n")
@@ -273,6 +275,14 @@ IAttributeType * CreateIAttributeCMPType()
 {
     return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_CMP));
 }
+IAttributeType * CreateIAttributeHTMLType()
+{
+    return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_HTML));
+}
+IAttributeType * CreateIAttributeJSType()
+{
+    return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_JS));
+}
 unsigned int GetAttributeTypes(IAttributeTypeVector & types)
 {
     types.push_back(CreateIAttributeECLType());
@@ -282,6 +292,8 @@ unsigned int GetAttributeTypes(IAttributeTypeVector & types)
     types.push_back(CreateIAttributeKELType());
     types.push_back(CreateIAttributeDUDType());
     types.push_back(CreateIAttributeCMPType());
+    types.push_back(CreateIAttributeHTMLType());
+    types.push_back(CreateIAttributeJSType());
     return types.size();
 }
 bool IsValidExtension(const std::_tstring & ext)
@@ -303,6 +315,10 @@ bool IsValidExtension(const std::_tstring & ext)
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_DUD))
         return true;
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_CMP))
+        return true;
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_HTML))
+        return true;
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_JS))
         return true;
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_PLUGIN))
         return true;
