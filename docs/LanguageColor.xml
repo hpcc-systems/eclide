@@ -5,7 +5,7 @@
   <s class_id="0"
      tracking_level="0"
      version="0">
-    <count>34</count>
+    <count>38</count>
     <item_version>0</item_version>
     <item class_id="1"
           tracking_level="0"
@@ -408,16 +408,64 @@
       </second>
     </item>
     <item>
-        <first>38</first>
-        <second>
-            <categoryid>38</categoryid>
-            <name>Caret</name>
-            <fore>32768</fore>
-            <back></back>
-            <font></font>
-            <size></size>
-            <bold></bold>
-        </second>
+      <first>38</first>
+      <second>
+        <categoryid>38</categoryid>
+        <name>Caret</name>
+        <fore>32768</fore>
+        <back></back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>39</first>
+      <second>
+        <categoryid>39</categoryid>
+        <name>ThorBackground</name>
+        <fore></fore>
+        <back></back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>40</first>
+      <second>
+        <categoryid>39</categoryid>
+        <name>HThorBackground</name>
+        <fore></fore>
+        <back>15132390</back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>41</first>
+      <second>
+        <categoryid>39</categoryid>
+        <name>LocalBackground</name>
+        <fore></fore>
+        <back>15138798</back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>42</first>
+      <second>
+        <categoryid>39</categoryid>
+        <name>RoxieBackground</name>
+        <fore></fore>
+        <back>16771043</back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
     </item>
   </s>
 </boost_serialization>

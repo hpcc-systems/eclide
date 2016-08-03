@@ -56,6 +56,15 @@ enum PANE	//  See "arrParts" in mainfrm.cpp
     PANE_LAST
 };
 
+enum TARGET_TYPE
+{
+    TARGET_UNKNOWN = 0,
+    TARGET_THOR = 39,
+    TARGET_HTHOR = 40,
+    TARGET_LOCAL = 41,
+    TARGET_ROXIE = 42
+};
+
 __interface ISourceSlot
 {
     void UIUpdateTitle();
@@ -119,6 +128,8 @@ protected:
     bool m_recording;
     char m_addedChar;
 
+    TARGET_TYPE m_targetType;
+
 public:
     ISourceSlot * m_owner;
     std::string m_WordCharacters;
@@ -127,6 +138,7 @@ public:
     DECLARE_WND_SUPERCLASS(NULL, baseClass::GetWndClassName())
 
     void SetOther(CSourceCtrl * other);
+    void SetSourceType(const CString & typeStr);
 
     BOOL PreTranslateMessage(MSG* pMsg);
 
