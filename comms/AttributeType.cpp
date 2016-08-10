@@ -142,7 +142,8 @@ public:
     CAttributeType(const std::_tstring & repositoryCode) : m_repositoryCode(repositoryCode)
     {
         boost::algorithm::trim_left_if(m_repositoryCode, boost::algorithm::is_any_of(_T(".")));
-        if (m_repositoryCode.empty()) 
+        boost::algorithm::to_lower(m_repositoryCode);
+        if (m_repositoryCode.empty())
         {
             m_repositoryCode = ATTRIBUTE_TYPE_ECL;
         }
