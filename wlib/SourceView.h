@@ -122,6 +122,7 @@ protected:
     static HMODULE hScintilla;
     bool m_modified;
     StlLinked<ILangRef> m_langRef;
+    CComPtr<IAttributeType> m_type;
     CSourceCtrl * m_other;
 
     CMacroEventVector m_macro;
@@ -137,6 +138,7 @@ public:
 
     DECLARE_WND_SUPERCLASS(NULL, baseClass::GetWndClassName())
 
+    void SetType(IAttributeType * type);
     void SetOther(CSourceCtrl * other);
     void SetSourceType(const CString & typeStr);
 

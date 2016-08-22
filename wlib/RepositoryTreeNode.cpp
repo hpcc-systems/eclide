@@ -275,11 +275,12 @@ CAttributeNode::~CAttributeNode()
 void CAttributeNode::GenerateDispText()
 {
 	m_DispText = m_displayQualified ? m_attribute->GetQualifiedLabel() : m_attribute->GetLabel();
-	std::_tstring lockedBy = m_attribute->GetLockedBy();
+    m_DispText += m_attribute->GetType()->GetFileExtension();
+    std::_tstring lockedBy = m_attribute->GetLockedBy();
 	if (lockedBy.length())
 	{
 		m_DispText += _T(" (");
-		m_DispText += lockedBy.c_str();
+		m_DispText += lockedBy;
 		m_DispText += _T(")");
 	}
 }

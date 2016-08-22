@@ -11,6 +11,7 @@
 
 const TCHAR * const LANGREFFILE_XML = _T("LanguageReference.xml");
 const TCHAR * const LANGREFFILE_CSV = _T("LanguageReference.csv");
+const TCHAR * const LANGREFFILE_SALT_XML = _T("LanguageRefSalt.xml");
 const TCHAR * const LANGCOLFILE = _T("LanguageColor.xml");
 const TCHAR * const LANGCOLFILE2 = _T("LanguageColor2.xml");
 
@@ -308,7 +309,7 @@ protected:
 	CategoryLanguageColorMap m_color;
 	RowCategoryIDVector m_colorRowToCategoryID;
 	CLanguageColor * m_defaultColor;
-
+	std::_tstring m_typeStr;
 	std::_tstring m_emptyStr;
 
 public:
@@ -318,15 +319,27 @@ public:
 	CLangRef()
 	{
 		m_defaultColor = NULL;
-	}
+		m_typeStr = _T("");	}
 
 	~CLangRef()
 	{
 	}
 
-	void init()
+	virtual void init(IAttributeType *type)
 	{
-		loadReference(LANGREFFILE_XML, m_lang);
+		bool loaded = false;
+		if (type != NULL) {
+			m_typeStr = type->GetRepositoryCode();
+			if (boost::algorithm::equals(m_typeStr, _T("salt"))) {
+				loadReference(LANGREFFILE_SALT_XML, m_lang);
+				loaded = true;
+			}
+		}
+		if (!loaded) {
+			m_typeStr = _T("ecl");
+			loadReference(LANGREFFILE_XML, m_lang);
+		}
+
 		loadMergedColor();
 		m_emptyStr = _T("");
 	}
@@ -451,7 +464,14 @@ public:
 			boost::filesystem::remove(file);
 		loadMergedColor();
 	}
-
+	int GetLexerType()
+	{
+		if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("salt"))) 
+		{
+			return SCLEX_SALT;
+		}
+		return SCLEX_ECL;
+	}
 	int GetLangCatCount()
 	{
 		int retVal = 0;
@@ -712,31 +732,34 @@ public:
 };
 
 boost::recursive_mutex g_langRef_mutex;
-StlLinked<CLangRef> g_langRef;
+std::map<std::_tstring, StlLinked<CLangRef> > g_langRef;
 
-ILangRef * CreateEclLangRef()
+ILangRef * CreateLangRef(IAttributeType * type)
+{
+	return CreateLangRef(type->GetRepositoryCode(), type);
+};
+
+ILangRef * CreateLangRef(std::_tstring code, IAttributeType * type)
 {
 	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
-	if (!g_langRef)
+	if (!g_langRef[code])
 	{
-		g_langRef = new CLangRef;
-		g_langRef->init();
+		g_langRef[code] = new CLangRef();
+		g_langRef[code]->init(type);
 	}
-	return g_langRef;
+	return g_langRef[code];
 };
 
 void ExportLangRef()
 {
-	CComPtr<CLangRef> retVal = new CLangRef;
+	CComPtr<CLangRef> retVal = new CLangRef();
 	retVal->loadReference(LANGREFFILE_XML);
 	retVal->ExportLanguageReference();
 }
 
 void ImportLangRef()
 {
-	CComPtr<CLangRef> retVal = new CLangRef;
-	retVal->init();
+	CComPtr<CLangRef> retVal = new CLangRef();
+	retVal->init(NULL);
 	retVal->ImportLanguageReference();
 }
-
-

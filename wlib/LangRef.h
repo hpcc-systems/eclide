@@ -2,6 +2,7 @@
 
 #include "wlib.h"
 #include "StringSet.h"
+#include "AttributeType.h"
 
 __interface ILangRef : public IUnknown
 {
@@ -9,6 +10,7 @@ __interface ILangRef : public IUnknown
     void Restore();
     void RestoreDefaults();
 
+    int GetLexerType();
     int GetLangCatCount();
     int GetLangNameCount(int cat) const;
     const TCHAR * GetLangName(int cat, int row) const;
@@ -36,7 +38,8 @@ __interface ILangRef : public IUnknown
     void SetFontBold(int catID, bool bold);
 };
 
-WLIB_API ILangRef * CreateEclLangRef();
+WLIB_API ILangRef * CreateLangRef(IAttributeType * type);
+WLIB_API ILangRef * CreateLangRef(std::_tstring code, IAttributeType * type);
 //  One of usage to upgrade XML file!
 WLIB_API void ExportLangRef();
 WLIB_API void ImportLangRef();

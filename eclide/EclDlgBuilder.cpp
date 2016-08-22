@@ -14,6 +14,7 @@ CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_att
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
         m_attrMonitor = new CAttributeMonitor(m_attribute);
+        m_view.SetType(m_attribute->GetType());
 
         CBookmarksFrame * pFrame = GetBookmarksFrame();
         if (pFrame)
@@ -506,6 +507,7 @@ void CBuilderDlg::SetAttribute(IAttribute *attribute)
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
         m_attrMonitor = new CAttributeMonitor(m_attribute);
+        m_view.SetType(m_attribute->GetType());
     }
 }
 
