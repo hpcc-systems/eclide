@@ -555,6 +555,7 @@ public:
     void OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col);
     void OpenAttribute(IAttribute * attribute, bool bHistoryView=false);
     void OpenAttribute(IAttribute * attribute, const std::_tstring & searchTerm, FINDMODE findmode);
+    void OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu);
     void SaveAttribute(IAttribute * attribute);
 
     void InsertText(IAttribute * attribute);

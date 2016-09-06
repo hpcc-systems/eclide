@@ -1047,7 +1047,7 @@ END_MESSAGE_MAP()
 
 // CChildBuilderFrm message handlers
 //  ===========================================================================
-bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm* pChild)
+bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
 {
     FramePair win = g_builder_window[workspaceItem];
     if (win.first && win.second && win.second->IsWindow())
@@ -1055,19 +1055,8 @@ bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm* pChild)
         if (win.first->IsIconic())
             win.first->ShowWindow(SW_RESTORE);
         win.first->BringWindowToTop();
-        //if (errors.size())
-        //	win.second->SetSyntax(errors);
-        //if (bHistoryView)
-        //	win.second->ShowHistory();
-        //else
-        //	win.second->ShowEcl(searchTerm, findmode);
-        //if (row || col)
-        //{
-        //	unsigned int pos = win.second->m_dlgview.m_view.PositionFromLine(row - 1) + col - 1;
-        //	win.second->m_dlgview.m_view.SetSel(pos, pos);
-        //}
 
-        pChild = win.first;
+        *pChild = win.first;
         return true;
     }
     return false;
@@ -1076,7 +1065,7 @@ bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm* pChild)
 HWND OpenBuilderMDI(CMainFrame* pFrame, const CString &ecl, IWorkspaceItem * workspaceItem)
 {
     CChildBuilderFrm* pChild = NULL;
-    if (!RestoreExisting(workspaceItem, pChild))
+    if (!RestoreExisting(workspaceItem, &pChild))
     {
         pChild = new CChildBuilderFrm(workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
@@ -1088,7 +1077,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, const CString &ecl, IWorkspaceItem * wor
 HWND OpenBuilderMDI(CMainFrame* pFrame, Dali::IWorkunit * src, IWorkspaceItem * workspaceItem, BuilderStartup startWith)
 {
     CChildBuilderFrm* pChild = NULL;
-    if (!RestoreExisting(workspaceItem, pChild))
+    if (!RestoreExisting(workspaceItem, &pChild))
     {
         pChild = new CChildBuilderFrm(workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
@@ -1101,7 +1090,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, Dali::IWorkunit * src, IWorkspaceItem * 
 HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
 {
     CChildBuilderFrm* pChild = NULL;
-    if (!RestoreExisting(workspaceItem, pChild))
+    if (!RestoreExisting(workspaceItem, &pChild))
     {
         pChild = new CChildBuilderFrm(workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
@@ -1114,7 +1103,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
 HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * workspaceItem)
 {
     CChildBuilderFrm* pChild = NULL;
-    if (!RestoreExisting(workspaceItem, pChild))
+    if (!RestoreExisting(workspaceItem, &pChild))
     {
         pChild = new CChildBuilderFrm(workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
@@ -1127,7 +1116,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
 bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked)
 {
     CChildBuilderFrm* pChild = NULL;
-    if (!RestoreExisting(workspaceItem, pChild))
+    if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
         pChild = new CChildBuilderFrm(workspaceItem);
@@ -1145,7 +1134,7 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspace
 bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors)
 {
     CChildBuilderFrm* pChild = NULL;
-    if (!RestoreExisting(workspaceItem, pChild))
+    if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
         pChild = new CChildBuilderFrm(workspaceItem);
@@ -1161,6 +1150,30 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspace
     {
         if (pChild && pChild->m_view && pChild->m_view->IsWindow())
             pChild->m_view->SetSyntax(errors);
+    }
+    return true;
+}
+
+bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu)
+{
+    CChildBuilderFrm* pChild = NULL;
+    if (!RestoreExisting(workspaceItem, &pChild))
+    {
+        ATLASSERT(!filePath.IsEmpty());
+        pChild = new CChildBuilderFrm(workspaceItem);
+        CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
+        if (!pChild->m_view->DoFileOpen(filePath))
+        {
+            pChild->DestroyWindow();
+            return false;
+        }
+        pChild->m_view->SetReadOnly(locked);
+    }
+    if (wu)
+    {
+        if (pChild && pChild->m_view && pChild->m_view->IsWindow()) {
+            pChild->m_view->AddWorkUnit(wu, StartFirstResult, false);
+        }
     }
     return true;
 }

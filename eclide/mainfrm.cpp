@@ -2805,6 +2805,18 @@ void CMainFrame::OpenBuilder(Dali::IWorkunit *wu, BuilderStartup startWith)
     else
     {
         CComPtr<IRepository> rep = AttachRepository();
+        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        {
+            const TCHAR * qualifiedLabel = wu->GetAppData(Dali::APP_DATA_QUALIFIEDLABEL);
+            if (qualifiedLabel != NULL) {
+                CComPtr<IRepository> rep = AttachRepository();
+                CComPtr<IAttribute> attr = rep->GetAttribute(qualifiedLabel, CreateIAttributeECLType());
+                if (attr) {
+                    OpenAttribute(attr, wu);
+                    return;
+                }
+            }
+        }
         ::OpenBuilderMDI(this, wu, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER), startWith);
     }
 }
@@ -3022,6 +3034,20 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
         HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE));
         if (hwnd)
             PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
+    }
+}
+
+void CMainFrame::OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu)
+{
+    CComPtr<IRepository> rep = AttachRepository();
+    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    {
+        std::_tstring label, path;
+        ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
+    }
+    else
+    {
+        ATLASSERT(_T("NOT SUPPORTED"));
     }
 }
 
