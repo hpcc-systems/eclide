@@ -2,7 +2,12 @@ project( ECLEDITOR )
 
 set ( SRCS
 		lexecl.cxx
+		lexsalt.cxx
 		lexesdl.cxx
+
+		${SCINTILLA_INCLUDE_DIR}/include/SciLExer.h
+
+		${SCINTILLA_INCLUDE_DIR}/lexers/LexSALT.cxx
 
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h
@@ -57,7 +62,7 @@ set ( SRCS
 		#${SCINTILLA_INCLUDE_DIR}/Src/WindowAccessor.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/XPM.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/XPM.h
-		
+
 		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.cxx
 		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.h
 		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterSet.cxx

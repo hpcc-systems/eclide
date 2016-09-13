@@ -1312,7 +1312,7 @@ public:
 
 		boost::filesystem::path iniPath;
 		m_ini = CreateIConfig(QUERYBUILDER_INI, GetIniPath(iniPath));
-		m_langRef = CreateEclLangRef();
+		m_langRef = CreateLangRef(_T("ecl"),NULL);
 
 		CString regPath(::GetRegPathQB());
 		regPath += _T("\\Preferences\\");
