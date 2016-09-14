@@ -35,6 +35,7 @@ IGraph * CreateGraph(const CString& url, const CString & wuid, const ECLGraph * 
 IResult * CreateResult(const CString & url, const CString & wuid, const ns6__ECLResult * result);
 IGraph * CreateGraph(const CString& url, const CString & wuid, const ns6__ECLGraph * data, int seq);
 #endif
+typedef std::map<std::_tstring, std::_tstring> StringStringMap;
 
 //  ===========================================================================
 const TCHAR * const CEclException::ECL_EXCEPTION_ERROR = _T("Error");
@@ -84,6 +85,8 @@ protected:
     CEclExceptionVector m_exceptions;
     workunit_signal_type on_refresh;
     int m_filesToUploadCount;
+
+    StringStringMap m_appData;
 
 public:
     IMPLEMENT_CLOCKABLEUNKNOWN;
@@ -225,6 +228,14 @@ public:
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return m_maxRuntime;
+    }
+    const TCHAR *GetAppData(const std::_tstring & key) const
+    {
+        StringStringMap::const_iterator found = m_appData.find(key);
+        if (found != m_appData.end()) {
+            return found->second.c_str();
+        }
+        return NULL;
     }
     const TCHAR *GetDebugString() const
     {
@@ -766,6 +777,7 @@ public:
                     }
                     else if (followup_key.compare(key) == 0)
                         m_protected = true;
+                    m_appData[key] = val;
                 }
             }
         }

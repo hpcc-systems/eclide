@@ -25,5 +25,6 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, Dali::IWorkunit *src, IWorkspaceItem * w
 HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * workspaceItem);
 bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked);
 bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors);
+bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu);
 
 
