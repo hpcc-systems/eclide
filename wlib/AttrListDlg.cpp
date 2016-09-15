@@ -204,9 +204,7 @@ void DoShowSyntaxDlg(HWND hwndParent, IRepositoryAdapt rep, IAttributeVector & _
 	dlg.DoModal(hwndParent);
 }
 //  ===========================================================================
-typedef std::pair<std::_tstring, std::_tstring> CommentEclPair;
-typedef std::pair<std::_tstring, IAttributeTypeAdapt> ModAttrTypePair;
-typedef std::map<ModAttrTypePair, CommentEclPair> AttrMap;
+typedef std::vector<StlLinked<IMigrationItem> > AttrVector;
 class CAttrImportDlg : 
 	public CDialogImpl<CAttrImportDlg>, 
 	public CRepositorySlotImpl,
@@ -217,7 +215,7 @@ class CAttrImportDlg :
 
 public:
 	IRepositoryAdapt & m_rep;
-	const AttrMap & m_attrs;
+	AttrVector & m_attrs;
 	CHListBox m_listAttrs;
 	CComPtr<CComboModule> m_comboModuleCtrl;
 	IModuleAdapt m_targetModule;
@@ -225,7 +223,7 @@ public:
 	CComPtr<IMigration> m_migrator;
 	bool m_defaultToSandbox;
 
-	CAttrImportDlg(IRepositoryAdapt target, const AttrMap & attrs, bool defaultToSandbox)
+	CAttrImportDlg(IRepositoryAdapt target, AttrVector & attrs, bool defaultToSandbox)
 		: m_rep(target), m_attrs(attrs)
 	{
 		m_comboModuleCtrl = new CComboModule();
@@ -262,9 +260,9 @@ public:
 		CenterWindow(GetParent());
 
 		m_listAttrs = GetDlgItem(IDC_LIST_ATTRIBUTES);
-		for(AttrMap::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
+		for(AttrVector::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
 		{
-			m_listAttrs.AddString(itr->first.first.c_str());
+			m_listAttrs.AddString(itr->get()->QualifiedLabel().c_str());
 		}
 
 		*m_comboModuleCtrl = GetDlgItem(IDC_COMBO_MODULE);
@@ -298,8 +296,9 @@ public:
 		CComPtr<IRepository> rep = AttachRepository();
 		m_migrator = CreateIMigration(rep, false, this);
 		m_migrator->Stop();
-		for(AttrMap::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
-			m_migrator->AddEclToModule(m_targetModule, itr->first.first, itr->first.second, itr->second.first, itr->second.second, static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))), m_checkSandbox.GetCheck() != 0);
+		for(AttrVector::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
+			m_migrator->AddEclToModule(m_targetModule, itr->get(), static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))), m_checkSandbox.GetCheck() != 0);
+		m_attrs.clear();
 
 		GetDlgItem(IDOK).EnableWindow(FALSE);
 		GetDlgItem(IDCANCEL).EnableWindow(FALSE);
@@ -342,34 +341,49 @@ public:
 	}
 };
 
+std::istream& safeGetline(std::istream& is, std::string& t)
+{
+	t.clear();
+	std::istream::sentry se(is, true);
+	std::streambuf* sb = is.rdbuf();
+	for (;;) {
+		int c = sb->sbumpc();
+		switch (c) {
+		case '\n':
+			return is;
+		case '\r':
+			if (sb->sgetc() == '\n')
+				sb->sbumpc();
+			return is;
+		case EOF:
+			if (t.empty())
+				is.setstate(std::ios::eofbit);
+			return is;
+		default:
+			t += (char)c;
+		}
+	}
+}
+
 IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
 {
 #define IMPORT_MARKER _T("//Import:")
 #define COMMENT_MARKER _T("//Comment:")
-	std::_tstring module;
-	CUnicodeFile file;
-	if (file.Open(pathToWString(path).c_str()))
-	{
-		file.Read(module);
-		file.Close();
-
-		AttrMap attrs;
+	std::ifstream ifs(path.c_str());
+	if (ifs) {
+		AttrVector attrs;
 		std::_tstring attributeLabel;
 		std::_tstring attributeExt;
-		std::_tstring attributeComment;
-		std::_tstring attributeEcl;
+		std::string attributeComment;
+		std::string attributeEcl;
 
-		typedef std::vector<std::_tstring> split_vector_type;
-		split_vector_type SplitVec; 
-		boost::algorithm::split(SplitVec, module, boost::algorithm::is_any_of("\r\n"), boost::algorithm::token_compress_on);
-
-		for (split_vector_type::const_iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
+		std::string line;
+		while (!safeGetline(ifs, line).eof())
 		{
-			std::_tstring line = *itr;
 			if (boost::algorithm::istarts_with(line, IMPORT_MARKER))
 			{
 				if (attributeLabel.length() && attributeEcl.length())
-					attrs[std::make_pair(attributeLabel, CreateIAttributeType(attributeExt))] = CommentEclPair(attributeComment, attributeEcl);
+					attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), attributeComment, attributeEcl));
 
 				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
 
@@ -385,7 +399,7 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 					attributeExt = parts[0];
 				}
 				else {
-					attributeLabel = line;
+					attributeLabel = CA2T(line.c_str());
 					attributeExt = _T("ECL");
 				}
 				attributeComment.clear();
@@ -395,15 +409,19 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 			{
 				boost::algorithm::ireplace_first(line, COMMENT_MARKER, _T(""));
 				boost::algorithm::trim(line);
-				attributeComment += line + _T("\r\n");
+				attributeComment += line + "\r\n";
 			}
 			else
 			{
-				attributeEcl += line + _T("\r\n");
+				attributeEcl += line + "\r\n";
 			}
 		}
 		if (attributeLabel.length() && attributeEcl.length())
-			attrs[std::make_pair(attributeLabel, CreateIAttributeECLType())] = CommentEclPair(attributeComment, attributeEcl);
+			attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), attributeComment, attributeEcl));
+
+		line.clear();
+		attributeComment.clear();
+		attributeEcl.clear();
 
 		CAttrImportDlg dlg(AttachRepository(), attrs, true);
 		if (dlg.DoModal(hwndParent) == IDOK)

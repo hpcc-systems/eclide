@@ -226,6 +226,14 @@ public:
         return result;
     }
 
+    void UnloadText()
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        m_ecl.Empty();
+        m_ecl.FreeExtra();
+        m_eclSet = false;
+    }
+
     bool IsCheckedOut() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
