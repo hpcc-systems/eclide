@@ -8,6 +8,7 @@ set ( SRCS
 		${SCINTILLA_INCLUDE_DIR}/include/SciLExer.h
 
 		${SCINTILLA_INCLUDE_DIR}/lexers/LexSALT.cxx
+		${SCINTILLA_INCLUDE_DIR}/lexers/LexESDL.cxx
 
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h

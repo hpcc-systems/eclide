@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="5">
+  <s class_id="0" tracking_level="0" version="0">
+    <count>33</count>
+    <item_version>0</item_version>
+    <item class_id="1" tracking_level="0" version="0">
+      <categoryid>1</categoryid>
+      <name>ESPstruct</name>
+      <tooltip>  EXAMPLE:
+  ESPstruct NameBlock
+  {
+  string FirstName;
+  string MiddleName;
+  string LastName;
+  int Age;
+  };
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ESPrequest</name>
+      <tooltip>  EXAMPLE:
+  ESPrequest MyQueryRequest
+  {
+    string FirstName;
+    string MiddleName;
+    string LastName;
+    string Sortby;
+    bool Descending(false);
+  };
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ESPresponse</name>
+      <tooltip>  EXAMPLE:
+  ESPresponse MyQueryResponse
+  {
+    string FirstName;
+    string MiddleName;
+    string LastName;
+  };
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ESParray</name>
+      <tooltip>  EXAMPLE:
+  ESPstruct NameBlock
+  {
+    string FirstName;
+    string MiddleName;
+    string LastName;
+    int Age;
+  };
+  ESParray&lt;ESPstruct NameBlock="", Name=""&gt; Names;
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item class_id="1" tracking_level="0" version="0">
+      <categoryid>1</categoryid>
+      <name>ESPenum</name>
+      <tooltip>  EXAMPLE:
+  ESPenum EyeColors : string
+  {
+    Brn("Brown"),
+    Blu("Blue"),
+    Grn("Green")
+  };
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ESPinclude</name>
+      <tooltip>  EXAMPLE:
+  ESPinclude(commonStructures);
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ESPservice</name>
+      <tooltip>  EXAMPLE:
+  SPservice MyService
+  {
+    ESPmethod MyMethod1(MyMethod1Request, MyMethod1Response);
+    ESPmethod MyMethod2(MyMethod2Request, MyMethod2Response);
+  };
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ESPmethod</name>
+      <tooltip>  EXAMPLE:
+  ESPservice MyService
+  {
+    ESPmethod MyMethod1(MyMethod1Request, MyMethod1Response);
+    ESPmethod
+    [
+      description("MyMethod Two"),
+      help("This method does everything MyMethod1 does plus a few extra features"),
+      min_ver("1.2")
+    ]
+    MyMethod2(MyMethod2Request, MyMethod2Response);
+  };
+      </tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>boolean</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>bool</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>string</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>int</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>int64</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>float</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>double</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>binary</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>binary</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>max_len</name>
+      <tooltip>max_len (n)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>ecl_max_len</name>
+      <tooltip>ecl_max_len (n)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>ecl_name</name>
+      <tooltip>ecl_name ("name")</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>counter</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>count_val</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>max_count_var</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>ecl_null</name>
+      <tooltip>ecl_null (n | string)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>leading_zero</name>
+      <tooltip>leading_zero(n)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>ecl_hide</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>ecl_type</name>
+      <tooltip>ecl_type ("type")</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>ecl_keep</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>min_ver</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>max_ver</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>depr_ver</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>help</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>description</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+  </s>
+</boost_serialization>

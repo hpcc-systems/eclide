@@ -12,6 +12,7 @@
 const TCHAR * const LANGREFFILE_XML = _T("LanguageReference.xml");
 const TCHAR * const LANGREFFILE_CSV = _T("LanguageReference.csv");
 const TCHAR * const LANGREFFILE_SALT_XML = _T("LanguageRefSalt.xml");
+const TCHAR * const LANGREFFILE_ESDL_XML = _T("LanguageRefESDL.xml");
 const TCHAR * const LANGCOLFILE = _T("LanguageColor.xml");
 const TCHAR * const LANGCOLFILE2 = _T("LanguageColor2.xml");
 
@@ -334,6 +335,10 @@ public:
 				loadReference(LANGREFFILE_SALT_XML, m_lang);
 				loaded = true;
 			}
+			else if (boost::algorithm::equals(m_typeStr, _T("esdl"))) {
+				loadReference(LANGREFFILE_ESDL_XML, m_lang);
+				loaded = true;
+			}
 		}
 		if (!loaded) {
 			m_typeStr = _T("ecl");
@@ -469,6 +474,10 @@ public:
 		if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("salt"))) 
 		{
 			return SCLEX_SALT;
+		}
+		else if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("esdl")))
+		{
+			return SCLEX_ESDL;
 		}
 		return SCLEX_ECL;
 	}
