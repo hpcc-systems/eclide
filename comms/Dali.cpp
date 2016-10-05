@@ -1324,6 +1324,13 @@ protected:
                     applicationValue.Application = stringPool.Create(APP_DATA_APPNAME);
                     applicationValue.Name = stringPool.Create(APP_DATA_VERSION);
                     applicationValue.Value = stringPool.Create(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_APP_VERSION)));
+                    arrayOfApplicationValues.ApplicationValue.push_back(applicationValuePool.Create(applicationValue));
+
+                    if (!attrQualifiedLabel.IsEmpty()) {
+                        applicationValue.Name = stringPool.Create(APP_DATA_QUALIFIEDLABEL);
+                        applicationValue.Value = stringPool.Create(attrQualifiedLabel);
+                        arrayOfApplicationValues.ApplicationValue.push_back(applicationValuePool.Create(applicationValue));
+                    }
 
                     if (isXml)
                     {

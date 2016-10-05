@@ -203,6 +203,11 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return m_maxRuntime;
     }
+    const TCHAR *GetAppData(const std::_tstring & key) const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        return NULL;
+    }
     const TCHAR *GetDebugString() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);

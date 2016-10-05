@@ -14,6 +14,7 @@ namespace Dali
 const TCHAR * const APP_DATA_DEBUG = _T("Debug_");
 const TCHAR * const APP_DATA_APPNAME = _T("QueryBuilder");
 const TCHAR * const APP_DATA_VERSION = _T("Version");
+const TCHAR * const APP_DATA_QUALIFIEDLABEL = _T("QualifiedLabel");
 const TCHAR * const APP_DATA_FOLLOWUP = _T("Followup_");
 const TCHAR * const APP_DATA_ARCHIVE = _T("archiveToCpp");
 const TCHAR * const APP_DATA_COMMONPRIVATEATTRIBUTES = _T("commonPrivateAttributes");

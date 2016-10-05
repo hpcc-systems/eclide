@@ -126,6 +126,7 @@ __interface IWorkunit : public clib::ILockableUnknown
     bool IsDebugging() const;
     int GetResultLimit() const;
     int GetMaxRuntime() const;
+    const TCHAR *GetAppData(const std::_tstring & key) const;
     const TCHAR *GetDebugString() const;
     bool GetArchiveCpp() const;
     bool GetNoCommonPrivateAttributes() const;

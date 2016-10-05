@@ -1061,17 +1061,6 @@ bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
         if (win.first->IsIconic())
             win.first->ShowWindow(SW_RESTORE);
         win.first->BringWindowToTop();
-        //if (errors.size())
-        //	win.second->SetSyntax(errors);
-        //if (bHistoryView)
-        //	win.second->ShowHistory();
-        //else
-        //	win.second->ShowEcl(searchTerm, findmode);
-        //if (row || col)
-        //{
-        //	unsigned int pos = win.second->m_dlgview.m_view.PositionFromLine(row - 1) + col - 1;
-        //	win.second->m_dlgview.m_view.SetSel(pos, pos);
-        //}
 
         *pChild = win.first;
         return true;
@@ -1186,6 +1175,30 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspace
     {
         if (pChild && pChild->m_view && pChild->m_view->IsWindow())
             pChild->m_view->SetSyntax(errors);
+    }
+    return true;
+}
+
+bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu)
+{
+    CChildBuilderFrm* pChild = NULL;
+    if (!RestoreExisting(workspaceItem, &pChild))
+    {
+        ATLASSERT(!filePath.IsEmpty());
+        pChild = new CChildBuilderFrm(workspaceItem);
+        CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
+        if (!pChild->m_view->DoFileOpen(filePath))
+        {
+            pChild->DestroyWindow();
+            return false;
+        }
+        pChild->m_view->SetReadOnly(locked);
+    }
+    if (wu)
+    {
+        if (pChild && pChild->m_view && pChild->m_view->IsWindow()) {
+            pChild->m_view->AddWorkUnit(wu, StartFirstResult, false);
+        }
     }
     return true;
 }
