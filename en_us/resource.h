@@ -537,6 +537,7 @@
 #define IDC_STATIC_WUARGUMENTS          524
 #define IDC_COMBO1                      524
 #define IDC_COMBO_MODULES               524
+#define IDC_COMBO_ELEMENT_TYPE          524
 #define IDC_EDIT_ARGUMENTS2             525
 #define IDC_EDIT_WUARGUMENTS            525
 #define IDC_STATIC_COMPILER             525

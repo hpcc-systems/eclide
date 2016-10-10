@@ -271,7 +271,6 @@ int CSourceCtrl::HandleNotify(Scintilla::SCNotification *notification)
         }
         MatchBrace();
         UpdateStatusBar();
-        m_owner->NewSel();
         break;
     case SCN_MODIFIED:
         if ( !m_modified && (notification->modificationType&(SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT)))
@@ -454,6 +453,8 @@ void CSourceCtrl::DoInit()
 void CSourceCtrl::InitColors(ILangRef * langRef)
 {
     int backID;
+    bool generalFlag = langRef->GetElementType().CompareNoCase(_T("general")) == 0;
+
     for(int row = 0; row < langRef->GetColorRowCount(); ++row)
     {
         ATLTRACE(_T("Row:  %i\n"), row);
@@ -461,9 +462,13 @@ void CSourceCtrl::InitColors(ILangRef * langRef)
         if (m_targetType != TARGET_UNKNOWN && static_cast<bool>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR)) == true) {
             backID = m_targetType;
         }
-        unsigned back = langRef->GetColorBack(backID);
+        langRef->GetElementType();
+        if (generalFlag && catID == 1)
+        {
+            SetCaretFore(langRef->GetColorFore(catID));
+        }
 
-        SetStyle(catID, langRef->GetColorFore(catID), back, langRef->GetFontName(catID), langRef->GetFontSize(catID), langRef->GetFontBold(catID));
+        SetStyle(catID, langRef->GetColorFore(catID), langRef->GetColorBack(backID), langRef->GetFontName(catID), langRef->GetFontSize(catID), langRef->GetFontBold(catID));
     }
     AnnotationSetVisible(ANNOTATION_BOXED);
 }
@@ -824,22 +829,15 @@ void CSourceCtrl::SetStyle(signed style, unsigned fore, unsigned back, const std
         face = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_FONT);
 
     int size = _size >= 1 ? _size : GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_FONTSIZE);
-    if (style == 38)
-    {
-        SetCaretFore(fore);
-    }
-    else
-    {
-        if (fore)
-            StyleSetFore(style, fore);
-        StyleSetBack(style, back);
-        if (size >= 1)
-            StyleSetSize(style, size);
-        if (face)
-            StyleSetFont(style, face);
-        StyleSetBold(style, bold);
-        StyleSetEOLFilled(style, true);
-    }
+    if (fore)
+        StyleSetFore(style, fore);
+    StyleSetBack(style, back);
+    if (size >= 1)
+        StyleSetSize(style, size);
+    if (face)
+        StyleSetFont(style, face);
+    StyleSetBold(style, bold);
+    StyleSetEOLFilled(style, true);
 }
 
 void CSourceCtrl::SetMarker(int marker, int markerType, COLORREF fore, COLORREF back)

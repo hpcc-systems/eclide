@@ -1068,6 +1068,8 @@ class CPrefColorDlg : public CDialogImpl<CPrefColorDlg>,
 {
 	typedef CPrefColorDlg thisClass;
 	typedef CDialogImpl<thisClass> baseClass;
+	typedef std::map<std::_tstring, std::_tstring> SampleMap;
+
 protected:
 	IOwner * m_owner;
 	IConfigAdapt m_config;
@@ -1080,12 +1082,15 @@ protected:
 	CColorButton m_buttForeground;
 	CColorButton m_buttBackground;
 	CComPtr<ILangRef> m_langRef;
+	CComboBox m_comboElementType;
 	CComboBox m_comboElement;
-	CSourceCtrl m_ecl;
+	CSourceCtrl m_sourceCtrl;
 	CButton m_checkBold;
+	CString m_currentElementTypeStr;
+	CString m_currentElementStr;
 
 public:
-	CPrefColorDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner), m_ecl(this)
+	CPrefColorDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner), m_sourceCtrl(this)
 	{
 		m_ConfigLabel = m_config->GetLabel();
 		if (m_ConfigLabel.IsEmpty())
@@ -1158,6 +1163,85 @@ public:
 		return NULL;
 	}
 
+	void DoLoadElementType()
+	{
+		m_langRef = CreateLangRef(CurrentElementType().GetString(), NULL);
+		LoadType();
+
+		m_comboElement.ResetContent();
+		m_langRef->SetElementType(CurrentElementType());
+		m_langRef->loadReference();
+		m_langRef->loadMergedColor();
+		LoadComboElement();
+
+		m_sourceCtrl.DoInit();
+		m_comboElement.SetCurSel(0);
+
+		LoadSampleText();
+		DoLoadElement();
+		m_sourceCtrl.InitColors(m_langRef);
+	}
+
+	void LoadType()
+	{
+		if (ElementTypeEqual("general"))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeGENERALType());
+		}
+		else if (ElementTypeEqual("esdl"))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeESDLType());
+		}
+		else if (ElementTypeEqual("kel"))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeKELType());
+		}
+		else if (ElementTypeEqual("salt"))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeSALTType());
+		}
+		else
+		{
+			m_sourceCtrl.SetType(CreateIAttributeECLType());
+		}
+	}
+
+	CString CurrentElementType()
+	{
+		int row = m_comboElementType.GetCurSel();
+		if (row < 0)
+			return _T("");
+
+		CString str1;
+		int n;
+		n = m_comboElementType.GetLBTextLen(row);
+		m_comboElementType.GetLBText(row, str1.GetBuffer(n));
+		str1.ReleaseBuffer();
+		str1.MakeLower();
+		
+		m_currentElementTypeStr = str1;
+
+		return str1;
+	}
+
+	CString CurrentElement()
+	{
+		int row = m_comboElement.GetCurSel();
+		if (row < 0)
+			return _T("");
+
+		CString str1;
+		int n;
+		n = m_comboElement.GetLBTextLen(row);
+		m_comboElement.GetLBText(row, str1.GetBuffer(n));
+		str1.ReleaseBuffer();
+		str1.MakeLower();
+
+		m_currentElementStr = str1;
+
+		return str1;
+	}
+
 	void DoLoadElement()
 	{
 		int row = m_comboElement.GetCurSel();
@@ -1172,9 +1256,17 @@ public:
 		m_comboFontSize.SetWindowText(boost::lexical_cast<std::_tstring>(m_langRef->GetFontSize(catID)).c_str());
 		m_checkBold.SetCheck(m_langRef->GetFontBold(catID));
 
-		if (catID == 38) // Caret
+		if (ElementTypeEqual("general"))
 		{
-			m_buttBackground.EnableWindow(false);
+			if (CurrentElement().CompareNoCase(_T("caret")) == 0)
+			{
+				m_buttBackground.EnableWindow(false);
+			}
+			else
+			{
+				m_buttBackground.EnableWindow(true);
+			}
+			m_buttForeground.EnableWindow(true);
 			m_comboFont.EnableWindow(false);
 			m_comboFontSize.EnableWindow(false);
 			m_checkBold.EnableWindow(false);
@@ -1213,11 +1305,9 @@ public:
 		MSG_WM_DESTROY(OnDestroy)
 
 		COMMAND_HANDLER(IDC_CHECK_BOLD, BN_CLICKED, OnCheckClicked)
-		COMMAND_HANDLER(IDC_COMBO_ELEMENT, CBN_SELCHANGE, OnCbnSelchangeComboElement)
+		COMMAND_HANDLER(IDC_COMBO_ELEMENT_TYPE, CBN_SELENDOK, OnCbnSelendokComboElementType)
 		COMMAND_HANDLER(IDC_COMBO_ELEMENT, CBN_SELENDOK, OnCbnSelendokComboElement)
-		COMMAND_HANDLER(IDC_COMBO_FONT, CBN_SELCHANGE, OnCbnSelendokComboFont)
 		COMMAND_HANDLER(IDC_COMBO_FONT, CBN_SELENDOK, OnCbnSelendokComboFont)
-		COMMAND_HANDLER(IDC_COMBO_FONTSIZE, CBN_SELCHANGE, OnCbnSelendokComboFontSize)
 		COMMAND_HANDLER(IDC_COMBO_FONTSIZE, CBN_SELENDOK, OnCbnSelendokComboFontSize)
 		NOTIFY_HANDLER(IDC_BUTTON_FOREGROUND, CPN_SELENDOK, OnBnSelendokForeground)
 		NOTIFY_HANDLER(IDC_BUTTON_BACKGROUND, CPN_SELENDOK, OnBnSelendokBackground)
@@ -1265,62 +1355,191 @@ public:
 		m_comboFontSize.AddString(_T("78"));
 	}
 
-	void InitComboElement()
+	std::vector<CString> m_elementTypes = { "general", "ecl", "esdl", "kel", "salt" };
+
+	int GetElementTypeCount()
 	{
-		m_comboElement = GetDlgItem(IDC_COMBO_ELEMENT);
-		for(int row = 0; row < m_langRef->GetColorRowCount(); ++row)
+		return static_cast<int>(m_elementTypes.size());
+	}
+
+	CString GetElementType(int typeID)
+	{
+		return m_elementTypes[typeID];
+	}
+
+	void InitComboElementType()
+	{
+		m_comboElementType = GetDlgItem(IDC_COMBO_ELEMENT_TYPE);
+		for (int i = 0; i < GetElementTypeCount(); i++)
 		{
-			int catID = m_langRef->GetColorCatID(row);
-			m_comboElement.AddString(m_langRef->GetColorName(catID));
+			m_comboElementType.AddString(GetElementType(i).MakeUpper());
 		}
 	}
 
-	void InitEditEcl()
+	void InitComboElement()
+	{
+		m_comboElement = GetDlgItem(IDC_COMBO_ELEMENT);
+	}
+
+	void LoadComboElement()
+	{
+		for (int row = 0; row < m_langRef->GetColorRowCount(); ++row)
+		{
+			m_comboElement.AddString(m_langRef->GetColorName(m_langRef->GetColorCatID(row)));
+		}
+	}
+
+	void InitEditColors()
 	{
 		CWindow wndPlaceholder = GetDlgItem(IDC_ECL_PLACEHOLDER);
 		CRect rc;
 		wndPlaceholder.GetWindowRect ( rc );
 		ScreenToClient(rc);
 		wndPlaceholder.DestroyWindow();
-		m_ecl.Create(*this, rc, _T(""), WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, WS_EX_CLIENTEDGE, IDC_ECL_PLACEHOLDER);
-		m_ecl.DoInit();
-		m_ecl.SetText(
-			_T("//  Click the ECL to select color scheme.")		_T("\r\n")
-			_T("/*  Edit the ECL by typing here.	*/")		_T("\r\n")
-			_T("import ut;")									_T("\r\n")
-			_T("r := ")											_T("\r\n")
-			_T("  record")										_T("\r\n")
-			_T("   string22 s1 := '123';")						_T("\r\n")
-			_T("   integer4 i1 := 123;")						_T("\r\n")
-			_T("  end;")										_T("\r\n")
-			_T("#option('tmp', true);")							_T("\r\n")
-			_T("d := dataset('tmp::qb', r, thor);")				_T("\r\n")
-			_T("output(d);")									_T("\r\n")
-			_T("Compare:  Added")								_T("\r\n")
-			_T("Compare:  Deleted")								_T("\r\n")
-			_T("Compare:  Changed")								_T("\r\n")
-			_T("Compare:  Moved"));
-		m_ecl.SetLineState(11, SCE_ECL_ADDED);
-		m_ecl.SetLineState(12, SCE_ECL_DELETED);
-		m_ecl.SetLineState(13, SCE_ECL_CHANGED);
-		m_ecl.SetLineState(14, SCE_ECL_MOVED);
+		m_sourceCtrl.Create(*this, rc, _T(""), WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, WS_EX_CLIENTEDGE, IDC_ECL_PLACEHOLDER);
+
+		LoadSampleText();
+	}
+
+	bool ElementTypeEqual(CString elementType)
+	{
+		return m_currentElementTypeStr.CompareNoCase(elementType) == 0;
+	}
+
+	void LoadSampleText()
+	{
+		std::_tstring textSample = _T("");
+		bool filled = false;
+
+		if (m_langRef)
+		{
+			//m_langRef->loadSamples();
+			textSample = m_langRef->GetSample();
+			filled = true;
+
+			if (textSample == _T(""))
+			{
+				if (ElementTypeEqual("kel"))
+				{
+					textSample =
+						_T("// KEL sample file illustrating color syntax")				_T("\r\n")
+						_T("/* This is a comment between delimiters */")				_T("\r\n")
+						_T("Person := ENTITY(FLAT(UID = did, STRING fname = name));")	_T("\r\n")
+						_T("USE fdc.GLUE_fdc.File(FDC, Person,")						_T("\r\n")
+						_T("Person: => age := YEARSBETWEEN(bdate, CURRENTDATE());")		_T("\r\n")
+						_T("QUERY: HiMaleInc <= Person(sex = 'M' AND")					_T("\r\n")
+						_T("   income = income$Person(sex = 'M') :Max);")				_T("\r\n")
+						_T("QUERY: IncMoreAveVal <= ")									_T("\r\n")
+						_T("   Person(income > MAX(Vehicle(make = 'TOYOTA'), value));");
+				}
+				else if (ElementTypeEqual("esdl"))
+				{
+					textSample =
+						_T("// ESDL sample for illustrating color syntax")				_T("\r\n")
+						_T("/* This is a comment between delimiters */")				_T("\r\n")
+						_T("ESPInclude(ModThis);")										_T("\r\n")
+						_T("ESPservice MathService{")									_T("\r\n")
+						_T("  ESPmethod DivThis(DivThisRequest, DivThisResponse);")		_T("\r\n")
+						_T("ESPmethod ModThis(ModThisRequest, ModThisResponse);")		_T("\r\n")
+						_T("};")														_T("\r\n")
+						_T("ESPrequest DivThisRequest{")								_T("\r\n")
+						_T("  int  FirstNumber;")										_T("\r\n")
+						_T("  int  SecondNumber;")										_T("\r\n")
+						_T("};")														_T("\r\n")
+						_T("ESPresponse DivThisResponse{")								_T("\r\n")
+						_T("  int  Answer;")											_T("\r\n")
+						_T("};")														_T("\r\n")
+						_T("ESPstruct Date {") 											_T("\r\n")
+						_T("  [leading_zero(4)] Year;")									_T("\r\n")
+						_T("  [leading_zero(2)] Month;")								_T("\r\n")
+						_T("  [leading_zero(2)] Day;")									_T("\r\n")
+						_T("}")															_T("\r\n")
+						_T("ESPservice MyService {")									_T("\r\n")
+						_T("  ESPmethod MyMethod1(MyMethod1Req, MyMethod1Resp);")		_T("\r\n")
+						_T("    ESPmethod [")											_T("\r\n")
+						_T("      description(\"MyMethod Two\"),")						_T("\r\n")
+						_T("      help(\"This method does everything...\"),")			_T("\r\n")
+						_T("      min_ver(\"1.2\")")									_T("\r\n")
+						_T("    ]")														_T("\r\n")
+						_T("  MyMethod2(MyMethod2Req, MyMethod2Resp);")					_T("\r\n")
+						_T("};");
+				}
+				else if (ElementTypeEqual("salt"))
+				{
+					textSample =
+						_T("// SALT sample for illustrating color syntax")	_T("\r\n")
+						_T("/* This is a comment between delimiters */")	_T("\r\n")
+						_T("FIELD:dt_first_seen:RECORDDATE(FIRST)")			_T("\r\n")
+						_T("CONCEPT : locale : +: zip : state : 2, 0")		_T("\r\n")
+						_T("ATTRIBUTEFILE : VEHICLES : ")					_T("\r\n")
+						_T("  NAMED(SALT_Examples.File_Vehicle_Matches_S")	_T("\r\n");
+				}
+				else if (ElementTypeEqual("ecl"))
+				{
+					textSample =
+						_T("// ECL sample for illustrating color syntax")	_T("\r\n")
+						_T("/* This is a comment between delimiters */")	_T("\r\n")
+						_T("import ut;")									_T("\r\n")
+						_T("r := ")											_T("\r\n")
+						_T("  record")										_T("\r\n")
+						_T("   string22 s1 := '123';")						_T("\r\n")
+						_T("   integer4 i1 := 123;")						_T("\r\n")
+						_T("  end;")										_T("\r\n")
+						_T("#option('tmp', true);")							_T("\r\n")
+						_T("d := dataset('tmp::qb', r, thor);")				_T("\r\n")
+						_T("output(d);")									_T("\r\n")
+						_T("Compare:  Added")								_T("\r\n")
+						_T("Compare:  Deleted")								_T("\r\n")
+						_T("Compare:  Changed")								_T("\r\n")
+						_T("Compare:  Moved");
+				}
+				else if (ElementTypeEqual("general"))
+				{
+					textSample =
+						_T("Caret : #")										_T("\r\n")
+						_T("Target:   Thor                         ")		_T("\r\n")
+						_T("Target:   HThor                        ")		_T("\r\n")
+						_T("Target:   Roxie                        ")		_T("\r\n")
+						_T("Target:   Local                        ")		_T("\r\n");
+				}
+				else
+				{
+					filled = false;
+				}
+			}
+		}
+		
+		m_sourceCtrl.SetText(textSample.c_str());
+
+		if (ElementTypeEqual("ecl"))
+		{
+			m_sourceCtrl.SetLineState(11, SCE_ECL_ADDED);
+			m_sourceCtrl.SetLineState(12, SCE_ECL_DELETED);
+			m_sourceCtrl.SetLineState(13, SCE_ECL_CHANGED);
+			m_sourceCtrl.SetLineState(14, SCE_ECL_MOVED);
+		}
+		else if (ElementTypeEqual("general"))
+		{
+			m_sourceCtrl.SetFocus(true);
+			m_sourceCtrl.SetSel(9, 9);
+		}
 	}
 
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
 	{
 		CWaitCursor wait;
 
-		boost::filesystem::path iniPath;
-		m_ini = CreateIConfig(QUERYBUILDER_INI, GetIniPath(iniPath));
-		m_langRef = CreateLangRef(_T("ecl"),NULL);
-
 		CString regPath(::GetRegPathQB());
 		regPath += _T("\\Preferences\\");
 
 		InitComboFont();
 		InitComboFontSize();
+		InitComboElementType();
 		InitComboElement();
-		InitEditEcl();
+		InitEditColors();
+
+		boost::filesystem::path iniPath;
+		m_ini = CreateIConfig(QUERYBUILDER_INI, GetIniPath(iniPath));
 
 		m_buttForeground.SubclassWindow(GetDlgItem(IDC_BUTTON_FOREGROUND));
 		m_buttForeground.SetDefaultColor(GetSysColor(COLOR_WINDOWTEXT));
@@ -1330,10 +1549,18 @@ public:
 		m_checkBold = GetDlgItem(IDC_CHECK_BOLD);
 
 		LoadFromConfig(m_config);
-		DoLoadElement();
+		SelectElementType(_T("ecl"));
+		DoLoadElementType();
 		DoChanged(false);
 
 		return TRUE;
+	}
+
+	void SelectElementType(std::_tstring elementTypeStr)
+	{
+		m_langRef = CreateLangRef(elementTypeStr, NULL);
+		int index = m_comboElementType.FindString(0, elementTypeStr.c_str());
+		m_comboElementType.SetCurSel(index);
 	}
 
 	void OnDestroy()
@@ -1362,7 +1589,7 @@ public:
 		int catID = m_langRef->GetColorCatID(row);
 
 		m_langRef->SetFontBold(catID, m_checkBold.GetCheck() != 0);
-		m_ecl.InitColors(m_langRef);
+		m_sourceCtrl.InitColors(m_langRef);
 		return 0;
 	}
 
@@ -1372,9 +1599,9 @@ public:
 		ctrl.SetRange(lower, upper);
 	}
 
-	LRESULT OnCbnSelchangeComboElement(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	LRESULT OnCbnSelendokComboElementType(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
-		DoLoadElement();
+		DoLoadElementType();
 		return 0;
 	}
 
@@ -1392,10 +1619,11 @@ public:
 		int catID = m_langRef->GetColorCatID(row);
 
 		CString font;
-		m_comboFont.GetLBText(m_comboFont.GetCurSel(), font);
+		int fontRow = m_comboFont.GetCurSel();
+		m_comboFont.GetLBText(fontRow, font);
 		m_langRef->SetFontName(catID, static_cast<const TCHAR *>(font));
 
-		m_ecl.InitColors(m_langRef);
+		m_sourceCtrl.InitColors(m_langRef);
 		return 0;
 	}
 
@@ -1417,7 +1645,8 @@ public:
 			return 0;
 		}
 
-		m_ecl.InitColors(m_langRef);
+		m_sourceCtrl.InitColors(m_langRef);
+		DoChanged();
 		return 0;
 	}
 
@@ -1430,7 +1659,8 @@ public:
 
 		m_langRef->SetColorFore(catID, m_buttForeground.GetColor());
 
-		m_ecl.InitColors(m_langRef);
+		m_sourceCtrl.InitColors(m_langRef);
+		DoChanged();
 		return 0;
 	}
 
@@ -1443,14 +1673,15 @@ public:
 
 		m_langRef->SetColorBack(catID, m_buttBackground.GetColor());
 
-		m_ecl.InitColors(m_langRef);
+		m_sourceCtrl.InitColors(m_langRef);
+		DoChanged();
 		return 0;
 	}
 	
 	//  IEclSlot 
 	void NewSel() 
 	{
-		int catID = m_ecl.GetStyleAt(m_ecl.GetCurrentPos());
+		int catID = m_sourceCtrl.GetStyleAt(m_sourceCtrl.GetCurrentPos());
 		if (catID == 0)
 			catID = 32;  //The true default...
 		int row = m_langRef->GetColorRow(catID);
@@ -1463,7 +1694,7 @@ public:
 		if (MessageBox(_T("Restore default color scheme.  Are you sure you want to continue?"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION) == IDYES)
 		{
 			m_langRef->RestoreDefaults();
-			m_ecl.InitColors(m_langRef);
+			m_sourceCtrl.InitColors(m_langRef);
 		}
 		return 0;
 	}
@@ -1863,7 +2094,7 @@ protected:
 	IConfigAdapt m_ini;
 	CString m_ConfigLabel;
 	CComboBox m_cbConfig;
-	int  m_ConfigId;
+	int m_ConfigId;
 
 	CMyTabView m_tabView;
 	CPrefServerDlg m_serverPref;
@@ -1971,6 +2202,9 @@ public:
 		m_resultPref.DoApply(bMakeGlobal);
 		m_compilerPref.DoApply(bMakeGlobal);
 		m_otherPref.DoApply(bMakeGlobal);
+
+		SaveColorFiles();
+
 		return true;
 	}
 
