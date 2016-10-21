@@ -28,6 +28,7 @@ BOOL CRepositoryView::PreTranslateMessage(MSG* pMsg)
 {
     if (pMsg->message == WM_KEYDOWN) 
     {
+        UINT ctrl = 0;
         switch(pMsg->wParam)
         {
         case VK_RETURN:
@@ -45,7 +46,7 @@ BOOL CRepositoryView::PreTranslateMessage(MSG* pMsg)
         case _T('C'):
         case _T('c'):
             {
-                UINT ctrl = ::GetKeyState(VK_CONTROL);
+                ctrl = ::GetKeyState(VK_CONTROL);
                 UINT alt = ::GetKeyState(VK_MENU);
                 if (ctrl != 0 && alt != 0)
                 {
@@ -60,6 +61,23 @@ BOOL CRepositoryView::PreTranslateMessage(MSG* pMsg)
             break;
         case VK_F5:
             RefreshRepository();
+            break;
+        case _T('N'):
+        case _T('n'):
+            ctrl = ::GetKeyState(VK_CONTROL);
+            if (ctrl != 0)
+            {
+                TVITEM item;
+                item.mask = TVIF_HANDLE;
+                item.hItem = m_Tree.GetSelectedItem();
+                if (m_Tree.GetItem(&item))
+                {
+                    CComQIPtr<CModuleNode> modNode = (CTreeNode *)item.lParam;
+                    if (modNode) {
+                        m_Owner->DoInsertAttribute(modNode->GetModule());
+                    }
+                }
+            }
             break;
         default:
             break;
