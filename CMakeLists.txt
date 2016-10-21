@@ -163,7 +163,7 @@ if ( WIN32 )
     set ( version ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT} )
     set ( CPACK_PACKAGE_INSTALL_DIRECTORY "${DIR_NAME}\\\\${version}\\\\eclide" )
     ####  Change the following if you _don't_ want the installer to uninstall previous versions ####
-    set ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "eclide_${HPCC_MAJOR}.0.0" )
+    set ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "eclide_${HPCC_MAJOR}.${HPCC_MINOR}.0" )
     set ( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON" )
     set ( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\hpccsystems.com" )
     set ( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\eclide.exe" )
