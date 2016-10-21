@@ -434,7 +434,7 @@
     <item>
       <first>40</first>
       <second>
-        <categoryid>39</categoryid>
+        <categoryid>40</categoryid>
         <name>HThorBackground</name>
         <fore></fore>
         <back>15132390</back>
@@ -446,7 +446,7 @@
     <item>
       <first>41</first>
       <second>
-        <categoryid>39</categoryid>
+        <categoryid>41</categoryid>
         <name>LocalBackground</name>
         <fore></fore>
         <back>15138798</back>
@@ -458,7 +458,7 @@
     <item>
       <first>42</first>
       <second>
-        <categoryid>39</categoryid>
+        <categoryid>42</categoryid>
         <name>RoxieBackground</name>
         <fore></fore>
         <back>16771043</back>
