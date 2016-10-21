@@ -1749,7 +1749,7 @@ BEGIN
         MENUITEM "Rename Folder",               ID_REPOSITORY_RENAMEMODULE
         MENUITEM "Delete Folder",               ID_REPOSITORY_DELETEMODULE
         MENUITEM SEPARATOR
-        MENUITEM "Insert File",                 ID_REPOSITORY_INSERTATTRIBUTE
+        MENUITEM "I&nsert File\tCtrl+N",        ID_REPOSITORY_INSERTATTRIBUTE
         MENUITEM "Rename File",                 ID_REPOSITORY_RENAMEATTRIBUTE
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
@@ -1781,7 +1781,7 @@ BEGIN
         MENUITEM "Rename Folder",               ID_REPOSITORY_RENAMEMODULE
         MENUITEM "Delete Folder",               ID_REPOSITORY_DELETEMODULE
         MENUITEM SEPARATOR
-        MENUITEM "Insert File",                 ID_REPOSITORY_INSERTATTRIBUTE
+        MENUITEM "I&nsert File\tCtrl+N",        ID_REPOSITORY_INSERTATTRIBUTE
         MENUITEM "Rename File",                 ID_REPOSITORY_RENAMEATTRIBUTE
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
