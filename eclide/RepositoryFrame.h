@@ -230,15 +230,7 @@ public:
             break;
         case ID_REPOSITORY_INSERTATTRIBUTE:
             ATLASSERT(s.mods.size() == 1);
-            {
-                CString label;
-                CComPtr<IAttributeType> type;
-                if (GetInsertAttribute(s.mods[0]->GetQualifiedLabel(), label, type, true))
-                {
-                    if (pT->m_view.DoInsertAttribute(s.mods[0].get(), (const TCHAR *)label, type))
-                        GetIMainFrame()->OpenAttribute(label, type, s.mods[0].get()->GetQualifiedLabel());
-                }
-            }
+            DoInsertAttribute(s.mods[0].get());
             break;
         case ID_REPOSITORY_RENAMEATTRIBUTE:
             ATLASSERT(s.attrs.size() == 1);
@@ -330,6 +322,21 @@ public:
     void UpdateAttribute(IAttribute *from, IAttribute *to)
     {
         ::UpdateAttributeMDI(from, to);
+    }
+
+    bool DoInsertAttribute(CComPtr<IModule> module)
+    {
+        T * pT = static_cast<T*>(this);
+        CString label;
+        CComPtr<IAttributeType> type;
+        if (GetInsertAttribute(module->GetQualifiedLabel(), label, type, true))
+        {
+            if (pT->m_view.DoInsertAttribute(module, (const TCHAR *)label, type)) {
+                GetIMainFrame()->OpenAttribute(label, type, module->GetQualifiedLabel());
+                return true;
+            }
+        }
+        return false;
     }
 
     void CalculateContextMenuState(CRepositorySelections &s, ContextState &state)
