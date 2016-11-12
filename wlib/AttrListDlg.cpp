@@ -205,6 +205,7 @@ void DoShowSyntaxDlg(HWND hwndParent, IRepositoryAdapt rep, IAttributeVector & _
 }
 //  ===========================================================================
 typedef std::vector<StlLinked<IMigrationItem> > AttrVector;
+typedef std::map<std::_tstring, bool> DedupAttrVectorMap;
 class CAttrImportDlg : 
 	public CDialogImpl<CAttrImportDlg>, 
 	public CRepositorySlotImpl,
@@ -372,6 +373,7 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 	std::ifstream ifs(path.c_str());
 	if (ifs) {
 		AttrVector attrs;
+		DedupAttrVectorMap dedupAttrs;
 		std::_tstring attributeLabel;
 		std::_tstring attributeExt;
 		std::string attributeComment;
@@ -382,8 +384,13 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 		{
 			if (boost::algorithm::istarts_with(line, IMPORT_MARKER))
 			{
-				if (attributeLabel.length() && attributeEcl.length())
-					attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), attributeComment, attributeEcl));
+				if (attributeLabel.length() && attributeEcl.length()) {
+					StlLinked<IMigrationItem> migrationItem = CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), attributeComment, attributeEcl);
+					if (!dedupAttrs[migrationItem->QualifiedLabel()]) {
+						dedupAttrs[migrationItem->QualifiedLabel()] = true;
+						attrs.push_back(migrationItem);
+					}
+				}
 
 				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
 
