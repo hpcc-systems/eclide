@@ -1552,6 +1552,7 @@ public:
 		SelectElementType(_T("ecl"));
 		DoLoadElementType();
 		DoChanged(false);
+		NewSel();
 
 		return TRUE;
 	}

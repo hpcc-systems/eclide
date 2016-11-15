@@ -377,6 +377,7 @@ void CSourceCtrl::DoInit()
 {
     m_langRef = CreateLangRef(m_type);
     SetLexer(m_langRef->GetLexerType());
+
     CString names;
     for (int i = 1; i <= m_langRef->GetLangCatCount(); ++i)
         SetKeyWords(i - 1, m_langRef->GetLangNames(i, names));
