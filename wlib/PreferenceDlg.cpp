@@ -1332,6 +1332,7 @@ public:
 		LoadFromConfig(m_config);
 		DoLoadElement();
 		DoChanged(false);
+		NewSel();
 
 		return TRUE;
 	}

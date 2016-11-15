@@ -271,7 +271,6 @@ int CSourceCtrl::HandleNotify(Scintilla::SCNotification *notification)
         }
         MatchBrace();
         UpdateStatusBar();
-        m_owner->NewSel();
         break;
     case SCN_MODIFIED:
         if ( !m_modified && (notification->modificationType&(SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT)))
@@ -378,6 +377,7 @@ void CSourceCtrl::DoInit()
 {
     m_langRef = CreateLangRef(m_type);
     SetLexer(m_langRef->GetLexerType());
+
     CString names;
     for (int i = 1; i <= m_langRef->GetLangCatCount(); ++i)
         SetKeyWords(i - 1, m_langRef->GetLangNames(i, names));
