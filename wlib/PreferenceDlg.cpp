@@ -1196,6 +1196,10 @@ public:
 		{
 			m_sourceCtrl.SetType(CreateIAttributeKELType());
 		}
+		else if (ElementTypeEqual("dud"))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeDUDType());
+		}
 		else if (ElementTypeEqual("salt"))
 		{
 			m_sourceCtrl.SetType(CreateIAttributeSALTType());
@@ -1355,7 +1359,7 @@ public:
 		m_comboFontSize.AddString(_T("78"));
 	}
 
-	std::vector<CString> m_elementTypes = { "general", "ecl", "esdl", "kel", "salt" };
+	std::vector<CString> m_elementTypes = { "general", "ecl", "esdl", "dud", "kel", "salt" };
 
 	int GetElementTypeCount()
 	{
@@ -1474,6 +1478,38 @@ public:
 						_T("ATTRIBUTEFILE : VEHICLES : ")					_T("\r\n")
 						_T("  NAMED(SALT_Examples.File_Vehicle_Matches_S")	_T("\r\n");
 				}
+				else if (ElementTypeEqual("dud"))
+				{
+					textSample =
+						_T("// DUDE sample for illustrating color syntax")					_T("\r\n")
+						_T("/* This is a comment between delimiters */")					_T("\r\n")
+						_T("NAME RawDataset;")												_T("\r\n")
+						_T("PERMISSIONS")													_T("\r\n")
+						_T("	EDIT:PRIVATE;")												_T("\r\n")
+						_T("	VIEW:PUBLIC;")												_T("\r\n")
+						_T("END")															_T("\r\n")
+						_T("INPUTS")														_T("\r\n")
+						_T("	STRING Name : MAXLENGTH(30);")								_T("\r\n")
+						_T("	RECORD Structure;")											_T("\r\n")
+						_T("	ENUM(CSV,XML,FLAT) Method;")								_T("\r\n")
+						_T("END")															_T("\r\n")
+						_T("OUTPUTS")														_T("\r\n")
+						_T("	DATASET Out1(Structure);")									_T("\r\n")
+						_T("		INT Cnt;")												_T("\r\n")
+						_T("	END")														_T("\r\n")
+						_T("GENERATES INLINE")												_T("\r\n")
+						_T("	%^eOut1% := DATASET(%^qName%,%Structure%,%Method%);")		_T("\r\n")
+						_T("	%C% := COUNT(%Out1%);")										_T("\r\n")
+						_T("ENDGENERATES")													_T("\r\n")
+						_T("VISUALIZE TestPins :TITLE(\"Test pins\")")						_T("\r\n")
+						_T("	CHORO pin2(...TITLE(\"Pins2\"),GEOHASH(pinge...2")			_T("\r\n")
+						_T("END")															_T("\r\n")
+						_T("RESOURCES")														_T("\r\n")
+						_T("	LOGICALFILE File1:FILENAME(\"~thor::temp...20160810\"),")	_T("\r\n")
+						_T("	URL(\"http://10.241.100.159:8010\"),")						_T("\r\n")
+						_T("	ECL Ecl:FILENAME(\"ECL\"),")								_T("\r\n")
+						_T("END")															_T("\r\n");
+				}
 				else if (ElementTypeEqual("ecl"))
 				{
 					textSample =
@@ -1552,7 +1588,6 @@ public:
 		SelectElementType(_T("ecl"));
 		DoLoadElementType();
 		DoChanged(false);
-		NewSel();
 
 		return TRUE;
 	}
