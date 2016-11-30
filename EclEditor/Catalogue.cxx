@@ -86,6 +86,7 @@ int Scintilla_LinkLexers() {
     LINK_LEXER(lmESDL);
     LINK_LEXER(lmSALT);
     LINK_LEXER(lmKEL);
+    LINK_LEXER(lmDUD);
 
 /*
     LINK_LEXER(lmA68k);
