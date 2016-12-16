@@ -7,7 +7,7 @@ set ( HPCC_MAJOR 6 )
 set ( HPCC_MINOR 2 )
 set ( HPCC_POINT 0 )
 set ( HPCC_MATURITY "rc" )
-set ( HPCC_SEQUENCE 3 )
+set ( HPCC_SEQUENCE 7 )
 ###
 IF ( ${HPCC_POINT} GREATER 65 )
   error ( "HPCC_POINT must be less than 66." )
