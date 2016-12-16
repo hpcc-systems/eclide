@@ -4,6 +4,11 @@ set ( SRCS
 		lexecl.cxx
 		lexesdl.cxx
 
+		${SCINTILLA_INCLUDE_DIR}/include/SciLExer.h
+
+		${SCINTILLA_INCLUDE_DIR}/lexers/LexCPP.cxx
+		${SCINTILLA_INCLUDE_DIR}/lexers/LexHTML.cxx
+
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h
 		${SCINTILLA_INCLUDE_DIR}/Src/CallTip.cxx
@@ -57,7 +62,7 @@ set ( SRCS
 		#${SCINTILLA_INCLUDE_DIR}/Src/WindowAccessor.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/XPM.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/XPM.h
-		
+
 		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.cxx
 		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.h
 		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterSet.cxx

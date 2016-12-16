@@ -105,10 +105,16 @@ CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false
         m_WordCharacters = wordcharsWithDot;
     else
         m_WordCharacters = wordchars;
-    m_langRef = CreateEclLangRef();
+    m_type = CreateIAttributeECLType();
     m_other = NULL;
     m_recording = false;
     m_addedChar = '\0';
+}
+
+void CSourceCtrl::SetType(IAttributeType * type)
+{
+    ATLASSERT(type);
+    m_type = type;
 }
 
 void CSourceCtrl::SetOther(CSourceCtrl * other)
@@ -345,15 +351,16 @@ void CSourceCtrl::Reformat()
 
 void CSourceCtrl::DoInit()
 {
-    SetLexer(SCLEX_ECL);
-
-    SetTabWidth(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
-    SetUseTabs(!(bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_USESPACES));
+    m_langRef = CreateLangRef(m_type);
+    SetLexer(m_langRef->GetLexerType());
     CString names;
-    for(int i = 1; i <= m_langRef->GetLangCatCount(); ++i)
+    for (int i = 1; i <= m_langRef->GetLangCatCount(); ++i)
         SetKeyWords(i - 1, m_langRef->GetLangNames(i, names));
 
     InitColors(m_langRef);
+
+    SetTabWidth(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
+    SetUseTabs(!(bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_USESPACES));
 
     if (GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_LINENO))
         SetMarginWidthN(0, 32);

@@ -71,7 +71,20 @@ public:
 	{
 	}
 
-	bool Cleanup(const CLanguageColor * const other)
+    CLanguageColor(int _categoryid, const std::_tstring & _name = _T(""), COLORREF _fore = RGB(0, 0, 0), 
+        COLORREF _back = RGB(255, 255, 255), const std::_tstring & _font = _T(""),
+        int _size = 10, int _bold = 0)
+    {
+        categoryid = boost::lexical_cast<std::_tstring>(_categoryid);
+        name = _name;
+        fore = boost::lexical_cast<std::_tstring>(_fore);
+        back = boost::lexical_cast<std::_tstring>(_back);
+        font = _font;
+        size = boost::lexical_cast<std::_tstring>(_size);
+        bold = boost::lexical_cast<std::_tstring>(_bold);
+    }
+    
+    bool Cleanup(const CLanguageColor * const other)
 	{
 		if (boost::algorithm::equals(categoryid, other->categoryid))
 			return false;
@@ -324,7 +337,7 @@ public:
 	{
 	}
 
-	void init()
+	virtual void init()
 	{
 		loadReference(LANGREFFILE_XML, m_lang);
 		loadMergedColor();
@@ -451,7 +464,10 @@ public:
 			boost::filesystem::remove(file);
 		loadMergedColor();
 	}
-
+    int GetLexerType()
+    {
+        return SCLEX_ECL;
+    }
 	int GetLangCatCount()
 	{
 		int retVal = 0;
@@ -711,18 +727,147 @@ public:
 	}
 };
 
-boost::recursive_mutex g_langRef_mutex;
-StlLinked<CLangRef> g_langRef;
+class CECLLangRef : public CLangRef
+{
+};
 
-ILangRef * CreateEclLangRef()
+const TCHAR htmlKeyWords[] =
+L"a abbr acronym address applet area b base basefont "
+"bdo big blockquote body br button caption center "
+"cite code col colgroup dd del dfn dir div dl dt em "
+"fieldset font form frame frameset h1 h2 h3 h4 h5 h6 "
+"head hr html i iframe img input ins isindex kbd label "
+"legend li link map menu meta noframes noscript "
+"object ol optgroup option p param pre q s samp "
+"script select small span strike strong style sub sup "
+"table tbody td textarea tfoot th thead title tr tt u ul "
+"var xmlns "
+"abbr accept-charset accept accesskey action align alink "
+"alt archive axis background bgcolor border "
+"cellpadding cellspacing char charoff charset checked cite "
+"class classid clear codebase codetype color cols colspan "
+"compact content coords "
+"data datafld dataformatas datapagesize datasrc datetime "
+"declare defer dir disabled enctype "
+"face for frame frameborder "
+"headers height href hreflang hspace http-equiv "
+"id ismap label lang language link longdesc "
+"marginwidth marginheight maxlength media method multiple "
+"name nohref noresize noshade nowrap "
+"object onblur onchange onclick ondblclick onfocus "
+"onkeydown onkeypress onkeyup onload onmousedown "
+"onmousemove onmouseover onmouseout onmouseup "
+"onreset onselect onsubmit onunload "
+"profile prompt readonly rel rev rows rowspan rules "
+"scheme scope shape size span src standby start style "
+"summary tabindex target text title type usemap "
+"valign value valuetype version vlink vspace width "
+"text password checkbox radio submit reset "
+"file hidden image "
+"public !doctype xml";
+
+const TCHAR jsKeyWords[] =
+L"break case catch continue default "
+"do else for function if return throw try var while";
+
+const TCHAR vbsKeyWords[] =
+L"and as byref byval case call const "
+"continue dim do each else elseif end error exit false for function global "
+"goto if in loop me new next not nothing on optional or private public "
+"redim rem resume select set sub then to true type while with "
+"boolean byte currency date double integer long object single string type "
+"variant";
+
+class CHTMLLangRef : public CLangRef
+{
+public:
+    int GetLexerType()
+    {
+        return SCLEX_HTML;
+    }
+    int GetLangCatCount()
+    {
+        return 3;
+    }
+    const TCHAR * GetLangName(int row)
+    {
+        switch (row) {
+        case 1:
+            return htmlKeyWords;
+        case 2:
+            return jsKeyWords;
+        case 3:
+            return vbsKeyWords;
+        }
+        return _T("");
+    }
+    CString & GetLangNames(int cat, CString &result)
+    {
+        result = GetLangName(cat);
+        return result;
+    }
+    virtual void init()
+    {
+        appendColor(CLanguageColor(SCE_H_DEFAULT, _T("default")));
+        m_defaultColor = &m_color[SCE_H_DEFAULT];
+
+        const COLORREF red = RGB(0xFF, 0, 0);
+        const COLORREF offWhite = RGB(0xFF, 0xFB, 0xF0);
+        const COLORREF darkGreen = RGB(0, 0x80, 0);
+        const COLORREF darkBlue = RGB(0, 0, 0x80);
+
+        appendColor(CLanguageColor(SCE_H_TAG, _T(""), darkBlue));
+        appendColor(CLanguageColor(SCE_H_TAGUNKNOWN, _T(""), red));
+        appendColor(CLanguageColor(SCE_H_ATTRIBUTE, _T(""), darkBlue));
+        appendColor(CLanguageColor(SCE_H_ATTRIBUTEUNKNOWN, _T(""), red));
+        appendColor(CLanguageColor(SCE_H_NUMBER, _T(""), RGB(0x80, 0, 0x80)));
+        appendColor(CLanguageColor(SCE_H_DOUBLESTRING, _T(""), RGB(0, 0x80, 0)));
+        appendColor(CLanguageColor(SCE_H_SINGLESTRING, _T(""), RGB(0, 0x80, 0)));
+        appendColor(CLanguageColor(SCE_H_OTHER, _T(""), RGB(0x80, 0, 0x80)));
+        appendColor(CLanguageColor(SCE_H_COMMENT, _T(""), RGB(0x80, 0x80, 0)));
+        appendColor(CLanguageColor(SCE_H_ENTITY, _T(""), RGB(0x80, 0, 0x80)));
+
+        appendColor(CLanguageColor(SCE_H_TAGEND, _T(""), darkBlue));
+        appendColor(CLanguageColor(SCE_H_XMLSTART, _T(""), darkBlue));
+        appendColor(CLanguageColor(SCE_H_XMLEND, _T(""), darkBlue));
+        appendColor(CLanguageColor(SCE_H_SCRIPT, _T(""), darkBlue));
+        appendColor(CLanguageColor(SCE_H_ASP, _T(""), RGB(0x4F, 0x4F, 0), RGB(0xFF, 0xFF, 0)));
+        appendColor(CLanguageColor(SCE_H_ASPAT, _T(""), RGB(0x4F, 0x4F, 0), RGB(0xFF, 0xFF, 0)));
+    }
+    void appendColor(const CLanguageColor & color) {
+        m_color[color.GetCategoryID()] = color;
+        m_colorRowToCategoryID.push_back(color.GetCategoryID());
+    }
+};
+
+class CJSLangRef : public CLangRef
+{
+    int GetLexerType()
+    {
+        return SCLEX_CPP;
+    }
+};
+
+boost::recursive_mutex g_langRef_mutex;
+std::map<std::_tstring, StlLinked<CLangRef> > g_langRef;
+
+ILangRef * CreateLangRef(IAttributeType * type)
 {
 	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
-	if (!g_langRef)
+	if (!g_langRef[type->GetRepositoryCode()])
 	{
-		g_langRef = new CLangRef;
-		g_langRef->init();
+        if (boost::algorithm::equals(type->GetRepositoryCode(), _T("html"))) {
+            g_langRef[type->GetRepositoryCode()] = new CHTMLLangRef();
+        }
+        else if (boost::algorithm::equals(type->GetRepositoryCode(), _T("js"))) {
+            g_langRef[type->GetRepositoryCode()] = new CJSLangRef();
+        }
+        else {
+            g_langRef[type->GetRepositoryCode()] = new CECLLangRef();
+        }
+        g_langRef[type->GetRepositoryCode()]->init();
 	}
-	return g_langRef;
+	return g_langRef[type->GetRepositoryCode()];
 };
 
 void ExportLangRef()
@@ -738,5 +883,3 @@ void ImportLangRef()
 	retVal->init();
 	retVal->ImportLanguageReference();
 }
-
-
