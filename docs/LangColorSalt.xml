@@ -5,7 +5,7 @@
   <s class_id="0"
      tracking_level="0"
      version="0">
-    <count>6</count>
+    <count>10</count>
     <item_version>0</item_version>
     <item class_id="1"
       tracking_level="0"
@@ -27,7 +27,7 @@
       <first>1</first>
       <second>
         <categoryid>1</categoryid>
-        <name>Caret</name>
+        <name>Comment</name>
         <fore>32768</fore>
         <back></back>
         <font></font>
@@ -39,9 +39,9 @@
       <first>2</first>
       <second>
         <categoryid>2</categoryid>
-        <name>ThorBackground</name>
-        <fore></fore>
-        <back>16777215</back>
+        <name>CommentLine</name>
+        <fore>32768</fore>
+        <back></back>
         <font></font>
         <size></size>
         <bold></bold>
@@ -51,9 +51,9 @@
       <first>3</first>
       <second>
         <categoryid>3</categoryid>
-        <name>HThorBackground</name>
-        <fore></fore>
-        <back>15132390</back>
+        <name>CommentDoc</name>
+        <fore>8355711</fore>
+        <back></back>
         <font></font>
         <size></size>
         <bold></bold>
@@ -63,9 +63,9 @@
       <first>4</first>
       <second>
         <categoryid>4</categoryid>
-        <name>RoxieBackground</name>
+        <name>Number</name>
         <fore></fore>
-        <back>16771043</back>
+        <back></back>
         <font></font>
         <size></size>
         <bold></bold>
@@ -75,9 +75,57 @@
       <first>5</first>
       <second>
         <categoryid>5</categoryid>
-        <name>LocalBackground</name>
+        <name>Command</name>
+        <fore>16711680</fore>
+        <back></back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>6</first>
+      <second>
+        <categoryid>6</categoryid>
+        <name>Fieldname</name>
+        <fore>139</fore>
+        <back></back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>7</first>
+      <second>
+        <categoryid>7</categoryid>
+        <name>Arguments</name>
         <fore></fore>
-        <back>15138798</back>
+        <back></back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>8</first>
+      <second>
+        <categoryid>8</categoryid>
+        <name>Operator</name>
+        <fore>8421504</fore>
+        <back></back>
+        <font></font>
+        <size></size>
+        <bold></bold>
+      </second>
+    </item>
+    <item>
+      <first>9</first>
+      <second>
+        <categoryid>9</categoryid>
+        <name>Separator</name>
+        <fore></fore>
+        <back></back>
         <font></font>
         <size></size>
         <bold></bold>

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<languages>
+  <language>
+    <name>ECL</name>
+    <syntax_color_sample>
+      //  Click the ECL to select color scheme.
+      /*  Edit the ECL by typing here.	*/
+      import ut;
+      r :=
+      record
+      string22 s1 := '123';
+      integer4 i1 := 123;
+      end;
+      #option('tmp', true);
+      d := dataset('tmp::qb', r, thor);
+      output(d);
+      Compare:  Added
+      Compare:  Deleted
+      Compare:  Changed
+      Compare:  Moved
+    </syntax_color_sample>
+  </language>
+  <language>
+    <name>KEL</name>
+    <syntax_color_sample>
+      // This is a KEL sample file for illustrating color syntax
+      /* This is a comment between delimiters */
+      Person := ENTITY( FLAT(UID=did,STRING fname=name, DATE bdate=birthdate), MODEL(*) );
+      Relative := ASSOCIATION( FLAT(Person who,Person whoto) );
+      Vehicle := ENTITY(FLAT(UID,make,DATE datepurchased=purchasedate), MODEL(*));
+      PerVeh := ASSOCIATION( FLAT(Person per, Vehicle veh) );
+      USE fdc.GLUE_fdc.File(FDC, Person,
+      Persons(Person(UID=uid,fname=name)),
+      Relatives(Relative(who=Person1,whoto=Person2)),
+      PerVeh(Person(UID=per), PerVeh),
+      Vehicles(Vehicle(UID=uid)));
+      In this example the parent entity is the Person. There are four nested child
+    </syntax_color_sample>
+  </language>
+</languages>

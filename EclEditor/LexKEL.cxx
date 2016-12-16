@@ -1,6 +1,6 @@
 // Scintilla source code edit control
-/** @file LexESDL.cxx
- ** Lexer for ESDL.
+/** @file LexKEL.cxx
+ ** Lexer for KEL.
  **/
 // Copyright 1998-2005 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
@@ -50,9 +50,9 @@ static bool IsSpaceEquiv(int state) {
 }
 
 static bool IsStreamCommentStyleEsdl(int style) {
-    return style == SCE_ESDL_COMMENT ||
-        style == SCE_ESDL_COMMENTLINE ||
-        style == SCE_ESDL_COMMENTDOC;
+    return style == SCE_KEL_COMMENT ||
+        style == SCE_KEL_COMMENTLINE ||
+        style == SCE_KEL_COMMENTDOC;
 }
 
 // Preconditions: sc.currentPos points to a character after '+' or '-'.
@@ -90,12 +90,15 @@ static void strtrim(char* str) {
     while ((*buffer++ = *str++));  // remove leading spaces: K&R
 }
 
-static void ColouriseESDLDocSensitive(unsigned int startPos, int length, int initStyle, WordList *keywordlists[],
-    Accessor &styler) {
+static void ColouriseKELDocSensitive(unsigned int startPos, int length, int initStyle, WordList *keywordlists[], Accessor &styler) {
 
-    WordList &listStructures = *keywordlists[0];
-    WordList &listDatatypes = *keywordlists[1];
-    WordList &listAttributes = *keywordlists[2];
+    WordList &listWord1 = *keywordlists[0];
+    WordList &listAggregate = *keywordlists[1];
+    WordList &listDate = *keywordlists[2];
+    WordList &listFunction = *keywordlists[3];
+    WordList &listECL = *keywordlists[4];
+    WordList &listType = *keywordlists[5];
+    WordList &listBoolean = *keywordlists[6];
 
     char s[1000];
     bool checkword = false;
@@ -123,35 +126,40 @@ static void ColouriseESDLDocSensitive(unsigned int startPos, int length, int ini
         }
 
         sc.GetCurrentLowered(s, sizeof(s));
+        strtrim(s);
 
         // Determine if the current state should terminate.
         switch (sc.state) {
-        case SCE_ESDL_STRING:
-            if (sc.Match('"')) {
-                sc.ForwardSetState(SCE_ESDL_DEFAULT);
+        case SCE_KEL_STRING:
+            if (sc.Match('\'')) {
+                sc.ForwardSetState(SCE_KEL_DEFAULT);
             }
             break;
-        case SCE_ESDL_SEPARATOR:
-        case SCE_ESDL_STRUCTURE:
-        case SCE_ESDL_DATATYPE:
-        case SCE_ESDL_ATTRIBUTE:
+        case SCE_KEL_SEPARATOR:
+        case SCE_KEL_WORD1:
+        case SCE_KEL_AGGREGATE:
+        case SCE_KEL_DATE:
+        case SCE_KEL_ECL:
+        case SCE_KEL_FUNCTION:
+        case SCE_KEL_TYPE:
+        case SCE_KEL_BOOLEAN:
             sc.SetState(SCE_SALT_DEFAULT);
             break;
-        case SCE_ESDL_COMMENT:
+        case SCE_KEL_COMMENT:
             if (sc.Match('*', '/')) {
                 sc.Forward();
-                sc.ForwardSetState(SCE_ESDL_DEFAULT);
+                sc.ForwardSetState(SCE_KEL_DEFAULT);
             }
             break;
-        case SCE_ESDL_COMMENTDOC:
+        case SCE_KEL_COMMENTDOC:
             if (sc.Match('*', '/')) {
                 sc.Forward();
-                sc.ForwardSetState(SCE_ESDL_DEFAULT);
+                sc.ForwardSetState(SCE_KEL_DEFAULT);
             }
             break;
-        case SCE_ESDL_COMMENTLINE:
+        case SCE_KEL_COMMENTLINE:
             if (sc.atLineStart) {
-                sc.SetState(SCE_ESDL_DEFAULT);
+                sc.SetState(SCE_KEL_DEFAULT);
             }
             break;
         }
@@ -160,49 +168,61 @@ static void ColouriseESDLDocSensitive(unsigned int startPos, int length, int ini
         int lineCurrent = styler.GetLine(sc.currentPos);
         int lineState = styler.GetLineState(lineCurrent);
 
-        if (sc.state == SCE_ESDL_DEFAULT) {
+        if (sc.state == SCE_KEL_DEFAULT) {
             checkword = false;
             if (lineState) {
                 sc.SetState(lineState);
             }
-            else if (sc.ch == '"') {
-                sc.SetState(SCE_ESDL_STRING);
+            else if (sc.ch == '\'') {
+                sc.SetState(SCE_KEL_STRING);
             }
-            else if (sc.ch == '(' || sc.ch == '<' || sc.ch == '{' || sc.ch == '[') {
+            else if (sc.ch == '(' || sc.ch == '<' || sc.ch == '{') {
                 checkword = true;
             }
-            else if (sc.ch == ')' || sc.ch == '>' || sc.ch == '}' || sc.ch == ']') {
+            else if (sc.ch == ')' || sc.ch == '>' || sc.ch == '}') {
                 checkword = true;
             }
-            else if (sc.ch == ' ' || sc.ch == ',' || sc.ch == '.' || sc.ch == ';') {
+            else if (sc.ch == ',' || sc.ch == '=' || sc.ch == ':' ||  sc.ch == ' ' || sc.ch == ' ') {
                 checkword = true;
             }
-            else if (sc.ch == '\r' || sc.ch == '\n') {
+            else if (sc.ch == '\r'|| sc.ch == '\n') {
                 checkword = true;
             }
             else if (sc.Match('/', '*')) {
                 if (sc.Match("/**") || sc.Match("/*!")) {	// Support of Qt/Doxygen doc. style
-                    sc.SetState(SCE_ESDL_COMMENT);
+                    sc.SetState(SCE_KEL_COMMENT);
                 }
                 else {
-                    sc.SetState(SCE_ESDL_COMMENT);
+                    sc.SetState(SCE_KEL_COMMENT);
                 }
                 sc.Forward();	// Eat the * so it isn't used for the end of the comment
             }
             else if (sc.Match('/', '/')) {
-                sc.SetState(SCE_ESDL_COMMENTLINE);
+                sc.SetState(SCE_KEL_COMMENTLINE);
             }
             if (checkword) {
-                if (listStructures.InList(s)) {
-                    sc.ChangeState(SCE_ESDL_STRUCTURE);
+                if (listWord1.InList(s)) {
+                    sc.ChangeState(SCE_KEL_WORD1);
                 }
-                else if (listDatatypes.InList(s)) {
-                    sc.ChangeState(SCE_ESDL_DATATYPE);
+                else if (listAggregate.InList(s)) {
+                    sc.ChangeState(SCE_KEL_AGGREGATE);
                 }
-                else if (listAttributes.InList(s)) {
-                    sc.ChangeState(SCE_ESDL_ATTRIBUTE);
+                else if (listDate.InList(s)) {
+                    sc.ChangeState(SCE_KEL_DATE);
                 }
-                sc.SetState(SCE_ESDL_SEPARATOR);
+                else if (listFunction.InList(s)) {
+                    sc.ChangeState(SCE_KEL_FUNCTION);
+                }
+                else if (listECL.InList(s)) {
+                    sc.ChangeState(SCE_KEL_ECL);
+                }
+                else if (listType.InList(s)) {
+                    sc.ChangeState(SCE_KEL_TYPE);
+                }
+                else if (listBoolean.InList(s)) {
+                    sc.ChangeState(SCE_KEL_BOOLEAN);
+                }
+                sc.SetState(SCE_KEL_SEPARATOR);
             }
         }
     }
@@ -219,7 +239,7 @@ static bool IsStreamCommentStyle(int style) {
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldESDLDoc(unsigned int startPos, int length, int initStyle,
+static void FoldKELDoc(unsigned int startPos, int length, int initStyle,
     WordList *[], Accessor &styler) {
     bool foldComment = true;
     bool foldPreprocessor = true;
@@ -252,7 +272,7 @@ static void FoldESDLDoc(unsigned int startPos, int length, int initStyle,
                 levelNext--;
             }
         }
-        if (foldComment && (style == SCE_ESDL_COMMENTLINE)) {
+        if (foldComment && (style == SCE_KEL_COMMENTLINE)) {
             if ((ch == '/') && (chNext == '/')) {
                 char chNext2 = styler.SafeGetCharAt(i + 2);
                 if (chNext2 == '{') {
@@ -290,11 +310,15 @@ static void FoldESDLDoc(unsigned int startPos, int length, int initStyle,
     }
 }
 
-static const char * const esdlWordLists[] = {
-            "ESDL Structures",
-            "ESDL Datatypes",
-            "ESDL Attributes",
+static const char * const kelWordLists[] = {
+            "KEL Word",
+            "KEL Aggregate",
+            "KEL Date",
+            "KEL Function",
+            "KEL ECL",
+            "KEL Type",
+            "KEL Boolean",
             0,
         };
 
-LexerModule lmESDL(SCLEX_ESDL, ColouriseESDLDocSensitive, "esdl", FoldESDLDoc, esdlWordLists);
+LexerModule lmKEL(SCLEX_KEL, ColouriseKELDocSensitive, "kel", FoldKELDoc, kelWordLists);
