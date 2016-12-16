@@ -10,6 +10,8 @@ __interface ILangRef : public IUnknown
     void Restore();
     void RestoreDefaults();
 
+    void SetElementType(CString elementType);
+    CString GetElementType();
     int GetLexerType();
     int GetLangCatCount();
     int GetLangNameCount(int cat) const;
@@ -20,6 +22,7 @@ __interface ILangRef : public IUnknown
     bool GetAutoC(const std::_tstring & partialLabel, StdStringVector &set);	
     const TCHAR * GetLangTooltip(const std::_tstring &label);
     bool IsComment(int cat);
+    CString GetSample();
 
     int GetColorRowCount() const;
     int GetColorCatID(int row) const;
@@ -36,8 +39,14 @@ __interface ILangRef : public IUnknown
     void SetFontSize(int catID, int size);
     bool GetFontBold(int catID) const;
     void SetFontBold(int catID, bool bold);
+
+    bool loadSamples();
+    void loadReference();
+    bool loadMergedColorFile();
+    void loadMergedColor();
 };
 
+WLIB_API void SaveColorFiles();
 WLIB_API ILangRef * CreateLangRef(IAttributeType * type);
 WLIB_API ILangRef * CreateLangRef(std::_tstring code, IAttributeType * type);
 //  One of usage to upgrade XML file!

@@ -6,6 +6,7 @@
 #include <UtilFilesystem.h>
 
 //  ===========================================================================
+#define ATTRIBUTE_TYPE_GENERAL _T("general")
 #define ATTRIBUTE_TYPE_ECL _T("ecl")
 #define ATTRIBUTE_TYPE_ECLMOD _T("eclmod")
 #define ATTRIBUTE_TYPE_ECLLIB _T("ecllib")
@@ -226,7 +227,7 @@ public:
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
             m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM))
-            m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
+            m_defaultText = (boost::_tformat(_T("ECM:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
             m_defaultText = (boost::_tformat(_T("SALT:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
@@ -275,6 +276,10 @@ IAttributeType * CreateIAttributeType(const std::_tstring & repositoryType, cons
     retVal->Update(description);
     return retVal;
 }
+IAttributeType * CreateIAttributeGENERALType()
+{
+    return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_GENERAL));
+}
 IAttributeType * CreateIAttributeECLType()
 {
     return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_ECL));
@@ -313,6 +318,7 @@ IAttributeType * CreateIAttributeLUCIFAMILYType()
 }
 unsigned int GetAttributeTypes(IAttributeTypeVector & types)
 {
+    types.push_back(CreateIAttributeGENERALType());
     types.push_back(CreateIAttributeECLType());
     types.push_back(CreateIAttributeESDLType());
     types.push_back(CreateIAttributeECMType());

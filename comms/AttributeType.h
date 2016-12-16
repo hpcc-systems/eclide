@@ -36,9 +36,13 @@ __interface IAttributeType : public IUnknown
 };
 typedef StlLinked<IAttributeType> IAttributeTypeAdapt;
 typedef std::vector<IAttributeTypeAdapt> IAttributeTypeVector;
+
+COMMS_API IAttributeType * CreateIAttributeGENERALType();
 COMMS_API IAttributeType * CreateIAttributeECLType();
 COMMS_API IAttributeType * CreateIAttributeESDLType();
 COMMS_API IAttributeType * CreateIAttributeECMType();
+COMMS_API IAttributeType * CreateIAttributeKELType();
+COMMS_API IAttributeType * CreateIAttributeDUDType();
 COMMS_API IAttributeType * CreateIAttributeSALTType();
 COMMS_API IAttributeType * CreateIAttributeType(const std::_tstring & repositoryType, const std::_tstring & description = _T(""));
 COMMS_API unsigned int GetAttributeTypes(IAttributeTypeVector & types);

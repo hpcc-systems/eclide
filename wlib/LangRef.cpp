@@ -9,12 +9,8 @@
 #include "Repository.h"
 #include <UtilFilesystem.h>
 
-const TCHAR * const LANGREFFILE_XML = _T("LanguageReference.xml");
 const TCHAR * const LANGREFFILE_CSV = _T("LanguageReference.csv");
-const TCHAR * const LANGREFFILE_SALT_XML = _T("LanguageRefSalt.xml");
-const TCHAR * const LANGREFFILE_ESDL_XML = _T("LanguageRefESDL.xml");
-const TCHAR * const LANGCOLFILE = _T("LanguageColor.xml");
-const TCHAR * const LANGCOLFILE2 = _T("LanguageColor2.xml");
+const TCHAR * const LANGSYNTAXSAMPLES = _T("SyntaxColorSamples.xml");
 
 struct RowCatStruct
 {
@@ -54,6 +50,67 @@ void restore(T &s, const char * filename)
 		ATLASSERT(false);
 	}
 }
+class CLanguageSample
+{
+protected:
+	//  Version 1  ---
+	std::_tstring name;
+	std::_tstring sample;
+	//  --- --- ---
+
+public:
+	CLanguageSample()
+	{
+	}
+	bool Has(const std::_tstring & item) const
+	{
+		return item.length() > 0;
+	}
+	template<typename T>
+	T Get(const std::_tstring & item, T defaultVal) const
+	{
+		try
+		{
+			return boost::lexical_cast<T>(item);
+		}
+		catch (boost::bad_lexical_cast &)
+		{
+		}
+		return defaultVal;
+	}
+	template<typename T>
+	void Set(std::_tstring & item, T val)
+	{
+		try
+		{
+			item = boost::lexical_cast<std::_tstring>(val);
+		}
+		catch (boost::bad_lexical_cast &)
+		{
+		}
+	}
+	bool HasName() const { return Has(name); }
+	const TCHAR * GetName() const { return name.c_str(); }
+	bool HasSample() const { return Has(sample); }
+	const TCHAR * GetSample() const { return sample.c_str(); }
+
+	bool operator < (const CLanguageSample & other)
+	{
+		if (GetName() == other.GetName())
+			return name < other.name;
+		return GetName() < other.GetName();
+	}
+
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+	{
+		ar	& BOOST_SERIALIZATION_NVP(name);
+		ar	& BOOST_SERIALIZATION_NVP(sample);
+	}
+};
+BOOST_CLASS_VERSION(CLanguageSample, 0)
+typedef std::vector<CLanguageSample> CLanguageSampleVector;
 //  ===========================================================================
 class CLanguageColor
 {
@@ -308,10 +365,11 @@ protected:
 	CatNameMap m_langCatNameIndex;
 
 	CategoryLanguageColorMap m_color;
+	CLanguageSampleVector m_sample;
 	RowCategoryIDVector m_colorRowToCategoryID;
 	CLanguageColor * m_defaultColor;
-	std::_tstring m_typeStr;
 	std::_tstring m_emptyStr;
+	std::_tstring m_elementType;
 
 public:
 	BEGIN_CUNKNOWN
@@ -320,42 +378,82 @@ public:
 	CLangRef()
 	{
 		m_defaultColor = NULL;
-		m_typeStr = _T("");	}
+		m_elementType = _T("");	}
 
 	~CLangRef()
 	{
+	}
+
+	CString GetSample()
+	{
+		CString sampleStr = "";
+		if (m_sample.begin() != m_sample.end())
+		{
+			for (CLanguageSampleVector::iterator itr = m_sample.begin(); itr != m_sample.end(); ++itr)
+			{
+				std::_tstring name = itr->GetName();
+				std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+				if (name.compare(m_elementType) == 0)
+				{
+					std::_tstring sample = itr->GetSample();
+					sampleStr = sample.c_str();
+					break;
+				}
+			}
+		}
+		return sampleStr;
+	}
+
+	bool loadSamples()
+	{
+		if (m_sample.size() != 0)
+			return true;
+
+		m_sample.clear();
+		boost::filesystem::path binFolder;
+		GetProgramFolder(binFolder);
+		boost::filesystem::path file = binFolder / stringToPath(LANGSYNTAXSAMPLES);
+		if (!clib::filesystem::exists(file))
+		{
+			ATLASSERT(!(_T("Unable to locate language syntax sample file")));
+		}
+		restore(m_sample, file.string().c_str());
+		return true;
+	}
+
+	void SetElementType(CString elementType)
+	{
+		m_elementType = elementType;
+	}
+
+	CString GetElementType()
+	{
+		return m_elementType.c_str();
 	}
 
 	virtual void init(IAttributeType *type)
 	{
 		bool loaded = false;
 		if (type != NULL) {
-			m_typeStr = type->GetRepositoryCode();
-			if (boost::algorithm::equals(m_typeStr, _T("salt"))) {
-				loadReference(LANGREFFILE_SALT_XML, m_lang);
-				loaded = true;
-			}
-			else if (boost::algorithm::equals(m_typeStr, _T("esdl"))) {
-				loadReference(LANGREFFILE_ESDL_XML, m_lang);
-				loaded = true;
-			}
+			m_elementType = type->GetRepositoryCode();
 		}
-		if (!loaded) {
-			m_typeStr = _T("ecl");
-			loadReference(LANGREFFILE_XML, m_lang);
+		else if (m_elementType.length() == 0)
+		{
+			m_elementType = _T("ecl");
 		}
 
+		loadReference();
 		loadMergedColor();
 		m_emptyStr = _T("");
 	}
 
 	void loadMergedColor()
 	{
-		loadDefaultColor(LANGCOLFILE, m_color);
+		loadDefaultColor(m_color);
 
 		m_defaultColor = NULL;
 		m_colorRowToCategoryID.clear();
-		for(CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
+		for (CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
 		{
 			m_colorRowToCategoryID.push_back(itr->second.GetCategoryID());
 			if (m_defaultColor == NULL && boost::algorithm::iequals(_T("Default"), itr->second.GetName()))
@@ -364,7 +462,7 @@ public:
 
 		//  Quick Cleanup
 		bool found = false;
-		for(CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
+		for (CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
 		{
 			if (itr->second.Cleanup(m_defaultColor))
 				found = true;
@@ -375,53 +473,82 @@ public:
 			save(m_color, "c:\\temp\\tmp.xml");
 #endif
 		}
-
-		//  Check if this user has customized the colors
+		loadMergedColorFile();
+	}
+	bool loadMergedColorFile()
+	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
+		boost::filesystem::path file = appFolder / stringToPath(ColorFileName(true).GetString());
 		if (clib::filesystem::exists(file))
 		{
 			CategoryLanguageColorMap userColors;
 			restore(userColors, file.string().c_str());
-			for(CategoryLanguageColorMap::iterator itr = userColors.begin(); itr != userColors.end(); ++itr)
+			for (CategoryLanguageColorMap::iterator itr = userColors.begin(); itr != userColors.end(); ++itr)
 			{
 				m_color[itr->first] = itr->second;
 			}
+			return true;
 		}
+		return false;
 	}
-
-	bool loadDefaultColor(const TCHAR * fileName, CategoryLanguageColorMap & t)
+	bool loadDefaultColor(CategoryLanguageColorMap & t)
 	{
 		t.clear();
 		//  Check if this user has customized the colors
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path file = binFolder / stringToPath(fileName);
+		boost::filesystem::path file = binFolder / stringToPath(ColorFileName().GetString());
 		if (!clib::filesystem::exists(file))
 		{
 			return false;
 		}
 		restore(t, file.string().c_str());
+
 		return true;
 	}
-	void loadReference(const TCHAR * fileName)
+	CString ReferenceFileName(bool twoFlag = false)
 	{
-		loadReference(fileName, m_lang);
+		return FileName(_T("LanguageReference"), "LanguageRef", twoFlag);
 	}
-	void loadReference(const TCHAR * fileName, CLanguageReferenceVector & t)
+	CString ColorFileName(bool twoFlag = false)
 	{
-		t.clear();
+		return FileName(_T("LanguageColor"), "LangColor", twoFlag);
+	}
+	CString FileName(CString defaultFile, CString filefront, bool twoFlag = false)
+	{
+		CString front, type;
+		if (boost::algorithm::equals(m_elementType, _T("general")))
+		{
+			front = defaultFile;
+			type = "";
+		}
+		else
+		{
+			front = filefront;
+			type = m_elementType.c_str();
+		}
+		type.MakeUpper();
+		CString formatStr = twoFlag ? _T("%s%s2.%s") : _T("%s%s.%s");
+		CString filename;
+		filename.Format(formatStr, front, type, _T("xml"));
+		return filename;
+	}
+
+	void loadReference()
+	{
+		m_lang.clear();
+		CString fileName = ReferenceFileName();
 		//  Check if this user has customized the colors
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
-		boost::filesystem::path file = binFolder / stringToPath(fileName);
+		boost::filesystem::path file = binFolder / stringToPath(fileName.GetString());
 		if (!clib::filesystem::exists(file))
 		{
-			ATLASSERT(!"Unable to locate LanguageReference.xml");
+			ATLASSERT(!(_T("Unable to locate ") + fileName));
 		}
-		restore(t, file.string().c_str());
-		std::sort(t.begin(), t.end());
+		restore(m_lang, file.string().c_str());
+		std::sort(m_lang.begin(), m_lang.end());
 		int row = 0;
 		for(CLanguageReferenceVector::iterator itr = m_lang.begin(); itr != m_lang.end(); ++itr)
 		{
@@ -439,20 +566,25 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
+		boost::filesystem::path file = appFolder / stringToPath(ColorFileName(true).GetString());
 
 		CategoryLanguageColorMap defaultColors, diffColors;
-		loadDefaultColor(LANGCOLFILE, defaultColors);
-		for(CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
+		loadDefaultColor(defaultColors);
+		bool diffFound = false;
+		for (CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
 		{
 			if (defaultColors[itr->first] != itr->second)
 			{
 				diffColors[itr->first] = itr->second;
 				diffColors[itr->first].Cleanup(&defaultColors[itr->first]);
+				diffFound = true;
 			}
 		}
 
-		save(diffColors, file.string().c_str());
+		if (diffFound)
+		{
+			save(diffColors, file.string().c_str());
+		}
 	}
 
 	void Restore()
@@ -464,23 +596,41 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / stringToPath(LANGCOLFILE2);
+		boost::filesystem::path file = appFolder / stringToPath(ColorFileName().GetString());
 		if (clib::filesystem::exists(file))
 			boost::filesystem::remove(file);
 		loadMergedColor();
 	}
+
 	int GetLexerType()
 	{
-		if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("salt"))) 
+		if (m_elementType.length() > 0)
 		{
-			return SCLEX_SALT;
+			if (boost::algorithm::equals(m_elementType, _T("salt")))
+			{
+				return SCLEX_SALT;
+			}
+			else if (boost::algorithm::equals(m_elementType, _T("esdl")))
+			{
+				return SCLEX_ESDL;
+			}
+			else if (boost::algorithm::equals(m_elementType, _T("kel")))
+			{
+				return SCLEX_KEL;
+			}
+			else if (boost::algorithm::equals(m_elementType, _T("dud")))
+			{
+				return SCLEX_DUD;
+			}
+			else if (boost::algorithm::equals(m_elementType, _T("general")))
+			{
+				return SCLEX_GENERAL;
+			}
 		}
-		else if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("esdl")))
-		{
-			return SCLEX_ESDL;
-		}
+
 		return SCLEX_ECL;
 	}
+
 	int GetLangCatCount()
 	{
 		int retVal = 0;
@@ -713,7 +863,7 @@ public:
 		boost::filesystem::path binFolder;
 		GetProgramFolder(binFolder);
 		boost::filesystem::path path = binFolder / stringToPath(LANGREFFILE_CSV);
-		boost::filesystem::path xml_path = binFolder / stringToPath(LANGREFFILE_XML);
+		boost::filesystem::path xml_path = binFolder / stringToPath(ReferenceFileName().GetString());
 
 		CUnicodeFile file;
 		if (file.Open(pathToString(path).c_str()))
@@ -740,29 +890,42 @@ public:
 	}
 };
 
-boost::recursive_mutex g_langRef_mutex;
-std::map<std::_tstring, StlLinked<CLangRef> > g_langRef;
-
 ILangRef * CreateLangRef(IAttributeType * type)
 {
 	return CreateLangRef(type->GetRepositoryCode(), type);
 };
 
-ILangRef * CreateLangRef(std::_tstring code, IAttributeType * type)
+boost::recursive_mutex g_langRef_mutex;
+std::map<std::_tstring, StlLinked<CLangRef>> g_langRef;
+
+void SaveColorFiles()
+{
+	CLangRef *langref = NULL;
+	for (std::map<std::_tstring, StlLinked<CLangRef >>::iterator itr = g_langRef.begin(); itr != g_langRef.end(); itr++) {
+		langref = itr->second;
+		langref->SetElementType(itr->first.c_str());
+		langref->Save();
+	}
+}
+
+ILangRef * CreateLangRef(std::_tstring elementType, IAttributeType * type)
 {
 	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
-	if (!g_langRef[code])
+	g_langRef.empty();
+	if (!g_langRef[elementType])
 	{
-		g_langRef[code] = new CLangRef();
-		g_langRef[code]->init(type);
-	}
-	return g_langRef[code];
+		g_langRef[elementType] = new CLangRef();
+		g_langRef[elementType]->SetElementType(elementType.c_str());
+		g_langRef[elementType]->init(type);
+	} else
+		g_langRef[elementType]->SetElementType(elementType.c_str());
+	return g_langRef[elementType];
 };
 
 void ExportLangRef()
 {
 	CComPtr<CLangRef> retVal = new CLangRef();
-	retVal->loadReference(LANGREFFILE_XML);
+	retVal->loadReference();
 	retVal->ExportLanguageReference();
 }
 
