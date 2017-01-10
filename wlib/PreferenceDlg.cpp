@@ -1500,7 +1500,8 @@ public:
 						_T("Target:   Thor                         ")		_T("\r\n")
 						_T("Target:   HThor                        ")		_T("\r\n")
 						_T("Target:   Roxie                        ")		_T("\r\n")
-						_T("Target:   Local                        ")		_T("\r\n");
+						_T("Target:   Local                        ")		_T("\r\n")
+						_T("Target:   ReadOnly                     ")		_T("\r\n");
 				}
 				else
 				{
@@ -1683,8 +1684,6 @@ public:
 	void NewSel() 
 	{
 		int catID = m_sourceCtrl.GetStyleAt(m_sourceCtrl.GetCurrentPos());
-		if (catID == 0)
-			catID = 32;  //The true default...
 		int row = m_langRef->GetColorRow(catID);
 		m_comboElement.SetCurSel(row);
 		DoLoadElement();

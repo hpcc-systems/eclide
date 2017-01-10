@@ -114,19 +114,21 @@ CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false
 
 void CSourceCtrl::SetSourceType(const CString & typeStr)
 {
-    if (typeStr.Find(_T("roxie"),0) >= 0)
+    CString typeLower = typeStr;
+    typeLower.MakeLower();
+    if (typeLower.Find(_T("roxie"),0) >= 0)
     {
         m_targetType = TARGET_ROXIE;
     }
-    else if (typeStr.Find(_T("hthor"), 0) >= 0)
+    else if (typeLower.Find(_T("hthor"), 0) >= 0)
     {
         m_targetType = TARGET_HTHOR;
     }
-    else if (typeStr.Find(_T("local"), 0) >= 0)
+    else if (typeLower.Find(_T("local"), 0) >= 0)
     {
         m_targetType = TARGET_LOCAL;
     }
-    else if (typeStr.Find(_T("thor"), 0) >= 0)
+    else if (typeLower.Find(_T("thor"), 0) >= 0)
     {
         m_targetType = TARGET_THOR;
     }
@@ -455,13 +457,16 @@ void CSourceCtrl::InitColors(ILangRef * langRef)
 {
     int backID;
     bool generalFlag = langRef->GetElementType().CompareNoCase(_T("general")) == 0;
+    ILangRef * langRefGeneral = GetLangRef(_T("general"));
+    int targetOn = static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR));
 
     for(int row = 0; row < langRef->GetColorRowCount(); ++row)
     {
         ATLTRACE(_T("Row:  %i\n"), row);
         int catID = backID = langRef->GetColorCatID(row);
-        if (m_targetType != TARGET_UNKNOWN && static_cast<bool>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR)) == true) {
-            backID = m_targetType;
+        int backColor = langRef->GetColorBack(backID);
+        if (targetOn && m_targetType != TARGET_UNKNOWN) {
+            backColor = langRefGeneral->GetColorBack(m_targetType);
         }
         langRef->GetElementType();
         if (generalFlag && catID == 1)
@@ -469,7 +474,7 @@ void CSourceCtrl::InitColors(ILangRef * langRef)
             SetCaretFore(langRef->GetColorFore(catID));
         }
 
-        SetStyle(catID, langRef->GetColorFore(catID), langRef->GetColorBack(backID), langRef->GetFontName(catID), langRef->GetFontSize(catID), langRef->GetFontBold(catID));
+        SetStyle(catID, langRef->GetColorFore(catID), backColor, langRef->GetFontName(catID), langRef->GetFontSize(catID), langRef->GetFontBold(catID));
     }
     AnnotationSetVisible(ANNOTATION_BOXED);
 }

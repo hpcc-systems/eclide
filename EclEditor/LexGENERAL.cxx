@@ -84,6 +84,7 @@ static void ColouriseGENERALDocSensitive(unsigned int startPos, int length, int 
     WordList &hthorList = *keywordlists[2];
     WordList &roxieList = *keywordlists[3];
     WordList &localList = *keywordlists[4];
+    WordList &readonlyList = *keywordlists[5];
 
     char s[1000];
     bool checkword = false;
@@ -113,6 +114,7 @@ static void ColouriseGENERALDocSensitive(unsigned int startPos, int length, int 
         case SCE_GEN_HTHOR_BACKGROUND:
         case SCE_GEN_ROXIE_BACKGROUND:
         case SCE_GEN_LOCAL_BACKGROUND:
+        case SCE_GEN_READONLY_BACKGROUND:
             if (sc.atLineEnd)
             {
                 sc.SetState(SCE_GEN_DEFAULT);
@@ -150,6 +152,10 @@ static void ColouriseGENERALDocSensitive(unsigned int startPos, int length, int 
                 else if (localList.InList(s)) {
                     sc.ChangeState(SCE_GEN_LOCAL_BACKGROUND);
                     sc.SetState(SCE_GEN_LOCAL_BACKGROUND);
+                }
+                else if (readonlyList.InList(s)) {
+                    sc.ChangeState(SCE_GEN_READONLY_BACKGROUND);
+                    sc.SetState(SCE_GEN_READONLY_BACKGROUND);
                 }
             }
         }
