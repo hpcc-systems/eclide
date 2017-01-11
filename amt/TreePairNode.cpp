@@ -170,7 +170,7 @@ int CModulePairNode::GetDispSelectedImage(const IModule * mod, const IModule * o
 
     if (mod->IsPlugin())
     {
-        return IID_PLUGINFOLDER_OPEN;
+        return IID_PLUGINFOLDER_CLOSED;
     }
     else if (mod->IsTrash())
     {

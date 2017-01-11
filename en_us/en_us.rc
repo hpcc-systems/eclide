@@ -2373,6 +2373,7 @@ STRINGTABLE
 BEGIN
     IDS_EXPLORER            "Explorer"
     IDS_EDIT_MENU           "Edit"
+    IDS_TREE_EMPTY          ">> empty <<"
 END
 
 STRINGTABLE

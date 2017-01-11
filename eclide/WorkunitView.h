@@ -24,6 +24,8 @@ template<typename T>
 class CWorkunitViewAction 
 {
 public:
+    bool m_loadingItemFound = false;
+
     void DoCopy(Dali::IWorkunitVector &wus)
     {
         CString txt;
@@ -131,9 +133,15 @@ public:
         T * pT = static_cast<T*>(this);
         CTreeNodeVector nodes;
         pT->m_Tree.GetSelected(nodes);
+        m_loadingItemFound = false;
+
         for(CTreeNodeVector::iterator itr = nodes.begin(); itr != nodes.end(); ++itr)
         {
             CComQIPtr<CWorkunitNode> wuNode = itr->get();
+            CComQIPtr<CLoadingNode> lNode = itr->get();
+            if (lNode)
+                m_loadingItemFound = true;
+
             if (wuNode)
                 wus.push_back(wuNode->GetWorkunit());
         }

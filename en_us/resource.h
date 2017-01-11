@@ -195,6 +195,7 @@
 #define IDR_RD_POPUP_GRAPH_EDGE         203
 #define IDS_EDIT_MENU                   204
 #define IDD_PREF_COLOR                  205
+#define IDS_TREE_EMPTY                  205
 #define IDD_AMT_COMPARE                 206
 #define IDD_ATTRVERIFY2                 207
 #define IDI_UNCHECKED                   208
