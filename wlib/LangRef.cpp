@@ -618,6 +618,10 @@ public:
 			{
 				return SCLEX_KEL;
 			}
+			else if (boost::algorithm::equals(m_elementType, _T("dud")))
+			{
+				return SCLEX_DUD;
+			}
 			else if (boost::algorithm::equals(m_elementType, _T("general")))
 			{
 				return SCLEX_GENERAL;

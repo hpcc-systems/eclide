@@ -211,7 +211,7 @@ public:
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
             m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM))
-            m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
+            m_defaultText = (boost::_tformat(_T("ECM:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
             m_defaultText = (boost::_tformat(_T("SALT:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
