@@ -275,8 +275,8 @@ CAttributeNode::~CAttributeNode()
 void CAttributeNode::GenerateDispText()
 {
 	m_DispText = m_displayQualified ? m_attribute->GetQualifiedLabel() : m_attribute->GetLabel();
-    m_DispText += m_attribute->GetType()->GetFileExtension();
-    std::_tstring lockedBy = m_attribute->GetLockedBy();
+	m_DispText += m_attribute->GetType()->GetFileExtension();
+	std::_tstring lockedBy = m_attribute->GetLockedBy();
 	if (lockedBy.length())
 	{
 		m_DispText += _T(" (");
@@ -317,6 +317,17 @@ int CAttributeNode::GetDispImage()
 	case SYNTAX_CHECK_FAIL:
 		return IID_DOCUMENT_SYNTAXFAIL;
 	}
+
+	std::wstring fileType = m_attribute->GetType()->GetRepositoryCode();
+	if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_DUD))
+		return IID_DOCUMENT_DUD;
+	if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_ESDL))
+		return IID_DOCUMENT_ESDL;
+	else if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_KEL))
+		return IID_DOCUMENT_KEL;
+	else if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_SALT))
+		return IID_DOCUMENT_SALT;
+
 	return IID_DOCUMENT;
 }
 
