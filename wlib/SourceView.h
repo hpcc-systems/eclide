@@ -59,10 +59,10 @@ enum PANE	//  See "arrParts" in mainfrm.cpp
 enum TARGET_TYPE
 {
     TARGET_UNKNOWN = 0,
-    TARGET_THOR = 39,
-    TARGET_HTHOR = 40,
-    TARGET_LOCAL = 41,
-    TARGET_ROXIE = 42
+    TARGET_THOR = 2,
+    TARGET_HTHOR = 3,
+    TARGET_ROXIE = 4,
+    TARGET_LOCAL = 5
 };
 
 __interface ISourceSlot
@@ -279,12 +279,14 @@ public:
 
     void SetReadOnly(bool readOnly=true)
     {
-        if (readOnly)
+        int targetOn = static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR));
+        if (readOnly && targetOn == 0)
         {
-            int gray = RGB(212, 208, 200);
-            m_view.StyleSetBack(STYLE_DEFAULT, gray);
+            ILangRef * langRefGeneral = GetLangRef(_T("general"));
+            int color = langRefGeneral->GetColorBack(SCE_GEN_READONLY_BACKGROUND);
+            m_view.StyleSetBack(STYLE_DEFAULT, color);
             for (int i = SCE_ECL_DEFAULT; i <= SCE_ECL_LAST; ++i)
-                m_view.StyleSetBack(i, gray);
+                m_view.StyleSetBack(i, color);
         }
         m_view.SetReadOnly(readOnly);
     }

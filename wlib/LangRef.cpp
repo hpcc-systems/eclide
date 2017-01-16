@@ -895,6 +895,12 @@ ILangRef * CreateLangRef(IAttributeType * type)
 	return CreateLangRef(type->GetRepositoryCode(), type);
 };
 
+ILangRef * GetLangRef(const std::_tstring &typeName)
+{
+    IAttributeType * type = NULL;
+    return CreateLangRef(typeName, type);
+};
+
 boost::recursive_mutex g_langRef_mutex;
 std::map<std::_tstring, StlLinked<CLangRef>> g_langRef;
 

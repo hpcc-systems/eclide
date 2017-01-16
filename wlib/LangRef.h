@@ -48,6 +48,7 @@ __interface ILangRef : public IUnknown
 
 WLIB_API void SaveColorFiles();
 WLIB_API ILangRef * CreateLangRef(IAttributeType * type);
+WLIB_API ILangRef * GetLangRef(const std::_tstring &typeName);
 WLIB_API ILangRef * CreateLangRef(std::_tstring code, IAttributeType * type);
 //  One of usage to upgrade XML file!
 WLIB_API void ExportLangRef();
