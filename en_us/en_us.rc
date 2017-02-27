@@ -1783,6 +1783,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "I&nsert File\tCtrl+N",        ID_REPOSITORY_INSERTATTRIBUTE
         MENUITEM "Rename File",                 ID_REPOSITORY_RENAMEATTRIBUTE
+        POPUP "Change Type"
+        BEGIN
+            MENUITEM "dud",                         ID_CHANGETYPELOCAL_DUD
+            MENUITEM "ecl",                         ID_CHANGETYPELOCAL_ECL
+            MENUITEM "esdl",                        ID_CHANGETYPELOCAL_ESDL
+            MENUITEM "kel",                         ID_CHANGETYPELOCAL_KEL
+            MENUITEM "salt",                        ID_CHANGETYPELOCAL_SALT
+        END
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
         MENUITEM "Delete File",                 ID_REPOSITORY_DELETEATTRIBUTE
@@ -2203,6 +2211,7 @@ BEGIN
         MENUITEM "&Clear",                      ID_BOOKMARKS_CLEAR
     END
 END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

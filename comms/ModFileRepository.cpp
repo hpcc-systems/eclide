@@ -375,19 +375,25 @@ public:
     unsigned GetAttributeHistory(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, IAttributeHistoryVector & attributes) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return 0;
+        return NULL;
     }
     IAttribute * RenameAttribute(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, const TCHAR* label) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         ATLASSERT(!"CModFileRepository::RenameAttribute not implemented");
-        return 0;
+        return NULL;
     }
     IAttribute * RenameAttribute(IAttribute * attribute, const TCHAR* label) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         ATLASSERT(!"CModFileRepository::RenameAttribute not implemented");
-        return 0;
+        return NULL;
+    }
+    IAttribute * ChangeAttributeType(IAttribute * attribute, const TCHAR* ext) const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        ATLASSERT(!"CModFileRepository::ChangeAttributeType not implemented");
+        return NULL;
     }
     bool DeleteAttributes(const IAttributeVector & attributes) const
     {

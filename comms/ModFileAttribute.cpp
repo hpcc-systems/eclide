@@ -304,13 +304,18 @@ public:
         return m_repository->RenameAttribute(GetModuleQualifiedLabel(), GetLabel(), GetType(), label);
     }
 
+    IAttribute * ChangeAttributeType(const TCHAR* ext)
+    {
+        //No lock needed - this is just a lazy way of calling into repository
+        return m_repository->ChangeAttributeType(this, ext);
+    }
+
     bool Delete()
     {
         //No lock needed - this is just a lazy way of calling into repository
         IAttributeVector attrs;
         attrs.push_back(this);
         return m_repository->DeleteAttributes(attrs);
-
     }
 
     bool Exists() const
