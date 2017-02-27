@@ -518,7 +518,7 @@ public:
 	CString FileName(CString defaultFile, CString filefront, bool twoFlag = false)
 	{
 		CString front, type;
-		if (boost::algorithm::equals(m_elementType, _T("general")))
+		if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_GENERAL))
 		{
 			front = defaultFile;
 			type = "";
@@ -606,23 +606,23 @@ public:
 	{
 		if (m_elementType.length() > 0)
 		{
-			if (boost::algorithm::equals(m_elementType, _T("salt")))
+			if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_SALT))
 			{
 				return SCLEX_SALT;
 			}
-			else if (boost::algorithm::equals(m_elementType, _T("esdl")))
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_ESDL))
 			{
 				return SCLEX_ESDL;
 			}
-			else if (boost::algorithm::equals(m_elementType, _T("kel")))
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_KEL))
 			{
 				return SCLEX_KEL;
 			}
-			else if (boost::algorithm::equals(m_elementType, _T("dud")))
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_DUD))
 			{
 				return SCLEX_DUD;
 			}
-			else if (boost::algorithm::equals(m_elementType, _T("general")))
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_GENERAL))
 			{
 				return SCLEX_GENERAL;
 			}
