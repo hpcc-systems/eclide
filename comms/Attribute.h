@@ -92,6 +92,7 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
     bool Checkout();
     bool Checkin(const TCHAR* comments);
     IAttribute * Rename(const TCHAR* label);
+    IAttribute * ChangeAttributeType(const TCHAR* ext);
     bool Delete();
     bool Exists() const;
     bool Create();

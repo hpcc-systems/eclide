@@ -409,6 +409,12 @@ public:
         return newAttr.get();
     }
 
+    IAttribute * ChangeAttributeType(IAttribute * attr, const TCHAR* ext) const
+    {
+        ATLASSERT(false);
+        return NULL;
+    }
+
     virtual bool DeleteAttributes(const IAttributeVector & pAttributes) const
     {
         ATLASSERT(false);

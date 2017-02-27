@@ -334,6 +334,19 @@ public:
         return newAttr;
     }
 
+    IAttribute * ChangeAttributeType(const TCHAR* ext)
+    {
+        if (IsValidExtension(ext)) {
+            DeleteAttribute(this);
+            m_type = CreateIAttributeType(ext);
+        }
+        else {
+            return NULL;
+        }
+
+        return Rename(m_label);
+    }
+
     bool Delete()
     {
         try {
