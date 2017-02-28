@@ -171,7 +171,7 @@ int CTreeNode::GetDispImage()
 
 int CTreeNode::GetDispSelectedImage()
 {
-	return IID_FOLDER_OPEN;
+	return IID_FOLDER_CLOSED;
 }
 
 void CTreeNode::OnDblclk(const WTL::CTreeItem & /*ti*/)

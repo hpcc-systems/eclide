@@ -28,6 +28,13 @@ protected:
     BOOL		m_bEditLabelPending;
     UINT		m_idTimer;
 
+    enum FOLDER_ACTION
+    {
+        FOLDER_ACTION_NONE = 0,
+        FOLDER_ACTION_OPEN,
+        FOLDER_ACTION_CLOSE
+    };
+
 public:
     UINT GetSelectedCount() const
     {
@@ -601,7 +608,37 @@ public:
             //CTreeCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
         }
     }
+    void ChangeFolder(NM_TREEVIEW* pNMTreeView, FOLDER_ACTION action)
+    {
+        int img, imgSel;
+        GetItemImage(pNMTreeView->itemNew.hItem, img, imgSel);
 
+        int newImg = -1;
+        int newImgSel = -1;
+
+        if (img == IID_FOLDER_CLOSED || imgSel == IID_FOLDER_OPEN)
+        {
+            newImg = IID_FOLDER_CLOSED;
+            newImgSel = IID_FOLDER_OPEN;
+        }
+        else if (img == IID_PLUGINFOLDER_CLOSED || imgSel == IID_PLUGINFOLDER_OPEN)
+        {
+            newImg = IID_PLUGINFOLDER_CLOSED;
+            newImgSel = IID_PLUGINFOLDER_OPEN;
+        }
+        else if (img == IID_PLUGINFOLDER_UNMATCHED || imgSel == IID_PLUGINFOLDER_OPEN_UNMATCHED)
+        {
+            newImg = IID_PLUGINFOLDER_UNMATCHED;
+            newImgSel = IID_PLUGINFOLDER_OPEN_UNMATCHED;
+        }
+        if (newImg >= 0 && action != FOLDER_ACTION_NONE)
+        {
+            if (action == FOLDER_ACTION_OPEN)
+                SetItemImage(pNMTreeView->itemNew.hItem, newImgSel, newImgSel);
+            else if (action == FOLDER_ACTION_CLOSE)
+                SetItemImage(pNMTreeView->itemNew.hItem, newImg, newImg);
+        }
+    }
     LRESULT OnItemexpanding(WPARAM wParam, LPNMHDR pNMHDR, BOOL& bHandled)
     {
         NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
@@ -609,6 +646,7 @@ public:
         if (pNMTreeView->action == TVE_COLLAPSE)
         {
             WTL::CTreeItem hItem = GetChildItem(pNMTreeView->itemNew.hItem);
+            ChangeFolder(pNMTreeView, FOLDER_ACTION_CLOSE);
 
             while (hItem)
             {
@@ -647,7 +685,10 @@ public:
                 hItem = hNextItem;
             }
         }
-
+        else if (pNMTreeView->action == TVE_EXPAND)
+        {
+            ChangeFolder(pNMTreeView, FOLDER_ACTION_OPEN);
+        }
         bHandled = FALSE;
         return 0;
     }
@@ -667,7 +708,7 @@ public:
     {
         // Return TRUE if selection is not complete. This will prevent the 
         // notification from being sent to parent.
-        return !m_bSelectionComplete;	
+        return !m_bSelectionComplete;
     }
 
     void OnRButtonDown(UINT nFlags, CPoint point)

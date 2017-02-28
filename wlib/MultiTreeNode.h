@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\en_us\resource.h"
 #include "wlib.h"
 #include "MultiTree.h"
 #include "TreeNode.h"
@@ -211,6 +212,16 @@ public:
     int GetDispImage();
     int GetDispSelectedImage();
     int GetDispChildren();
+
+    void SetEmpty()
+    {
+        SetState(TVIS_BOLD, TVIS_BOLD);
+        CString strEmpty;
+        strEmpty.LoadString(IDS_TREE_EMPTY);
+        SetText(strEmpty);
+        m_id = strEmpty;
+        m_label = strEmpty;
+    }
 };
 //  ===========================================================================
 class WLIB_API CPersistTreeState

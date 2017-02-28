@@ -59,7 +59,8 @@ public:
     {
         //SetMsgHandled(true);
         CComPtr<Dali::IWorkunitVectorCom> wus = new Dali::IWorkunitVectorCom();
-        m_view.GetSelected(*wus);
+        if (m_view.GetSelected(*wus) == 0 && m_view.m_loadingItemFound)
+            return true;
         WTL::CMenu m;
         bool hasServerWU = false;
         for(Dali::IWorkunitVectorCom::const_iterator itr = wus->begin(); itr != wus->end(); ++itr)

@@ -177,18 +177,33 @@ void CModuleNode::ItemExpanding()
 	else
 		m_module->GetAttributes(attributes);
 	m_owner->OnLoaded(m_module, attributes);
+
+	CLoadingNode * loadingNode = new CLoadingNode();
+	loadingNode->Insert(*GetTreeView(), m_hTreeItem, TVI_FIRST);
+	bool hasChildren = false;
+
 	WTL::CLockWindowUpdate lock(*GetTreeView());
 	for (IModuleVector::iterator itr = modules.begin(); itr != modules.end(); ++itr)
 	{
 		CModuleNode * newNode = new CModuleNode(m_owner, itr->get());
 		newNode->InsertBelow(*GetTreeView(), *this);
 		newNode->operator ()(newNode->GetModule(), REFRESH_MODULE_UNKNOWN);
+		hasChildren = true;
 	}
 	for (IAttributeVector::iterator itr = attributes.begin(); itr != attributes.end(); ++itr)
 	{
 		CAttributeNode * newNode = new CAttributeNode(m_owner, itr->get());
 		newNode->InsertBelow(*GetTreeView(), *this);
 		newNode->operator ()(newNode->GetAttribute(), false, NULL, false);
+		hasChildren = true;
+	}
+	if (hasChildren)
+	{
+		loadingNode->Delete();
+	}
+	else
+	{
+		loadingNode->SetEmpty();
 	}
 }
 
@@ -232,7 +247,7 @@ int CModuleNode::GetDispSelectedImage()
 
 	if (m_module->IsPlugin())
 	{
-		return IID_PLUGINFOLDER_OPEN;
+		return IID_PLUGINFOLDER_CLOSED;
 	}
 	else if (m_module->IsTrash())
 	{
@@ -683,7 +698,7 @@ void CAttributeHistoryNode::operator()(IAttribute * /*attr*/, bool eclChanged, I
 
 void CAttributeHistoryNode::Refresh()
 {
- 	GenerateDispText();
+	GenerateDispText();
 	WTL::CTreeItem parent = GetParent();
 	parent.Expand(TVE_COLLAPSE | TVE_COLLAPSERESET);
 	parent.Expand();

@@ -277,8 +277,7 @@ void CDateFolderNode::operator()(Dali::IWorkunitVectorAdapt wus)
 {
 	if (m_loadingNode)
 	{
-		m_loadingNode->Delete();
-		m_loadingNode = NULL;
+		m_loadingNode->SetEmpty();
 	}
 	m_Owner->UpdateWorkunits(m_hTreeItem, wus);
 }

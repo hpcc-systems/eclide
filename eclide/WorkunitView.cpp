@@ -290,13 +290,7 @@ void CWorkunitTreeView::Update(HTREEITEM hItem, Dali::IWorkunitVectorCom* wus)
     WTL::CLockWindowUpdate lock(m_hWnd);
 
     WTL::CTreeItem node( hItem, &m_Tree );
-    if ( wus->empty() && hItem != TVI_ROOT )
-    {
-        //by doing this, it will look normal, but won't get filled on a refresh
-        //since we only refresh nodes that are expanded
-        node.Expand(TVE_COLLAPSE|TVE_COLLAPSERESET);
-    }
-    else
+    if ( !wus->empty() || hItem == TVI_ROOT )
     {
         //delete all the workunits that are under this parent node
         for(WTL::CTreeItem curr = node.GetChild(); !curr.IsNull(); )

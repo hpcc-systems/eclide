@@ -164,7 +164,7 @@ int CWorkspaceNode::GetDispImage()
 }
 int CWorkspaceNode::GetDispSelectedImage()
 {
-	return IID_PLUGINFOLDER_OPEN;
+	return IID_PLUGINFOLDER_CLOSED;
 }
 IWorkspace * CWorkspaceNode::GetWorkspace()
 {
