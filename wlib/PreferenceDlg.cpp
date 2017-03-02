@@ -1184,23 +1184,23 @@ public:
 
 	void LoadType()
 	{
-		if (ElementTypeEqual("general"))
+		if (ElementTypeEqual(ATTRIBUTE_TYPE_GENERAL))
 		{
 			m_sourceCtrl.SetType(CreateIAttributeGENERALType());
 		}
-		else if (ElementTypeEqual("esdl"))
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_ESDL))
 		{
 			m_sourceCtrl.SetType(CreateIAttributeESDLType());
 		}
-		else if (ElementTypeEqual("kel"))
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_KEL))
 		{
 			m_sourceCtrl.SetType(CreateIAttributeKELType());
 		}
-		else if (ElementTypeEqual("dud"))
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_DUD))
 		{
 			m_sourceCtrl.SetType(CreateIAttributeDUDType());
 		}
-		else if (ElementTypeEqual("salt"))
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_SALT))
 		{
 			m_sourceCtrl.SetType(CreateIAttributeSALTType());
 		}
@@ -1359,7 +1359,14 @@ public:
 		m_comboFontSize.AddString(_T("78"));
 	}
 
-	std::vector<CString> m_elementTypes = { "general", "ecl", "esdl", "dud", "kel", "salt" };
+	std::vector<CString> m_elementTypes = {
+		ATTRIBUTE_TYPE_GENERAL,
+		ATTRIBUTE_TYPE_ECL,
+		ATTRIBUTE_TYPE_ESDL,
+		ATTRIBUTE_TYPE_DUD,
+		ATTRIBUTE_TYPE_KEL,
+		ATTRIBUTE_TYPE_SALT
+	};
 
 	int GetElementTypeCount()
 	{
@@ -1423,7 +1430,7 @@ public:
 
 			if (textSample == _T(""))
 			{
-				if (ElementTypeEqual("kel"))
+				if (ElementTypeEqual(ATTRIBUTE_TYPE_KEL))
 				{
 					textSample =
 						_T("// KEL sample file illustrating color syntax")				_T("\r\n")
@@ -1436,7 +1443,7 @@ public:
 						_T("QUERY: IncMoreAveVal <= ")									_T("\r\n")
 						_T("   Person(income > MAX(Vehicle(make = 'TOYOTA'), value));");
 				}
-				else if (ElementTypeEqual("esdl"))
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_ESDL))
 				{
 					textSample =
 						_T("// ESDL sample for illustrating color syntax")				_T("\r\n")
@@ -1468,7 +1475,7 @@ public:
 						_T("  MyMethod2(MyMethod2Req, MyMethod2Resp);")					_T("\r\n")
 						_T("};");
 				}
-				else if (ElementTypeEqual("salt"))
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_SALT))
 				{
 					textSample =
 						_T("// SALT sample for illustrating color syntax")	_T("\r\n")
@@ -1478,7 +1485,7 @@ public:
 						_T("ATTRIBUTEFILE : VEHICLES : ")					_T("\r\n")
 						_T("  NAMED(SALT_Examples.File_Vehicle_Matches_S")	_T("\r\n");
 				}
-				else if (ElementTypeEqual("dud"))
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_DUD))
 				{
 					textSample =
 						_T("// DUDE sample for illustrating color syntax")					_T("\r\n")
@@ -1510,7 +1517,7 @@ public:
 						_T("	ECL Ecl:FILENAME(\"ECL\"),")								_T("\r\n")
 						_T("END")															_T("\r\n");
 				}
-				else if (ElementTypeEqual("ecl"))
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_ECL))
 				{
 					textSample =
 						_T("// ECL sample for illustrating color syntax")	_T("\r\n")
@@ -1529,7 +1536,7 @@ public:
 						_T("Compare:  Changed")								_T("\r\n")
 						_T("Compare:  Moved");
 				}
-				else if (ElementTypeEqual("general"))
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_GENERAL))
 				{
 					textSample =
 						_T("Caret : #")										_T("\r\n")

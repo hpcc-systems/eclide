@@ -282,7 +282,7 @@ public:
         int targetOn = static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR));
         if (readOnly && targetOn == 0)
         {
-            ILangRef * langRefGeneral = GetLangRef(_T("general"));
+            ILangRef * langRefGeneral = GetLangRef(ATTRIBUTE_TYPE_GENERAL);
             int color = langRefGeneral->GetColorBack(SCE_GEN_READONLY_BACKGROUND);
             m_view.StyleSetBack(STYLE_DEFAULT, color);
             for (int i = SCE_ECL_DEFAULT; i <= SCE_ECL_LAST; ++i)

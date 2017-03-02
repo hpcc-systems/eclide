@@ -456,8 +456,8 @@ void CSourceCtrl::DoInit()
 void CSourceCtrl::InitColors(ILangRef * langRef)
 {
     int backID;
-    bool generalFlag = langRef->GetElementType().CompareNoCase(_T("general")) == 0;
-    ILangRef * langRefGeneral = GetLangRef(_T("general"));
+    bool generalFlag = langRef->GetElementType().CompareNoCase(ATTRIBUTE_TYPE_GENERAL) == 0;
+    ILangRef * langRefGeneral = GetLangRef(ATTRIBUTE_TYPE_GENERAL);
     int targetOn = static_cast<int>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TARGETCOLOR));
 
     for(int row = 0; row < langRef->GetColorRowCount(); ++row)

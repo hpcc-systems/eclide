@@ -328,8 +328,10 @@ public:
         rep->GetAttributeTypes(types);
         for(IAttributeTypeVector::const_iterator itr = types.begin(); itr != types.end(); ++itr)
         {
-            int item = m_comboType.AddString(itr->get()->GetDescription());
-            m_comboType.SetItemData(item, (DWORD_PTR)itr->get());
+            if (!boost::algorithm::equals(itr->get()->GetRepositoryCode(), ATTRIBUTE_TYPE_GENERAL)) {
+                int item = m_comboType.AddString(itr->get()->GetDescription());
+                m_comboType.SetItemData(item, (DWORD_PTR)itr->get());
+            }
         }
         int nSel = m_comboType.SelectString(0, m_type->GetDescription());
         ATLASSERT(nSel != CB_ERR);
