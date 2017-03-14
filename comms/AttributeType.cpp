@@ -117,23 +117,23 @@ const TCHAR * const CMP_TEXT =
     _T("Method=THOR\r\n")
     _T("END\r\n");
 
-	const TCHAR * const DEFT_TEXT =
-	_T("/*This is an example DEFT training file.\r\n")
-	_T("David Bayliss => David||Bayliss\r\n")
-	_T("Steve Baglien => Steve||Baglien\r\n")
-	_T("John Smith => John||Smith\r\n")
-	_T("David Alan & Kelly Marie Van Bayliss => David|Alan|Van Bayliss => Kelly Marie||Van Bayliss\r\n")
-	_T("David Alan   Bayliss => David|Alan|Bayliss\r\n")
-	_T("Bayliss, David Alan => David|Alan|Bayliss\r\n")
-	_T("David Lawrence-Hide => David||Lawrence Hide\r\n")
-	_T("Sean Van Allen => Sean||Van Allen\r\n")
-	_T("Jerry Mc Ever => Jerry||Mc Ever\r\n");
+    const TCHAR * const DEFT_TEXT =
+    _T("/*This is an example DEFT training file.\r\n")
+    _T("David Bayliss => David||Bayliss\r\n")
+    _T("Steve Baglien => Steve||Baglien\r\n")
+    _T("John Smith => John||Smith\r\n")
+    _T("David Alan & Kelly Marie Van Bayliss => David|Alan|Van Bayliss => Kelly Marie||Van Bayliss\r\n")
+    _T("David Alan   Bayliss => David|Alan|Bayliss\r\n")
+    _T("Bayliss, David Alan => David|Alan|Bayliss\r\n")
+    _T("David Lawrence-Hide => David||Lawrence Hide\r\n")
+    _T("Sean Van Allen => Sean||Van Allen\r\n")
+    _T("Jerry Mc Ever => Jerry||Mc Ever\r\n");
 
-	const TCHAR * const LUCI_FAMILY_TEXT =
-	_T("/*This is an example LUCI family file.\r\n")
-	_T("MODULE:%1%\r\n")
-	_T("luci/luci_ten_trees.csv\r\n")
-	_T("luci/LUCI_X014.csv\r\n");
+    const TCHAR * const LUCI_FAMILY_TEXT =
+    _T("/*This is an example LUCI family file.\r\n")
+    _T("MODULE:%1%\r\n")
+    _T("luci/luci_ten_trees.csv\r\n")
+    _T("luci/LUCI_X014.csv\r\n");
 
 class CAttributeType : public IAttributeType, public CUnknown
 {
@@ -194,11 +194,10 @@ public:
                 m_description = _T("CMP - HIPIE Composition");
             else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_WORKSPACE))
                 m_description = _T("ECL_WS - ECL Workspace Persistance File");
-			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_LUCIFAMILY))
+            else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_LUCIFAMILY))
                 m_description = _T("MFF - Luci Family File");
-			else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_DEFT))
+            else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_DEFT))
                 m_description = _T("DFT - Training file");
-		
             else
                 m_description = _T("???");
         }
