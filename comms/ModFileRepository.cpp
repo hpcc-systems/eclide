@@ -238,7 +238,7 @@ public:
             boost::algorithm::trim(trimmedLine);
             if (boost::algorithm::istarts_with(trimmedLine, IMPORT_MARKER))
             {
-                if (attributeLabel.length() && attributeEcl.length())
+                if (attributeLabel.length())
                 {
                     attrs[attributeLabel] = CommentEclPair(attributeComment, attributeEcl);
                 }
@@ -257,7 +257,7 @@ public:
                 attributeEcl += *itr + _T("\r\n");
             }
         }
-        if (attributeLabel.length() && attributeEcl.length())
+        if (attributeLabel.length())
         {
             attrs[attributeLabel] = CommentEclPair(attributeComment, attributeEcl);
         }

@@ -481,9 +481,9 @@ public:
     }
 #endif
 
-    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
+    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const
     {
-        return CAttributeBase::PreProcess(action, overrideEcl, attrs, errs);
+        return CAttributeBase::PreProcess(action, overrideEcl, attrs, attrProcessed, errs);
     }
 
     boost::signals::connection on_refresh_connect(const refresh_slot_type& s)
