@@ -19,34 +19,48 @@ public:
     virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
     virtual const TCHAR *GetLabel() const = 0;
 
-    bool locatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
+    bool pluginFolderExists(const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const
     {
         boost::filesystem::path folder, path;
-        //  Check for ./plugin install  ---
         GetProgramFolder(folder);
-        folder /= "plugin";
+
+        for (int i = 0; i < level; i++)
+        {
+            if (folder.has_parent_path())
+            {
+                folder = folder.parent_path();
+            }
+        }
+        if (pluginFolder)
+        {
+            folder /= "plugin";
+        }
+        else
+        {
+            folder /= stringToPath(GetType()->GetRepositoryCode());
+        }
         path = folder / batchFile;
         if (clib::filesystem::exists(path))
         {
             foundFolder = folder;
             return true;
         }
-        //  Check for sibling install  ---
-        GetProgramFolder(folder);
-        if (folder.has_parent_path()) 
+        return false;
+    }
+
+    bool locatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
+    {
+        if (pluginFolderExists(batchFile, foundFolder, 0, true))
         {
-            folder = folder.parent_path();
-            if (folder.has_parent_path()) 
-            {
-                folder = folder.parent_path();
-                folder /= stringToPath(GetType()->GetRepositoryCode());
-                path = folder / batchFile;
-                if (clib::filesystem::exists(path))
-                {
-                    foundFolder = folder;
-                    return true;
-                }
-            }
+            return true;
+        }
+        else if (pluginFolderExists(batchFile, foundFolder, 2, false))
+        {
+            return true;
+        }
+        else if (pluginFolderExists(batchFile, foundFolder, 3, false))
+        {
+            return true;
         }
         _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
         return false;
