@@ -15,6 +15,7 @@ protected:
 
 public:
     virtual IAttributeType *GetType() const = 0;
+    virtual const IModule *GetModule() const = 0;
     virtual const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const = 0;
     virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
     virtual const TCHAR *GetLabel() const = 0;
@@ -162,7 +163,17 @@ public:
             outputFile.HandsOn();
 
             IModuleVector modules;
-            rep->GetModules(_T(""), modules);
+            IModule *parentModule = GetModule()->GetParentModule();
+            if (parentModule) 
+            {
+                std::_tstring parentModuleLabel = parentModule->GetQualifiedLabel(true);
+                rep->GetModules(parentModuleLabel, modules);
+            }
+            else 
+            {
+                rep->GetModules(_T(""), modules);
+            }
+
             for(IModuleVector::const_iterator itr = modules.begin(); itr != modules.end(); ++itr)
             {
                 itr->get()->GetAttributes(attrs);
