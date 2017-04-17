@@ -552,7 +552,12 @@ public:
 		TTabCtrl::TItem* pItem = m_TabCtrl.CreateNewItem();
 		if(pItem)
 		{
-			pItem->SetText(sTabText);
+			std::wstring padded(sTabText);
+			if (lstrlen(sTabText) == 1) {
+				padded = padded + _T(" ");
+			}
+			pItem->SetText(padded.c_str());
+
 			pItem->SetImageIndex(nImageIndex);
 			// NOTE: You must use a tab item class derived off of CCustomTabCtrl
 			//  that tracks a view HWND, such as CTabViewTabItem
