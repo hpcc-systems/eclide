@@ -114,6 +114,24 @@ public:
             CString copyStr;
             copyStr.Format(_T("&Copy \"%s\""), s.attrs.begin()->get()->GetQualifiedLabel(true));
             m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr); 
+
+            CString attrType = s.attrs.begin()->get()->GetType()->GetFileExtension();
+            attrType = attrType.Mid(1, attrType.GetLength() - 1);
+            if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_DUD)) {
+                m.EnableMenuItem(ID_CHANGETYPELOCAL_DUD, MF_GRAYED);
+            }
+            else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ECL)) {
+                m.EnableMenuItem(ID_CHANGETYPELOCAL_ECL,  MF_GRAYED);
+            }
+            else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ECM) || boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ESDL)) {
+                m.EnableMenuItem(ID_CHANGETYPELOCAL_ESDL, MF_GRAYED);
+            }
+            else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_KEL)) {
+                m.EnableMenuItem(ID_CHANGETYPELOCAL_KEL, MF_GRAYED);
+            }
+            else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_SALT)) {
+                m.EnableMenuItem(ID_CHANGETYPELOCAL_SALT, MF_GRAYED);
+            }
         }
 
         unsigned pick = m.GetSubMenu(0).TrackPopupMenuEx(TPM_RETURNCMD, pt.x, pt.y, *pT);

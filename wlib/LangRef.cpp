@@ -473,7 +473,26 @@ public:
 	{
 		if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("salt"))) 
 		{
-			return SCLEX_SALT;
+			if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_SALT))
+			{
+				return SCLEX_SALT;
+			}
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_ECM) || boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_ESDL))
+			{
+				return SCLEX_ESDL;
+			}
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_KEL))
+			{
+				return SCLEX_KEL;
+			}
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_DUD))
+			{
+				return SCLEX_DUD;
+			}
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_GENERAL))
+			{
+				return SCLEX_GENERAL;
+			}
 		}
 		else if (m_typeStr.length() > 0 && boost::algorithm::equals(m_typeStr, _T("esdl")))
 		{

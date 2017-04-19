@@ -1158,6 +1158,89 @@ public:
 		return NULL;
 	}
 
+	void DoLoadElementType()
+	{
+		m_langRef = CreateLangRef(CurrentElementType().GetString(), NULL);
+		LoadType();
+
+		m_comboElement.ResetContent();
+		m_langRef->SetElementType(CurrentElementType());
+		m_langRef->loadReference();
+		m_langRef->loadMergedColor();
+		LoadComboElement();
+
+		m_sourceCtrl.DoInit();
+		m_comboElement.SetCurSel(0);
+
+		LoadSampleText();
+		DoLoadElement();
+		m_sourceCtrl.InitColors(m_langRef);
+	}
+
+	void LoadType()
+	{
+		if (ElementTypeEqual(ATTRIBUTE_TYPE_GENERAL))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeGENERALType());
+		}
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_ECM) || ElementTypeEqual(ATTRIBUTE_TYPE_ESDL))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeESDLType());
+		}
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_KEL))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeKELType());
+		}
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_DUD))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeDUDType());
+		}
+		else if (ElementTypeEqual(ATTRIBUTE_TYPE_SALT))
+		{
+			m_sourceCtrl.SetType(CreateIAttributeSALTType());
+		}
+		else
+		{
+			m_sourceCtrl.SetType(CreateIAttributeECLType());
+		}
+	}
+
+	CString CurrentElementType()
+	{
+		int row = m_comboElementType.GetCurSel();
+		if (row < 0)
+			return _T("");
+
+		CString str1;
+		int n;
+		n = m_comboElementType.GetLBTextLen(row);
+		m_comboElementType.GetLBText(row, str1.GetBuffer(n));
+		str1.ReleaseBuffer();
+		str1.MakeLower();
+		
+		m_currentElementTypeStr = str1;
+
+		return str1;
+	}
+
+	CString CurrentElement()
+	{
+		int row = m_comboElement.GetCurSel();
+		if (row < 0)
+			return _T("");
+
+		CString str1;
+		int n;
+		n = m_comboElement.GetLBTextLen(row);
+		m_comboElement.GetLBText(row, str1.GetBuffer(n));
+		str1.ReleaseBuffer();
+		str1.MakeLower();
+
+		m_currentElementStr = str1;
+
+		return str1;
+	}
+
 	void DoLoadElement()
 	{
 		int row = m_comboElement.GetCurSel();
@@ -1304,6 +1387,163 @@ public:
 		m_ecl.SetLineState(12, SCE_ECL_DELETED);
 		m_ecl.SetLineState(13, SCE_ECL_CHANGED);
 		m_ecl.SetLineState(14, SCE_ECL_MOVED);
+	}
+
+	bool ElementTypeEqual(CString elementType)
+	{
+		return m_currentElementTypeStr.CompareNoCase(elementType) == 0;
+	}
+
+	void LoadSampleText()
+	{
+		std::_tstring textSample = _T("");
+		bool filled = false;
+
+		if (m_langRef)
+		{
+			//m_langRef->loadSamples();
+			textSample = m_langRef->GetSample();
+			filled = true;
+
+			if (textSample == _T(""))
+			{
+				if (ElementTypeEqual(ATTRIBUTE_TYPE_KEL))
+				{
+					textSample =
+						_T("// KEL sample file illustrating color syntax")				_T("\r\n")
+						_T("/* This is a comment between delimiters */")				_T("\r\n")
+						_T("Person := ENTITY(FLAT(UID = did, STRING fname = name));")	_T("\r\n")
+						_T("USE fdc.GLUE_fdc.File(FDC, Person,")						_T("\r\n")
+						_T("Person: => age := YEARSBETWEEN(bdate, CURRENTDATE());")		_T("\r\n")
+						_T("QUERY: HiMaleInc <= Person(sex = 'M' AND")					_T("\r\n")
+						_T("   income = income$Person(sex = 'M') :Max);")				_T("\r\n")
+						_T("QUERY: IncMoreAveVal <= ")									_T("\r\n")
+						_T("   Person(income > MAX(Vehicle(make = 'TOYOTA'), value));");
+				}
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_ECM) || ElementTypeEqual(ATTRIBUTE_TYPE_ESDL))
+				{
+					textSample =
+						_T("// ESDL sample for illustrating color syntax")				_T("\r\n")
+						_T("/* This is a comment between delimiters */")				_T("\r\n")
+						_T("ESPInclude(ModThis);")										_T("\r\n")
+						_T("ESPservice MathService{")									_T("\r\n")
+						_T("  ESPmethod DivThis(DivThisRequest, DivThisResponse);")		_T("\r\n")
+						_T("ESPmethod ModThis(ModThisRequest, ModThisResponse);")		_T("\r\n")
+						_T("};")														_T("\r\n")
+						_T("ESPrequest DivThisRequest{")								_T("\r\n")
+						_T("  int  FirstNumber;")										_T("\r\n")
+						_T("  int  SecondNumber;")										_T("\r\n")
+						_T("};")														_T("\r\n")
+						_T("ESPresponse DivThisResponse{")								_T("\r\n")
+						_T("  int  Answer;")											_T("\r\n")
+						_T("};")														_T("\r\n")
+						_T("ESPstruct Date {") 											_T("\r\n")
+						_T("  [leading_zero(4)] Year;")									_T("\r\n")
+						_T("  [leading_zero(2)] Month;")								_T("\r\n")
+						_T("  [leading_zero(2)] Day;")									_T("\r\n")
+						_T("}")															_T("\r\n")
+						_T("ESPservice MyService {")									_T("\r\n")
+						_T("  ESPmethod MyMethod1(MyMethod1Req, MyMethod1Resp);")		_T("\r\n")
+						_T("    ESPmethod [")											_T("\r\n")
+						_T("      description(\"MyMethod Two\"),")						_T("\r\n")
+						_T("      help(\"This method does everything...\"),")			_T("\r\n")
+						_T("      min_ver(\"1.2\")")									_T("\r\n")
+						_T("    ]")														_T("\r\n")
+						_T("  MyMethod2(MyMethod2Req, MyMethod2Resp);")					_T("\r\n")
+						_T("};");
+				}
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_SALT))
+				{
+					textSample =
+						_T("// SALT sample for illustrating color syntax")	_T("\r\n")
+						_T("/* This is a comment between delimiters */")	_T("\r\n")
+						_T("FIELD:dt_first_seen:RECORDDATE(FIRST)")			_T("\r\n")
+						_T("CONCEPT : locale : +: zip : state : 2, 0")		_T("\r\n")
+						_T("ATTRIBUTEFILE : VEHICLES : ")					_T("\r\n")
+						_T("  NAMED(SALT_Examples.File_Vehicle_Matches_S")	_T("\r\n");
+				}
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_DUD))
+				{
+					textSample =
+						_T("// DUDE sample for illustrating color syntax")					_T("\r\n")
+						_T("/* This is a comment between delimiters */")					_T("\r\n")
+						_T("NAME RawDataset;")												_T("\r\n")
+						_T("PERMISSIONS")													_T("\r\n")
+						_T("	EDIT:PRIVATE;")												_T("\r\n")
+						_T("	VIEW:PUBLIC;")												_T("\r\n")
+						_T("END")															_T("\r\n")
+						_T("INPUTS")														_T("\r\n")
+						_T("	STRING Name : MAXLENGTH(30);")								_T("\r\n")
+						_T("	RECORD Structure;")											_T("\r\n")
+						_T("	ENUM(CSV,XML,FLAT) Method;")								_T("\r\n")
+						_T("END")															_T("\r\n")
+						_T("OUTPUTS")														_T("\r\n")
+						_T("	DATASET Out1(Structure);")									_T("\r\n")
+						_T("		INT Cnt;")												_T("\r\n")
+						_T("	END")														_T("\r\n")
+						_T("GENERATES INLINE")												_T("\r\n")
+						_T("	%^eOut1% := DATASET(%^qName%,%Structure%,%Method%);")		_T("\r\n")
+						_T("	%C% := COUNT(%Out1%);")										_T("\r\n")
+						_T("ENDGENERATES")													_T("\r\n")
+						_T("VISUALIZE TestPins :TITLE(\"Test pins\")")						_T("\r\n")
+						_T("	CHORO pin2(...TITLE(\"Pins2\"),GEOHASH(pinge...2")			_T("\r\n")
+						_T("END")															_T("\r\n")
+						_T("RESOURCES")														_T("\r\n")
+						_T("	LOGICALFILE File1:FILENAME(\"~thor::temp...20160810\"),")	_T("\r\n")
+						_T("	URL(\"http://10.241.100.159:8010\"),")						_T("\r\n")
+						_T("	ECL Ecl:FILENAME(\"ECL\"),")								_T("\r\n")
+						_T("END")															_T("\r\n");
+				}
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_ECL))
+				{
+					textSample =
+						_T("// ECL sample for illustrating color syntax")	_T("\r\n")
+						_T("/* This is a comment between delimiters */")	_T("\r\n")
+						_T("import ut;")									_T("\r\n")
+						_T("r := ")											_T("\r\n")
+						_T("  record")										_T("\r\n")
+						_T("   string22 s1 := '123';")						_T("\r\n")
+						_T("   integer4 i1 := 123;")						_T("\r\n")
+						_T("  end;")										_T("\r\n")
+						_T("#option('tmp', true);")							_T("\r\n")
+						_T("d := dataset('tmp::qb', r, thor);")				_T("\r\n")
+						_T("output(d);")									_T("\r\n")
+						_T("Compare:  Added")								_T("\r\n")
+						_T("Compare:  Deleted")								_T("\r\n")
+						_T("Compare:  Changed")								_T("\r\n")
+						_T("Compare:  Moved");
+				}
+				else if (ElementTypeEqual(ATTRIBUTE_TYPE_GENERAL))
+				{
+					textSample =
+						_T("Caret : #")										_T("\r\n")
+						_T("Target:   Thor                         ")		_T("\r\n")
+						_T("Target:   HThor                        ")		_T("\r\n")
+						_T("Target:   Roxie                        ")		_T("\r\n")
+						_T("Target:   Local                        ")		_T("\r\n")
+						_T("Target:   ReadOnly                     ")		_T("\r\n");
+				}
+				else
+				{
+					filled = false;
+				}
+			}
+		}
+		
+		m_sourceCtrl.SetText(textSample.c_str());
+
+		if (ElementTypeEqual("ecl"))
+		{
+			m_sourceCtrl.SetLineState(11, SCE_ECL_ADDED);
+			m_sourceCtrl.SetLineState(12, SCE_ECL_DELETED);
+			m_sourceCtrl.SetLineState(13, SCE_ECL_CHANGED);
+			m_sourceCtrl.SetLineState(14, SCE_ECL_MOVED);
+		}
+		else if (ElementTypeEqual("general"))
+		{
+			m_sourceCtrl.SetFocus(true);
+			m_sourceCtrl.SetSel(9, 9);
+		}
 	}
 
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
