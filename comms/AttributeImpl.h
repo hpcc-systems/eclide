@@ -133,9 +133,17 @@ public:
             errorFile.Create(NULL, GENERIC_READ);
             errorFile.HandsOff();
             
-            std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7% %8% \"%9%\"")) % 
-                batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel(true) % GetLabel() % 
-                inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName() % static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))) % eclFolders).str();
+            std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7% %8% \"%9%\" %10%")) % 
+                batchFile.c_str() %
+                PREPROCESS_LABEL[action] %
+                GetModuleQualifiedLabel(true) % 
+                GetLabel() % 
+                inputFile.TempFileName() % 
+                outputFile.TempFileName() % 
+                errorFile.TempFileName() % 
+                static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))) % 
+                eclFolders % 
+                static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)))).str();
 
             //_DBGLOG(m_url, LEVEL_INFO, cmd.c_str());
             std::_tstring in;
