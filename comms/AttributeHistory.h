@@ -10,7 +10,7 @@ __interface __declspec(uuid("5408B16C-8103-47aa-906B-347727AAED24")) IAttributeH
     const TCHAR *GetID() const;
     const TCHAR *GetModuleQualifiedLabel(bool excludeRoot = false) const;
     const TCHAR *GetLabel() const;
-    const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const;
+    const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const;
     IAttributeType *GetType() const;
     const TCHAR *GetText(bool refresh = true, bool noBroadcast = false) const;
     const TCHAR *GetModifiedDate() const;

@@ -13,13 +13,13 @@ protected:
     std::_tstring m_qualifiedLabel;
     std::_tstring m_qualifiedLabelNoRoot;
 
-    void ParseQualifiedLabel(const std::_tstring & modAttrLabel);
+    void ParseQualifiedLabel(const std::_tstring & modAttrLabel, bool hasExtension);
 
 public:
     static const TCHAR * const DELIMTER;
 
-    CModuleHelper(const TCHAR * modAttrLabel);
-    CModuleHelper(const std::_tstring & modAttrLabel);
+    CModuleHelper(const TCHAR * modAttrLabel, bool hasExtension = false);
+    CModuleHelper(const std::_tstring & modAttrLabel, bool hasExtension = false);
 
     bool HasModuleLabel() const;
     const TCHAR * GetModuleLabel() const;
