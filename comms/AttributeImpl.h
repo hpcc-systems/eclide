@@ -48,7 +48,9 @@ public:
                 }
             }
         }
-        _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
+        if (!boost::algorithm::iequals(batchFile, "ecl.bat")) {
+            _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
+        }
         return false;
     }
 
