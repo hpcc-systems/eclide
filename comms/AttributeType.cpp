@@ -243,6 +243,22 @@ public:
 //  ===========================================================================
 static CacheT<std::_tstring, CAttributeType> AttributeTypeCache;
 
+IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension) {
+    IAttributeType *attrType = NULL;
+    if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ECM))
+        attrType = CreateIAttributeESDLType();
+    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_SALT))
+        attrType = CreateIAttributeSALTType();
+    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_KEL))
+        attrType = CreateIAttributeKELType();
+    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_DUD))
+        attrType = CreateIAttributeDUDType();
+    else
+        attrType = CreateIAttributeECLType();
+
+    return attrType;
+}
+
 void ClearAttributeTypeCache()
 {
     ATLTRACE(_T("File cache before clearing(size=%u)\r\n"), AttributeTypeCache.Size());
