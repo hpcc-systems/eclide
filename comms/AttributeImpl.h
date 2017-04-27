@@ -74,29 +74,6 @@ public:
         boost::filesystem::path folder;
         if (locatePlugin(batchFile, folder)) 
         {
-            //  Hack For ESDL PrePreProcessing  ---
-            if (boost::algorithm::equals(batchFile.c_str(), "esdl.bat"))
-            {
-                switch (action)
-                {
-                case PREPROCESS_SAVE:
-                    {
-                        IAttributeTypeVector esdlType;
-                        esdlType.push_back(CreateIAttributeESDLType());
-                        IAttributeVector otherEsdlAttrs;
-                        m_repository->GetAttributes(GetModuleQualifiedLabel(), esdlType, otherEsdlAttrs);
-                        for(IAttributeVector::const_iterator itr = otherEsdlAttrs.begin(); itr != otherEsdlAttrs.end(); ++itr)
-                        {
-                            IAttributeVector tmpAttrs;
-                            Dali::CEclExceptionVector errors;
-                            itr->get()->PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, tmpAttrs, errors);
-                        }
-                    }
-                default:
-                    break;
-                }
-            }
-            //  End Hack For ESDL PrePreProcessing  ---
             switch (action)
             {
             case PREPROCESS_SAVE:
