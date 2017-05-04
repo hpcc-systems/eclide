@@ -4,16 +4,25 @@
 //#define DELIMTER _T(".")
 
 const TCHAR * const CModuleHelper::DELIMTER = _T(".");
+const TCHAR * const TMPDELIMTER = _T("%%TMPDELIM%%");
 
-void CModuleHelper::ParseQualifiedLabel(const std::_tstring & modAttrLabel)
+void CModuleHelper::ParseQualifiedLabel(const std::_tstring & _modAttrLabel, bool hasExtension)
 {
+    std::_tstring modAttrLabel = _modAttrLabel;
     typedef boost::tokenizer<boost::char_separator<TCHAR>, std::_tstring::const_iterator, std::_tstring> tokenizer;
+    if (hasExtension) {
+        boost::algorithm::replace_last(modAttrLabel, DELIMTER, TMPDELIMTER);
+    }
     boost::char_separator<TCHAR> sep(DELIMTER);
     tokenizer tokens(modAttrLabel, sep);
     bool first = true;
     for (tokenizer::iterator tok_itr = tokens.begin(); tok_itr != tokens.end(); ++tok_itr)
     {
-        m_labels.push_back(*tok_itr);
+        std::_tstring label = *tok_itr;
+        if (hasExtension) {
+            boost::algorithm::replace_last(label, TMPDELIMTER, DELIMTER);
+        }
+        m_labels.push_back(label);
         if (!m_attrLabel.empty())
         {
             if (!m_moduleLabel.empty())
@@ -29,20 +38,20 @@ void CModuleHelper::ParseQualifiedLabel(const std::_tstring & modAttrLabel)
             else
                 first = false;
         }
-        m_attrLabel = *tok_itr;
+        m_attrLabel = label;
     }
     m_qualifiedLabel = m_moduleLabel + DELIMTER + m_attrLabel;
     m_qualifiedLabelNoRoot = m_moduleLabelNoRoot + DELIMTER + m_attrLabel;
 }
 
-CModuleHelper::CModuleHelper(const TCHAR * modAttrLabel)
+CModuleHelper::CModuleHelper(const TCHAR * modAttrLabel, bool hasExtension)
 {
-    ParseQualifiedLabel(modAttrLabel);
+    ParseQualifiedLabel(modAttrLabel, hasExtension);
 }
 
-CModuleHelper::CModuleHelper(const std::_tstring & modAttrLabel)
+CModuleHelper::CModuleHelper(const std::_tstring & modAttrLabel, bool hasExtension)
 {
-    ParseQualifiedLabel(modAttrLabel);
+    ParseQualifiedLabel(modAttrLabel, hasExtension);
 }
 
 bool CModuleHelper::HasModuleLabel() const

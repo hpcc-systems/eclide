@@ -421,7 +421,7 @@ public:
     {
         if (!attr)
             return false;
-        return TreeNode::Select(attr->GetQualifiedLabel(), m_Root);
+        return TreeNode::Select(attr->GetQualifiedLabel(false, true), m_Root);
     }
     bool RefreshRepository()
     {

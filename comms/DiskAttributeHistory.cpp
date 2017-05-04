@@ -70,10 +70,10 @@ public:
         return m_attribute->GetLabel();
     }
 
-    const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
+    const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return m_attribute->GetQualifiedLabel();
+        return m_attribute->GetQualifiedLabel(excludeRoot, includeExtension);
     }
 
     IAttributeType *GetType() const
