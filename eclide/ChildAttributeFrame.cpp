@@ -289,7 +289,7 @@ public:
     {
         return m_NullStr;
     }
-    const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
+    const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
         return m_NullStr;
     }

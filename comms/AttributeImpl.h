@@ -62,7 +62,9 @@ public:
         {
             return true;
         }
-        _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
+        if (!boost::algorithm::iequals(batchFile, "ecl.bat")) {
+            _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
+        }
         return false;
     }
 
@@ -86,29 +88,6 @@ public:
         boost::filesystem::path folder;
         if (locatePlugin(batchFile, folder)) 
         {
-            //  Hack For ESDL PrePreProcessing  ---
-            if (boost::algorithm::equals(batchFile.c_str(), "esdl.bat"))
-            {
-                switch (action)
-                {
-                case PREPROCESS_SAVE:
-                    {
-                        IAttributeTypeVector esdlType;
-                        esdlType.push_back(CreateIAttributeESDLType());
-                        IAttributeVector otherEsdlAttrs;
-                        m_repository->GetAttributes(GetModuleQualifiedLabel(), esdlType, otherEsdlAttrs);
-                        for(IAttributeVector::const_iterator itr = otherEsdlAttrs.begin(); itr != otherEsdlAttrs.end(); ++itr)
-                        {
-                            IAttributeVector tmpAttrs;
-                            Dali::CEclExceptionVector errors;
-                            itr->get()->PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, tmpAttrs, errors);
-                        }
-                    }
-                default:
-                    break;
-                }
-            }
-            //  End Hack For ESDL PrePreProcessing  ---
             switch (action)
             {
             case PREPROCESS_SAVE:
@@ -147,9 +126,17 @@ public:
             errorFile.Create(NULL, GENERIC_READ);
             errorFile.HandsOff();
             
-            std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7% %8% \"%9%\"")) % 
-                batchFile.c_str() % PREPROCESS_LABEL[action] % GetModuleQualifiedLabel(true) % GetLabel() % 
-                inputFile.TempFileName() % outputFile.TempFileName() % errorFile.TempFileName() % static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))) % eclFolders).str();
+            std::_tstring cmd = (boost::_tformat(_T("cmd /c %1% %2% %3% %4% %5% %6% %7% %8% \"%9%\" %10%")) % 
+                batchFile.c_str() %
+                PREPROCESS_LABEL[action] %
+                GetModuleQualifiedLabel(true) % 
+                GetLabel() % 
+                inputFile.TempFileName() % 
+                outputFile.TempFileName() % 
+                errorFile.TempFileName() % 
+                static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))) % 
+                eclFolders % 
+                static_cast<const TCHAR *>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)))).str();
 
             //_DBGLOG(m_url, LEVEL_INFO, cmd.c_str());
             std::_tstring in;

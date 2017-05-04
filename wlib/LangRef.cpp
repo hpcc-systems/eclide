@@ -610,7 +610,7 @@ public:
 			{
 				return SCLEX_SALT;
 			}
-			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_ESDL))
+			else if (boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_ECM) || boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_ESDL))
 			{
 				return SCLEX_ESDL;
 			}

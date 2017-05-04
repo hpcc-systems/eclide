@@ -125,7 +125,7 @@ public:
             else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ECL)) {
                 m.EnableMenuItem(ID_CHANGETYPELOCAL_ECL,  MF_GRAYED);
             }
-            else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ESDL)) {
+            else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ECM) || boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_ESDL)) {
                 m.EnableMenuItem(ID_CHANGETYPELOCAL_ESDL, MF_GRAYED);
             }
             else if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_KEL)) {

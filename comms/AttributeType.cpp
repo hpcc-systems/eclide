@@ -180,10 +180,8 @@ public:
         {
             if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECL))
                 m_description = _T("ECL - Enterprise Control Language");
-            else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
-                m_description = _T("ESDL - Enterprise Services Definition Language");
-            else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM))
-                m_description = _T("ECM (ESDL) - Enterprise Services Definition Language");
+            else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM) || boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
+                m_description = _T("ESDL (ECM) - Enterprise Services Definition Language");
             else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
                 m_description = _T("SPC - Salt Definition File");
             else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
@@ -207,10 +205,8 @@ public:
     {
         if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECL))
             m_defaultText = (boost::_tformat(_T("EXPORT %1% := 'todo';")) % attrLabel.c_str()).str();
-        else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
-            m_defaultText = (boost::_tformat(_T("ESDL:  %s;")) % attrLabel.c_str()).str();
-        else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM))
-            m_defaultText = (boost::_tformat(_T("ECM:  %s;")) % attrLabel.c_str()).str();
+        else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ECM) || boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_ESDL))
+            m_defaultText = (boost::_tformat(_T("ESDL (ECM):  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_SALT))
             m_defaultText = (boost::_tformat(_T("SALT:  %s;")) % attrLabel.c_str()).str();
         else if (boost::algorithm::equals(m_repositoryCode, ATTRIBUTE_TYPE_KEL))
@@ -304,7 +300,6 @@ unsigned int GetAttributeTypes(IAttributeTypeVector & types)
     types.push_back(CreateIAttributeGENERALType());
     types.push_back(CreateIAttributeECLType());
     types.push_back(CreateIAttributeESDLType());
-    types.push_back(CreateIAttributeECMType());
     types.push_back(CreateIAttributeSALTType());
     types.push_back(CreateIAttributeKELType());
     types.push_back(CreateIAttributeDUDType());
@@ -321,9 +316,7 @@ bool IsValidExtension(const std::_tstring & ext)
         return true;
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECLLIB))
         return true;
-    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
-        return true;
-    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECM))
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECM) || boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
         return true;
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_SALT))
         return true;

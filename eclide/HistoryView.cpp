@@ -34,7 +34,7 @@ public:
     {
         return _T("");
     }
-    const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
+    const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
         return _T("");
     }
@@ -94,9 +94,9 @@ public:
     {
         return m_attr->GetLabel();
     }
-    const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
+    const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
-        return m_attr->GetQualifiedLabel(excludeRoot);
+        return m_attr->GetQualifiedLabel(excludeRoot, includeExtension);
     }
     IAttributeType * GetType() const
     {

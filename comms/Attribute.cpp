@@ -158,10 +158,10 @@ public:
         return m_label;
     }
 
-    const TCHAR *GetQualifiedLabel(bool excludeRoot = false) const
+    const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return m_qualifiedLabel;
+        return m_qualifiedLabel + (includeExtension ? m_type->GetFileExtension() : _T(""));
     }
 
     const TCHAR *GetPath() const

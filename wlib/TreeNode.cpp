@@ -243,12 +243,13 @@ CTreeNode * Locate(const CModuleHelper & modHelper, CTreeNode * root, unsigned i
 	if (depth >= modHelper.GetQualifiedDepth())
 		return false;
 
+	CString qualifiedLabel = modHelper.GetQualifiedLabel(depth);
 	root->Expand();
 	for (WTL::CTreeItem itr = root->GetChild(); itr != NULL; itr = itr.GetNextSibling())
 	{
 		CString text;
 		itr.GetText(text);
-		if (_tcsicmp(modHelper.GetQualifiedLabel(depth), text) == 0)
+		if (_tcsicmp(qualifiedLabel, text) == 0)
 		{
 			if (depth == modHelper.GetQualifiedDepth() - 1)
 			{
@@ -267,7 +268,8 @@ CTreeNode * Locate(const std::_tstring & qualifiedLabel, CTreeNode * startingNod
 
 bool Select(const std::_tstring & qualifiedLabel, CTreeNode * startingNode, bool bExpand)
 {
-	CTreeNode * found = Locate(qualifiedLabel, startingNode, 0);
+	CModuleHelper modHelper(qualifiedLabel, true);
+	CTreeNode * found = Locate(modHelper, startingNode, 0);
 	if (found)
 	{
 		found->Select();

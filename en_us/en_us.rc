@@ -1354,7 +1354,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Submit ECL\tCtrl+Enter",     ID_ECL_GO
-        MENUITEM "Submit Selected ECL\tCtrl+Alt+Enter", ID_ECL_SEL_GO
+        MENUITEM "Submit Selected ECL\tCtrl+Shift+Enter", ID_ECL_SEL_GO
         POPUP "Syntax"
         BEGIN
             MENUITEM "&Check Syntax\tF7",           ID_ECL_CHECKSYNTAX

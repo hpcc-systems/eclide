@@ -336,7 +336,7 @@ int CAttributeNode::GetDispImage()
 	std::wstring fileType = m_attribute->GetType()->GetRepositoryCode();
 	if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_DUD))
 		return IID_DOCUMENT_DUD;
-	if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_ESDL))
+	if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_ECM) || boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_ESDL))
 		return IID_DOCUMENT_ESDL;
 	else if (boost::algorithm::iequals(fileType, ATTRIBUTE_TYPE_KEL))
 		return IID_DOCUMENT_KEL;
