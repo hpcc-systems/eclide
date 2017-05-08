@@ -1,14 +1,18 @@
 project( ECLEDITOR )
 
 set ( SRCS
+		lexgeneral.cxx
 		lexecl.cxx
 		lexsalt.cxx
 		lexesdl.cxx
+		lexkel.cxx
 
 		${SCINTILLA_INCLUDE_DIR}/include/SciLExer.h
 
-		${ECLEDITOR_SOURCE_DIR}/LexSALT.cxx
 		${ECLEDITOR_SOURCE_DIR}/LexESDL.cxx
+		${ECLEDITOR_SOURCE_DIR}/LexGENERAL.cxx
+		${ECLEDITOR_SOURCE_DIR}/LexSALT.cxx
+		${ECLEDITOR_SOURCE_DIR}/LexKEL.cxx
 
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h

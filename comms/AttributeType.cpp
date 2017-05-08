@@ -6,6 +6,7 @@
 #include <UtilFilesystem.h>
 
 //  ===========================================================================
+#define ATTRIBUTE_TYPE_GENERAL _T("general")
 #define ATTRIBUTE_TYPE_ECL _T("ecl")
 #define ATTRIBUTE_TYPE_ECLMOD _T("eclmod")
 #define ATTRIBUTE_TYPE_ECLLIB _T("ecllib")
@@ -270,6 +271,10 @@ IAttributeType * CreateIAttributeType(const std::_tstring & repositoryType, cons
     retVal->Update(description);
     return retVal;
 }
+IAttributeType * CreateIAttributeGENERALType()
+{
+    return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_GENERAL));
+}
 IAttributeType * CreateIAttributeECLType()
 {
     return AttributeTypeCache.Get(new CAttributeType(ATTRIBUTE_TYPE_ECL));
@@ -308,6 +313,7 @@ IAttributeType * CreateIAttributeLUCIFAMILYType()
 }
 unsigned int GetAttributeTypes(IAttributeTypeVector & types)
 {
+    types.push_back(CreateIAttributeGENERALType());
     types.push_back(CreateIAttributeECLType());
     types.push_back(CreateIAttributeESDLType());
     types.push_back(CreateIAttributeSALTType());
