@@ -4,11 +4,15 @@ set ( SRCS
 		lexecl.cxx
 		lexsalt.cxx
 		lexesdl.cxx
+		lexdud.cxx
 
 		${SCINTILLA_INCLUDE_DIR}/include/SciLExer.h
 
+		${ECLEDITOR_SOURCE_DIR}/LexGENERAL.cxx
 		${ECLEDITOR_SOURCE_DIR}/LexSALT.cxx
+		${ECLEDITOR_SOURCE_DIR}/LexKEL.cxx
 		${ECLEDITOR_SOURCE_DIR}/LexESDL.cxx
+		${ECLEDITOR_SOURCE_DIR}/LexDUD.cxx
 
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h

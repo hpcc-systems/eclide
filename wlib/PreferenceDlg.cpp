@@ -1348,6 +1348,27 @@ public:
 		m_comboFontSize.AddString(_T("78"));
 	}
 
+	std::vector<CString> m_elementTypes = { "general", "ecl", "esdl", "dud", "kel", "salt" };
+
+	int GetElementTypeCount()
+	{
+		return static_cast<int>(m_elementTypes.size());
+	}
+
+	CString GetElementType(int typeID)
+	{
+		return m_elementTypes[typeID];
+	}
+
+	void InitComboElementType()
+	{
+		m_comboElementType = GetDlgItem(IDC_COMBO_ELEMENT_TYPE);
+		for (int i = 0; i < GetElementTypeCount(); i++)
+		{
+			m_comboElementType.AddString(GetElementType(i).MakeUpper());
+		}
+	}
+
 	void InitComboElement()
 	{
 		m_comboElement = GetDlgItem(IDC_COMBO_ELEMENT);
