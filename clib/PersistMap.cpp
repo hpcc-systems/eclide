@@ -62,8 +62,6 @@ bool CPersistMap::serialize(std::_tstring & resultXml) const
         CComBSTR first = itr->first.c_str();
         CComBSTR second = itr->second.c_str();
         pContentHandler->startElement(empty, empty.Length(), empty, empty.Length(), first, first.Length(), pSAXAttrs);
-        CString content(second, second.Length());
-        CComBSTR utf8content = CA2W(CT2A(content, CP_UTF8));
         pContentHandler->characters(second, second.Length());
         pContentHandler->endElement(empty, empty.Length(),	empty, empty.Length(), first, first.Length());
     }

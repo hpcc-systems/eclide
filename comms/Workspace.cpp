@@ -11,7 +11,7 @@
 
 const TCHAR * const DEFAULT_LABEL = _T("Default");
 
-IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, const std::_tstring & data);
+IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, const std::string & data);
 //  ===========================================================================
 class CWorkspaceItemCompare
 {
@@ -109,7 +109,7 @@ void restore(T &s, const char * filename)
 }
 //  ===========================================================================
 typedef std::vector<std::_tstring> WorkspaceVector;
-typedef std::vector<std::_tstring> WindowsVector;
+typedef std::vector<std::string> WindowsVector;
 //  ===========================================================================
 class CWorkspace : public IWorkspace, public clib::CLockableUnknown
 {
@@ -258,7 +258,7 @@ public:
         m_windows.clear();
         for(IWorkspaceItemVector::const_iterator itr = windows.begin(); itr != windows.end(); ++itr)
         {
-            std::_tstring data;
+            std::string data;
             m_windows.push_back(itr->get()->Serialize(data));
         }
         Save();
@@ -271,14 +271,14 @@ public:
         {
             std::_tstring data;
             if (itr->get()->serialize(data))
-                m_windows.push_back(data);
+                m_windows.push_back(static_cast<const char *>(CT2A(data.c_str(), CP_UTF8)));
         }
         Save();
     }
     void AddWindow(const IWorkspaceItem & window)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        std::_tstring data;
+        std::string data;
         m_windows.push_back(window.Serialize(data));
         Save();
     }
