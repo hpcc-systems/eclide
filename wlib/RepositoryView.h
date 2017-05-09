@@ -277,6 +277,27 @@ public:
         }
         return false;
     }
+    void DoChangeAttributeType(IAttribute * attr, std::_tstring label, std::_tstring ext)
+    {
+        std::_tstring moduleLabel = attr->GetModuleQualifiedLabel();
+        CComPtr<IAttribute> newAttr = attr->ChangeAttributeType(ext.c_str());
+
+        if (newAttr)
+        {
+            CComPtr<IRepository> rep = m_Owner->GetRepository();
+            rep->ClearShortTermCache();
+            TreeNode::RefreshChildren(moduleLabel, m_Root);
+            Select(newAttr);
+            m_Owner->UpdateAttribute(attr, newAttr);
+        }
+        else
+        {
+            T* pT = static_cast<T*>(this);
+            CString prog_title;
+            prog_title.LoadString(IDR_MAINFRAME);
+            pT->MessageBox(_T("WARNING:  Change Attribute Type failed, see error window for further details."), prog_title, MB_ICONEXCLAMATION);
+        }
+    }
     void DoRenameAttribute(IAttribute * attr, const std::_tstring & label)
     {
         std::_tstring moduleLabel = attr->GetModuleQualifiedLabel();

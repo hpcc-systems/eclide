@@ -80,6 +80,7 @@ __interface IRepository : public IUnknown
     unsigned GetAttributeHistory(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, IAttributeHistoryVector & attributes) const;
     IAttribute * RenameAttribute(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, const TCHAR* label) const;
     IAttribute * RenameAttribute(IAttribute * attr, const TCHAR* label) const;
+    IAttribute * ChangeAttributeType(IAttribute * attr, const TCHAR* ext) const;
 
     bool DeleteAttributes(const IAttributeVector & attributes) const;
     bool Checkin(IAttributeVector & attributes, const TCHAR* comment, bool andRevert);

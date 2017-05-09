@@ -631,14 +631,17 @@ public:
     virtual IAttribute * RenameAttribute(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, const TCHAR* label) const
     {
         ATLASSERT(!"CDiskRepository::RenameAttribute not implemented");
-        return 0;
+        return NULL;
     }
     IAttribute * RenameAttribute(IAttribute * attribute, const TCHAR* label) const
     {
         ATLASSERT(!"CDiskRepository::RenameAttribute not implemented");
-        return 0;
+        return NULL;
     }
-    
+    IAttribute * ChangeAttributeType(IAttribute * attribute, const TCHAR* ext) const
+    {
+        return attribute->ChangeAttributeType(ext);
+    }
     virtual bool DeleteAttributes(const IAttributeVector & pAttributes) const
     {
         for(IAttributeVector::const_iterator itr = pAttributes.begin(); itr != pAttributes.end(); ++itr)

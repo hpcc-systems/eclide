@@ -87,17 +87,17 @@ public:
         m.EnableMenuItem(ID_REPOSITORY_RENAMEMODULE, state.CanRenameModule ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_DELETEMODULE, state.CanDeleteModule ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_INSERTATTRIBUTE, state.CanInsertAttribute ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_CHANGETYPELOCAL_DUD, IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && state.CanRenameAttribute ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_CHANGETYPELOCAL_ECL, IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && state.CanRenameAttribute ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_CHANGETYPELOCAL_ESDL, IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && state.CanRenameAttribute ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_CHANGETYPELOCAL_KEL, IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && state.CanRenameAttribute ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_CHANGETYPELOCAL_SALT, IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && state.CanRenameAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_RENAMEATTRIBUTE, state.CanRenameAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_MOVEATTRIBUTE, state.CanMoveAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_COPYATTRIBUTE, state.CanMoveAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_DELETEATTRIBUTE, state.CanDeleteAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_LABEL, state.CanLabel ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_REFRESH, MF_ENABLED);
-
-        //CMenu m2 = m.GetSubMenu(0);
-        //m2.EnableMenuItem(10, MF_BYPOSITION | MF_GRAYED);
-        //m2.EnableMenuItem(9, MF_BYPOSITION | MF_GRAYED);
-        //m2.EnableMenuItem(8, MF_BYPOSITION | MF_GRAYED);
 
         if(s.attrs.size() == 1)
         {
@@ -302,6 +302,21 @@ public:
             break;
         case ID_REPOSITORY_REFRESH:
             pT->m_view.RefreshRepository();
+            break;
+        case ID_CHANGETYPELOCAL_DUD:
+            pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_DUD);
+            break;
+        case ID_CHANGETYPELOCAL_ECL:
+            pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_ECL);
+            break;
+        case ID_CHANGETYPELOCAL_ESDL:
+            pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_ESDL);
+            break;
+        case ID_CHANGETYPELOCAL_KEL:
+            pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_KEL);
+            break;
+        case ID_CHANGETYPELOCAL_SALT:
+            pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_SALT);
             break;
         default:
             if (pick >= ID_REPOSITORY_INVOKE + 100)
