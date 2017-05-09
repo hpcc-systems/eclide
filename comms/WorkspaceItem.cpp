@@ -95,11 +95,11 @@ public:
         m_loaded = LOADING_UNKNOWN;
     }
 
-    CWorkspaceItem(IRepository * repository, const std::_tstring & data)
+    CWorkspaceItem(IRepository * repository, const std::string & data)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         m_repository = repository;
-        m_props.deserializeXML(data.c_str());
+        m_props.deserializeXML(static_cast<const TCHAR *>(CA2T(data.c_str(), CP_UTF8)));
         m_id = m_props.Get(PERSIST_FILEPATH);
         UpdateID();
         m_attributeLoaded = false;
@@ -252,12 +252,12 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return m_label.c_str();
     }
-    const TCHAR * Serialize(std::_tstring & result) const
+    const char * Serialize(std::string & result) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         std::_tstring data;
         m_props.serialize(data);
-        result = data;
+        result = CT2A(data.c_str(), CP_UTF8);
         return result.c_str();
     }
     WORKSPACE_ITEM_TYPE GetType() const
@@ -442,7 +442,7 @@ typedef std::vector<HWND> CChildFrameVector;
 //  ===========================================================================
 static CacheT<std::_tstring, CWorkspaceItem> CWorkspaceItemCache;
 
-IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, const std::_tstring & data)
+IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, const std::string & data)
 {
     StlLinked<CWorkspaceItem> workspaceItem = CWorkspaceItemCache.Get(new CWorkspaceItem(repository, data));
     workspaceItem->Load();
