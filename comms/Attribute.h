@@ -55,6 +55,9 @@ __interface IAttribute;
 typedef StlLinked<IAttribute> IAttributeAdapt;
 typedef std::vector<IAttributeAdapt> IAttributeVector;
 
+typedef std::pair<PREPROCESS_TYPE, std::_tstring> IAttributeUnique;
+typedef std::map<IAttributeUnique, bool> IAttributeBookkeep;
+
 __interface IMigrationCallback;
 
 typedef boost::signal<void(IAttribute *, bool, IAttribute *, bool deleted)> refresh_signal_type;
@@ -96,7 +99,7 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
     bool Delete();
     bool Exists() const;
     bool Create();
-    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const;
+    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const;
 
     boost::signals::connection on_refresh_connect(const refresh_slot_type& s);
     void Refresh(bool eclChanged = false, IAttribute * newAttrAsOldOneMoved = NULL, bool deleted = false);

@@ -68,8 +68,14 @@ public:
         return false;
     }
 
-    virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
+    virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const
     {
+        std::_tstring label = (boost::_tformat(_T("%1%.%2%")) % GetModuleQualifiedLabel(true) % GetLabel()).str();
+        if (attrProcessed[std::make_pair(action, label)]) {
+            return 0;
+        }
+        attrProcessed[std::make_pair(action, label)] = true;
+
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         CComPtr<IEclCC> eclcc = CreateIEclCC();
         std::_tstring eclFolders;
@@ -95,17 +101,18 @@ public:
                 //  Need to gather all included salt/esdl files
                 {
                     IAttributeVector nonECLattrs;
-                    PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, nonECLattrs, errs);
-                    for(IAttributeVector::const_iterator itr = nonECLattrs.begin(); itr != nonECLattrs.end(); ++itr)
-                    {
+                    PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, nonECLattrs, attrProcessed, errs);
+                    IAttributeVector::size_type idx = 0;
+                    while (idx < nonECLattrs.size()) {
                         //  Convert from imported attribute to real attribute  ---
-                        CComPtr<IAttribute> includeAttr = m_repository->GetAttribute(itr->get()->GetQualifiedLabel(), GetType());
+                        CComPtr<IAttribute> includeAttr = m_repository->GetAttribute(nonECLattrs[idx]->GetQualifiedLabel(), GetType());
                         if (includeAttr) 
                         {
                             IAttributeVector tmp;
-                            includeAttr->PreProcess(PREPROCESS_CALCINCLUDES, includeAttr->GetText(), tmp, errs);
+                            includeAttr->PreProcess(PREPROCESS_CALCINCLUDES, includeAttr->GetText(), tmp, attrProcessed, errs);
                             nonECLattrs.insert(nonECLattrs.end(), tmp.begin(), tmp.end());
                         }
+                        ++idx;
                     }
                 }
                 break;
@@ -166,7 +173,7 @@ public:
 
                 std::_tstring kelCacheFolder = pathToWString(stringToPath(inputFile.TempFileName()).parent_path() / stringToPath("kelcache"));
                 typedef std::vector<std::_tstring> split_vector_type;
-                split_vector_type SplitVec; 
+                split_vector_type SplitVec;
                 boost::algorithm::split(SplitVec, errStr, boost::algorithm::is_any_of("\r\n"), boost::algorithm::token_compress_on);
                 for(split_vector_type::iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
                 {
