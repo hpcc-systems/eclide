@@ -60,8 +60,6 @@ public:
     {
         T * pT = static_cast<T*>(this);
         ContextState state;
-        if (s.mods.size() + s.attrs.size() == 0)
-            return;
         CalculateContextMenuState(s,state);
 
         WTL::CMenu m;
