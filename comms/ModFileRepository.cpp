@@ -14,9 +14,9 @@ using namespace WsAttributes;
 
 IModule * CreateModFileModule(const IRepository *rep, const std::_tstring &label, bool noBroadcast = false);
 IModule * CreateModFileModulePlaceholder(const IRepository *rep, const std::_tstring &label);
-IAttribute * CreateModFileAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &ecl);
-IAttribute * GetModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, unsigned version, bool sandboxed, bool placeholder);
-IAttribute * CreateModFileAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl);
+IAttribute * CreateModFileAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &ecl, const std::_tstring &extension);
+IAttribute * GetModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, const TCHAR* extension, unsigned version, bool sandboxed, bool placeholder);
+IAttribute * CreateModFileAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, const TCHAR* extension);
 
 void ClearModFileAttributeCache();
 void ClearModFileModuleCache();
@@ -221,16 +221,24 @@ public:
     unsigned GetAttributes(const TCHAR* module, const IAttributeTypeVector & types, IAttributeVector & attributes, bool noRefresh=false, bool noBroadcast=false) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        typedef std::pair<std::_tstring, std::_tstring> CommentEclPair;
-        typedef std::map<std::_tstring, CommentEclPair> AttrMap;
+        struct CommentEclExt
+        {
+            std::_tstring m_comment;
+            std::_tstring m_ecl;
+            std::_tstring m_extension;
+        };
+        typedef std::map<std::_tstring, CommentEclExt> AttrMap;
         AttrMap attrs;
         std::_tstring attributeLabel;
         std::_tstring attributeComment;
         std::_tstring attributeEcl;
+        std::_tstring attributeExtension;
 
         typedef std::vector<std::_tstring> split_vector_type;
         split_vector_type SplitVec; 
         boost::algorithm::split(SplitVec, m_modFile, boost::algorithm::is_any_of("\r\n"), boost::algorithm::token_compress_on);
+
+        CommentEclExt attrInfo;
 
         for (split_vector_type::const_iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
         {
@@ -240,10 +248,24 @@ public:
             {
                 if (attributeLabel.length())
                 {
-                    attrs[attributeLabel] = CommentEclPair(attributeComment, attributeEcl);
+                    attrInfo.m_comment = attributeComment;
+                    attrInfo.m_ecl = attributeEcl;
+                    attrInfo.m_extension = attributeExtension;
+                    attrs[attributeLabel] = attrInfo;
                 }
                 boost::algorithm::ireplace_first(trimmedLine, IMPORT_MARKER, _T(""));
                 attributeLabel = trimmedLine;
+
+                std::vector<std::_tstring> parts;
+                boost::split(parts, attributeLabel, boost::is_any_of(":"), boost::token_compress_on);
+                if (parts.size() > 1) {
+                    attributeLabel = parts[1];
+                    attributeExtension = parts[0];
+                }
+                else {
+                    attributeExtension = _T("ECL");
+                }
+
                 attributeComment.clear();
                 attributeEcl.clear();
             }
@@ -259,7 +281,10 @@ public:
         }
         if (attributeLabel.length())
         {
-            attrs[attributeLabel] = CommentEclPair(attributeComment, attributeEcl);
+            attrInfo.m_comment = attributeComment;
+            attrInfo.m_ecl = attributeEcl;
+            attrInfo.m_extension = attributeExtension;
+            attrs[attributeLabel] = attrInfo;
         }
 
         for(AttrMap::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
@@ -268,7 +293,7 @@ public:
             CModuleHelper moduleHelper(itr->first);
             if (boost::algorithm::iequals(moduleHelper.GetModuleLabel(), module))
             {
-                StlLinked<IAttribute> attribute = CreateModFileAttribute(this, module, moduleHelper.GetAttributeLabel(), itr->second.second);
+                StlLinked<IAttribute> attribute = CreateModFileAttribute(this, module, moduleHelper.GetAttributeLabel(), itr->second.m_ecl, itr->second.m_extension);
                 attributes.push_back(attribute);
             }
         }
@@ -326,7 +351,7 @@ public:
     IAttribute * GetAttributePlaceholder(const std::_tstring & moduleLabel, const std::_tstring & attributeLabel, IAttributeType * type) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        IAttribute * attribute = CreateModFileAttributePlaceholder(this, moduleLabel.c_str(), attributeLabel.c_str(), _T(""));
+        IAttribute * attribute = CreateModFileAttributePlaceholder(this, moduleLabel.c_str(), attributeLabel.c_str(), _T(""), type->GetFileExtension());
         return attribute;
     }
 
@@ -349,7 +374,7 @@ public:
     }
     IAttribute * GetAttributeFast(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, int version = 0, bool sandbox = true, bool text = false, bool noBroadcast = false) const
     {
-        IAttribute * retVal = ::GetModFileAttribute(this, module, attribute, _T(""), version, sandbox, false);
+        IAttribute * retVal = ::GetModFileAttribute(this, module, attribute, _T(""), type->GetFileExtension(), version, sandbox, false);
         if (retVal)
             return retVal;
 
@@ -370,7 +395,7 @@ public:
     IAttribute * InsertAttribute(const TCHAR* module, const TCHAR* attribute, IAttributeType * type) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return CreateModFileAttribute(this, module, attribute, _T(""));
+        return CreateModFileAttribute(this, module, attribute, type->GetFileExtension(), _T(""));
     }
     unsigned GetAttributeHistory(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, IAttributeHistoryVector & attributes) const
     {

@@ -14,6 +14,7 @@
 #include "EclCC.h"
 #include <UtilFilesystem.h>
 
+IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension);
 void ClearAttributeTypeCache();
 void ClearAttributeCache();
 void ClearDiskAttributeCache();
