@@ -28,7 +28,12 @@ enum PREPROCESS_TYPE
     PREPROCESS_SAVE, 
     PREPROCESS_COMMIT, 
     PREPROCESS_SUBMIT, 
-    PREPROCESS_LAST
+    PREPROCESS_LAST,
+    PREPROCESS_GENERATE,
+    PREPROCESS_CUSTOM1,
+    PREPROCESS_CUSTOM2,
+    PREPROCESS_CUSTOM3,
+    PREPROCESS_CUSTOM4
 };
 
 const TCHAR * const PREPROCESS_LABEL[] = 
@@ -40,7 +45,12 @@ const TCHAR * const PREPROCESS_LABEL[] =
     _T("Save"),
     _T("Commit"),
     _T("Submit"),
-    _T("Last")
+    _T("Last"),
+    _T("Generate"),
+    _T("Custom1"),
+    _T("Custom2"),
+    _T("Custom3"),
+    _T("Custom4")
 };
 
 __interface IAttributeType : public IUnknown
@@ -63,6 +73,7 @@ COMMS_API IAttributeType * CreateIAttributeECMType();
 COMMS_API IAttributeType * CreateIAttributeKELType();
 COMMS_API IAttributeType * CreateIAttributeSALTType();
 COMMS_API IAttributeType * CreateIAttributeType(const std::_tstring & repositoryType, const std::_tstring & description = _T(""));
+COMMS_API std::_tstring ExtensionWithoutDot(const std::_tstring & filename);
 COMMS_API unsigned int GetAttributeTypes(IAttributeTypeVector & types);
 COMMS_API bool IsValidExtension(const std::_tstring & ext);
 COMMS_API bool HasValidExtension(const std::_tstring & filename);

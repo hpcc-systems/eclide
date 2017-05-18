@@ -1075,6 +1075,7 @@ protected:
 	IConfigAdapt m_config;
 	IConfigAdapt m_ini;
 	CString m_ConfigLabel;
+	AttrInfo m_attrInfo;
 	CFontComboBox m_comboFont;
 	CComboBox m_comboFontSize;
 	std::_tstring m_Font;
@@ -1090,7 +1091,7 @@ protected:
 	CString m_currentElementStr;
 
 public:
-	CPrefColorDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner), m_sourceCtrl(this)
+	CPrefColorDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner), m_sourceCtrl(m_attrInfo, this)
 	{
 		m_ConfigLabel = m_config->GetLabel();
 		if (m_ConfigLabel.IsEmpty())

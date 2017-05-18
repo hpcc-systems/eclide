@@ -65,11 +65,12 @@ public:
     
     enum { IDD = IDD_BUILDERVIEW };
 
-    CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner);
+    CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner);
     CBookmarksFrame *GetBookmarksFrame();
 
     //  ---  CEclDlgQBImpl Virtuals  ---
     bool DoSave(bool attrOnly);
+    bool DoGenerate();
     void GetTitle(CString & title);
     //  ---  ---  ---
 
@@ -145,6 +146,11 @@ public:
         COMMAND_ID_HANDLER_EX(ID_GO_SUBMITSELECTED, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_COMPILE, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_DEBUG, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_GO_GENERATE, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM1, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM2, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM3, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM4, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_EDIT_LOCATEFILEINEXPLORER, OnLocateFileInExplorer)
         COMMAND_ID_HANDLER_EX(ID_ECL_SYNCTOC, OnEclSyncToc)
         COMMAND_ID_HANDLER_EX(ID_ECL_GOTO, OnEclGoto)
@@ -185,6 +191,7 @@ public:
 
     LRESULT OnInitDialog(HWND hWnd, LPARAM lParam);
     LRESULT OnInitialize(UINT uMsg, WPARAM wParam, LPARAM lParam);
+    void CustomMenu(const AttrInfo & attrInfo);
     void OnDestroy();
     void OnSize(UINT nType, CSize size);
     void OnTimer(UINT_PTR nIDEvent);

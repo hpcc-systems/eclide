@@ -81,7 +81,7 @@ public:
 
 public: 
     DECLARE_FRAME_WND_CLASS(NULL, IDR_BUILDERWINDOW)
-    CBuilderFrame(IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(workspaceItem->GetAttribute(), this)
+    CBuilderFrame(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem) : baseClass(attrInfo, workspaceItem), m_dlgview(attrInfo, this)
     {
     }
 
@@ -368,14 +368,18 @@ public:
 
     void ExecEcl(Dali::WUAction action, const CString &_ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool supressPath=false)
     {
+        bool isSaved = false;
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
         {
             GetIMainFrame()->DoFileSaveAll(true);
             if (m_dlgview.IsDirty())
             {
                 CString path = m_dlgview.GetPath();
-                if (!path.IsEmpty()) 
+                if (!path.IsEmpty())
+                {
                     m_dlgview.DoFileSave(path);
+                    isSaved = true;
+                }
             }
         }
         m_dlgview.SyntaxClearAll();
@@ -404,7 +408,24 @@ public:
             IAttributeVector attrs;
             Dali::CEclExceptionVector errors;
             IAttributeBookkeep attrProcessed;
-            attr->PreProcess(PREPROCESS_SUBMIT, _ecl, attrs, attrProcessed, errors);
+            PREPROCESS_TYPE processType = PREPROCESS_UNKNOWN;
+            switch (action) {
+            case Dali::WUActionGenerate:
+                if (!isSaved)
+                    m_dlgview.DoGenerate();
+                processType = PREPROCESS_GENERATE;
+                break;
+            case Dali::WUActionCustom2:
+                processType = PREPROCESS_CUSTOM2;
+                break;
+            case Dali::WUActionCustom3:
+                processType = PREPROCESS_CUSTOM3;
+                break;
+            case Dali::WUActionCustom4:
+                processType = PREPROCESS_CUSTOM4;
+                break;
+            }
+            attr->PreProcess(processType, _ecl, attrs, attrProcessed, errors);
             if (!attrs.empty())
             {
                 ecl = attrs[0]->GetText(false, true);
@@ -751,6 +772,7 @@ LRESULT CBuilderFrame::OnCreate(LPCREATESTRUCT lParam)
     m_dlgview.Create(m_tabbedChildWindow, rcDefault);
 
     m_tabbedChildWindow.AddTab(m_dlgview, _T("Builder"));
+    m_dlgview.CustomMenu(m_workspaceItem->GetAttrInfo());
 
     WTL::CIcon icon = LoadIcon(_Module.m_hInstResource, MAKEINTRESOURCE(IDR_MDICHILD));
     GetParent().SendMessage(UM_ICONCHANGED, (WPARAM)(HICON)icon);
@@ -815,30 +837,56 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
         if (m_dlgview.UIUpdateMenuItems(cui))
             return true;
 
-        UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
-        UPDATEUI(cui, ID_HELP, TRUE);
-        UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
-        UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
-        UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
-        UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
-        UPDATEUI(cui, ID_GO_DEBUG, IsRemoteDaliEnabled());
-        if (m_dlgview.CanExecute())
-        {
-            if (!m_dlgview.m_goButton.IsWindowEnabled())
-                m_dlgview.m_goButton.EnableWindow(true);
-            if (!m_dlgview.m_debugButton.IsWindowEnabled())
-                m_dlgview.m_debugButton.EnableWindow(true);
-            if (!m_dlgview.m_archiveButton.IsWindowEnabled())
-                m_dlgview.m_archiveButton.EnableWindow(true);
+        bool eclType = true;
+
+        CString name;
+        m_dlgview.GetName(name);
+        std::_tstring ext = ExtensionWithoutDot(name.GetString());
+
+        if (ext.length()) {
+            if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL))
+            {
+                UPDATEUI(cui, ID_GO_GENERATE, true);
+                UPDATEUI(cui, ID_GO_CUSTOM1, true);
+                UPDATEUI(cui, ID_GO_CUSTOM2, true);
+                UPDATEUI(cui, ID_GO_CUSTOM3, true);
+                UPDATEUI(cui, ID_GO_CUSTOM4, true);
+                eclType = false;
+            }
+            else if (!boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECL))
+            {
+                if (m_dlgview.m_goButton.IsWindowEnabled())
+                    m_dlgview.m_goButton.EnableWindow(false);
+            }
         }
-        else 
-        {
-            if (m_dlgview.m_goButton.IsWindowEnabled())
-                m_dlgview.m_goButton.EnableWindow(false);
-            if (m_dlgview.m_debugButton.IsWindowEnabled())
-                m_dlgview.m_debugButton.EnableWindow(false);
-            if (m_dlgview.m_archiveButton.IsWindowEnabled())
-                m_dlgview.m_archiveButton.EnableWindow(false);
+
+        if (eclType) {
+            UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
+            UPDATEUI(cui, ID_HELP, TRUE);
+            UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
+            UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_GO_DEBUG, IsRemoteDaliEnabled());
+
+            if (m_dlgview.CanExecute())
+            {
+                if (!m_dlgview.m_goButton.IsWindowEnabled())
+                    m_dlgview.m_goButton.EnableWindow(true);
+                if (!m_dlgview.m_debugButton.IsWindowEnabled())
+                    m_dlgview.m_debugButton.EnableWindow(true);
+                if (!m_dlgview.m_archiveButton.IsWindowEnabled())
+                    m_dlgview.m_archiveButton.EnableWindow(true);
+            }
+            else
+            {
+                if (m_dlgview.m_goButton.IsWindowEnabled())
+                    m_dlgview.m_goButton.EnableWindow(false);
+                if (m_dlgview.m_debugButton.IsWindowEnabled())
+                    m_dlgview.m_debugButton.EnableWindow(false);
+                if (m_dlgview.m_archiveButton.IsWindowEnabled())
+                    m_dlgview.m_archiveButton.EnableWindow(false);
+            }
         }
 
         UPDATEUI(cui, ID_ECL_SYNCTOC, m_dlgview.GetAttribute() != NULL);
@@ -1021,11 +1069,16 @@ class CChildBuilderFrm : public CWtlMDIChildFrame<StlLinked<CBuilderFrame> >
 
     CComPtr<IWorkspaceItem> m_workspaceItem;
 public:
-    CChildBuilderFrm(IWorkspaceItem * workspaceItem) : m_workspaceItem(workspaceItem)
+    CChildBuilderFrm(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem) : m_workspaceItem(workspaceItem)
     {
-        m_view = new CBuilderFrame(workspaceItem);
+        m_view = new CBuilderFrame(attrInfo, workspaceItem);
         g_builder_window[workspaceItem].first = this;
         g_builder_window[workspaceItem].second = m_view;
+    }
+    CChildBuilderFrm(IWorkspaceItem * workspaceItem) : m_workspaceItem(workspaceItem)
+    {
+        AttrInfo attrInfo;
+        CChildBuilderFrm(attrInfo, workspaceItem);
     }
     virtual ~CChildBuilderFrm()
     {
@@ -1099,10 +1152,26 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
-        pChild = new CChildBuilderFrm(workspaceItem);
+        std::_tstring attributeType = workspaceItem->GetAttributeType();
+        IAttribute *attr = workspaceItem->GetAttribute();
+        AttrInfo attrInfo;
+        attrInfo.Attribute = attr;
+        if (!attr && !boost::algorithm::iequals(attributeType, ATTRIBUTE_TYPE_ECL))
+        {
+            attrInfo.AttributeType = workspaceItem->GetAttributeType();
+        }
+        else if (attr)
+        {
+            attrInfo.AttributeType = attr->GetType()->GetRepositoryCode();
+        }
+        else
+        {
+            attrInfo.AttributeType = _T("ecl");
+        }
+        pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
-        if (workspaceItem->GetAttribute())
-            pChild->m_view->SetReadOnly(workspaceItem->GetAttribute()->IsLocked());
+        if (attr)
+            pChild->m_view->SetReadOnly(attr->IsLocked());
     }
     return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
 }
@@ -1112,7 +1181,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
-        pChild = new CChildBuilderFrm(workspaceItem);
+        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
         pChild->m_view->SetAttribute(src);
         pChild->m_view->SetEcl(src->GetText(true, true), true);
@@ -1120,13 +1189,13 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
     return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int row, int col, int len)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int row, int col, int len)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(workspaceItem);
+        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {
@@ -1139,13 +1208,13 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspace
     return true;
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(workspaceItem);
+        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {
@@ -1157,13 +1226,13 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspace
     return true;
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(workspaceItem);
+        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {
@@ -1180,13 +1249,13 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspace
     return true;
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(workspaceItem);
+        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {

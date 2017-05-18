@@ -418,6 +418,12 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return false;
     }
+
+    AttrInfo AttributeToInfo()
+    {
+        AttrInfo attrInfo;
+        return attrInfo;
+    }
 };
 std::_tstring CModFileAttribute::attrEmptyString;
 //  ===========================================================================

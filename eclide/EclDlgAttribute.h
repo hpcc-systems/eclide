@@ -26,7 +26,7 @@ protected:
 public:
     enum { IDD = IDD_ATTRIBUTEVIEW };
 
-    CAttributeDlg(IAttribute *attribute, ISourceSlot *owner);
+    CAttributeDlg(const AttrInfo & attrInfo, ISourceSlot *owner);
 
     bool DoSave(bool attrOnly);
     void GetTitle(CString & title);
