@@ -552,10 +552,10 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return ::CreateIWorkspaceItem(this, attr, path);
     }
-    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type)
+    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, IAttribute * attr)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return  ::CreateIWorkspaceItem(this, type);
+        return  ::CreateIWorkspaceItem(this, type, attr);
     }
     IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const CPersistMap & pm)
     {

@@ -22,7 +22,7 @@ class CEclDlgQBImpl:
     typedef CEclCommandMixin<T> baseClassEclCmd;
 
 public:
-    CEclDlgQBImpl(ISourceSlot * owner) : baseClass(owner)
+    CEclDlgQBImpl(const AttrInfo & attrInfo, ISourceSlot * owner) : baseClass(attrInfo, owner)
     {
         InitEclCommandMixin(::GetUIUpdate(), ::GetIMainFrame(), &m_view, owner);
     }

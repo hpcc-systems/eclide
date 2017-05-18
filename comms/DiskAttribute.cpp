@@ -483,6 +483,15 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return m_pathStr.c_str();
     }
+
+    AttrInfo AttributeToInfo()
+    {
+        IAttribute * self = this;
+        AttrInfo attrInfo;
+        attrInfo.Attribute = self;
+        attrInfo.AttributeType = self->GetType()->GetRepositoryCode();
+        return attrInfo;
+    }
 };
 
 //  ===========================================================================
