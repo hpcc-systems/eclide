@@ -31,6 +31,9 @@ BOOL CRepositoryView::PreTranslateMessage(MSG* pMsg)
         UINT ctrl = 0;
         switch(pMsg->wParam)
         {
+        case VK_DELETE:
+            DoDeleteSelectedAttributes();
+            break;
         case VK_RETURN:
             {
                 TVITEM item;

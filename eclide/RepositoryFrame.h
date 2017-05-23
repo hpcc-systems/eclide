@@ -280,21 +280,7 @@ public:
             }
             break;
         case ID_REPOSITORY_DELETEATTRIBUTE:
-            ATLASSERT(s.attrs.size() > 0);
-            {
-                IAttributeVector attrsToMove;
-                IAttributeVector attrsToDelete;
-                for(IAttributeVector::const_iterator itr = s.attrs.begin(); itr != s.attrs.end(); ++itr)
-                {
-                    if (IsLocalRepositoryEnabled() || itr->get()->GetModule()->IsTrash())
-                        attrsToDelete.push_back(*itr);
-                    else
-                        attrsToMove.push_back(*itr);
-
-                }
-                pT->m_view.DoMoveAttributeToTrash(attrsToMove);
-                pT->m_view.DoDeleteAttribute(attrsToDelete);
-            }
+            pT->m_view.DoDeleteSelectedAttributes();
             break;
         case ID_REPOSITORY_LABEL:
             {
