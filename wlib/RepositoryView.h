@@ -4,6 +4,7 @@
 #include "Repository.h"
 #include "RepositoryTreeNode.h"
 #include <Thread.h> //clib
+#include <EclCC.h>
 #include "Combo.h"
 #include "util.h"
 #include "utilDateTime.h"
@@ -105,6 +106,28 @@ public:
         SetClipboard(txt);
         return;
     }
+
+    void DoDeleteSelectedAttributes()
+    {
+        CRepositorySelections s;
+        GetSelected(s);
+        ATLASSERT(s.attrs.size() > 0);
+        {
+            IAttributeVector attrsToMove;
+            IAttributeVector attrsToDelete;
+            for (IAttributeVector::const_iterator itr = s.attrs.begin(); itr != s.attrs.end(); ++itr)
+            {
+                if (IsLocalRepositoryEnabled() || itr->get()->GetModule()->IsTrash())
+                    attrsToDelete.push_back(*itr);
+                else
+                    attrsToMove.push_back(*itr);
+
+            }
+            DoMoveAttributeToTrash(attrsToMove);
+            DoDeleteAttribute(attrsToDelete);
+        }
+    }
+
     static void thread_PreloadModule(CComPtr<IRepository> rep, std::_tstring module)
     {
         IAttributeVector attrs;
