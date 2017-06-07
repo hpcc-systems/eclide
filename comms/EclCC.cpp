@@ -604,49 +604,57 @@ CEclCC * CreateEclCCRaw(IConfig * config, const std::_tstring & compilerFile)
     return EclCCCache.Get(new CEclCC(config, compilerFile));
 }
 
+unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVector & results)
+{
+    if (boost::filesystem::exists(progFiles)) {
+        CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+
+        using namespace boost::filesystem;
+        {   //  Locate clienttools installs  ---
+            path testFolder = progFiles / "HPCCSystems";
+            if (exists(testFolder)) {
+                directory_iterator end_itr;
+                for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
+                {
+#if (BOOST_FILESYSTEM_VERSION == 3)
+                    path eclccPath = *itr / "clienttools" / "bin" / "eclcc.exe";
+#else
+                    path eclccPath = itr->path() / "clienttools" / "bin" / "eclcc.exe";
+#endif
+                    if (exists(eclccPath))
+                        results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+                }
+            }
+        }
+
+        {   //  Locate 6.x ECL IDE installs  (older than 4.x) ---
+            path testFolder = progFiles / "HPCC Systems" / "HPCC" / "bin";
+            if (exists(testFolder)) {
+                directory_iterator end_itr;
+                for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
+                {
+#if (BOOST_FILESYSTEM_VERSION == 3)
+                    path eclccPath = *itr / "eclcc.exe";
+#else
+                    path eclccPath = itr->path() / "eclcc.exe";
+#endif
+                    if (exists(eclccPath))
+                        results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+                }
+            }
+        }
+        std::sort(results.begin(), results.end(), CEclCCCompare());
+    }
+    return results.size();
+}
+
 unsigned int FindAllCEclCC(CEclCCVector & results)
 {
-    CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
-
-    using namespace boost::filesystem;
-
-    path progFiles;
+    boost::filesystem::path progFiles;
     GetProgramFilesX86Folder(progFiles);
-    
-    {   //  Locate clienttools installs  ---
-        path testFolder = progFiles / "HPCCSystems";
-        if (exists(testFolder)) {
-            directory_iterator end_itr;
-            for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
-            {
-#if (BOOST_FILESYSTEM_VERSION == 3)
-                path eclccPath = *itr / "clienttools" / "bin" / "eclcc.exe";
-#else
-                path eclccPath = itr->path() / "clienttools" / "bin" / "eclcc.exe";
-#endif
-                if (exists(eclccPath))
-                    results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
-            }
-        }
-    }
-
-    {   //  Locate 6.x ECL IDE installs  (older than 4.x) ---
-        path testFolder = progFiles / "HPCC Systems" / "HPCC" / "bin";
-        if (exists(testFolder)) {
-            directory_iterator end_itr;
-            for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
-            {
-#if (BOOST_FILESYSTEM_VERSION == 3)
-                path eclccPath = *itr / "eclcc.exe";
-#else
-                path eclccPath = itr->path() / "eclcc.exe";
-#endif
-                if (exists(eclccPath))
-                    results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
-            }
-        }
-    }
-    std::sort(results.begin(), results.end(), CEclCCCompare());
+    FindAllCEclCC(progFiles, results);
+    GetProgramFilesFolder(progFiles);
+    FindAllCEclCC(progFiles, results);
     return results.size();
 }
 
