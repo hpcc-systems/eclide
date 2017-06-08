@@ -1753,7 +1753,7 @@ BEGIN
         MENUITEM "Rename File",                 ID_REPOSITORY_RENAMEATTRIBUTE
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
-        MENUITEM "Delete File",                 ID_REPOSITORY_DELETEATTRIBUTE
+        MENUITEM "Delete File\tDel",            ID_REPOSITORY_DELETEATTRIBUTE
         MENUITEM SEPARATOR
         MENUITEM "&Label",                      ID_REPOSITORY_LABEL
         MENUITEM SEPARATOR
@@ -1793,7 +1793,7 @@ BEGIN
         END
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
-        MENUITEM "Delete File",                 ID_REPOSITORY_DELETEATTRIBUTE
+        MENUITEM "Delete File\tDel",            ID_REPOSITORY_DELETEATTRIBUTE
         MENUITEM SEPARATOR
         MENUITEM "Refresh",                     ID_REPOSITORY_REFRESH
     END
