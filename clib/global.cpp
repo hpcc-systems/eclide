@@ -44,11 +44,18 @@ CLIB_API const boost::filesystem::path & GetProgramFolder(boost::filesystem::pat
     path = GetProgramPath(p).branch_path();
     return path;
 }
-CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesystem::path & path)
+CLIB_API const boost::filesystem::path & GetProgramFilesFolder(boost::filesystem::path & path, unsigned int programFileType)
 {
-    TCHAR appDataPath[_MAX_PATH];
-    SHGetSpecialFolderPath(NULL, appDataPath, CSIDL_PROGRAM_FILESX86, true); 
-    path = stringToPath(appDataPath);
+    if (programFileType == CSIDL_PROGRAM_FILES)
+    {
+        path = _T("C:\\Program Files");
+    }
+    else
+    {
+        TCHAR appDataPath[_MAX_PATH];
+        SHGetSpecialFolderPath(NULL, appDataPath, programFileType, false);
+        path = stringToPath(appDataPath);
+    }
     boost::filesystem::create_directories(path);
     return path;
 }

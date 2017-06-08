@@ -604,14 +604,12 @@ CEclCC * CreateEclCCRaw(IConfig * config, const std::_tstring & compilerFile)
     return EclCCCache.Get(new CEclCC(config, compilerFile));
 }
 
-unsigned int FindAllCEclCC(CEclCCVector & results)
+unsigned int FindAllCEclCC(CEclCCVector & results, unsigned int programFolderType)
 {
     CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
 
-    using namespace boost::filesystem;
-
-    path progFiles;
-    GetProgramFilesX86Folder(progFiles);
+    boost::filesystem::path progFiles;
+    GetProgramFilesFolder(progFiles, programFolderType);
     
     {   //  Locate clienttools installs  ---
         path testFolder = progFiles / "HPCCSystems";
@@ -661,7 +659,10 @@ IEclCC * CreateIEclCC()
         CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
         CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
         CEclCCVector foundCompilers;
-        if (FindAllCEclCC(foundCompilers))
+        FindAllCEclCC(foundCompilers, CSIDL_PROGRAM_FILES);
+        FindAllCEclCC(foundCompilers, CSIDL_PROGRAM_FILESX86);
+
+        if (foundCompilers.size())
         {
             SMC::IVersionCompare versionCompare;
             StlLinked<CEclCC> bestMatchEclCC_before;

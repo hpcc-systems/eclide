@@ -44,7 +44,7 @@ CLIB_API const TCHAR * GetApplicationName();
 
 CLIB_API const boost::filesystem::path & GetProgramPath(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetProgramFolder(boost::filesystem::path & path);
-CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesystem::path & path);
+CLIB_API const boost::filesystem::path & GetProgramFilesFolder(boost::filesystem::path & path, unsigned int programFileType);
 CLIB_API const boost::filesystem::path & GetAppDataFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetDocumentsFolder(boost::filesystem::path & path);
 CLIB_API const boost::filesystem::path & GetMyDocumentsFolder(boost::filesystem::path & path);
