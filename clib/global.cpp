@@ -52,6 +52,23 @@ CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesys
     boost::filesystem::create_directories(path);
     return path;
 }
+CLIB_API const boost::filesystem::path & GetProgramFilesFolder(boost::filesystem::path & path)
+{
+    const TCHAR * const key = _T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");
+    HKEY hkey;
+    LONG retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion", 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &hkey);
+    if (retval == ERROR_SUCCESS) {
+        DWORD datasize = MAX_PATH;
+        TCHAR data[MAX_PATH] = _T("");
+        DWORD dwType = REG_SZ;
+        LSTATUS retVal = RegQueryValueEx(hkey, L"ProgramFilesDir", 0, &dwType, (LPBYTE)&data[0], &datasize);
+        if (retVal == ERROR_SUCCESS) {
+            path = stringToPath(data);
+        }
+        RegCloseKey(hkey);
+    }
+    return path;
+}
 CLIB_API const boost::filesystem::path & GetAppDataFolder(boost::filesystem::path & path)
 {
     TCHAR appDataPath[_MAX_PATH];
