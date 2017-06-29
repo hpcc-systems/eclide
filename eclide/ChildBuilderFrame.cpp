@@ -403,7 +403,8 @@ public:
         {
             IAttributeVector attrs;
             Dali::CEclExceptionVector errors;
-            attr->PreProcess(PREPROCESS_SUBMIT, _ecl, attrs, errors);
+            IAttributeBookkeep attrProcessed;
+            attr->PreProcess(PREPROCESS_SUBMIT, _ecl, attrs, attrProcessed, errors);
             if (!attrs.empty())
             {
                 ecl = attrs[0]->GetText(false, true);

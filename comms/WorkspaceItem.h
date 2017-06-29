@@ -16,7 +16,7 @@ enum WORKSPACE_ITEM_TYPE
 
 __interface __declspec(uuid("A4A4FFF2-0DED-422F-B06B-B0FE4CDB6C52")) IWorkspaceItem : public IUnknown
 {
-    const TCHAR * Serialize(std::_tstring & result) const;
+    const char * Serialize(std::string & result) const;
     IRepository * GetRepository() const;
     const TCHAR * GetID() const;
     const TCHAR * GetLabel() const;

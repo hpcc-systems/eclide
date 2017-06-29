@@ -51,11 +51,11 @@ protected:
 public:
     IMPLEMENT_CLOCKABLEUNKNOWN;
 
-    CModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR * ecl, unsigned version, bool sandboxed, bool placeholder) 
-        : m_moduleQualifiedLabel(module), m_label(label), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
+    CModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR * ecl, const TCHAR * extension, unsigned version, bool sandboxed, bool placeholder)
+        : m_moduleQualifiedLabel(module), m_label(label), m_ecl(ecl), m_version(version), m_sandboxed(sandboxed), m_placeholder(placeholder)
     {
         m_repository = const_cast<IRepository *>(rep);
-        m_type = CreateIAttributeECLType();
+        m_type = AttributeTypeFromExtension(extension);
         m_checkedOut = false;
         m_locked = false;
         m_orphaned = false;
@@ -375,7 +375,7 @@ public:
 #else
 #endif
 
-    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, Dali::CEclExceptionVector & errs) const
+    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return false;
@@ -429,33 +429,33 @@ void ClearModFileAttributeCache()
     ModFileAttributeCache.Clear();
 }
 
-IAttribute * GetModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, unsigned version, bool sandboxed, bool placeholder)
+IAttribute * GetModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, const TCHAR* extension, unsigned version, bool sandboxed, bool placeholder)
 {
-    CComPtr<CModFileAttribute> attr = new CModFileAttribute(rep, module, label, ecl, version, sandboxed, placeholder);
+    CComPtr<CModFileAttribute> attr = new CModFileAttribute(rep, module, label, ecl, extension, version, sandboxed, placeholder);
     return ModFileAttributeCache.Exists(attr->GetCacheID());
 }
 
-CModFileAttribute * CreateModFileAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, unsigned version, bool sandboxed, bool placeholder)
+CModFileAttribute * CreateModFileAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, const TCHAR* extension, unsigned version, bool sandboxed, bool placeholder)
 {
-    return ModFileAttributeCache.Get(new CModFileAttribute(rep, module, label, ecl, version, sandboxed, placeholder));
+    return ModFileAttributeCache.Get(new CModFileAttribute(rep, module, label, ecl, extension, version, sandboxed, placeholder));
 }
 
-IAttribute * CreateModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const std::_tstring &ecl, unsigned version, bool sandboxed)
+IAttribute * CreateModFileAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const std::_tstring &ecl, const TCHAR* extension, unsigned version, bool sandboxed)
 {
-    return CreateModFileAttributeRaw(rep, module, label, ecl.c_str(), version, sandboxed, false);
+    return CreateModFileAttributeRaw(rep, module, label, ecl.c_str(), extension, version, sandboxed, false);
 }
 
-IAttribute * CreateModFileAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl)
+IAttribute * CreateModFileAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* ecl, const TCHAR* extension)
 {
-    return CreateModFileAttributeRaw(rep, module, label, ecl, 0, false, true);
+    return CreateModFileAttributeRaw(rep, module, label, ecl, extension, 0, false, true);
 }
 
-IAttribute * CreateModFileAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &ecl)
-{
+IAttribute * CreateModFileAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &ecl, const std::_tstring &extension)
+{ 
     if (moduleLabel.empty() || label.empty())
         return 0;
 
-    CModFileAttribute * attr = CreateModFileAttributeRaw(rep, moduleLabel.c_str(), label.c_str(), ecl.c_str(), 0, false, false);
+    CModFileAttribute * attr = CreateModFileAttributeRaw(rep, moduleLabel.c_str(), label.c_str(), ecl.c_str(), extension.c_str(), 0, false, false);
     ATLASSERT(attr);
     return attr;
 }

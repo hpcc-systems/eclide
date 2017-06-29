@@ -82,7 +82,8 @@ bool CAttributeDlg::DoSave(bool attrOnly)
         m_view.SetSavePoint();
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
-        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, errors);
+        IAttributeBookkeep attrProcessed;
+        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
         if (attrs.size())
         {
@@ -135,7 +136,8 @@ void CAttributeDlg::DoCheckSyntax()
     {
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
-        m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, errors);
+        IAttributeBookkeep attrProcessed;
+        m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, attrProcessed, errors);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
     }
 }

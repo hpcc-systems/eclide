@@ -430,7 +430,8 @@ public:
                 attrToProcess.push_back(*itr);
             IAttributeVector dependantAttrs;	//  Don't forget these are ModFileAttributes...
             Dali::CEclExceptionVector errors;
-            itr->get()->PreProcess(PREPROCESS_COMMIT, NULL, dependantAttrs, errors);
+            IAttributeBookkeep attrProcessed;
+            itr->get()->PreProcess(PREPROCESS_COMMIT, NULL, dependantAttrs, attrProcessed, errors);
             for(IAttributeVector::const_iterator itr = dependantAttrs.begin(); itr != dependantAttrs.end(); ++itr)
             {
                 StlLinked<IAttribute> attr = GetAttribute(itr->get()->GetModuleQualifiedLabel(), itr->get()->GetLabel(), itr->get()->GetType());
