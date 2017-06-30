@@ -8,6 +8,8 @@
 #include "logger.h"
 #include "EclCC.h"
 
+typedef std::pair<std::_tstring, std::_tstring> EsdlPair;
+
 class CAttributeBase : public clib::CLockableUnknown
 {
 protected:
@@ -73,13 +75,42 @@ public:
         return false;
     }
 
-    virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const
+    EsdlPair ParseEsdlId(std::_tstring filename) const
+    {
+        EsdlPair esdlPair;
+
+        boost::filesystem::path outFile = boost::filesystem::path(stringToPath(filename)).parent_path() / _T("log.txt");
+        std::_tstring outStr;
+        CUnicodeFile f;
+        if (f.Open(outFile))
+        {
+            f.Read(outStr);
+            f.Close();
+        }
+
+        std::string::size_type start_pos = 0;
+        if (std::string::npos !=  (start_pos = outStr.find(_T("Successfully published"), start_pos)))
+        {
+            std::_tstring esdlID = outStr.substr(start_pos + 23, -1).c_str();
+            if (std::string::npos != (start_pos = esdlID.find(_T("."), 0)))
+            {
+                std::_tstring definition = esdlID.substr(0, start_pos).c_str();
+                std::_tstring version = esdlID.substr(start_pos + 1).c_str();
+                esdlPair = std::make_pair(definition, version);
+            }
+        }
+
+        return esdlPair;
+     }
+
+    virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs, MetaInfo & metaInfo) const
     {
         std::_tstring label = (boost::_tformat(_T("%1%.%2%")) % GetModuleQualifiedLabel(true) % GetLabel()).str();
         if (attrProcessed[std::make_pair(action, label)]) {
             return 0;
         }
         attrProcessed[std::make_pair(action, label)] = true;
+        metaInfo[MetaInfoItemRepositoryCode] = GetType()->GetRepositoryCode();
 
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         CComPtr<IEclCC> eclcc = CreateIEclCC();
@@ -106,7 +137,7 @@ public:
                 //  Need to gather all included salt/esdl files
                 {
                     IAttributeVector nonECLattrs;
-                    PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, nonECLattrs, attrProcessed, errs);
+                    PreProcess(PREPROCESS_CALCINCLUDES, overrideEcl, nonECLattrs, attrProcessed, errs, metaInfo);
                     IAttributeVector::size_type idx = 0;
                     while (idx < nonECLattrs.size()) {
                         //  Convert from imported attribute to real attribute  ---
@@ -114,7 +145,7 @@ public:
                         if (includeAttr) 
                         {
                             IAttributeVector tmp;
-                            includeAttr->PreProcess(PREPROCESS_CALCINCLUDES, includeAttr->GetText(), tmp, attrProcessed, errs);
+                            includeAttr->PreProcess(PREPROCESS_CALCINCLUDES, includeAttr->GetText(), tmp, attrProcessed, errs, metaInfo);
                             nonECLattrs.insert(nonECLattrs.end(), tmp.begin(), tmp.end());
                         }
                         ++idx;
@@ -160,6 +191,12 @@ public:
 
             CComPtr<IRepository> rep = AttachModFileRepository(outputFile.TempFileName(), false);
             outputFile.HandsOn();
+            if (action == PREPROCESS_SUBMIT && metaInfo[MetaInfoItemRepositoryCode] == ATTRIBUTE_TYPE_ESDL)
+            {
+                EsdlPair esdlPair = ParseEsdlId(outputFile.TempFileName());
+                metaInfo[MetaInfoItemDesdlID] = esdlPair.first;
+                metaInfo[MetaInfoItemDesdlVersion] = esdlPair.second;
+            }
 
             IModuleVector modules;
             rep->GetModules(_T(""), modules);

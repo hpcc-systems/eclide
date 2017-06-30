@@ -233,6 +233,11 @@ public:
         return false;
     }
 
+    bool IsTypeOf(const std::_tstring & attrType)
+    {
+        return boost::algorithm::equals(GetRepositoryCode(), attrType);
+    }
+
     void Update(const std::_tstring & description)
     {
         if (!description.empty())

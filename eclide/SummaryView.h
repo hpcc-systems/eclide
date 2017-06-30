@@ -13,9 +13,8 @@ class CSummaryView :
     typedef CSummaryView thisClass;
     typedef CWindowImpl<CSummaryView> baseClass;
 
-private:
+protected:
     IResultSlot *m_resultSlot;
-    StlLinked<Dali::IWorkunit> m_wu;
     CString m_Url;
     CString m_FramedUrl;
     CHtmlView m_view;
@@ -23,7 +22,7 @@ private:
 public:
     enum {IDD = IDD_SUMMARYVIEW};
 
-    CSummaryView(Dali::IWorkunit * wu, IResultSlot *resultSlot);
+    CSummaryView(IResultSlot *resultSlot);
     ~CSummaryView();
 
     void Unhide();
@@ -53,7 +52,7 @@ public:
         REFLECT_NOTIFICATIONS()
     END_MSG_MAP()
 
-    LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+    virtual LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
     LRESULT OnPaint(HDC /*dc*/);
     void OnSize(UINT wParam, const CSize & size);
     LRESULT OnForwardMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled);
@@ -71,11 +70,11 @@ public:
     void OnContextMenu(HWND /*hWnd*/, CPoint pt);
 
     //CTabPane
-    void Refresh();
+    virtual void Refresh();
     virtual HWND GetHWND();
-    bool CanCopy();
-    bool HasResults() const;
-    bool UpdateUI(CCmdUI * cui);
+    virtual bool CanCopy();
+    virtual bool HasResults() const;
+    virtual bool UpdateUI(CCmdUI * cui);
 
     //ISearchable
     bool CanBeSearched() const; 
@@ -84,3 +83,37 @@ public:
     //  --  IResultView  ---
     HWND GetHwnd() const;
 };
+
+class CWUSummaryView : public CSummaryView
+{
+private:
+    StlLinked<Dali::IWorkunit> m_wu;
+
+public:
+    enum { IDD = IDD_SUMMARYVIEW };
+
+    CWUSummaryView(Dali::IWorkunit * wu, IResultSlot *resultSlot);
+
+    virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+
+    virtual void Refresh();
+    virtual bool CanCopy();
+};
+
+class CDesdlSummaryView : public CSummaryView
+{
+private:
+    std::_tstring m_desdlID;
+    std::_tstring m_desdlVersion;
+
+public:
+    enum { IDD = IDD_SUMMARYVIEW };
+
+    CDesdlSummaryView(const std::_tstring & desdlID, const std::_tstring & desdlVersion, IResultSlot *resultSlot);
+
+    virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+
+    virtual void Refresh();
+    virtual bool CanCopy();
+};
+
