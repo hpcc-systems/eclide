@@ -259,6 +259,17 @@ IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension) {
     return attrType;
 }
 
+std::_tstring ExtensionWithoutDot(const std::_tstring & filename)
+{
+    std::_tstring ext = _T("");
+    if (HasValidExtension(filename))
+    {
+        ext = pathToWString(boost::filesystem::extension(filename));
+        boost::algorithm::replace_all(ext, _T("."), _T(""));
+    }
+    return ext;
+}
+
 void ClearAttributeTypeCache()
 {
     ATLTRACE(_T("File cache before clearing(size=%u)\r\n"), AttributeTypeCache.Size());

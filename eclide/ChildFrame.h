@@ -23,13 +23,14 @@ class CChildFrame : public CWindowImpl<CChildFrame>, public clib::CLockableUnkno
 
 protected:
     CComPtr<IWorkspaceItem> m_workspaceItem;
+    AttrInfo m_attrInfo;
 
 public:
     BEGIN_CLOCKABLEUNKNOWN
         IMPLEMENT_INTERFACE(IPersistable)
     END_CUNKNOWN(clib::CLockableUnknown)
 
-    CChildFrame(IWorkspaceItem * workspaceItem);
+    CChildFrame(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem);
     ~CChildFrame();
 
     DECLARE_FRAME_WND_CLASS(NULL, IDR_MDICHILD)

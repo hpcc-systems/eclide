@@ -2494,7 +2494,7 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName, int row, int col, int len
     boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
     std::_tstring filename = pathToWString(path.leaf());
     CComPtr<IRepository> rep = AttachRepository();
-    return OpenFileBuilderMDI(this, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false, row, col, len);
+    return OpenFileBuilderMDI(this, NULL, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false, row, col, len);
 }
 
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
@@ -2513,7 +2513,7 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName)
         return TRUE;
     }
     CComPtr<IRepository> rep = AttachRepository();
-    return OpenFileBuilderMDI(this, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false);
+    return OpenFileBuilderMDI(this, NULL, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false);
 }
 
 BOOL CMainFrame::DoFileSaveAll(bool attrsOnly)
@@ -2839,7 +2839,7 @@ int CMainFrame::MDIGetCount(int direction)
 void CMainFrame::OpenBuilder(const TCHAR *ecl)
 {
     CComPtr<IRepository> rep = AttachRepository();
-    ::OpenBuilderMDI(this, ecl, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER));
+    ::OpenBuilderMDI(this, ecl, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, NULL));
 }
 
 void CMainFrame::OpenBuilder(const CString & wuid, BuilderStartup startWith)
@@ -2849,7 +2849,7 @@ void CMainFrame::OpenBuilder(const CString & wuid, BuilderStartup startWith)
     if (workunit.get())
     {
         CComPtr<IRepository> rep = AttachRepository();
-        ::OpenBuilderMDI(this, workunit.get(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER), startWith);
+        ::OpenBuilderMDI(this, workunit.get(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, NULL), startWith);
     }
 }
 
@@ -2877,7 +2877,7 @@ void CMainFrame::OpenBuilder(Dali::IWorkunit *wu, BuilderStartup startWith)
                 }
             }
         }
-        ::OpenBuilderMDI(this, wu, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER), startWith);
+        ::OpenBuilderMDI(this, wu, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, NULL), startWith);
     }
 }
 
@@ -2887,10 +2887,10 @@ void CMainFrame::OpenBuilder(IAttribute * attribute)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, attribute, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
-        ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER));
+        ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, attribute));
 }
 
 void threadSaveAs(CMainFrame * self, StlLinked<Dali::IWorkunit> wu, CString filePath)
@@ -3011,11 +3011,11 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
         {
             std::_tstring label, path;
-            ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), errors);
+            ::OpenFileBuilderMDI(this, NULL, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), errors);
         }
         else
         {
-            HWND hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), type, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), false, errors);
+            HWND hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), type, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL), false, errors);
             if (hwnd)
                 PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
         }
@@ -3027,7 +3027,7 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
 void CMainFrame::OpenSyntaxAttribute(IAttribute * attr, Dali::CEclExceptionVector * errors)
 {
     CComPtr<IRepository> rep = AttachRepository();
-    HWND hwnd = ::OpenAttributeMDI(this, attr, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), false, errors);
+    HWND hwnd = ::OpenAttributeMDI(this, attr, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL), false, errors);
     if (hwnd)
         PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 }
@@ -3050,7 +3050,7 @@ void CMainFrame::OpenAttribute(const std::_tstring & module, const std::_tstring
     }
     else
     {
-        HWND hwnd = ::OpenAttributeMDI(this, module, attribute, type, row, col, len, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE));
+        HWND hwnd = ::OpenAttributeMDI(this, module, attribute, type, row, col, len, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
         if (hwnd)
             PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
     }
@@ -3063,7 +3063,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, attribute, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
     {
@@ -3073,7 +3073,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
         }
         else
         {
-            hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE), bHistoryView);
+            hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL), bHistoryView);
         }
     }
     if (hwnd)
@@ -3091,7 +3091,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
     }
     else
     {
-        HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE));
+        HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
         if (hwnd)
             PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
     }
@@ -3103,7 +3103,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
+        ::OpenFileBuilderMDI(this, attribute, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
     }
     else
     {
@@ -3356,7 +3356,7 @@ void CMainFrame::FindReplaceOnEditReplace(const std::_tstring &replaceWhat)
 void CMainFrame::OnFileNew()
 {
     CComPtr<IRepository> rep = AttachRepository();
-    OpenBuilderMDI(this, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER));
+    OpenBuilderMDI(this, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, NULL));
 }
 
 void CMainFrame::OnFileNewSpray()

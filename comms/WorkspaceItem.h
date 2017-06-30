@@ -33,6 +33,10 @@ __interface __declspec(uuid("A4A4FFF2-0DED-422F-B06B-B0FE4CDB6C52")) IWorkspaceI
     bool Exists() const;
     IModule * GetModule() const;
     IAttribute * GetAttribute() const;
+    std::wstring GetModuleLabel() const;
+    std::wstring GetAttributeLabel() const;
+    std::wstring GetAttributeType() const;
+    AttrInfo GetAttrInfo() const;
 
     //  Builder Helpers  ---
     unsigned int GetWorkunits(Dali::IWorkunitVector * results) const;
@@ -45,6 +49,6 @@ typedef std::vector<IWorkspaceItemAdapt> IWorkspaceItemVector;
 
 IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path);
 IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, IAttribute * attr, const std::_tstring & path);
-IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type);
+IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, IAttribute * attr);
 IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, const CPersistMap & pm);
 

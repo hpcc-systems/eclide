@@ -880,6 +880,11 @@
 #define ID_CHANGETYPELOCAL_ESDL         33105
 #define ID_CHANGETYPELOCAL_KEL          33106
 #define ID_CHANGETYPELOCAL_SALT         33107
+#define ID_GO_CUSTOM1                   33108
+#define ID_GO_CUSTOM2                   33109
+#define ID_GO_CUSTOM3                   33110
+#define ID_GO_CUSTOM4                   33111
+#define ID_GO_GENERATE                  33112
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -908,9 +913,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33108
-#define _APS_NEXT_CONTROL_VALUE         539
+#define _APS_NEXT_RESOURCE_VALUE        61419
+#define _APS_NEXT_COMMAND_VALUE         33113
+#define _APS_NEXT_CONTROL_VALUE         541
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

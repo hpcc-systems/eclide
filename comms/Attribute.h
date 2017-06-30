@@ -51,6 +51,12 @@ enum SecAccessFlags
     SecAccess_Full = 255
 };
 
+struct AttrInfo
+{
+    CComPtr<IAttribute> Attribute;
+    std::wstring AttributeType;
+};
+
 __interface IAttribute;
 typedef StlLinked<IAttribute> IAttributeAdapt;
 typedef std::vector<IAttributeAdapt> IAttributeVector;
@@ -105,6 +111,7 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
     void Refresh(bool eclChanged = false, IAttribute * newAttrAsOldOneMoved = NULL, bool deleted = false);
     IRepository* GetRepository();
     IAttributeHistory * GetAsHistory();
+    AttrInfo AttributeToInfo();
 };
 
 typedef std::set<IAttributeAdapt> IAttributeSet;

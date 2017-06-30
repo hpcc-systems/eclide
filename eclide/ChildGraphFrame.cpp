@@ -22,7 +22,7 @@ public:
 
 public: 
     DECLARE_FRAME_WND_CLASS(NULL, IDR_GRAPHWINDOW)
-    CGraphFrame(const CString & filePath, IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(NULL, NULL)
+    CGraphFrame(const CString & filePath, IWorkspaceItem * workspaceItem) : baseClass(m_attrInfo, workspaceItem), m_dlgview(NULL, NULL)
     {
         m_path = filePath;
         m_dlgview.DoFileOpen(filePath);
