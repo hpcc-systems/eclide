@@ -134,6 +134,7 @@ protected:
 public:
     ISourceSlot * m_owner;
     std::string m_WordCharacters;
+    CSourceCtrl(const AttrInfo & attrInfo, ISourceSlot * owner);
     CSourceCtrl(ISourceSlot * owner);
 
     DECLARE_WND_SUPERCLASS(NULL, baseClass::GetWndClassName())
@@ -192,6 +193,7 @@ public:
     static const TCHAR* RFind (const TCHAR* str, const TCHAR* ss);
 
     bool IsDirty();
+    void SetDirty(bool flag);
 
     virtual bool SaveFile(const CString & filename);
     virtual bool OpenFile(const CString & filename);
@@ -221,6 +223,10 @@ public:
     {
         return m_view;
     }
+    CSourceDlgImpl(const AttrInfo & attrInfo, ISourceSlot * owner) : m_view(attrInfo, owner)
+    {
+    }
+
     CSourceDlgImpl(ISourceSlot * owner) : m_view(owner)
     {
     }

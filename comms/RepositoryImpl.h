@@ -583,9 +583,9 @@ public:
         return ::CreateIWorkspaceItem(this, attr, path);
     }
 
-    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type)
+    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, IAttribute * attr)
     {
-        return  ::CreateIWorkspaceItem(this, type);
+        return  ::CreateIWorkspaceItem(this, type, attr);
     }
 
     IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const CPersistMap & pm)

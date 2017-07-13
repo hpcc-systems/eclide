@@ -245,7 +245,7 @@ public:
 
     DECLARE_FRAME_WND_CLASS(NULL, IDR_ATTRIBUTEWINDOW);
 
-    CAttributeFrame(IAttribute * attribute, IWorkspaceItem * workspaceItem);
+    CAttributeFrame(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem);
     virtual ~CAttributeFrame(void);
 
     virtual LRESULT OnCreate(LPCREATESTRUCT lParam);
@@ -341,8 +341,9 @@ public:
     }
 };
 
-CAttributeFrame::CAttributeFrame(IAttribute * attribute, IWorkspaceItem * workspaceItem) : baseClass(workspaceItem), m_dlgview(attribute, this), m_historyView(this)
+CAttributeFrame::CAttributeFrame(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem) : baseClass(attrInfo, workspaceItem), m_dlgview(attrInfo, this), m_historyView(this)
 {
+    m_attrInfo = attrInfo;
     m_CurrentStr = _T("Current");
     m_defaultToHistory = false;
 }
@@ -513,9 +514,9 @@ class CChildAttributeFrm : public CWtlMDIChildFrame<StlLinked<CAttributeFrame> >
     typedef CWtlMDIChildFrame<StlLinked<CAttributeFrame> > baseClass;
 
 public:
-    CChildAttributeFrm(IAttribute * attr, IWorkspaceItem * workspaceItem)
+    CChildAttributeFrm(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem)
     {
-        m_view = new CAttributeFrame(attr, workspaceItem);
+        m_view = new CAttributeFrame(attrInfo, workspaceItem);
         WinID id(m_view->m_dlgview.GetAttribute()->GetModuleQualifiedLabel(), m_view->m_dlgview.GetAttribute()->GetLabel());
         g_attr_window[id].first = this;
         g_attr_window[id].second = m_view;
@@ -611,7 +612,7 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem
         return win.first->GetSafeHwnd();
     }
 
-    CChildAttributeFrm* pChildFrame = new CChildAttributeFrm(attribute, workspaceItem);
+    CChildAttributeFrm* pChildFrame = new CChildAttributeFrm(attribute->AttributeToInfo(), workspaceItem);
     if (bHistoryView)
         pChildFrame->m_view->DefaultToHistory(true);
     CreateNewChild(pFrame, pChildFrame, IDR_ATTRIBUTEWINDOW, attribute->GetQualifiedLabel());

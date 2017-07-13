@@ -80,6 +80,14 @@ public:
     {
     }
 
+    AttrInfo AttributeToInfo()
+    {
+        AttrInfo attrInfo;
+        attrInfo.Attribute = this;
+        attrInfo.AttributeType = GetType()->GetRepositoryCode();
+        return attrInfo;
+    }
+
     void UpdateID()
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);

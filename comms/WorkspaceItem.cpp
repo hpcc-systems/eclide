@@ -156,11 +156,15 @@ public:
             m_id = m_props.Get(PERSIST_TYPE);
         //std::_tstring filePath = m_props.Get(PERSIST_FILEPATH);
         //if (filePath.empty())
-        //	m_props.Set(PERSIST_FILEPATH, m_id);	
+        //	m_props.Set(PERSIST_FILEPATH, m_id);
+
         switch(m_type)
         {
         case WORKSPACE_ITEM_BUILDER:
             m_builder = m_props.Get(PERSIST_LABEL);
+            m_moduleLabel = m_props.Get(PERSIST_MODULE);
+            m_attributeLabel = m_props.Get(PERSIST_ATTRIBUTE);
+            m_attributeType = m_props.Get(PERSIST_ATTRIBUTETYPE);
             if (recalcID)
                 m_id += _T("/") + m_builder;
             m_label = m_builder;
@@ -322,6 +326,36 @@ public:
         return m_attribute;
     }
 
+    std::wstring GetModuleLabel() const
+    {
+        return m_moduleLabel;
+    }
+
+    std::wstring GetAttributeLabel() const
+    {
+        return m_attributeLabel;
+    }
+
+    std::wstring GetAttributeType() const
+    {
+        return m_attributeType;
+    }
+
+    AttrInfo GetAttrInfo() const
+    {
+        AttrInfo attrInfo;
+        if (m_attributeType.length())
+        {
+            attrInfo.AttributeType = m_attributeType;
+        }
+        else
+        {
+            attrInfo.AttributeType = ExtensionWithoutDot(m_id);
+        }
+
+        return attrInfo;
+    }
+
     unsigned int GetWorkunits(Dali::IWorkunitVector * results) const
     {
         while(m_loaded != LOADING_FINISHED)
@@ -463,7 +497,7 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, IAttribute * att
     return workspaceItem.get();
 }
 
-IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type)
+IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, IAttribute *attr)
 {
     std::_tstring wideFileName, wideFilePath;
     boost::filesystem::path filePath, envFolder;
@@ -475,7 +509,14 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_T
         wideFileName += _T("_");
         std::string fileName = CT2A(wideFileName.c_str());
         fileName += boost::lexical_cast<std::string>(rand() % 999999);
-        fileName += ".ecl";
+        if (attr)
+        {
+            fileName += CT2A(attr->GetType()->GetFileExtension());
+        }
+        else
+        {
+            fileName += ".ecl";
+        }
         wideFileName = CA2T(fileName.c_str());
         filePath = envFolder / fileName;
         wideFilePath = pathToWString(filePath);
@@ -487,7 +528,7 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_T
 
 IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, const CPersistMap & pm)
 {
-    IWorkspaceItem * retVal = CreateIWorkspaceItem(repository, type);
+    IWorkspaceItem * retVal = CreateIWorkspaceItem(repository, type, NULL);
     ATLASSERT(retVal);
     retVal->SetContent(pm);
     return retVal;

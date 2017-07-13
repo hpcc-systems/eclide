@@ -30,8 +30,12 @@ enum WUAction
     WUActionPause, 
     WUActionPauseNow, 
     WUActionResume, 
-    //WUActionPublish,
-    WUActionSize
+    WUActionSize,
+    WUActionGenerate,
+    WUActionCustom1,
+    WUActionCustom2,
+    WUActionCustom3,
+    WUActionCustom4,
 };
 
 enum WUExceptionSeverity

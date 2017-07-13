@@ -108,7 +108,7 @@ __interface IRepository : public IUnknown
 
     IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path);
     IWorkspaceItem * CreateIWorkspaceItem(IAttribute * attr, const std::_tstring & path);
-    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type);
+    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, IAttribute * attr);
     IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const CPersistMap & pm);
 
     const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const;

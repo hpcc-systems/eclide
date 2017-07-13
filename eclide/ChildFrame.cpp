@@ -10,9 +10,10 @@
 #include <logger.h>
 #include <preferencedlg.h> //wlib
 
-CChildFrame::CChildFrame(IWorkspaceItem * workspaceItem)
+CChildFrame::CChildFrame(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem)
 {
     m_workspaceItem = workspaceItem;
+    m_attrInfo = attrInfo;
     AddRef(); // Final Release actually comes from Frame Window.
 }
 
@@ -55,6 +56,10 @@ LRESULT CChildFrame::OnSavePersistInfo(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     IWorkspaceItemVector * wsItems = (IWorkspaceItemVector *)lParam;
     CPersistMap pmap;
+    if (m_attrInfo.AttributeType.length())
+    {
+        pmap.Set(PERSIST_ATTRIBUTETYPE, m_attrInfo.AttributeType);
+    }
     SavePersistInfo(pmap);
     m_workspaceItem->SetContent(pmap);
     wsItems->push_back(m_workspaceItem.p);
