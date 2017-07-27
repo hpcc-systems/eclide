@@ -141,8 +141,10 @@ public:
                     m_loaded = LOADING_FINISHED;
                     break;
                 }
-                ATLASSERT(m_moduleLabel.size() && m_attributeLabel.size());
-                clib::thread run(__FUNCTION__, boost::bind(&threadLoadAttribute, this, m_moduleLabel, m_attributeLabel, m_attributeType));
+                if (m_moduleLabel.size() && m_attributeLabel.size())
+                    clib::thread run(__FUNCTION__, boost::bind(&threadLoadAttribute, this, m_moduleLabel, m_attributeLabel, m_attributeType));
+                else
+                    m_loaded = LOADING_FINISHED;
                 //threadLoadAttribute(this, m_moduleLabel, m_attributeLabel, m_attributeType);
             }
             break;
