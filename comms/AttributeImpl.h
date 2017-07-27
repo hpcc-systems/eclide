@@ -19,7 +19,7 @@ public:
     virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
     virtual const TCHAR *GetLabel() const = 0;
 
-    bool pluginFolderExists(const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const
+    bool pluginFolderExists(const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool typeFolder, boost::filesystem::path subPath) const
     {
         boost::filesystem::path folder, path;
         GetProgramFolder(folder);
@@ -31,11 +31,8 @@ public:
                 folder = folder.parent_path();
             }
         }
-        if (pluginFolder)
-        {
-            folder /= "plugin";
-        }
-        else
+        folder /= subPath;
+        if (typeFolder)
         {
             folder /= stringToPath(GetType()->GetRepositoryCode());
         }
@@ -50,15 +47,23 @@ public:
 
     bool locatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
     {
-        if (pluginFolderExists(batchFile, foundFolder, 0, true))
+        boost::filesystem::path subPath, emptyPath;
+        subPath = "clienttools";
+        subPath /= "IDEPlugins";
+
+        if (pluginFolderExists(batchFile, foundFolder, 2, true, subPath))
         {
             return true;
         }
-        else if (pluginFolderExists(batchFile, foundFolder, 2, false))
+        else if (pluginFolderExists(batchFile, foundFolder, 0, false, stringToPath("plugin")))
         {
             return true;
         }
-        else if (pluginFolderExists(batchFile, foundFolder, 3, false))
+        else if (pluginFolderExists(batchFile, foundFolder, 2, true, emptyPath))
+        {
+            return true;
+        }
+        else if (pluginFolderExists(batchFile, foundFolder, 3, true, emptyPath))
         {
             return true;
         }
