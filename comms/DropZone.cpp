@@ -95,8 +95,11 @@ public: //IDropZone
         SAFE_ASSIGN(m_Description, c->Description);
         SAFE_ASSIGN(m_Path, c->Path);
         SAFE_ASSIGN(m_Build, c->Build);
-        m_machine = new CMachine();
-        m_machine->Update(c->TpMachines->TpMachine[0]);
+        if (c->TpMachines && !c->TpMachines->TpMachine.empty()) 
+        {
+            m_machine = new CMachine();
+            m_machine->Update(c->TpMachines->TpMachine[0]);
+        }
         Refresh();
     }
 #else
