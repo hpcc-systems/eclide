@@ -283,7 +283,8 @@ public:
         GetAttributes(module.c_str(), attrs, true);
         for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
         {
-            results.push_back(itr->get()->GetLabel());
+            if (itr->get()->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL))
+                results.push_back(itr->get()->GetLabel());
         }
         return results.size();
     }

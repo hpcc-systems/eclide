@@ -19,7 +19,7 @@ __interface ILangRef : public IUnknown
     int GetLangNameCatID(int cat, int row) const;
     CString & GetLangNames(int cat, CString &result);
     bool GetLangNamesAutoC(int cat, StdStringVector &set);
-    bool GetAutoC(const std::_tstring & partialLabel, StdStringVector &set);	
+    bool GetAutoC(const std::_tstring & partialLabel, StdStringVector &set);
     const TCHAR * GetLangTooltip(const std::_tstring &label);
     bool IsComment(int cat);
     CString GetSample();
