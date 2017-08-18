@@ -34,6 +34,7 @@ protected:
     std::_tstring m_compilerFile;
     boost::filesystem::wpath m_compilerFilePath;
     boost::filesystem::wpath m_compilerFolderPath;
+    boost::filesystem::wpath m_pluginsFolderPath;
 
     std::_tstring m_arguments;
 
@@ -105,6 +106,7 @@ public:
             m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
         }
         m_compilerFolderPath = m_compilerFilePath.parent_path();
+        m_pluginsFolderPath = m_compilerFolderPath.parent_path() / _T("IDEPlugins");
 
         m_arguments = CString(m_config->Get(GLOBAL_COMPILER_ARGUMENTS));
 
@@ -220,6 +222,20 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         ATLASSERT(i >= 0 && i < (int)m_eclFolders.size());
         return m_eclFolders[i].first.c_str();
+    }
+
+    bool LocatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
+    {
+        boost::filesystem::directory_iterator end_itr;
+        for (boost::filesystem::directory_iterator itr(m_pluginsFolderPath); itr != end_itr; ++itr)
+        {
+            if (clib::filesystem::is_directory(*itr) && clib::filesystem::exists(*itr / batchFile))
+            {
+                foundFolder = *itr;
+                return true;
+            }
+        }
+        return false;
     }
 
     void ParseErrors(const std::_tstring & sourcePath, const std::_tstring & _err, bool &hasErrors, Dali::CEclExceptionVector & errors, bool markAllAsErrors) const

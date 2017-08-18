@@ -21,7 +21,7 @@ public:
     virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
     virtual const TCHAR *GetLabel() const = 0;
 
-    bool pluginFolderExists(const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool typeFolder, boost::filesystem::path subPath) const
+    bool pluginFolderExists(const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const
     {
         boost::filesystem::path folder, path;
         GetProgramFolder(folder);
@@ -33,8 +33,11 @@ public:
                 folder = folder.parent_path();
             }
         }
-        folder /= subPath;
-        if (typeFolder)
+        if (pluginFolder)
+        {
+            folder /= "plugin";
+        }
+        else
         {
             folder /= stringToPath(GetType()->GetRepositoryCode());
         }
@@ -49,25 +52,22 @@ public:
 
     bool locatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
     {
-        boost::filesystem::path subPath, emptyPath;
-        subPath = "clienttools";
-        subPath /= "IDEPlugins";
-
-        if (pluginFolderExists(batchFile, foundFolder, 2, true, subPath))
+        if (pluginFolderExists(batchFile, foundFolder, 0, true))
         {
             return true;
         }
-        else if (pluginFolderExists(batchFile, foundFolder, 0, false, stringToPath("plugin")))
+        else if (pluginFolderExists(batchFile, foundFolder, 2, false))
         {
             return true;
         }
-        else if (pluginFolderExists(batchFile, foundFolder, 2, true, emptyPath))
+        else if (pluginFolderExists(batchFile, foundFolder, 3, false))
         {
             return true;
         }
-        else if (pluginFolderExists(batchFile, foundFolder, 3, true, emptyPath))
-        {
-            return true;
+        else if (CComPtr<IEclCC> eclcc = CreateIEclCC()) {
+            if (eclcc->LocatePlugin(batchFile, foundFolder)) {
+                return true;
+            }
         }
         if (!boost::algorithm::iequals(batchFile, "ecl.bat")) {
             _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
