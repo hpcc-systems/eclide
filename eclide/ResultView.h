@@ -88,6 +88,7 @@ __interface IResultViewer :	public ISearchable, public IUnknown
     void RenameColumn(unsigned col, const std::_tstring& newname);
     bool UpdateUI(CCmdUI * cui);
     void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *qualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugString, bool archive, int maxRuntime, bool debug);
+    void PublishESDL(const std::_tstring & desdlID, const std::_tstring & desdlVersion);
     void SetDeleteWorkunit(bool bDelete=true);
     void PostSelectRibbon();
 };
@@ -100,3 +101,6 @@ IResultViewer *CreateIResultViewer(IResultSlot *owner, const CString & wuid);
 
 const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url);
 const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url);
+const TCHAR * GetFramedDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url);
+const TCHAR * GetDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url);
+

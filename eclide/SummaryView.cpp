@@ -4,11 +4,9 @@
 #include "SummaryView.h"
 #include "EclCC.h"
 
-CSummaryView::CSummaryView(Dali::IWorkunit * wu, IResultSlot *resultSlot) : m_wu(wu)
+CSummaryView::CSummaryView(IResultSlot *resultSlot)
 {
     m_resultSlot = resultSlot;
-    GetWorkUnitEclWatchURL(m_wu, m_Url);
-    GetFramedWorkUnitEclWatchURL(m_wu, m_FramedUrl);
 }
 
 CSummaryView::~CSummaryView()
@@ -30,10 +28,6 @@ void CSummaryView::Unhide()
 
 LRESULT CSummaryView::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-    if (boost::algorithm::istarts_with(m_wu->GetWuid(), _T("W")))
-        SetWindowText(_T("ECL Watch"));
-    else
-        SetWindowText(_T("Workunit XML"));
     m_view.Create( *this, rcDefault, _T(""), WS_VISIBLE | WS_CHILD | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE );
     return 0;
 }
@@ -155,21 +149,6 @@ void CSummaryView::OnContextMenu(HWND /*hWnd*/, CPoint pt)
 //CTabPane
 void CSummaryView::Refresh()
 {
-    if ( m_view.IsLoaded() )
-    {
-        if (IsRemoteDaliEnabled() == TRI_BOOL_TRUE && boost::algorithm::istarts_with(m_wu->GetWuid(), _T("W")))
-        {
-            CString password(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD));
-            CString user(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER));
-            m_view.Navigate(m_Url, user, password, false);
-        }
-        else if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-        {
-            std::_tstring xmlPath;
-            eclcc->SaveWorkunitXML(m_wu->GetWuid(), xmlPath);
-            m_view.Navigate(xmlPath.c_str());
-        }
-    }
 }
 
 HWND CSummaryView::GetHWND()
@@ -214,4 +193,78 @@ bool CSummaryView::Search(const CSearchableInfo & /*info*/, CSearchableResult &/
 HWND CSummaryView::GetHwnd() const 
 {
     return m_hWnd;
+}
+
+// --  CWUSummaryView ---
+CWUSummaryView::CWUSummaryView(Dali::IWorkunit * wu, IResultSlot *resultSlot) : CSummaryView(resultSlot), m_wu(wu)
+{
+    GetWorkUnitEclWatchURL(m_wu, m_Url);
+    GetFramedWorkUnitEclWatchURL(m_wu, m_FramedUrl);
+}
+
+LRESULT CWUSummaryView::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+    if (boost::algorithm::istarts_with(m_wu->GetWuid(), _T("W")))
+        SetWindowText(_T("ECL Watch"));
+    else
+        SetWindowText(_T("Workunit XML"));
+    return CSummaryView::OnCreate(uMsg, wParam, lParam, bHandled);
+}
+
+void CWUSummaryView::Refresh()
+{
+    CSummaryView::Refresh();
+    if (m_view.IsLoaded())
+    {
+        if (IsRemoteDaliEnabled() == TRI_BOOL_TRUE && boost::algorithm::istarts_with(m_wu->GetWuid(), _T("W")))
+        {
+            CString password(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD));
+            CString user(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER));
+            m_view.Navigate(m_Url, user, password, false);
+        }
+        else if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        {
+            std::_tstring xmlPath;
+            eclcc->SaveWorkunitXML(m_wu->GetWuid(), xmlPath);
+            m_view.Navigate(xmlPath.c_str());
+        }
+    }
+}
+
+bool CWUSummaryView::CanCopy()
+{
+    return true;
+}
+
+// --  CDesdlSummaryView  ---
+CDesdlSummaryView::CDesdlSummaryView(const std::_tstring & desdlID, const std::_tstring & desdlVersion, IResultSlot *resultSlot) : CSummaryView(resultSlot), m_desdlID(desdlID), m_desdlVersion(desdlVersion)
+{
+    GetDesdlEclWatchURL(m_desdlID, m_desdlVersion, m_Url);
+    GetFramedDesdlEclWatchURL(m_desdlID, m_desdlVersion, m_FramedUrl);
+}
+
+
+LRESULT CDesdlSummaryView::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+    SetWindowText(_T("ECL Watch"));
+    return CSummaryView::OnCreate(uMsg, wParam, lParam, bHandled);
+}
+
+void CDesdlSummaryView::Refresh()
+{
+    CSummaryView::Refresh();
+    if (m_view.IsLoaded())
+    {
+        if (IsRemoteDaliEnabled() == TRI_BOOL_TRUE)
+        {
+            CString password(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD));
+            CString user(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER));
+            m_view.Navigate(m_Url, user, password, false);
+        }
+    }
+}
+
+bool CDesdlSummaryView::CanCopy()
+{
+    return false;
 }

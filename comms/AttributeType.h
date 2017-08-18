@@ -60,6 +60,7 @@ __interface IAttributeType : public IUnknown
     const TCHAR * GetDescription();
     const TCHAR * GetDefaultText(const std::_tstring & attrLabel);
     bool IsReadOnly();
+    bool IsTypeOf(const std::_tstring & attrType);
 };
 typedef StlLinked<IAttributeType> IAttributeTypeAdapt;
 typedef std::vector<IAttributeTypeAdapt> IAttributeTypeVector;

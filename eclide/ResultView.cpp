@@ -82,6 +82,22 @@ const TCHAR * GetResultEclWatchURL(Dali::IWorkunit *wu, CString &url, int sequen
     return url;
 }
 
+const TCHAR * GetFramedDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url)
+{
+    return GetDesdlEclWatchURL(desdlID, desdlVersion, url);
+}
+
+const TCHAR * GetDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url)
+{
+    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
+    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=DynamicESDLDefinitionDetailsWidget&Id="));
+    url = str.c_str();
+    url += desdlID.c_str();
+    url += _T(".");
+    url += desdlVersion.c_str();
+    return url;
+}
+
 static const TCHAR * const BOOLEANSTR = _T("boolean");
 static const TCHAR * const INTEGER4 = _T("integer4");
 static const TCHAR * const UINTEGER4 = _T("unsigned integer4");
@@ -2298,6 +2314,8 @@ private:
     mutable CTabbedChildWindowEx<CColDotNetButtonTabCtrl<CTabViewTabItem> > m_tabbedChildWindow;  //mutable due to lack of const in 3rd party tab control.
 
     Dali::IWorkunitAdapt m_wu;
+    std::_tstring m_desdlID;
+    std::_tstring m_desdlVersion;
     boost::signals::connection m_wuConn;
     CTabPanePtrVector m_tabs;
     IResultSlot		*m_resultSlot;
@@ -2321,7 +2339,8 @@ private:
     bool m_prepareForDisplay;
     bool m_launchDebugger;
 
-    bool CreateSummaryWindow();
+    bool CreateWUSummaryWindow();
+    bool CreateDesdlSummaryWindow();
     bool CreateGraphWindow();
     bool CreateEclGraphWindow();
     bool CreateResultWindow(Dali::IResult * result);
@@ -2401,6 +2420,7 @@ public:
     void CloseAllTabs();
     void DestroyWindow();
     void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugString, bool archive, int maxRuntime, bool debug);
+    void PublishESDL(const std::_tstring & desdlID, const std::_tstring & desdlVersion);
     void SetDeleteWorkunit(bool bDelete=true);
     void PostSelectRibbon();
 
@@ -2537,6 +2557,12 @@ void CMultiResultView::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName,
     CEclExec::ExecEcl(clusterName, queueName, action, attrQualifiedLabel, eclSource, eclPath, scheduled, label, resultLimit, debugString, archive, maxRuntime, debug);
 }
 
+void CMultiResultView::PublishESDL(const std::_tstring & desdlID, const std::_tstring & desdlVersion)
+{
+    m_desdlID = desdlID;
+    m_desdlVersion = desdlVersion;
+}
+
 void CMultiResultView::SetDeleteWorkunit(bool bDelete)
 {
     m_bDeleteWU = bDelete;
@@ -2639,18 +2665,18 @@ void CMultiResultView::PrepareForDisplay(bool bRefresh)
         m_tabbedChildWindow.SetReflectNotifications(true);
         m_tabbedChildWindow.SetTabStyles(CTCS_BOTTOM | CTCS_TOOLTIPS | CTCS_SCROLL);
         m_tabbedChildWindow.Create(m_hWnd, rc, NULL, NULL, NULL, IDC_STATIC_PLACEHOLDER);
-        if ( m_wu && bRefresh )
+        if ( (m_wu || !m_desdlID.empty()) && bRefresh )
             OnRefresh(0,0,0);
         m_prepareForDisplay = false;
         PostSelectRibbon();
     }
 }
 
-bool CMultiResultView::CreateSummaryWindow()
+bool CMultiResultView::CreateWUSummaryWindow()
 {
     if (m_wu && !m_summaryView.isLinked())
     {
-        StlLinked<CSummaryView> r = new CSummaryView(m_wu, m_resultSlot);
+        StlLinked<CSummaryView> r = new CWUSummaryView(m_wu, m_resultSlot);
         {
             m_summaryView = r.get();
             r->Create(m_tabbedChildWindow);
@@ -2666,6 +2692,30 @@ bool CMultiResultView::CreateSummaryWindow()
         //if this is the current tab, refresh it
         unsigned n = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
         if (n+1 == m_tabs.size())
+            ::SendMessage(m_summaryView->GetHWND(), CWM_REFRESH, 0, 0);
+    }
+    return false;
+}
+
+bool CMultiResultView::CreateDesdlSummaryWindow() {
+    if (!m_desdlID.empty())
+    {
+        StlLinked<CSummaryView> r = new CDesdlSummaryView(m_desdlID, m_desdlVersion, m_resultSlot);
+        {
+            m_summaryView = r.get();
+            r->Create(m_tabbedChildWindow);
+            CTabPanePtr tab = r;
+            m_tabs.push_back(tab);
+
+            m_tabbedChildWindow.DisplayTab(r.get()->m_hWnd, TRUE);
+        }
+        return true;
+    }
+    else if (m_summaryView.isLinked())
+    {
+        //if this is the current tab, refresh it
+        unsigned n = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
+        if (n + 1 == m_tabs.size())
             ::SendMessage(m_summaryView->GetHWND(), CWM_REFRESH, 0, 0);
     }
     return false;
@@ -2798,135 +2848,144 @@ bool CMultiResultView::CreateResultWindow(Dali::IResult * result)
 
 LRESULT CMultiResultView::OnRefresh(UINT /*uMsg*/, WPARAM bCreated, LPARAM bDeleted)
 {
-    ATLTRACE(_T("CMultiResultView::OnRefresh(%s - %s)\n"), m_wu->GetWuid(), m_wu->GetStateLabel());
+    if (!m_desdlID.empty()) {
+        ATLTRACE(_T("CMultiResultView::OnRefresh(%s)\n"), m_desdlID);
+        if (bDeleted) {
+        } else {
+            if (m_tabbedChildWindow.IsWindow()) {
+                CreateDesdlSummaryWindow();
+            }
+        }
+    } else {
+        ATLTRACE(_T("CMultiResultView::OnRefresh(%s - %s)\n"), m_wu->GetWuid(), m_wu->GetStateLabel());
 
-    if (bDeleted)
-    {
-        m_resultSlot->WorkunitDeleted(m_wu);
-    }
-    else
-    {
-        if (m_tabbedChildWindow.IsWindow())
+        if (bDeleted)
         {
-            if (m_wu->GetExceptionCount())
-                CreateExceptionWindow();
-
-            if (!(boost::algorithm::starts_with(m_wu->GetWuid(), _T("L")) && m_wu->GetState() != Dali::WUStateCompleted))
-                CreateSummaryWindow();
-
+            m_resultSlot->WorkunitDeleted(m_wu);
+        }
+        else
+        {
+            if (m_tabbedChildWindow.IsWindow())
             {
-                // Big Hack to trick graphs to load (it just worked when graphs came after results window)
-                CComPtr<clib::scoped_lock_ref_counted> lock;
-                m_wu->Lock(lock);
-                Dali::IResultVector::const_iterator itr, end;
-                boost::tie(itr, end) = m_wu->GetResultIterator();
-            }
+                if (m_wu->GetExceptionCount())
+                    CreateExceptionWindow();
 
-            if (m_wu->GetGraphCount())
-            {
-                CreateGraphWindow();
-            }
+                if (!(boost::algorithm::starts_with(m_wu->GetWuid(), _T("L")) && m_wu->GetState() != Dali::WUStateCompleted))
+                    CreateWUSummaryWindow();
 
-            if (m_wu->IsComplete())
-            {
-                int curSel = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
-
-                if (m_drilldown.size() == 0)
                 {
-                    CComPtr<IRepository> rep = AttachRepository();
-                    rep->GetAttributes(DRILLDOWN, m_drilldown);
+                    // Big Hack to trick graphs to load (it just worked when graphs came after results window)
+                    CComPtr<clib::scoped_lock_ref_counted> lock;
+                    m_wu->Lock(lock);
+                    Dali::IResultVector::const_iterator itr, end;
+                    boost::tie(itr, end) = m_wu->GetResultIterator();
                 }
 
-                CComPtr<clib::scoped_lock_ref_counted> lock;
-                m_wu->Lock(lock);
-                Dali::IResultVector::const_iterator itr, end;
-                boost::tie(itr, end) = m_wu->GetResultIterator();
-                for (; itr != end; ++itr)
-                    CreateResultWindow(itr->get());
-
-                if (m_wu->GetResultCount() == 2)
+                if (m_wu->GetGraphCount())
                 {
-                    int graphResultCount = 0;
-                    boost::tie(itr, end) = m_wu->GetResultIterator();
-                    for (; itr != end; ++itr)
+                    CreateGraphWindow();
+                }
+
+                if (m_wu->IsComplete())
+                {
+                    int curSel = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
+
+                    if (m_drilldown.size() == 0)
                     {
-                        CComPtr<ITable> result = CreateISparseTable();
-                        itr->get()->GetResultData(0, 1, result);
-                        if (result->FindColumn(_T("vertex_id")) != -1)
-                            ++graphResultCount;
-                        else if (result->FindColumn(_T("edge_from_id")) != -1)
-                            ++graphResultCount;
+                        CComPtr<IRepository> rep = AttachRepository();
+                        rep->GetAttributes(DRILLDOWN, m_drilldown);
                     }
 
-                    if (graphResultCount == 2)
-                        CreateEclGraphWindow();
-                }
-                m_tabbedChildWindow.GetTabCtrl().SetCurSel(curSel);
-            }
+                    CComPtr<clib::scoped_lock_ref_counted> lock;
+                    m_wu->Lock(lock);
+                    Dali::IResultVector::const_iterator itr, end;
+                    boost::tie(itr, end) = m_wu->GetResultIterator();
+                    for (; itr != end; ++itr)
+                        CreateResultWindow(itr->get());
 
-            if (m_wu->IsDebugging())
-            {
-                CreateDebugWindow();
-                if (m_launchDebugger)
+                    if (m_wu->GetResultCount() == 2)
+                    {
+                        int graphResultCount = 0;
+                        boost::tie(itr, end) = m_wu->GetResultIterator();
+                        for (; itr != end; ++itr)
+                        {
+                            CComPtr<ITable> result = CreateISparseTable();
+                            itr->get()->GetResultData(0, 1, result);
+                            if (result->FindColumn(_T("vertex_id")) != -1)
+                                ++graphResultCount;
+                            else if (result->FindColumn(_T("edge_from_id")) != -1)
+                                ++graphResultCount;
+                        }
+
+                        if (graphResultCount == 2)
+                            CreateEclGraphWindow();
+                    }
+                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(curSel);
+                }
+
+                if (m_wu->IsDebugging())
                 {
+                    CreateDebugWindow();
+                    if (m_launchDebugger)
+                    {
 #define NLAUNCH_DEBUGGING
 #ifdef LAUNCH_DEBUGGING
-                    boost::filesystem::path folder;
-                    GetProgramFolder(folder);
-                    boost::filesystem::path file = folder / boost::filesystem::path("RoxieDebugger.exe", boost::filesystem::native);
+                        boost::filesystem::path folder;
+                        GetProgramFolder(folder);
+                        boost::filesystem::path file = folder / boost::filesystem::path("RoxieDebugger.exe", boost::filesystem::native);
 
-                    ::CString cfg = GetIConfig(QUERYBUILDER_CFG)->GetLabel();
-                    ::CString id = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
-                    ::CString pw = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD);
-                    std::_tstring params = (boost::_tformat(_T("--cfg %1% --id %2% --pw %3% --wuid %4%")) % (const TCHAR *)cfg % (const TCHAR *)id % (const TCHAR *)pw % (const TCHAR *)wuid).str();
-                    ::ShellExecute(m_hWnd, _T("open"), CA2T(file.native_file_string().c_str()), params.c_str(), CA2T(folder.native_file_string().c_str()), SW_SHOWNORMAL);
+                        ::CString cfg = GetIConfig(QUERYBUILDER_CFG)->GetLabel();
+                        ::CString id = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
+                        ::CString pw = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD);
+                        std::_tstring params = (boost::_tformat(_T("--cfg %1% --id %2% --pw %3% --wuid %4%")) % (const TCHAR *)cfg % (const TCHAR *)id % (const TCHAR *)pw % (const TCHAR *)wuid).str();
+                        ::ShellExecute(m_hWnd, _T("open"), CA2T(file.native_file_string().c_str()), params.c_str(), CA2T(folder.native_file_string().c_str()), SW_SHOWNORMAL);
 #endif
-                    m_launchDebugger = false;
+                        m_launchDebugger = false;
+                    }
                 }
-            }
-            switch(m_startupMode)
-            {
-            case StartNoChange:
-                m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
-                break;
-            case StartEcl:
-                m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
-                break;
-            case StartExceptions:
-                if (m_exceptionView)
-                    m_tabbedChildWindow.DisplayTab(m_exceptionView->GetHWND(), FALSE);
-                else
-                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
-                break;
-            case StartEclWatch:
-                if (m_summaryView)
-                    m_tabbedChildWindow.DisplayTab(m_summaryView->GetHWND(), FALSE);
-                else
-                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
-                break;
-            case StartGraph:
-                if (m_graphView)
+                switch (m_startupMode)
                 {
-                    m_tabbedChildWindow.DisplayTab(m_graphView->GetHWND(), FALSE);
-                    m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_FOLLOWACTIVE);
-                    m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_MINIMIZEINACTIVE);
+                case StartNoChange:
+                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
+                    break;
+                case StartEcl:
+                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
+                    break;
+                case StartExceptions:
+                    if (m_exceptionView)
+                        m_tabbedChildWindow.DisplayTab(m_exceptionView->GetHWND(), FALSE);
+                    else
+                        m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
+                    break;
+                case StartEclWatch:
+                    if (m_summaryView)
+                        m_tabbedChildWindow.DisplayTab(m_summaryView->GetHWND(), FALSE);
+                    else
+                        m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
+                    break;
+                case StartGraph:
+                    if (m_graphView)
+                    {
+                        m_tabbedChildWindow.DisplayTab(m_graphView->GetHWND(), FALSE);
+                        m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_FOLLOWACTIVE);
+                        m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_MINIMIZEINACTIVE);
+                    }
+                    else
+                        m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
+                    break;
+                case StartFirstResult:
+                    if (m_firstResult)
+                        m_tabbedChildWindow.DisplayTab(m_firstResult->GetHWND(), FALSE);
+                    else
+                        m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
+                    break;
                 }
-                else
-                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
-                break;
-            case StartFirstResult:
-                if (m_firstResult)
-                    m_tabbedChildWindow.DisplayTab(m_firstResult->GetHWND(), FALSE);
-                else
-                    m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
-                break;
+                m_startupMode = StartUnknown;
             }
-            m_startupMode = StartUnknown;
+
+            m_resultSlot->WorkunitUpdated(m_wu, (bCreated != 0));
         }
-
-        m_resultSlot->WorkunitUpdated(m_wu, (bCreated != 0));
     }
-
     return 0;
 }
 
@@ -3065,8 +3124,10 @@ const TCHAR *CMultiResultView::GetID(CString & result)
 
 CString CMultiResultView::GetTitle()
 {
-    ATLASSERT(m_wu != NULL);
-    return m_wu->GetLabel();
+    if (m_wu) {
+        return m_wu->GetLabel();
+    }
+    return m_desdlID.c_str();
 }
 
 bool CMultiResultView::IsDirty()

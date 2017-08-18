@@ -395,18 +395,22 @@ public:
         StlLinked<IResultViewer> result = ::CreateIResultViewer(this);
         m_results.insert(m_results.begin(), result);
         result->Create(m_tabbedChildWindow);
-        m_tabbedChildWindow.AddTab(result->GetHwnd(), _T("Submitted"), 0, 1);
         std::_tstring debugStr = m_dlgview.GetDebug();
         std::_tstring attrQualifiedLabel;
-        if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute())
+        bool isDesdl = false;
+        if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute()) {
             attrQualifiedLabel = attr->GetQualifiedLabel(true);
+            isDesdl = attr->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ESDL);
+        }
+        m_tabbedChildWindow.AddTab(result->GetHwnd(), isDesdl ? attrQualifiedLabel.c_str() :_T("Submitted"), 0, 1);
 
         CString ecl = _ecl;
         CComPtr<IAttribute> attr = m_dlgview.GetAttribute();
-        if (attr != NULL && attr->GetType() != CreateIAttributeECLType())
+        Dali::CEclExceptionVector errors;
+        MetaInfo metaInfo;
+        if (attr != NULL && !attr->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL))
         {
             IAttributeVector attrs;
-            Dali::CEclExceptionVector errors;
             IAttributeBookkeep attrProcessed;
             PREPROCESS_TYPE processType = PREPROCESS_UNKNOWN;
             switch (action) {
@@ -414,6 +418,9 @@ public:
                 if (!isSaved)
                     m_dlgview.DoGenerate();
                 processType = PREPROCESS_GENERATE;
+                break;
+            case Dali::WUActionRun:
+                processType = PREPROCESS_SUBMIT;
                 break;
             case Dali::WUActionCustom1:
                 processType = PREPROCESS_CUSTOM1;
@@ -428,16 +435,25 @@ public:
                 processType = PREPROCESS_CUSTOM4;
                 break;
             }
-            attr->PreProcess(processType, _ecl, attrs, attrProcessed, errors);
+            attr->PreProcess(processType, _ecl, attrs, attrProcessed, errors, metaInfo);
             if (!attrs.empty())
             {
                 ecl = attrs[0]->GetText(false, true);
             }
             supressPath = true;
         }
-        result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, supressPath ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
-        GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
-        GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
+        if (isDesdl)
+        {
+            result->PublishESDL(metaInfo[MetaInfoItemDesdlID], metaInfo[MetaInfoItemDesdlVersion]);
+            if (!errors.empty())
+                m_dlgview.SendMessage(CWM_SUBMITDONE, (WPARAM)Dali::WUActionCheck, (LPARAM)&errors);
+        }
+        else
+        {
+            result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, supressPath ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+            GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
+            GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
+        }
         PostStatus(_T(""));
     }
 
