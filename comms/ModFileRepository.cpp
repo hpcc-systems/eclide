@@ -123,7 +123,12 @@ public:
         for(IModuleVector::iterator itr = allModules.begin(); itr != allModules.end(); ++itr)
         {
             IModule * parent = itr->get()->GetParentModule();
-            if ((!parent && module.empty()) || (parent && boost::algorithm::equals(module, parent->GetQualifiedLabel())))
+            typedef std::vector<std::_tstring> split_vector_type;
+            std::_tstring label = itr->get()->GetQualifiedLabel();
+            split_vector_type labelParts;
+
+            boost::algorithm::split(labelParts, label, boost::algorithm::is_any_of(CModuleHelper::DELIMTER), boost::algorithm::token_compress_on);
+            if ((parent && labelParts.size() > 1) || (!parent && module.empty()) || (parent && boost::algorithm::equals(module, parent->GetQualifiedLabel())))
                 modules.push_back(itr->get());
         }
         return 0;
@@ -146,9 +151,28 @@ public:
             {
                 boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
                 boost::algorithm::trim(line);
-
-                CModuleHelper moduleHelper(line);
-                dedupMap[moduleHelper.GetModuleLabel()] = true;
+                split_vector_type lineParts;
+                boost::algorithm::split(lineParts, line, boost::algorithm::is_any_of(":"), boost::algorithm::token_compress_on);
+                if (lineParts.size() > 1) {
+                    line = lineParts[1];
+                }
+                split_vector_type labelParts;
+                boost::algorithm::split(labelParts, line, boost::algorithm::is_any_of(CModuleHelper::DELIMTER), boost::algorithm::token_compress_on);
+                std::_tstring moduleName;
+                for (split_vector_type::reverse_iterator itrLabel = labelParts.rbegin(); itrLabel != labelParts.rend(); itrLabel++)
+                {
+                    std::_tstring label = *itrLabel;
+                    if (!moduleName.empty())
+                    {
+                        moduleName = label + CModuleHelper::DELIMTER + moduleName;
+                        CModuleHelper moduleHelper(moduleName);
+                        dedupMap[moduleHelper.GetModuleLabel()] = true;
+                    }
+                    else
+                    {
+                        moduleName = label;
+                    }
+                }
             }
         }
 
