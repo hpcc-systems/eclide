@@ -866,6 +866,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
             if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL))
             {
                 UPDATEUI(cui, ID_GO_GENERATE, true);
+                UPDATEUI(cui, ID_GO_SUBMIT, true);
                 UPDATEUI(cui, ID_GO_CUSTOM1, true);
                 UPDATEUI(cui, ID_GO_CUSTOM2, true);
                 UPDATEUI(cui, ID_GO_CUSTOM3, true);

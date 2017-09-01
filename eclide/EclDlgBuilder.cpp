@@ -275,7 +275,7 @@ void CBuilderDlg::CustomMenu(const AttrInfo & attrInfo) {
     if (attrInfo.AttributeType.length()) {
         if (boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ESDL)) {
             m_goButton.SetWindowTextW(_T("Publish"));
-            m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMIT, MF_BYCOMMAND | MF_STRING, ID_GO_CUSTOM1, _T("Publish"));
+            m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMIT, MF_BYCOMMAND | MF_STRING, ID_GO_SUBMIT, _T("Publish"));
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMITSELECTED, MF_BYCOMMAND | MF_STRING, ID_GO_GENERATE, _T("Generate ECL"));
             m_goButton.m_menu.DeleteMenu(ID_GO_COMPILE, MF_BYCOMMAND);
             m_goButton.m_menu.DeleteMenu(ID_GO_DEBUG, MF_BYCOMMAND);
