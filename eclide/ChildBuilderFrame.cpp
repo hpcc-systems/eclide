@@ -1091,18 +1091,22 @@ class CChildBuilderFrm : public CWtlMDIChildFrame<StlLinked<CBuilderFrame> >
 public:
     CChildBuilderFrm(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem) : m_workspaceItem(workspaceItem)
     {
-        m_view = new CBuilderFrame(attrInfo, workspaceItem);
-        g_builder_window[workspaceItem].first = this;
-        g_builder_window[workspaceItem].second = m_view;
+        construct(attrInfo, workspaceItem);
     }
     CChildBuilderFrm(IWorkspaceItem * workspaceItem) : m_workspaceItem(workspaceItem)
     {
         AttrInfo attrInfo;
-        CChildBuilderFrm(attrInfo, workspaceItem);
+        construct(attrInfo, workspaceItem);
     }
     virtual ~CChildBuilderFrm()
     {
         g_builder_window[m_workspaceItem] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
+    }
+
+    void construct(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem) {
+        m_view = new CBuilderFrame(attrInfo, workspaceItem);
+        g_builder_window[workspaceItem].first = this;
+        g_builder_window[workspaceItem].second = m_view;
     }
 
 #ifdef _DEBUG
