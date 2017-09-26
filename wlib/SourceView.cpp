@@ -903,7 +903,10 @@ bool CSourceCtrl::StartAutoComplete()
             m_langRef->GetLangNamesAutoC(1, list);
 
         CString module(word, periodPos);
-        m_langRef->GetAutoC((const TCHAR *)module, list);
+        if (m_type->IsTypeOf(ATTRIBUTE_TYPE_ECL))
+        {
+            m_langRef->GetAutoC((const TCHAR *)module, list);
+        }
         if (list.size())
         {
             std::_tstring listStr;
