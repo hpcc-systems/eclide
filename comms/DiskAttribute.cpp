@@ -432,9 +432,9 @@ public:
         }
     }
 
-    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const
+    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs, MetaInfo & metaInfo) const
     {
-        return CAttributeBase::PreProcess(action, overrideEcl, attrs, attrProcessed, errs);
+        return CAttributeBase::PreProcess(action, overrideEcl, attrs, attrProcessed, errs, metaInfo);
     }
 
     boost::signals::connection on_refresh_connect(const refresh_slot_type& s)
@@ -482,6 +482,15 @@ public:
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return m_pathStr.c_str();
+    }
+
+    AttrInfo AttributeToInfo()
+    {
+        IAttribute * self = this;
+        AttrInfo attrInfo;
+        attrInfo.Attribute = self;
+        attrInfo.AttributeType = self->GetType()->GetRepositoryCode();
+        return attrInfo;
     }
 };
 

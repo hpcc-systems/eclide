@@ -51,6 +51,19 @@ enum SecAccessFlags
     SecAccess_Full = 255
 };
 
+struct AttrInfo
+{
+    CComPtr<IAttribute> Attribute;
+    std::wstring AttributeType;
+};
+
+enum MetaInfoItem {
+    MetaInfoItemRepositoryCode = 0,
+    MetaInfoItemDesdlID,
+    MetaInfoItemDesdlVersion
+};
+typedef std::map<MetaInfoItem, std::_tstring> MetaInfo;
+
 __interface IAttribute;
 typedef StlLinked<IAttribute> IAttributeAdapt;
 typedef std::vector<IAttributeAdapt> IAttributeVector;
@@ -99,12 +112,13 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
     bool Delete();
     bool Exists() const;
     bool Create();
-    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs) const;
+    int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs, MetaInfo & metaInfo) const;
 
     boost::signals::connection on_refresh_connect(const refresh_slot_type& s);
     void Refresh(bool eclChanged = false, IAttribute * newAttrAsOldOneMoved = NULL, bool deleted = false);
     IRepository* GetRepository();
     IAttributeHistory * GetAsHistory();
+    AttrInfo AttributeToInfo();
 };
 
 typedef std::set<IAttributeAdapt> IAttributeSet;

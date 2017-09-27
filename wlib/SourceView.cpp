@@ -2,6 +2,7 @@
 #include "..\en_us\resource.h"
 
 #include "SourceView.h"
+#include "AttributeType.h"
 #include "UnicodeFile.h"
 #include "util.h"
 #include "eclparser.h"
@@ -96,7 +97,7 @@ static char * World_xpm[] = {
 
 HMODULE CSourceCtrl::hScintilla = 0;
 
-CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false)
+CSourceCtrl::CSourceCtrl(const AttrInfo & attrInfo, ISourceSlot * owner) : m_owner(owner), m_modified(false)
 {
     if (!hScintilla)
         hScintilla = ::LoadLibrary(CScintillaCtrlEx::GetLibraryName());
@@ -105,11 +106,22 @@ CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false
         m_WordCharacters = wordcharsWithDot;
     else
         m_WordCharacters = wordchars;
-    m_type = CreateIAttributeECLType();
+    
+    if (attrInfo.AttributeType.length())
+        m_type = AttributeTypeFromExtension(attrInfo.AttributeType);
+    else
+        m_type = CreateIAttributeECLType();
+
     m_other = NULL;
     m_recording = false;
     m_addedChar = '\0';
     m_targetType = TARGET_UNKNOWN;
+}
+
+CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false)
+{
+    AttrInfo attrInfo;
+    CSourceCtrl(attrInfo, owner);
 }
 
 void CSourceCtrl::SetSourceType(const CString & typeStr)
@@ -377,6 +389,10 @@ void CSourceCtrl::Reformat()
 
 void CSourceCtrl::DoInit()
 {
+    if (!m_type)
+    {
+        return;
+    }
     m_langRef = CreateLangRef(m_type);
     SetLexer(m_langRef->GetLexerType());
 
@@ -386,7 +402,7 @@ void CSourceCtrl::DoInit()
 
     InitColors(m_langRef);
 
-    SetTabWidth(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
+    SetTabWidth((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
     SetUseTabs(!(bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_USESPACES));
 
     if (GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_LINENO))
@@ -727,6 +743,11 @@ bool CSourceCtrl::IsDirty()
     return m_modified;
 }
 
+void CSourceCtrl::SetDirty(bool flag)
+{
+    m_modified = flag;
+}
+
 const int blockSize = 131072;
 
 bool CSourceCtrl::SaveFile(const CString & filename)
@@ -882,7 +903,10 @@ bool CSourceCtrl::StartAutoComplete()
             m_langRef->GetLangNamesAutoC(1, list);
 
         CString module(word, periodPos);
-        m_langRef->GetAutoC((const TCHAR *)module, list);
+        if (m_type->IsTypeOf(ATTRIBUTE_TYPE_ECL))
+        {
+            m_langRef->GetAutoC((const TCHAR *)module, list);
+        }
         if (list.size())
         {
             std::_tstring listStr;

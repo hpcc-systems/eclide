@@ -296,8 +296,12 @@ void CWorkunitTreeView::Update(HTREEITEM hItem, Dali::IWorkunitVectorCom* wus)
         for(WTL::CTreeItem curr = node.GetChild(); !curr.IsNull(); )
         {
             CTreeNode *node = reinterpret_cast<CTreeNode *>(curr.GetData());
-            CComQIPtr<CWorkunitNode> wuNode = node;
-            if(wuNode)
+            if (CComQIPtr<CLoadingNode> loadingNode = node)
+            {
+                curr = curr.GetNextSibling();
+                loadingNode->Delete();
+            }
+            else if (CComQIPtr<CWorkunitNode> wuNode = node)
             {
                 curr = curr.GetNextSibling();
                 wuNode->Delete();

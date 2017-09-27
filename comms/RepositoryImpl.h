@@ -283,7 +283,8 @@ public:
         GetAttributes(module.c_str(), attrs, true);
         for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
         {
-            results.push_back(itr->get()->GetLabel());
+            if (itr->get()->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL))
+                results.push_back(itr->get()->GetLabel());
         }
         return results.size();
     }
@@ -431,7 +432,8 @@ public:
             IAttributeVector dependantAttrs;	//  Don't forget these are ModFileAttributes...
             Dali::CEclExceptionVector errors;
             IAttributeBookkeep attrProcessed;
-            itr->get()->PreProcess(PREPROCESS_COMMIT, NULL, dependantAttrs, attrProcessed, errors);
+            MetaInfo metaInfo;
+            itr->get()->PreProcess(PREPROCESS_COMMIT, NULL, dependantAttrs, attrProcessed, errors, metaInfo);
             for(IAttributeVector::const_iterator itr = dependantAttrs.begin(); itr != dependantAttrs.end(); ++itr)
             {
                 StlLinked<IAttribute> attr = GetAttribute(itr->get()->GetModuleQualifiedLabel(), itr->get()->GetLabel(), itr->get()->GetType());
@@ -583,9 +585,9 @@ public:
         return ::CreateIWorkspaceItem(this, attr, path);
     }
 
-    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type)
+    IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, IAttribute * attr)
     {
-        return  ::CreateIWorkspaceItem(this, type);
+        return  ::CreateIWorkspaceItem(this, type, attr);
     }
 
     IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const CPersistMap & pm)

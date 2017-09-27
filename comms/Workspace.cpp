@@ -80,7 +80,7 @@ void save(const T &s, const char * filename)
         ofs.flush();
         ofs.close();
     } else {
-        _DBGLOG(LEVEL_WARNING, (boost::format("Faileed to open %1% for writing.") % filename).str().c_str());
+        _DBGLOG(LEVEL_WARNING, (boost::format("Failed to open %1% for writing.") % filename).str().c_str());
     }
 }
 
@@ -104,7 +104,7 @@ void restore(T &s, const char * filename)
             ATLASSERT(false);
         }
     } else {
-        _DBGLOG(LEVEL_WARNING, (boost::format("Faileed to open %1% for reading.") % filename).str().c_str());
+        _DBGLOG(LEVEL_WARNING, (boost::format("Failed to open %1% for reading.") % filename).str().c_str());
     }
 }
 //  ===========================================================================

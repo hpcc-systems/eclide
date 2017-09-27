@@ -8,7 +8,7 @@
 #include <EclCC.h> //commms
 #include <UtilFilesystem.h> //clib
 //  ===========================================================================
-CBuilderDlg::CBuilderDlg(IAttribute *attribute, IEclBuilderSlot * owner) : m_attribute(attribute), m_owner(owner), baseClass(owner)
+CBuilderDlg::CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner) : m_attribute(attrInfo.Attribute), m_owner(owner), baseClass(attrInfo, owner)
 {
     if (m_attribute)
     {
@@ -81,7 +81,8 @@ bool CBuilderDlg::DoSave(bool attrOnly)
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
         IAttributeBookkeep attrProcessed;
-        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors);
+        MetaInfo metaInfo;
+        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors, metaInfo);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
         if (attrs.size())
         {
@@ -101,6 +102,12 @@ bool CBuilderDlg::DoSave(bool attrOnly)
     if (!attrOnly)
         return DoFileSaveAs();
     return false;
+}
+
+bool CBuilderDlg::DoGenerate()
+{
+    m_view.SetDirty(true);
+    return DoSave(false);
 }
 
 CBookmarksFrame *CBuilderDlg::GetBookmarksFrame() {
@@ -262,6 +269,18 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     DoDataExchange();
 
     return 0;
+}
+
+void CBuilderDlg::CustomMenu(const AttrInfo & attrInfo) {
+    if (attrInfo.AttributeType.length()) {
+        if (boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ESDL)) {
+            m_goButton.SetWindowTextW(_T("Publish"));
+            m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMIT, MF_BYCOMMAND | MF_STRING, ID_GO_SUBMIT, _T("Publish"));
+            m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMITSELECTED, MF_BYCOMMAND | MF_STRING, ID_GO_GENERATE, _T("Generate ECL"));
+            m_goButton.m_menu.DeleteMenu(ID_GO_COMPILE, MF_BYCOMMAND);
+            m_goButton.m_menu.DeleteMenu(ID_GO_DEBUG, MF_BYCOMMAND);
+        }
+    }
 }
 
 LRESULT CBuilderDlg::OnInitialize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
@@ -458,7 +477,8 @@ void CBuilderDlg::DoCheckSyntax()
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
         IAttributeBookkeep attrProcessed;
-        m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, attrProcessed, errors);
+        MetaInfo metaInfo;
+        m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, attrProcessed, errors, metaInfo);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
     }
 }
@@ -631,6 +651,21 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
         break;
     case ID_GO_DEBUG:
         m_owner->OnButtonDebug();
+        break;
+    case ID_GO_GENERATE:
+        m_owner->OnButtonGo(Dali::WUActionGenerate);
+        break;
+    case ID_GO_CUSTOM1:
+        m_owner->OnButtonGo(Dali::WUActionCustom1);
+        break;
+    case ID_GO_CUSTOM2:
+        m_owner->OnButtonGo(Dali::WUActionCustom2);
+        break;
+    case ID_GO_CUSTOM3:
+        m_owner->OnButtonGo(Dali::WUActionCustom3);
+        break;
+    case ID_GO_CUSTOM4:
+        m_owner->OnButtonGo(Dali::WUActionCustom4);
         break;
     default:
         ATLASSERT(false);

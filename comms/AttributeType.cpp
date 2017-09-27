@@ -233,6 +233,11 @@ public:
         return false;
     }
 
+    bool IsTypeOf(const std::_tstring & attrType)
+    {
+        return boost::algorithm::equals(GetRepositoryCode(), attrType);
+    }
+
     void Update(const std::_tstring & description)
     {
         if (!description.empty())
@@ -257,6 +262,17 @@ IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension) {
         attrType = CreateIAttributeECLType();
 
     return attrType;
+}
+
+std::_tstring ExtensionWithoutDot(const std::_tstring & filename)
+{
+    std::_tstring ext = _T("");
+    if (HasValidExtension(filename))
+    {
+        ext = pathToWString(boost::filesystem::extension(filename));
+        boost::algorithm::replace_all(ext, _T("."), _T(""));
+    }
+    return ext;
 }
 
 void ClearAttributeTypeCache()

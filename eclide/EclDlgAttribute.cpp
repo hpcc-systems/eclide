@@ -11,7 +11,7 @@
 #include "BookmarksView.h"
 
 //  ===========================================================================
-CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_attribute(attribute), baseClass(owner)
+CAttributeDlg::CAttributeDlg(const AttrInfo & attrInfo, ISourceSlot * owner) : m_attribute(attrInfo.Attribute), baseClass(attrInfo, owner)
 {
     if (m_attribute)
     {
@@ -22,7 +22,7 @@ CAttributeDlg::CAttributeDlg(IAttribute *attribute, ISourceSlot * owner) : m_att
         CBookmarksFrame * pFrame = GetBookmarksFrame();
         if (pFrame)
         {
-            pFrame->ParseBookmarksEcl(attribute);
+            pFrame->ParseBookmarksEcl(attrInfo.Attribute);
         }
     }
 }
@@ -83,7 +83,8 @@ bool CAttributeDlg::DoSave(bool attrOnly)
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
         IAttributeBookkeep attrProcessed;
-        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors);
+        MetaInfo metaInfo;
+        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors, metaInfo);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
         if (attrs.size())
         {
@@ -137,7 +138,8 @@ void CAttributeDlg::DoCheckSyntax()
         IAttributeVector attrs;
         Dali::CEclExceptionVector errors;
         IAttributeBookkeep attrProcessed;
-        m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, attrProcessed, errors);
+        MetaInfo metaInfo;
+        m_attribute->PreProcess(PREPROCESS_SYNTAXCHECK, ecl, attrs, attrProcessed, errors, metaInfo);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
     }
 }
