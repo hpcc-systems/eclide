@@ -16,10 +16,11 @@ class CCurrent : public IAttributeHistory, public clib::CLockableUnknown
 private:
     CString m_text;
     CString m_modifiedBy;
+    IAttributeType *m_type;
 
 public:
     IMPLEMENT_CLOCKABLEUNKNOWN;
-    CCurrent(const CString & curr) : m_text(curr), m_modifiedBy(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))
+    CCurrent(IAttribute *attr, const CString & curr) : m_type(attr ? attr->GetType() : NULL), m_text(curr), m_modifiedBy(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))
     {
     }
     const TCHAR *GetID() const
@@ -40,7 +41,7 @@ public:
     }
     IAttributeType * GetType() const
     {
-        return NULL;	
+        return m_type;
     }
     const TCHAR *GetText(bool refresh, bool noBroadcast = false) const
     {
@@ -167,7 +168,7 @@ void CHistoryView::SetAttribute(IAttribute * attribute, const TCHAR *currEcl)
     if (m_loadedVersion == (int)attribute->GetVersion() && m_History.size() > 0)
     {
         m_eclStr = currEcl;
-        m_Current = new CCurrent(currEcl);
+        m_Current = new CCurrent(attribute,currEcl);
         m_History[0] = (IAttributeHistory*)m_Current;
         m_Sel1 = m_Sel2 = -1;
         DoRefresh();
@@ -186,7 +187,7 @@ void CHistoryView::SetAttribute(IAttribute * attribute, const TCHAR *currEcl)
         }
         if (currEcl)
         {
-            m_Current = new CCurrent(currEcl);
+            m_Current = new CCurrent(m_Attribute,currEcl);
             m_History.insert(m_History.begin(), m_Current.p);
         }
         if (IsWindow())
@@ -198,7 +199,7 @@ void CHistoryView::SetAttribute(IAttribute * attribute, const TCHAR *currEcl)
 
 void CHistoryView::SetCurrent(const CString & curr)
 {
-    m_Current = new CCurrent(curr);
+    m_Current = new CCurrent(m_Attribute,curr);
     m_History.push_back(m_Current.p);
 }
 
@@ -410,17 +411,14 @@ void CHistoryView::DoRefresh()
         m_Sel2 = sel2;
         if (m_Sel1 != -1 && m_Sel2 != -1)
         {
-            std::_tstring lhs, rhs;
             //CWaitCursor();
             //GetHeader(m_History[m_Sel1].get(), leftHeader);
-            rhs = m_History[m_Sel1]->GetText(false);
             //GetHeader(m_History[m_Sel2].get(), rightHeader);
-            lhs = m_History[m_Sel2]->GetText(false);
             //Compare(leftHeader, left, rightHeader, right, m_DiffPath.TempFileName(), m_LeftPath.TempFileName(), m_RightPath.TempFileName(), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_IGNOREWHITESPACE), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SHOWCRLF));
             //SetUrl(m_DiffPath.TempFileName());
             m_editLHS.SetWindowText((boost::_tformat(_T("%1% - %2%")) % m_History[m_Sel2]->GetModifiedDate() % m_History[m_Sel2]->GetModifiedBy()).str().c_str());
             m_editRHS.SetWindowText((boost::_tformat(_T("%1% - %2%")) % m_History[m_Sel1]->GetModifiedDate() % m_History[m_Sel1]->GetModifiedBy()).str().c_str());
-            m_diffView.SetText(lhs, rhs);
+            m_diffView.SetText(m_History[m_Sel2]->GetText(false), m_History[m_Sel1]->GetText(false), m_History[m_Sel2]->GetType(), m_History[m_Sel1]->GetType());
         }
         else if (m_Sel1 != -1)
         {
@@ -430,6 +428,7 @@ void CHistoryView::DoRefresh()
             CString txt = _T("/*");
             txt += txtHeader + _T("*/\r\n");
             txt += m_History[m_Sel1]->GetText(false);
+            m_ecl.InitLanguage(m_History[m_Sel1]->GetType());
             m_ecl.SetReadOnly(false);
             m_ecl.SetText(txt);  //TODO:  Retest
             m_ecl.SetReadOnly(true);
