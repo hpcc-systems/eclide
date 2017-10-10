@@ -389,18 +389,7 @@ void CSourceCtrl::Reformat()
 
 void CSourceCtrl::DoInit()
 {
-    if (!m_type)
-    {
-        return;
-    }
-    m_langRef = CreateLangRef(m_type);
-    SetLexer(m_langRef->GetLexerType());
-
-    CString names;
-    for (int i = 1; i <= m_langRef->GetLangCatCount(); ++i)
-        SetKeyWords(i - 1, m_langRef->GetLangNames(i, names));
-
-    InitColors(m_langRef);
+    InitLanguage();
 
     SetTabWidth((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
     SetUseTabs(!(bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_USESPACES));
@@ -467,6 +456,26 @@ void CSourceCtrl::DoInit()
     SetPasteConvertEndings(true);
 
     SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+}
+
+void CSourceCtrl::InitLanguage(IAttributeType *attrType)
+{
+    if (attrType) {
+        SetType(attrType);
+        SetSourceType(_T(""));
+    }
+    else if (!m_type)
+    {
+        return;
+    }
+    m_langRef = CreateLangRef(m_type);
+    SetLexer(m_langRef->GetLexerType());
+
+    CString names;
+    for (int i = 1; i <= m_langRef->GetLangCatCount(); ++i)
+        SetKeyWords(i - 1, m_langRef->GetLangNames(i, names));
+
+    InitColors(m_langRef);
 }
 
 void CSourceCtrl::InitColors(ILangRef * langRef)

@@ -11,7 +11,7 @@ CDiffView::CDiffView() : m_lhs(this), m_rhs(this)
 {
 }
 
-void CDiffView::SetText(const std::_tstring &lhs, const std::_tstring &rhs)
+void CDiffView::SetText(const std::_tstring &lhs, const std::_tstring &rhs, IAttributeType *lhsType, IAttributeType *rhsType)
 {
     CLineVector baseResult;
     CLineVector compResult;
@@ -66,6 +66,7 @@ void CDiffView::SetText(const std::_tstring &lhs, const std::_tstring &rhs)
     }
 
     m_lhs.SetReadOnly(false);
+    m_lhs.InitLanguage(lhsType);
     m_lhs.SetText(clhs.c_str());
     int line = 0;
     ATLASSERT(baseResult.size() == compResult.size());
@@ -105,6 +106,7 @@ void CDiffView::SetText(const std::_tstring &lhs, const std::_tstring &rhs)
     }
     m_lhs.SetReadOnly(true);
     m_rhs.SetReadOnly(false);
+    m_rhs.InitLanguage(rhsType);
     m_rhs.SetText(crhs.c_str());
     line = 0;
     for(CLineVector::iterator itr = compResult.begin(); itr != compResult.end(); ++itr)

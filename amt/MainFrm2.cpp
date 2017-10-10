@@ -251,7 +251,7 @@ void CMainFrame::ShowDiff(const std::_tstring & lhs, const std::_tstring & lhsHe
     m_targetEclView.SetText(rhs.c_str());
     m_targetEclView.SetReadOnly(true);
 
-    m_diffView.SetText(lhs, rhs);
+    m_diffView.SetText(lhs, rhs, NULL, NULL);
 }
 
 bool CMainFrame::GenerateHeader(IAttribute *attr, IAttribute *attrOther, std::_tstring & header)
