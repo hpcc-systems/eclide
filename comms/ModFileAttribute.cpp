@@ -45,6 +45,7 @@ protected:
     CString m_modifiedDate;
     CString m_modifiedBy;
     bool m_eclSet;
+    AttrInfo m_attrInfo;
 
     refresh_signal_type on_refresh;
 
@@ -421,8 +422,7 @@ public:
 
     AttrInfo AttributeToInfo()
     {
-        AttrInfo attrInfo;
-        return attrInfo;
+        return m_attrInfo;
     }
 };
 std::_tstring CModFileAttribute::attrEmptyString;

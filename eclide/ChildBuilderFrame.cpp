@@ -1213,13 +1213,13 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * worksp
     return ((CMDIChildWnd *)pChild)->GetSafeHwnd();
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int row, int col, int len)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int row, int col, int len)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
+        pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {
@@ -1232,13 +1232,13 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & fi
     return true;
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
+        pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {
@@ -1250,13 +1250,13 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & fi
     return true;
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
+        pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {
@@ -1273,13 +1273,13 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & fi
     return true;
 }
 
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu)
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu)
 {
     CChildBuilderFrm* pChild = NULL;
     if (!RestoreExisting(workspaceItem, &pChild))
     {
         ATLASSERT(!filePath.IsEmpty());
-        pChild = new CChildBuilderFrm(src->AttributeToInfo(), workspaceItem);
+        pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (!pChild->m_view->DoFileOpen(filePath))
         {

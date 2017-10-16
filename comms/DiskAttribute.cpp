@@ -48,6 +48,7 @@ protected:
     CString m_modifiedDate;
     CString m_modifiedBy;
     bool m_eclSet;
+    AttrInfo m_attrInfo;
 
     refresh_signal_type on_refresh;
 
@@ -487,10 +488,9 @@ public:
     AttrInfo AttributeToInfo()
     {
         IAttribute * self = this;
-        AttrInfo attrInfo;
-        attrInfo.Attribute = self;
-        attrInfo.AttributeType = self->GetType()->GetRepositoryCode();
-        return attrInfo;
+        m_attrInfo.Attribute = self;
+        m_attrInfo.AttributeType = self->GetType()->GetRepositoryCode();
+        return m_attrInfo;
     }
 };
 

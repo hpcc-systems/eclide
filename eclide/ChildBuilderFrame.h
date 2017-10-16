@@ -23,7 +23,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, const CString &ecl, IWorkspaceItem * wor
 HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem);
 HWND OpenBuilderMDI(CMainFrame* pFrame, Dali::IWorkunit *src, IWorkspaceItem * workspaceItem, BuilderStartup startWith=StartFirstResult);
 HWND OpenBuilderMDI(CMainFrame* pFrame, IAttribute *src, IWorkspaceItem * workspaceItem);
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked);
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int line, int col, int len);
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors);
-bool OpenFileBuilderMDI(CMainFrame* pFrame, IAttribute * src, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu);
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked);
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, int line, int col, int len);
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, const CSyntaxErrorVector & errors);
+bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString & filePath, IWorkspaceItem * workspaceItem, bool locked, Dali::IWorkunit *wu);
