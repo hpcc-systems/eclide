@@ -273,7 +273,7 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 
 void CBuilderDlg::CustomMenu(const AttrInfo & attrInfo) {
     if (attrInfo.AttributeType.length()) {
-        if (boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ESDL)) {
+        if (boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ECM)) {
             m_goButton.SetWindowTextW(_T("Publish"));
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMIT, MF_BYCOMMAND | MF_STRING, ID_GO_SUBMIT, _T("Publish"));
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMITSELECTED, MF_BYCOMMAND | MF_STRING, ID_GO_GENERATE, _T("Generate ECL"));

@@ -400,7 +400,7 @@ public:
         bool isDesdl = false;
         if (CComPtr<IAttribute> attr = m_dlgview.GetAttribute()) {
             attrQualifiedLabel = attr->GetQualifiedLabel(true);
-            isDesdl = attr->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ESDL);
+            isDesdl = attr->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ESDL) || attr->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECM);
         }
         m_tabbedChildWindow.AddTab(result->GetHwnd(), isDesdl ? attrQualifiedLabel.c_str() :_T("Submitted"), 0, 1);
 
@@ -863,7 +863,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
         std::_tstring ext = ExtensionWithoutDot(name.GetString());
 
         if (ext.length()) {
-            if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL))
+            if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECM))
             {
                 UPDATEUI(cui, ID_GO_GENERATE, true);
                 UPDATEUI(cui, ID_GO_SUBMIT, true);

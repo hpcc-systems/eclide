@@ -169,8 +169,11 @@ public:
     {
         if (m_fileExtension.empty())
         {
-            m_fileExtension = _T(".");
-            m_fileExtension += GetRepositoryCode();
+            m_fileExtension = GetRepositoryCode();
+        }
+        if (!boost::istarts_with(m_fileExtension, _T(".")))
+        {
+            m_fileExtension = _T(".") + m_fileExtension;
         }
         return m_fileExtension.c_str();
     }
@@ -250,8 +253,10 @@ static CacheT<std::_tstring, CAttributeType> AttributeTypeCache;
 
 IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension) {
     IAttributeType *attrType = NULL;
-    if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ECM))
+    if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ESDL))
         attrType = CreateIAttributeESDLType();
+    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ECM))
+        attrType = CreateIAttributeECMType();
     else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_SALT))
         attrType = CreateIAttributeSALTType();
     else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_KEL))
@@ -348,7 +353,9 @@ bool IsValidExtension(const std::_tstring & ext)
         return true;
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECLLIB))
         return true;
-    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECM) || boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ESDL))
+        return true;
+    else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_ECM))
         return true;
     else if (boost::algorithm::iends_with(ext, ATTRIBUTE_TYPE_SALT))
         return true;

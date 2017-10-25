@@ -115,8 +115,7 @@ public:
             copyStr.Format(_T("&Copy \"%s\""), s.attrs.begin()->get()->GetQualifiedLabel(true));
             m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr); 
 
-            CString attrType = s.attrs.begin()->get()->GetType()->GetFileExtension();
-            attrType = attrType.Mid(1, attrType.GetLength() - 1);
+            CString attrType = s.attrs.begin()->get()->GetType()->GetRepositoryCode();
             if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_DUD)) {
                 m.EnableMenuItem(ID_CHANGETYPELOCAL_DUD, MF_GRAYED);
             }
