@@ -2494,7 +2494,9 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName, int row, int col, int len
     boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
     std::_tstring filename = pathToWString(path.leaf());
     CComPtr<IRepository> rep = AttachRepository();
-    return OpenFileBuilderMDI(this, NULL, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false, row, col, len);
+    AttrInfo attrInfo;
+    attrInfo.AttributeType = ExtensionWithoutDot(filename);
+    return OpenFileBuilderMDI(this, attrInfo, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false, row, col, len);
 }
 
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
@@ -2513,7 +2515,9 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName)
         return TRUE;
     }
     CComPtr<IRepository> rep = AttachRepository();
-    return OpenFileBuilderMDI(this, NULL, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false);
+    AttrInfo attrInfo;
+    attrInfo.AttributeType = ExtensionWithoutDot(filename);
+    return OpenFileBuilderMDI(this, attrInfo, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false);
 }
 
 BOOL CMainFrame::DoFileSaveAll(bool attrsOnly)
@@ -2887,7 +2891,7 @@ void CMainFrame::OpenBuilder(IAttribute * attribute)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, attribute, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
         ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, attribute));
@@ -3011,7 +3015,7 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
         {
             std::_tstring label, path;
-            ::OpenFileBuilderMDI(this, NULL, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), errors);
+            ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), errors);
         }
         else
         {
@@ -3063,7 +3067,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, attribute, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
     {
@@ -3103,7 +3107,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu)
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
         std::_tstring label, path;
-        ::OpenFileBuilderMDI(this, attribute, eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
     }
     else
     {

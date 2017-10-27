@@ -173,6 +173,7 @@ public:
     void Reformat();
 
     void DoInit();
+    void InitLanguage(IAttributeType *attrType = NULL);
     void InitColors(ILangRef * langRef);
 
     int GetText(CString & pstrText) const;

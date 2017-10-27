@@ -55,6 +55,7 @@ protected:
     CString m_modifiedBy;
     bool m_eclSet;
     SecAccessFlags m_access;
+    AttrInfo m_attrInfo;
 
     refresh_signal_type on_refresh;
 
@@ -82,10 +83,9 @@ public:
 
     AttrInfo AttributeToInfo()
     {
-        AttrInfo attrInfo;
-        attrInfo.Attribute = this;
-        attrInfo.AttributeType = GetType()->GetRepositoryCode();
-        return attrInfo;
+        m_attrInfo.Attribute = this;
+        m_attrInfo.AttributeType = GetType()->GetRepositoryCode();
+        return m_attrInfo;
     }
 
     void UpdateID()
