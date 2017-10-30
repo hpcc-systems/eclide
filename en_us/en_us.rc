@@ -2548,7 +2548,7 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_FILE_OPENATTRIBUTE   "Open an existing file\nOpen"
+    ID_FILE_OPENATTRIBUTE   "Open an existing attribute\nOpen"
     ID_FILE_OPENWORKUNIT    "Open an existing workunit\nOpen"
     ID_EDIT_COPYASCSV       "Copy Selection To CSV File and Launch Application"
     ID_FILE_SAVE_ASXML      "Save document to file in XML format"

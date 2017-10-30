@@ -373,6 +373,10 @@ public:
             attr = GetAttribute(currModule.c_str(), moduleHelper.GetModuleLabel(), type, version, sandbox, text);		
         if (attr.get() == NULL)
             attr = GetAttribute(_T("default"), moduleHelper.GetAttributeLabel(), type, version, sandbox, text);
+        if (attr.get() == NULL)
+        {
+            _DBGLOG(LEVEL_WARNING, (boost::format("Attribute not found - %1%") % CT2A(modAttrLabel, CP_UTF8)).str().c_str());
+        }
         ATLASSERT(attr.get());
         return attr.get();
     }
