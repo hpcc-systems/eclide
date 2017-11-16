@@ -1136,7 +1136,7 @@ protected:
                 if (response.Workunit->Wuid)
                 {
                     std::_tstring wuid = *response.Workunit->Wuid;
-                    CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password));
+                    CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password), true);
 
                     _ns6__WUUpdate request;
                     request.Wuid = &wuid;
@@ -1296,7 +1296,7 @@ protected:
                 if (response.Workunit->Wuid)
                 {
                     std::_tstring wuid = *response.Workunit->Wuid;
-                    CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password));
+                    CSoapInitialize<WsWorkunitsServiceSoapProxy> server(m_config.GetUrl(url), m_config.GetUserId(user), m_config.GetPassword(password), true);
 
                     _ns6__WUUpdate request;
                     request.Wuid = &wuid;

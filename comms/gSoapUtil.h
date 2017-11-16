@@ -20,29 +20,29 @@ protected:
     std::_tstring m_clientError;
 
 public:
-    CSoapInitialize(const std::_tstring & url, const std::_tstring & user, const std::_tstring & password) : T()
+    CSoapInitialize(const std::_tstring & url, const std::_tstring & user, const std::_tstring & password, bool large = false) : T()
     {
-        Init(url, user, password);
+        Init(url, user, password, large);
     }
-    CSoapInitialize(const std::_tstring & url) : T()
+    CSoapInitialize(const std::_tstring & url, bool large = false) : T()
     {
         CString user = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
         CString password = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD);
-        Init(url, static_cast<const TCHAR *>(user), static_cast<const TCHAR *>(password));
+        Init(url, static_cast<const TCHAR *>(user), static_cast<const TCHAR *>(password), large);
     }
-    CSoapInitialize(const CString & url, const CString & user, const CString & password, int _connect_timeout, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT) : T()
+    CSoapInitialize(const CString & url, const CString & user, const CString & password, bool large, int _connect_timeout, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT) : T()
     {
-        Init(url, user, password, _connect_timeout, _send_timeout, _recv_timeout);
+        Init(url, user, password, large, _connect_timeout, _send_timeout, _recv_timeout);
     }
-    CSoapInitialize(const CString & url, const CString & user, const CString & password) : T()
+    CSoapInitialize(const CString & url, const CString & user, const CString & password, bool large = false) : T()
     {
-        Init(url, user, password);
+        Init(url, user, password, large);
     }
-    CSoapInitialize(const CString & url) : T()
+    CSoapInitialize(const CString & url, bool large = false) : T()
     {
         CString user = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
         CString password = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD);
-        Init(url, user, password);
+        Init(url, user, password, large);
     }
 
     //CSoapInitialize(const std::_tstring & url, int send_timeout = 0, int recv_timeout = RECV_TIMEOUT) : T()
@@ -77,11 +77,15 @@ public:
         return m_clientError.c_str();
     }
 private:
-    void Init(const std::_tstring & url, const std::_tstring & user, const std::_tstring & password, int _connect_timeout = 0, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT)
+    void Init(const std::_tstring & url, const std::_tstring & user, const std::_tstring & password, bool large, int _connect_timeout = 0, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT)
     {
         m_url = CT2A(url.c_str());
         m_url += "?ClientID=ECLIDE-";
         m_url += BUILD_TAG;
+        if (large) {
+            m_url += "&upload_";
+        }
+
         m_user = CT2A(user.c_str());
         m_password = CT2A(password.c_str());
 
@@ -102,9 +106,9 @@ private:
         namespaces = GetNamespace(url);
     }
 
-    void Init(const CString & url, const CString & user, const CString & password, int _connect_timeout = 0, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT)
+    void Init(const CString & url, const CString & user, const CString & password, bool large, int _connect_timeout = 0, int _send_timeout = 0, int _recv_timeout = RECV_TIMEOUT)
     {
-        Init(std::_tstring(static_cast<const TCHAR *>(url)), static_cast<const TCHAR *>(user), static_cast<const TCHAR *>(password), _connect_timeout, _send_timeout, _recv_timeout);
+        Init(std::_tstring(static_cast<const TCHAR *>(url)), static_cast<const TCHAR *>(user), static_cast<const TCHAR *>(password), large, _connect_timeout, _send_timeout, _recv_timeout);
     }
 };
 
