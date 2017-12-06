@@ -1068,12 +1068,12 @@ void CMainFrame::InitializeRibbon()
         //pBtnNew->AddSubItem (new CMFCRibbonButton (ID_FILE_NEWSPRAY, _T("New &Spray..."), 0, 0, TRUE));
         pMainPanel->Add(pBtnNew);
 
-        CMFCRibbonButton * pBtnOpen = new CMFCRibbonButton(ID_FILE_OPEN, _T("&Open...\no"), 1, 1);
+        m_openRibbonButton = new CMFCRibbonButton(ID_FILE_OPEN, _T("&Open...\no"), 1, 1);
         //pBtnOpen->AddSubItem(new CMFCRibbonLabel(_T("Open item")));
-        pBtnOpen->AddSubItem(new CMFCRibbonButton(ID_FILE_OPENBUILDER, _T("Open &Builder..."), 1, 1, TRUE));
-        pBtnOpen->AddSubItem(new CMFCRibbonButton(ID_FILE_OPENATTRIBUTE, _T("Open &Source..."), 1, 1, TRUE));
-        pBtnOpen->AddSubItem(new CMFCRibbonButton(ID_FILE_OPENWORKUNIT, _T("Open &Workunit..."), 1, 1, TRUE));
-        pMainPanel->Add(pBtnOpen);
+        m_openRibbonButton->AddSubItem(new CMFCRibbonButton(ID_FILE_OPENBUILDER, _T("Open &Builder..."), 1, 1, TRUE));
+        m_openRibbonButton->AddSubItem(new CMFCRibbonButton(ID_FILE_OPENATTRIBUTE, _T("Open &Source..."), 1, 1, TRUE));
+        m_openRibbonButton->AddSubItem(new CMFCRibbonButton(ID_FILE_OPENWORKUNIT, _T("Open &Workunit..."), 1, 1, TRUE));
+        pMainPanel->Add(m_openRibbonButton);
 
         pMainPanel->Add(new CMFCRibbonButton(ID_FILE_SAVE, _T("&Save\ns"), 2, 2));
         pMainPanel->Add(new CMFCRibbonButton(ID_FILE_SAVE_AS, _T("Save &As..."), 3, 3));
@@ -2113,6 +2113,14 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
         {
             DestroyWindow();
             return;
+        }
+        if (IsLocalRepositoryEnabled())
+        {
+            int i = m_openRibbonButton->FindSubItemIndexByID(ID_FILE_OPENATTRIBUTE);
+            if (i >= 0)
+            {
+                m_openRibbonButton->RemoveSubItem(i);
+            }
         }
     }
 

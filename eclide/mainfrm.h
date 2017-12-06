@@ -367,6 +367,7 @@ public:
     CMFCRibbonButton* m_graphRefresh;
     CMFCRibbonButton * m_buttMacroRecord;
     CMFCRibbonComboBox * m_workspaceCombo;
+    CMFCRibbonButton* m_openRibbonButton;
 
     RIBBON m_prevRibbon;
     CDockState m_dockStateDebug;
