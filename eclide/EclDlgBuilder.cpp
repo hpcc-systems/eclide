@@ -265,6 +265,14 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
 
     m_view.SetSourceType(m_comboQueueClusterCtrl->m_value);
+    if (m_attribute != NULL)
+    {
+        if (m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ESDL) || m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECM))
+        {
+            m_comboQueueClusterCtrl->EnableWindow(FALSE);
+            m_advancedCtrl.EnableWindow(FALSE);
+        }
+    }
 
     DoDataExchange();
 
