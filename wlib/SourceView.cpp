@@ -391,7 +391,7 @@ void CSourceCtrl::DoInit()
 {
     InitLanguage();
 
-    SetTabWidth((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
+    SetTabWidth((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH) * 2);
     SetUseTabs(!(bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_USESPACES));
 
     if (GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_LINENO))
