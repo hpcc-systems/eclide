@@ -7,6 +7,7 @@
 #include "md5.hpp"
 #include "EclCC.h"
 #include <UtilFilesystem.h>
+#include "cmdProcess.h"
 
 #if _COMMS_VER < 68200
 using namespace WsAttributes;
@@ -111,6 +112,44 @@ public:
             }
         }
         return 0;
+    }
+
+    int GetAllFileModules(IAttributeVector & attributes, const std::_tstring & searchText, const boost::filesystem::wpath & path) const
+    {
+        std::_tstring in, out, err;
+        std::_tstring pathname = pathToWString(path);
+        typedef std::vector<std::_tstring> split_vector_type;
+        split_vector_type tokens;
+        boost::algorithm::split(tokens, pathname, boost::algorithm::is_any_of(_T("\\")), boost::algorithm::token_compress_on);
+        std::_tstring last = tokens.at(tokens.size() - 1);
+
+        std::_tstring cmd = _T("findstr /spim \"") + searchText + _T("\" \"") + pathname + _T("\\*.*\"");
+        int result = runProcess(cmd, pathname, _T(""), in, out, err);
+
+        split_vector_type lines;
+        boost::algorithm::split(lines, out, boost::algorithm::is_any_of(_T("\r\n")), boost::algorithm::token_compress_on);
+        for (split_vector_type::const_iterator itr = lines.begin(); itr != lines.end(); ++itr)
+        {
+            std::_tstring filepath = *itr;
+            if (IsValidExtension(filepath))
+            {
+                size_t pos = filepath.find(last);
+                std::_tstring moduleName = filepath.substr(pos);
+                pos = moduleName.rfind(_T("\\"));
+                moduleName = moduleName.substr(0, pos);
+                algo::replace_all(moduleName, _T("\\"), _T("."));
+                std::_tstring label = CA2T(boost::filesystem::basename(filepath).c_str());
+                std::_tstring type = CA2T(boost::filesystem::extension(filepath).c_str());
+
+                StlLinked<IAttribute> attribute = CreateDiskAttribute(this, moduleName, label, type, filepath, _T(""), false);
+                if (attribute.isLinked())
+                {
+                   attributes.push_back(attribute);
+                }
+            }
+        }
+
+        return attributes.size();
     }
 
     int GetAllModules(const boost::filesystem::wpath & path, const std::_tstring & module, IModuleVector & modules, IModuleHierarchy & moduleHierarchy, bool noRefresh = true, bool noBroadcast = false) const
@@ -311,26 +350,9 @@ public:
     {
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
         {
-            for(StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr) 
+            for (StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
             {
-                IModuleVector modules;
-                IModuleHierarchy moduleHierarchy;
-                GetAllModules(itr->second, _T(""), modules, moduleHierarchy, true, true);
-
-                for (IModuleVector::const_iterator m_itr = modules.begin(); m_itr != modules.end(); ++m_itr)
-                {
-                    if (module.empty() || algo::iequals(module, m_itr->get()->GetQualifiedLabel()))
-                    {
-                        IAttributeVector attrs;
-                        m_itr->get()->GetAttributes(attrs, true);
-                        for (IAttributeVector::const_iterator a_itr = attrs.begin(); a_itr != attrs.end(); ++a_itr)
-                        {
-                            std::_tstring ecl = a_itr->get()->GetText(false, true);
-                            if (algo::icontains(ecl, searchText))
-                                attributes.push_back(a_itr->get());
-                        }
-                    }
-                }
+                GetAllFileModules(attributes, searchText, itr->second);
             }
         }
 
