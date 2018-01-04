@@ -69,7 +69,7 @@ BOOL CSourceDataView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
     NMHDR *nmhdr = (NMHDR *)lParam;
     if (nmhdr->hwndFrom == m_eclView)
     {
-        Scintilla::SCNotification * notification = (Scintilla::SCNotification *)lParam;
+        SCNotification * notification = (SCNotification *)lParam;
         switch (notification->nmhdr.code)
         {
         case SCN_MARGINCLICK: 

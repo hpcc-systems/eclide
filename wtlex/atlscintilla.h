@@ -64,15 +64,15 @@ public:
 
    // Operations
 
-   Scintilla::CharacterRange GetSelection() const
+   Sci_CharacterRange GetSelection() const
    {
       ATLASSERT(::IsWindow(m_hWnd));
-      Scintilla::CharacterRange cr;
+      Sci_CharacterRange cr;
       cr.cpMin = GetSelectionStart();
       cr.cpMax = GetSelectionEnd();
       return cr;
    }
-   void SetSel(Scintilla::CharacterRange cr)
+   void SetSel(Sci_CharacterRange cr)
    {
       ATLASSERT(::IsWindow(m_hWnd));
       ::SendMessage(m_hWnd, SCI_SETSEL, (WPARAM) cr.cpMin, (LPARAM) cr.cpMax);
@@ -100,7 +100,7 @@ public:
    {
       ATLASSERT(::IsWindow(m_hWnd));
       ATLASSERT(pstrText);
-      Scintilla::TextRange tr;
+      Sci_TextRange tr;
       tr.chrg.cpMin = iStart;
       tr.chrg.cpMax = iEnd;
       tr.lpstrText = pstrText;
@@ -205,7 +205,7 @@ public:
       ATLASSERT(::IsWindow(m_hWnd));
       ::SendMessage(m_hWnd, SCI_SETSAVEPOINT, 0, 0L);
    }
-   int _GetStyledText(Scintilla::TextRange* pTextRange)
+   int _GetStyledText(Sci_TextRange* pTextRange)
    {
       ATLASSERT(::IsWindow(m_hWnd));
       ATLASSERT(pTextRange);
@@ -1021,7 +1021,7 @@ public:
       ATLASSERT(::IsWindow(m_hWnd));
       return (int) ::SendMessage(m_hWnd, SCI_GETPRINTCOLOURMODE, 0, 0L);
    }
-   long _FindText(int iFlags, Scintilla::TextToFind* ft)
+   long _FindText(int iFlags, Sci_TextToFind* ft)
    {
       ATLASSERT(::IsWindow(m_hWnd));
       return (long) ::SendMessage(m_hWnd, SCI_FINDTEXT, (WPARAM) iFlags, (LPARAM) ft);
@@ -1092,7 +1092,7 @@ public:
    }
    int GetSelText(_CSTRING_NS::CString & pstrText)
    {
-	   Scintilla::CharacterRange chrg = GetSelection();
+	   Sci_CharacterRange chrg = GetSelection();
 		if(chrg.cpMin != chrg.cpMax)
 		{
 			ATLASSERT(chrg.cpMax > chrg.cpMin);
@@ -1110,7 +1110,7 @@ public:
       ATLASSERT(pstrText);
       return (int) ::SendMessage(m_hWnd, SCI_GETSELTEXT, 0, (LPARAM) pstrText);
    }
-   int _GetTextRange(Scintilla::TextRange* pTextRange)
+   int _GetTextRange(Sci_TextRange* pTextRange)
    {
       ATLASSERT(::IsWindow(m_hWnd));
       ATLASSERT(pTextRange);

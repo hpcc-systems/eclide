@@ -24,6 +24,10 @@ set ( SRCS
 		${SCINTILLA_INCLUDE_DIR}/Src/Catalogue.h
 		${SCINTILLA_INCLUDE_DIR}/Src/CellBuffer.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/CellBuffer.h
+		${SCINTILLA_INCLUDE_DIR}/Src/CaseConvert.cxx
+		${SCINTILLA_INCLUDE_DIR}/Src/CaseConvert.h
+		${SCINTILLA_INCLUDE_DIR}/Src/CaseFolder.cxx
+		${SCINTILLA_INCLUDE_DIR}/Src/CaseFolder.h
 		${SCINTILLA_INCLUDE_DIR}/Src/CharClassify.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/CharClassify.h
 		${SCINTILLA_INCLUDE_DIR}/Src/ContractionState.cxx
@@ -34,6 +38,10 @@ set ( SRCS
 		${SCINTILLA_INCLUDE_DIR}/Src/Document.h
 		${SCINTILLA_INCLUDE_DIR}/Src/Editor.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/Editor.h
+		${SCINTILLA_INCLUDE_DIR}/Src/EditModel.cxx
+		${SCINTILLA_INCLUDE_DIR}/Src/EditModel.h
+		${SCINTILLA_INCLUDE_DIR}/Src/EditView.cxx
+		${SCINTILLA_INCLUDE_DIR}/Src/EditView.h
 		${SCINTILLA_INCLUDE_DIR}/Src/ExternalLexer.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/ExternalLexer.h
 		${SCINTILLA_INCLUDE_DIR}/Src/FontQuality.h
@@ -44,6 +52,8 @@ set ( SRCS
 		#${SCINTILLA_INCLUDE_DIR}/Src/KeyWords.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/LineMarker.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/LineMarker.h
+		${SCINTILLA_INCLUDE_DIR}/Src/MarginView.cxx
+		${SCINTILLA_INCLUDE_DIR}/Src/MarginView.h
 		${SCINTILLA_INCLUDE_DIR}/Src/Partitioning.h
 		${SCINTILLA_INCLUDE_DIR}/Src/PerLine.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/PerLine.h
@@ -61,7 +71,7 @@ set ( SRCS
 		${SCINTILLA_INCLUDE_DIR}/Src/SplitVector.h
 		${SCINTILLA_INCLUDE_DIR}/Src/Style.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/Style.h
-		${SCINTILLA_INCLUDE_DIR}/Src/SVector.h
+		#${SCINTILLA_INCLUDE_DIR}/Src/SVector.h
 		${SCINTILLA_INCLUDE_DIR}/Src/UniConversion.cxx
 		${SCINTILLA_INCLUDE_DIR}/Src/UniConversion.h
 		${SCINTILLA_INCLUDE_DIR}/Src/ViewStyle.cxx
@@ -72,6 +82,8 @@ set ( SRCS
 
 		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.cxx
 		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.h
+		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterCategory.cxx
+		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterCategory.h
 		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterSet.cxx
 		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterSet.h
 		${SCINTILLA_INCLUDE_DIR}/LexLib/LexAccessor.h
@@ -94,6 +106,8 @@ set ( SRCS
 #		${SCINTILLA_INCLUDE_DIR}/Win32/PlatformRes.h
 		${SCINTILLA_INCLUDE_DIR}/Win32/PlatWin.cxx
 		${SCINTILLA_INCLUDE_DIR}/Win32/ScintillaWin.cxx
+		${SCINTILLA_INCLUDE_DIR}/Win32/HanjaDic.cxx
+		${SCINTILLA_INCLUDE_DIR}/Win32/HanjaDic.h
 		
 		${SCINTILLA_INCLUDE_DIR}/Win32/ScintRes.rc
 	)
@@ -114,6 +128,7 @@ add_library ( ECLEDITOR SHARED
 
 target_link_libraries( ECLEDITOR
 	imm32
+	Msimg32
 	)
 
 install ( TARGETS ECLEDITOR RUNTIME DESTINATION bin )

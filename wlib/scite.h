@@ -392,7 +392,7 @@ public:
         const char *root = linebuf + startword;
         int rootlen = current - startword;
         int doclen = pT->GetLength();
-        Scintilla::TextToFind ft = {{0, 0}, 0, {0, 0}};
+        Sci_TextToFind ft = {{0, 0}, 0, {0, 0}};
         ft.lpstrText = const_cast<char*>(root);
         ft.chrg.cpMin = 0;
         ft.chrgText.cpMin = 0;
@@ -622,7 +622,7 @@ public:
     void CharAdded(char ch) 
     {
         T* pT = static_cast<T*>(this);
-        Scintilla::CharacterRange crange = pT->GetSelection();
+        Sci_CharacterRange crange = pT->GetSelection();
         int selStart = crange.cpMin;
         int selEnd = crange.cpMax;
         if ((selEnd == selStart) && (selStart > 0)) 
@@ -937,7 +937,7 @@ public:
     void AutomaticIndentation(char ch) 
     {
         T* pT = static_cast<T*>(this);
-        Scintilla::CharacterRange crange = pT->GetSelection();
+        Sci_CharacterRange crange = pT->GetSelection();
         int selStart = crange.cpMin;
         int curLine = GetCurrentLineNumber();
         int thisLineStart = pT->PositionFromLine(curLine);
@@ -1256,7 +1256,7 @@ public:
         pdlg.hDevNames = m_hDevNames;
 
         // See if a range has been selected
-        Scintilla::CharacterRange crange = pT->GetSelection();
+        Sci_CharacterRange crange = pT->GetSelection();
         int startPos = crange.cpMin;
         int endPos = crange.cpMax;
 
@@ -1422,7 +1422,7 @@ public:
         }
 
         // We must substract the physical margins from the printable area
-        Scintilla::RangeToFormat frPrint;
+        Sci_RangeToFormat frPrint;
         frPrint.hdc = hdc;
         frPrint.hdcTarget = hdc;
         frPrint.rc.left = rectMargins.left - rectPhysMargins.left;
