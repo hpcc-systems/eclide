@@ -265,6 +265,14 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
 
     m_view.SetSourceType(m_comboQueueClusterCtrl->m_value);
+    if (m_attribute != NULL)
+    {
+        if (m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ESDL) || m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECM))
+        {
+            m_comboQueueClusterCtrl->EnableWindow(FALSE);
+            m_advancedCtrl.EnableWindow(FALSE);
+        }
+    }
 
     DoDataExchange();
 
@@ -273,7 +281,7 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 
 void CBuilderDlg::CustomMenu(const AttrInfo & attrInfo) {
     if (attrInfo.AttributeType.length()) {
-        if (boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ESDL)) {
+        if (boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ECM)) {
             m_goButton.SetWindowTextW(_T("Publish"));
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMIT, MF_BYCOMMAND | MF_STRING, ID_GO_SUBMIT, _T("Publish"));
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMITSELECTED, MF_BYCOMMAND | MF_STRING, ID_GO_GENERATE, _T("Generate ECL"));

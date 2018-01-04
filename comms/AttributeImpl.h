@@ -110,7 +110,12 @@ public:
             return 0;
         }
         attrProcessed[std::make_pair(action, label)] = true;
-        metaInfo[MetaInfoItemRepositoryCode] = GetType()->GetRepositoryCode();
+        std::_tstring attrTypeStr = GetType()->GetRepositoryCode();
+        if (::boost::iequals(attrTypeStr, ATTRIBUTE_TYPE_ECM))
+        {
+            attrTypeStr = ATTRIBUTE_TYPE_ESDL;
+        }
+        metaInfo[MetaInfoItemRepositoryCode] = attrTypeStr;
 
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         CComPtr<IEclCC> eclcc = CreateIEclCC();
@@ -125,7 +130,7 @@ public:
                 eclFolders += eclcc->GetEclFolder(i);
             }
         }
-        std::string batchFile = CT2A(GetType()->GetRepositoryCode());
+        std::string batchFile = CT2A(attrTypeStr.c_str());
         batchFile += ".bat";
         boost::filesystem::path folder;
         if (locatePlugin(batchFile, folder)) 
@@ -243,7 +248,7 @@ public:
                         }
                         else
                             exception->m_fileName = err.location.c_str();
-                        exception->m_fileType = GetType()->GetRepositoryCode();
+                        exception->m_fileType = attrTypeStr.c_str();
                         errs.push_back(exception);
                     }
                 }
