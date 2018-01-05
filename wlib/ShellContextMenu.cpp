@@ -39,7 +39,7 @@ void CShellContextMenu::InsertTortoiseGitMenuItems(const std::_tstring & filePat
         for (int i = menuIndex; i < menuIndex + insertedCount; ++i) {
             CString str;
             m.GetMenuString(i, str, MF_BYPOSITION);
-            if (!isGitFolder && str.Find(_T("Git Sync")) >= 0) 
+            if (!isGitFolder && (str.Find(_T("Git Sync")) >= 0 || str.Find(_T("Git &Commit")) >= 0))
                 isGitFolder = true;
             else if (!(isGitFolder && (str.Find(_T("Git &Commit")) >= 0 || str.Find(_T("TortoiseGit")) >= 0))) 
             {
