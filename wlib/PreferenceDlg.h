@@ -27,6 +27,7 @@ static const SectionLabelDefault GLOBAL_TREE(SectionLabel(EditorSection, _T("Tre
 static const SectionLabelDefault GLOBAL_FONT(SectionLabel(EditorSection, _T("Font")), _T("Courier New"));
 static const SectionLabelDefault GLOBAL_FONTSIZE(SectionLabel(EditorSection, _T("FontSize")), 10);
 static const SectionLabelDefault GLOBAL_TOOLTIP(SectionLabel(EditorSection, _T("Tooltip")), 1);
+static const SectionLabelDefault GLOBAL_SHOW_WS(SectionLabel(EditorSection, _T("ShowWS")), false);
 static const SectionLabelDefault GLOBAL_TARGETCOLOR(SectionLabel(EditorSection, _T("TargetColor")), 0);
 static const SectionLabelDefault GLOBAL_SYNCREPOSITORY(SectionLabel(EditorSection, _T("SyncRepository")), 0);
 static const SectionLabelDefault GLOBAL_AUTOCOMPLETEONDOT(SectionLabel(EditorSection, _T("AutoCompleteOnDot")), 1);

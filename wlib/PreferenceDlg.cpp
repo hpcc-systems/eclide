@@ -519,6 +519,7 @@ protected:
 	int m_LineNo;
 	int m_Tree;
 	int m_Tooltip;
+	int m_ShowWS;
 	int m_TargetColor;
 	int m_SyncRepository;
 	int m_autoCompleteOnDot;
@@ -547,6 +548,7 @@ public:
 		m_LineNo = m_config->Get(GLOBAL_LINENO);
 		m_Tree = m_config->Get(GLOBAL_TREE);
 		m_Tooltip = m_config->Get(GLOBAL_TOOLTIP);
+		m_ShowWS = m_config->Get(GLOBAL_SHOW_WS);
 		m_TargetColor = m_config->Get(GLOBAL_TARGETCOLOR);
 		m_SyncRepository = m_config->Get(GLOBAL_SYNCREPOSITORY);
 		m_autoCompleteOnDot = m_config->Get(GLOBAL_AUTOCOMPLETEONDOT);
@@ -567,6 +569,7 @@ public:
 		m_config->Set(GLOBAL_LINENO, m_LineNo);
 		m_config->Set(GLOBAL_TREE, m_Tree);
 		m_config->Set(GLOBAL_TOOLTIP, m_Tooltip);
+		m_config->Set(GLOBAL_SHOW_WS, m_ShowWS);
 		m_config->Set(GLOBAL_TARGETCOLOR, m_TargetColor);
 		m_config->Set(GLOBAL_SYNCREPOSITORY, m_SyncRepository);
 		m_config->Set(GLOBAL_AUTOCOMPLETEONDOT, m_autoCompleteOnDot);
@@ -596,6 +599,7 @@ public:
 		COMMAND_HANDLER(IDC_CHECK_MAINTAININDENT, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_OPENMDICHILDMAX, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_TOOLTIP, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_CHECK_SHOWWS, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_TARGETCOLOR, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_SYNCREPOSITORY, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_AUTOCOMPLETEONDOT, BN_CLICKED, OnCheckClicked)
@@ -614,6 +618,7 @@ public:
 		DDX_CHECK(IDC_CHECK_LINENO, m_LineNo)
 		DDX_CHECK(IDC_CHECK_TREE, m_Tree)
 		DDX_CHECK(IDC_CHECK_TOOLTIP, m_Tooltip)
+		DDX_CHECK(IDC_CHECK_SHOWWS, m_ShowWS)
 		DDX_CHECK(IDC_CHECK_TARGETCOLOR, m_TargetColor)
 		DDX_CHECK(IDC_CHECK_SYNCREPOSITORY, m_SyncRepository)
 		DDX_CHECK(IDC_CHECK_AUTOCOMPLETEONDOT, m_autoCompleteOnDot)

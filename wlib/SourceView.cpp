@@ -397,6 +397,8 @@ void CSourceCtrl::DoInit()
     if (GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_LINENO))
         SetMarginWidthN(0, 32);
 
+    SetViewWS((bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SHOW_WS));
+
     if (GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TREE))
     {
         SetMarginSensitiveN(1, true);

@@ -369,13 +369,15 @@ BEGIN
     CONTROL         "Open MDI Children Maximized",IDC_CHECK_OPENMDICHILDMAX,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,54,111,10
     CONTROL         "Tooltips",IDC_CHECK_TOOLTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,227,54,52,10
+    CONTROL         "Show Whitespace Characters",IDC_CHECK_SHOWWS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,68,111,10
     CONTROL         "Keep Repository Synchronised",IDC_CHECK_SYNCREPOSITORY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,99,113,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,107,113,10
     CONTROL         "Auto Complete on Period",IDC_CHECK_AUTOCOMPLETEONDOT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,113,95,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,121,95,10
     CONTROL         "Double Click Selects Qualified Label",IDC_CHECK_DOUBLECLICKSEL,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,127,127,10
-    CONTROL         "Target Background Colors",IDC_CHECK_TARGETCOLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,85,97,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,135,127,10
+    CONTROL         "Target Background Colors",IDC_CHECK_TARGETCOLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,93,97,10
 END
 
 IDD_PREF_COLOR DIALOGEX 0, 0, 290, 157
@@ -1351,6 +1353,7 @@ BEGIN
             MENUITEM "Line Numbers\tCtrl+L",        ID_EDIT_TOGGLELINENUMBERS
             MENUITEM "Word Wrap\tCtrl+W",           ID_EDIT_WORDWRAP
             MENUITEM "Set Tab Size",                ID_ADVANCED_SETTABSIZE
+            MENUITEM "Toggle Whitespace Chars",     ID_ADVANCED_SHOWWS
         END
         MENUITEM SEPARATOR
         MENUITEM "&Submit ECL\tCtrl+Enter",     ID_ECL_GO
@@ -1634,6 +1637,7 @@ BEGIN
         MENUITEM "Line Numbers\tCtrl+L",        ID_EDIT_TOGGLELINENUMBERS, CHECKED
         MENUITEM "Word Wrap\tCtrl+W",           ID_EDIT_WORDWRAP, CHECKED
         MENUITEM "Set Tab Size",                ID_ADVANCED_SETTABSIZE
+        MENUITEM "Toggle Whitespace Chars",     ID_ADVANCED_SHOWWS
     END
 END
 
