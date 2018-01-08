@@ -33,10 +33,8 @@ CBuilderDlg::CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner) : m
 
 void CBuilderDlg::GetTitle(CString & title)
 {
-    if ( m_view.IsDirty() )
-        title = _T("*") + m_name;
-    else
-        title = m_name;
+    CString name = m_attribute ? m_attribute->GetQualifiedLabel() : m_name;
+    title = (m_view.IsDirty() ? _T("*") : _T("")) + name;
 }
 
 bool CBuilderDlg::DoFileOpen(const CString & sPathName) 
