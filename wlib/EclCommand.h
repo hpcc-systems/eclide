@@ -54,6 +54,7 @@ public:
         COMMAND_ID_HANDLER(ID_EDIT_LOWERCASE, OnEditLowercase)
         COMMAND_ID_HANDLER(ID_EDIT_TOGGLELINENUMBERS, OnEditToggleLineNumbers)
         COMMAND_ID_HANDLER(ID_ADVANCED_SETTABSIZE, OnEditSetTabSize)
+        COMMAND_ID_HANDLER(ID_ADVANCED_SHOWWS, OnEditShowWS)
         COMMAND_ID_HANDLER(ID_EDIT_REFORMAT, OnEditReformat)
         COMMAND_ID_HANDLER(ID_EDIT_WORDWRAP, OnEditWordWrap)
         COMMAND_ID_HANDLER(ID_EDIT_FIND, OnEditFind)
@@ -132,6 +133,7 @@ public:
         }
 
         UPDATEUI(cui, ID_ADVANCED_SETTABSIZE, true);
+        UPDATEUI(cui, ID_ADVANCED_SHOWWS, true);
         UPDATEUI(cui, ID_EDIT_REFORMAT, bHasContents && !bReadOnly);
 
         if (cui->m_nID == ID_EDIT_WORDWRAP)
@@ -455,6 +457,14 @@ public:
             m_ecl->SetTabWidth(tabSize);
             GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_TAB_WIDTH, tabSize);
         }
+        return 0;
+    }
+    LRESULT OnEditShowWS(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
+    {
+        bHandled = true;
+        int showWS = !m_ecl->GetViewWS();
+        m_ecl->SetViewWS(showWS);
+        GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_SHOW_WS, showWS);
         return 0;
     }
     LRESULT OnEditReformat(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
