@@ -389,9 +389,13 @@ void CSourceCtrl::Reformat()
 
 void CSourceCtrl::DoInit()
 {
+    StyleResetDefault();
+    SetStyle(STYLE_DEFAULT, 0x0);
+    StyleClearAll();
+
     InitLanguage();
 
-    SetTabWidth((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH) * 2);
+    SetTabWidth((int)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_WIDTH));
     SetUseTabs(!(bool)GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_TAB_USESPACES));
 
     if (GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_LINENO))
