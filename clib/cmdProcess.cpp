@@ -296,7 +296,7 @@ public:
 
 int CLIB_API runProcess(const std::_tstring &command, const std::_tstring &directory, const std::_tstring &_path, const std::_tstring &in, std::_tstring &out, std::_tstring &err)
 {
-        if 	((GetKeyState(VK_SHIFT) & 0x8000) != 0)
+        if 	((GetKeyState(VK_SHIFT) & 0x8000) != 0 && (GetKeyState(VK_CONTROL) & 0x8000) != 0 && (GetKeyState(VK_MENU) & 0x8000) != 0)
         {
             std::_tstring clippy = _T("\r\ncd ");
             clippy += directory + _T("\r\n");
