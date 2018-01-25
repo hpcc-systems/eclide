@@ -66,8 +66,18 @@ public:
         CShellContextMenu scm(*pT);
         if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE) {
             m.LoadMenu(IDR_POPUP_REPOSITORY_LOCAL);
-            if (!s.diskReps.empty())
+            if (!s.diskReps.empty()) 
+            {
                 scm.InsertTortoiseGitMenuItems(s.diskReps.at(0)->GetPath(), 4, m.GetSubMenu(0));
+            }
+            else if (!s.mods.empty()) 
+            {
+                scm.InsertTortoiseGitMenuItems(s.mods.at(0)->GetPath(), 4, m.GetSubMenu(0));
+            }
+            else if (!s.attrs.empty()) 
+            {
+                scm.InsertTortoiseGitMenuItems(s.attrs.at(0)->GetPath(), 4, m.GetSubMenu(0));
+            }
         }
         else
             m.LoadMenu(IDR_POPUP_REPOSITORY);

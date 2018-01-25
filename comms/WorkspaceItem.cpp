@@ -128,6 +128,10 @@ public:
                     clib::thread run(__FUNCTION__, boost::bind(&threadLoadWorkunit, this, wuids));
                     //threadLoadWorkunit(this, wuids);
                 }
+                else
+                {
+                    m_loaded = LOADING_FINISHED;
+                }
             }
             break;
         case WORKSPACE_ITEM_ATTRIBUTE:

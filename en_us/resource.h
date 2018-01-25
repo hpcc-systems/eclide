@@ -555,6 +555,7 @@
 #define IDC_EDIT_WARNING                536
 #define IDC_FINDWRAP                    537
 #define IDC_CHECK_TARGETCOLOR           538
+#define IDC_CHECK_SHOWWS                539
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -794,6 +795,7 @@
 #define ID_GRAPH_FOLLOWACTIVE           33011
 #define ID_MACRO_RECORD                 33014
 #define ID_MACRO_PLAY                   33016
+#define ID_ADVANCED_SHOWWS              33018
 #define ID_ADVANCED_SETTABSIZE          33019
 #define ID_WORKUNIT_OPENGRAPH           33020
 #define ID_WORKUNIT_VIEWEXCEPTIONS      33021
@@ -913,9 +915,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        61419
+#define _APS_NEXT_RESOURCE_VALUE        61414
 #define _APS_NEXT_COMMAND_VALUE         33113
-#define _APS_NEXT_CONTROL_VALUE         541
+#define _APS_NEXT_CONTROL_VALUE         540
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif
