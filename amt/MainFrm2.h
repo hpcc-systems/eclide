@@ -108,6 +108,8 @@ protected:
 
 // Attributes
 public:
+    IAttributeType *m_sourceAttrType;
+    IAttributeType *m_targetAttrType;
 
 // Operations
 public:
