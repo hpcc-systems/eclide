@@ -526,7 +526,7 @@ public:
 		else
 		{
 			front = filefront;
-			type = m_elementType.c_str();
+			type = boost::algorithm::equals(m_elementType, ATTRIBUTE_TYPE_PLUGIN) ? ATTRIBUTE_TYPE_ECL : m_elementType.c_str();
 		}
 		type.MakeUpper();
 		CString formatStr = twoFlag ? _T("%s%s2.%s") : _T("%s%s.%s");
