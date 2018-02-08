@@ -247,12 +247,12 @@ LRESULT CSourceCtrl::OnNotify(int /*wParam*/, LPNMHDR lParam)
             if (otherZoom != thisZoom)
                 m_other->SetZoom(thisZoom);
 
-            //Scintilla::CharacterRange otherSel = m_other->GetSelection();
-            //Scintilla::CharacterRange thisSel = GetSelection();
+            //Sci_CharacterRange otherSel = m_other->GetSelection();
+            //Sci_CharacterRange thisSel = GetSelection();
             //if (otherSel.cpMin != thisSel.cpMin || otherSel.cpMax != thisSel.cpMax)
             //	m_other->SetSel(thisSel);
         }
-        HandleNotify((Scintilla::SCNotification *)lParam);
+        HandleNotify((SCNotification *)lParam);
     }
     return 0;
 }
@@ -263,7 +263,7 @@ void CSourceCtrl::SelectWordAt(int lineNo, int column)
     SetSel(startPos, WordEndPosition(startPos, true));
 }
 
-int CSourceCtrl::HandleNotify(Scintilla::SCNotification *notification)
+int CSourceCtrl::HandleNotify(SCNotification *notification)
 {
     if (!notification)
         return 0;
@@ -569,8 +569,8 @@ const TCHAR * wildcardToRegex(const std::_tstring & wildcard, std::_tstring & re
 
 bool CSourceCtrl::DoFind(const std::_tstring & _searchTerm, DWORD flags, FINDMODE findmode, BOOL bAll, BOOL bNext, BOOL bFindWrap)
 {
-    Scintilla::CharacterRange chrg = GetSelection();
-    Scintilla::TextToFind ft;
+    Sci_CharacterRange chrg = GetSelection();
+    Sci_TextToFind ft;
 
     if (bNext) 
     {
@@ -634,7 +634,7 @@ bool CSourceCtrl::DoFind(const std::_tstring & _searchTerm, DWORD flags, FINDMOD
 
 bool CSourceCtrl::DoReplaceCurrent(const std::_tstring & findText, const CString & replaceText, DWORD flags, BOOL matchCase, BOOL bNext)
 {
-    Scintilla::CharacterRange chrg = GetSelection();
+    Sci_CharacterRange chrg = GetSelection();
 
     if(chrg.cpMin != chrg.cpMax)
     {
@@ -680,7 +680,7 @@ int CSourceCtrl::GetText(CString & result) const
 
 bool CSourceCtrl::IsTextSelected()
 {
-    Scintilla::CharacterRange chrg = GetSelection();
+    Sci_CharacterRange chrg = GetSelection();
     return chrg.cpMax == chrg.cpMin ? false : true;
 }
 
@@ -691,7 +691,7 @@ unsigned CSourceCtrl::GetPosition(unsigned lineNo, unsigned column)
 
 int CSourceCtrl::SetSelLineCol(int lineNo, int colNo)
 {
-    Scintilla::CharacterRange cr;
+    Sci_CharacterRange cr;
     cr.cpMin = GetPosition(lineNo, colNo);
     cr.cpMax = cr.cpMin;
     baseClass::SetSel(cr);
@@ -700,7 +700,7 @@ int CSourceCtrl::SetSelLineCol(int lineNo, int colNo)
 
 void CSourceCtrl::SetSelLine(int lineNo)
 {
-    Scintilla::CharacterRange cr;
+    Sci_CharacterRange cr;
     cr.cpMin = GetPosition(lineNo, 0);
     cr.cpMax = cr.cpMin + GetLineLength(lineNo);
     baseClass::SetSel(cr);
@@ -709,7 +709,7 @@ void CSourceCtrl::SetSelLine(int lineNo)
 
 void CSourceCtrl::SetSelLine(int lineNo, int startAtCol)
 {
-    Scintilla::CharacterRange cr;
+    Sci_CharacterRange cr;
     cr.cpMin = GetPosition(lineNo, 0);
     cr.cpMax = cr.cpMin + GetLineLength(lineNo);
     cr.cpMin += startAtCol > 0 ? startAtCol - 1 : 0;
@@ -720,7 +720,7 @@ void CSourceCtrl::SetSelLine(int lineNo, int startAtCol)
 void CSourceCtrl::ClearSel()
 {
     int xpos = GetXOffset();
-    Scintilla::CharacterRange cr;
+    Sci_CharacterRange cr;
     cr.cpMin = baseClass::GetCurrentPos();
     cr.cpMax = cr.cpMin;
     baseClass::SetSel(cr);

@@ -38,7 +38,7 @@ else ( )
     MESSAGE( "GSOAP not found:  " ${GSOAP_ROOT})
 endif ( )
 
-set ( SCINTILLA_ROOT "${EXTERNALS_DIRECTORY}/scintilla" )
+set ( SCINTILLA_ROOT "${CMAKE_SOURCE_DIR}/third_party/scintilla" )
 find_package( SCINTILLA )
 if ( SCINTILLA_FOUND )
 else ( )

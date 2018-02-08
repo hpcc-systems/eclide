@@ -152,7 +152,7 @@ public:
     bool IsRecording();
     bool HasRecording();
 
-    virtual int HandleNotify(Scintilla::SCNotification *notification);
+    virtual int HandleNotify(SCNotification *notification);
 
     BEGIN_MSG_MAP_EX(thisClass)
         MSG_WM_DESTROY(OnDestroy)
