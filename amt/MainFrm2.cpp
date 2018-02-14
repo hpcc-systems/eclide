@@ -105,6 +105,9 @@ CMainFrame::CMainFrame() : m_sourceEclView(this), m_targetEclView(this), m_EditS
     m_bCheckBoxWhitespace = false;
 
     m_progress = 0;
+
+    m_sourceAttrType = CreateIAttributeECLType();
+    m_targetAttrType = CreateIAttributeECLType();
 }
 
 CMainFrame::~CMainFrame()
@@ -245,13 +248,15 @@ void CMainFrame::OnItemSelectionChanged(CTreeNode *node, bool bSelected)
 void CMainFrame::ShowDiff(const std::_tstring & lhs, const std::_tstring & lhsHeader, const std::_tstring & rhs, const std::_tstring & rhsHeader)
 {
     m_sourceEclView.SetReadOnly(false);
+    m_sourceEclView.InitLanguage(m_sourceAttrType);
     m_sourceEclView.SetText(lhs.c_str());
     m_sourceEclView.SetReadOnly(true);
     m_targetEclView.SetReadOnly(false);
+    m_targetEclView.InitLanguage(m_targetAttrType);
     m_targetEclView.SetText(rhs.c_str());
     m_targetEclView.SetReadOnly(true);
 
-    m_diffView.SetText(lhs, rhs, NULL, NULL);
+    m_diffView.SetText(lhs, rhs, m_sourceAttrType, m_targetAttrType);
 }
 
 bool CMainFrame::GenerateHeader(IAttribute *attr, IAttribute *attrOther, std::_tstring & header)
@@ -516,6 +521,8 @@ LRESULT CMainFrame::OnGetEclLoaded(WPARAM wParam, LPARAM lParam)
 
         lhs = attributeNode->m_lhs->GetText(false);
         rhs = attributeNode->m_rhs->GetText(false);
+        m_sourceAttrType = attributeNode->m_lhs->GetType();
+        m_targetAttrType = attributeNode->m_rhs->GetType();
     }
     else if (CComQIPtr<CAttributeHistoryPairNode> histNode = m_repositoryDlg.GetSelectedItem())
     {
@@ -531,6 +538,8 @@ LRESULT CMainFrame::OnGetEclLoaded(WPARAM wParam, LPARAM lParam)
 
         lhs = historyNode->m_lhs->GetText();
         rhs = historyNode->m_rhs->GetText(false);
+        m_sourceAttrType = historyNode->m_lhs->GetType();
+        m_targetAttrType = historyNode->m_rhs->GetType();
     }
     if (lhs.length() || rhs.length() || lhsHeader.length() || rhsHeader.length())
     {
