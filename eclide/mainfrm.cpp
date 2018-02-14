@@ -3097,16 +3097,9 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
     _tcsncpy(m_fr.m_szFindWhat, searchTerm.c_str(), sizeof(m_fr.m_szFindWhat));
     m_fr.m_mode = findmode;
     CComPtr<IRepository> rep = AttachRepository();
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-    {
-        ATLASSERT(_T("TODO"));
-    }
-    else
-    {
-        HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
-        if (hwnd)
-            PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
-    }
+    HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
+    if (hwnd)
+        PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 }
 
 void CMainFrame::OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu)
