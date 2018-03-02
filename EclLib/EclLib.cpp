@@ -19,7 +19,7 @@ BOOL APIENTRY DllMain( HANDLE  /*hModule*/,
     return TRUE;
 }
 
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
 #include "EclErrorParser.h"
 class CTest {
 public:

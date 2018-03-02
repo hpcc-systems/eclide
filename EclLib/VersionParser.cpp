@@ -6,14 +6,14 @@ using namespace BOOST_SPIRIT_CLASSIC_NS;
 
 std::ostream& operator<< (std::ostream& os, const ParsedVersion& def)
 {
-    std::string preffix = CT2A(def.preffix.c_str(), CP_UTF8);
+    std::string prefix = CT2A(def.prefix.c_str(), CP_UTF8);
     std::string minorVersionAlpha = CT2A(def.minorVersionAlpha.c_str(), CP_UTF8);
     std::string suffixStr = CT2A(def.suffixStr.c_str(), CP_UTF8);
     std::string github = CT2A(def.github.c_str(), CP_UTF8);
     std::string buildAlpha = CT2A(def.buildAlpha.c_str(), CP_UTF8);
     os << "Version =\n"
         << "    {\n"
-        << "    preffix = " << preffix << "\n"
+        << "    prefix = " << prefix << "\n"
         << "    major version = " << def.majorVersion << "\n"
         << "    minor version = " << def.minorVersion << "\n"
         << "    minor version alpha = " << minorVersionAlpha << "\n"
@@ -58,8 +58,8 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
                               ), 
                 def_ide_str = majorVersion_num >> '.' >> minorVersion_num >> '.' >> pointVersion_num >> '.' >> build_num,
                 def_eclcc_str = def_ecllang_str >> def_oss_str,
-                def_oss_str = preffix_str >> delim >> majorVersion_num >> delim >> minorVersion_num >> delim >> pointVersion_num >> delim >> suffix_str >> !github_str,
-                def_build_str = preffix_str >> '_' >> majorVersion_num >> !('_' >> minorVersion_num >> !('_' >> pointVersion_num)),
+                def_oss_str = prefix_str >> delim >> majorVersion_num >> delim >> minorVersion_num >> delim >> pointVersion_num >> delim >> suffix_str >> !github_str,
+                def_build_str = prefix_str >> '_' >> majorVersion_num >> !('_' >> minorVersion_num >> !('_' >> pointVersion_num)),
 
                 delim =				ch_p('_') | '-' | '.',
 
@@ -67,7 +67,7 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
                                     >> '.' >> uint_p	[ASSIGN(lang_MinorVersion, arg1)]
                                     >> '.' >> uint_p	[ASSIGN(lang_PointVersion, arg1)],
 
-                preffix_str	=		(+alnum_p)			[ASSIGNSTR(preffix, arg1, arg2)],
+                prefix_str	=		(+alnum_p)			[ASSIGNSTR(prefix, arg1, arg2)],
                 majorVersion_num =	uint_p				[ASSIGN(majorVersion, arg1)],
                 minorVersion_num =	uint_p				[ASSIGN(minorVersion, arg1)]		>> !(alpha_p)	[ASSIGN(minorVersionAlpha, arg1)],
                 pointVersion_num =	uint_p				[ASSIGN(pointVersion, arg1)],
@@ -87,7 +87,7 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
         boost::spirit::classic::subrule<3> def_build_str;
         boost::spirit::classic::subrule<4> def_eclcc_str;
         boost::spirit::classic::subrule<5> def_ecllang_str;
-        boost::spirit::classic::subrule<6> preffix_str;
+        boost::spirit::classic::subrule<6> prefix_str;
         boost::spirit::classic::subrule<7> majorVersion_num;
         boost::spirit::classic::subrule<8> minorVersion_num;
         boost::spirit::classic::subrule<9> pointVersion_num;
@@ -119,7 +119,7 @@ bool ParseVersion(const std::_tstring & version_string, ParsedVersion & result)
         result = result1;
         return true;
     }
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
     else
     {
         std::_tstring parsed(trim_version_string.cbegin(), parse_result.stop);

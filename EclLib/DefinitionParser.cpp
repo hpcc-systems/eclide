@@ -120,7 +120,7 @@ bool DefinitionToLocation(const std::_tstring & def_string, ParsedDefinition & r
         result = result1;
         return true;
     }
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
     else
     {
         std::_tstring parsed(def_string.begin(), parse_result.stop);
@@ -129,7 +129,7 @@ bool DefinitionToLocation(const std::_tstring & def_string, ParsedDefinition & r
     return false;
 }
 
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
 class _DefinitionToLocationTest 
 { 
 public:

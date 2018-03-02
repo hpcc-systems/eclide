@@ -5372,7 +5372,7 @@ public:
         }
         catch(CAtlException)
         {
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
             {
                 CUnicodeFile file;
                 file.Create(_T("c:\\temp\\tmp.xml"));
