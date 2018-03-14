@@ -81,7 +81,10 @@ bool CBuilderDlg::DoSave(bool attrOnly)
         IAttributeBookkeep attrProcessed;
         MetaInfo metaInfo;
         m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors, metaInfo);
-        SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
+        if (!m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL) || m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL) && !errors.empty())
+        {
+            SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
+        }
         if (attrs.size())
         {
             if (!m_migrator)
