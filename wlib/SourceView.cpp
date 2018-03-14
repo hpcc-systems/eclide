@@ -268,7 +268,6 @@ int CSourceCtrl::HandleNotify(SCNotification *notification)
     if (!notification)
         return 0;
 
-    ATLTRACE(_T("%i\n"), notification->nmhdr.code);
     switch (notification->nmhdr.code)
     {
     case SCEN_SETFOCUS:

@@ -86,7 +86,7 @@ public:
 
 class CWUSummaryView : public CSummaryView
 {
-private:
+protected:
     StlLinked<Dali::IWorkunit> m_wu;
 
 public:
@@ -99,6 +99,18 @@ public:
     virtual void Refresh();
     virtual bool CanCopy();
 };
+
+class CGraphSummaryView : public CWUSummaryView
+{
+
+public:
+    enum { IDD = IDD_GRAPHSUMMARYVIEW };
+
+    CGraphSummaryView(Dali::IWorkunit * wu, IResultSlot *resultSlot);
+
+    virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+};
+
 
 class CDesdlSummaryView : public CSummaryView
 {

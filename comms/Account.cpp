@@ -60,7 +60,8 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
     _ns1__VerifyUserRequest request;
     CStringAssign application(request.application, global::GetApplicationName());
     CComPtr<SMC::IVersion> version = GetCommsVersion();
-    CStringAssign versionStr(request.version, version->GetString());
+    std::_tstring versionStr2;
+    CStringAssign versionStr(request.version, version->GetString(versionStr2));
 
     _ns1__VerifyUserResponse response;
     ESP_EXCEPTION_LOG3(response.Exceptions);

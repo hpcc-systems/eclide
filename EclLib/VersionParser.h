@@ -13,7 +13,7 @@ struct ParsedVersion
          BUILD,
          LAST
     } type;
-    std::_tstring preffix;
+    std::_tstring prefix;
     unsigned int majorVersion;
     unsigned int minorVersion;
     std::_tstring minorVersionAlpha;

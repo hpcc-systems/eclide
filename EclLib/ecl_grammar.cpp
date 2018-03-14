@@ -4,7 +4,7 @@
 void DoParse(const std::string & ecl, tree_parse_info<> &info)
 {
     ecl_grammar g;
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
     BOOST_SPIRIT_DEBUG_NODE(g);
 #endif
     info = pt_parse(ecl.c_str(), g, space_p);

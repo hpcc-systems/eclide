@@ -236,6 +236,19 @@ bool CWUSummaryView::CanCopy()
     return true;
 }
 
+// --  CGraphSummaryView  ---
+CGraphSummaryView::CGraphSummaryView(Dali::IWorkunit * wu, IResultSlot *resultSlot) : CWUSummaryView(wu, resultSlot)
+{
+    GetGraphEclWatchURL(m_wu, m_Url);
+    GetFramedWorkUnitEclWatchURL(m_wu, m_FramedUrl);
+}
+
+LRESULT CGraphSummaryView::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+    SetWindowText(_T("Graphs"));
+    return CSummaryView::OnCreate(uMsg, wParam, lParam, bHandled);
+}
+
 // --  CDesdlSummaryView  ---
 CDesdlSummaryView::CDesdlSummaryView(const std::_tstring & desdlID, const std::_tstring & desdlVersion, IResultSlot *resultSlot) : CSummaryView(resultSlot), m_desdlID(desdlID), m_desdlVersion(desdlVersion)
 {

@@ -47,7 +47,7 @@ namespace std
 #define BOOST_SPIRIT_THREADSAFE 
 #define PHOENIX_THREADSAFE
 #define BOOST_LIB_DIAGNOSTIC
-#ifdef _DEBUG
+#ifdef _DEBUG_GRAMMAR
 #define BOOST_SPIRIT_DEBUG  
 #define BOOST_SPIRIT_DEBUG_OUT std::cerr
 #endif
