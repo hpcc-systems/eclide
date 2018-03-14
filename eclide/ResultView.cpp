@@ -69,6 +69,15 @@ const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
     return url;
 }
 
+const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url)
+{
+    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
+    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=GraphsWidget&Wuid="));
+    url = str.c_str();
+    url += wu->GetWuid();
+    return url;
+}
+
 const TCHAR * GetResultEclWatchURL(Dali::IWorkunit *wu, CString &url, int sequence)
 {
     //http://10.150.64.208:8010/WsWorkunits/WUResult?Wuid=W20041006-101104&Sequence=0
@@ -2322,6 +2331,7 @@ private:
     CTabPanePtr		 m_exceptionView;
     CTabPanePtr		 m_debugView;
     CTabPanePtr		 m_summaryView;
+    CTabPanePtr		 m_graphSummaryView;
 #ifdef USE_LEGACY_GRAPH
     StlLinked<CGraphView> m_graphView;
 #else
@@ -2342,6 +2352,7 @@ private:
     bool CreateWUSummaryWindow();
     bool CreateDesdlSummaryWindow();
     bool CreateGraphWindow();
+    bool CreateGraphBrowserWindow();
     bool CreateEclGraphWindow();
     bool CreateResultWindow(Dali::IResult * result);
     bool CreateExceptionWindow();
@@ -2500,6 +2511,8 @@ void CMultiResultView::CloseTab(unsigned int tab)
         m_debugView = NULL;
     else if (m_summaryView.get()->GetHWND() == hWnd)
         m_summaryView = NULL;
+    else if (m_graphSummaryView.get()->GetHWND() == hWnd)
+        m_graphSummaryView = NULL;
     else if (m_graphView.get()->GetHWND() == hWnd)
         m_graphView = NULL;
 
@@ -2523,6 +2536,7 @@ void CMultiResultView::CloseAllTabs()
     m_exceptionView = NULL;
     m_debugView = NULL;
     m_summaryView = NULL;
+    m_graphSummaryView = NULL;
     m_graphView = NULL;
     m_loaded.clear();
     m_drilldown.clear();
@@ -2750,6 +2764,31 @@ bool CMultiResultView::CreateGraphWindow()
     return false;
 }
 
+bool CMultiResultView::CreateGraphBrowserWindow()
+{
+    if (m_wu && !m_graphSummaryView.isLinked())
+    {
+        StlLinked<CSummaryView> r = new CGraphSummaryView(m_wu, m_resultSlot);
+        {
+            m_graphSummaryView = r.get();
+            r->Create(m_tabbedChildWindow);
+            CTabPanePtr tab = r;
+            m_tabs.push_back(tab);
+
+            m_tabbedChildWindow.DisplayTab(r.get()->m_hWnd, TRUE);
+        }
+        return true;
+    }
+    else if (m_graphSummaryView.isLinked())
+    {
+        //if this is the current tab, refresh it
+        unsigned n = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
+        if (n + 1 == m_tabs.size())
+            ::SendMessage(m_graphSummaryView->GetHWND(), CWM_REFRESH, 0, 0);
+    }
+    return false;
+}
+
 bool CMultiResultView::CreateEclGraphWindow()
 {
     if (m_wu && !m_eclGraphView.isLinked())
@@ -2883,7 +2922,12 @@ LRESULT CMultiResultView::OnRefresh(UINT /*uMsg*/, WPARAM bCreated, LPARAM bDele
 
                 if (m_wu->GetGraphCount())
                 {
-                    CreateGraphWindow();
+                    if (static_cast<bool>(GetIConfig(QUERYBUILDER_INI)->Get(GLOBAL_DISABLEGRAPHCONTROL))) {
+                        CreateGraphBrowserWindow();
+                    }
+                    else {
+                        CreateGraphWindow();
+                    }
                 }
 
                 if (m_wu->IsComplete())
@@ -2969,6 +3013,9 @@ LRESULT CMultiResultView::OnRefresh(UINT /*uMsg*/, WPARAM bCreated, LPARAM bDele
                         m_tabbedChildWindow.DisplayTab(m_graphView->GetHWND(), FALSE);
                         m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_FOLLOWACTIVE);
                         m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_MINIMIZEINACTIVE);
+                    }
+                    else if (m_summaryView) {
+                        m_tabbedChildWindow.DisplayTab(m_graphSummaryView->GetHWND(), FALSE);
                     }
                     else
                         m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);

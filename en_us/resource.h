@@ -556,6 +556,8 @@
 #define IDC_FINDWRAP                    537
 #define IDC_CHECK_TARGETCOLOR           538
 #define IDC_CHECK_SHOWWS                539
+#define IDC_CHECK_DISABLEGRAPHCONTROL   540
+#define IDD_GRAPHSUMMARYVIEW            541
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -917,7 +919,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61414
 #define _APS_NEXT_COMMAND_VALUE         33113
-#define _APS_NEXT_CONTROL_VALUE         540
+#define _APS_NEXT_CONTROL_VALUE         542
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

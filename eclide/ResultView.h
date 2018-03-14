@@ -100,6 +100,7 @@ IResultViewer *CreateIResultViewer(IResultSlot *owner, Dali::IWorkunit *wu, Buil
 IResultViewer *CreateIResultViewer(IResultSlot *owner, const CString & wuid);
 
 const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url);
+const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url);
 const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url);
 const TCHAR * GetFramedDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url);
 const TCHAR * GetDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url);
