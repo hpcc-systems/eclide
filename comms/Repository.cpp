@@ -12,7 +12,6 @@
 #include "ModuleHelper.h"
 #include "DiskRepository.h"
 #include "EclCC.h"
-#include <UtilFilesystem.h>
 
 IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension);
 void ClearAttributeTypeCache();
@@ -903,20 +902,6 @@ public:
                 _DBGLOG(m_url, LEVEL_WARNING, server.GetClientErrorMsg());
         }
         return false;
-    }
-
-    virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
-    {
-        boost::filesystem::path userFolder;
-        path = GetUserFolder(userFolder, GetUserId()) / stringToPath(GetLabel());
-
-        try {
-            boost::filesystem::create_directories(path);
-        } catch (const boost::filesystem::filesystem_error & ex) {
-            _DBGLOG(LEVEL_WARNING, ex.what());
-        }
-
-        return path;
     }
 };
 

@@ -10,6 +10,7 @@
 #include "thread.h"
 #include "ModuleHelper.h"
 #include "DiskRepository.h"
+#include <UtilFilesystem.h>
 
 class ILabelCompare
 {
@@ -599,7 +600,20 @@ public:
         return  ::CreateIWorkspaceItem(this, type, pm);
     }
 
-    const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const = 0;
+    virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
+    {
+        boost::filesystem::path userFolder;
+        path = GetUserFolder(userFolder, GetUserId()) / stringToPath(GetLabel());
+
+        try {
+            boost::filesystem::create_directories(path);
+        }
+        catch (const boost::filesystem::filesystem_error & ex) {
+            _DBGLOG(LEVEL_WARNING, ex.what());
+        }
+
+        return path;
+    }
 
     void Refresh()
     {

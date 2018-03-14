@@ -723,25 +723,6 @@ public:
         return false;
     }
 
-    virtual const boost::filesystem::path & GetEnvironmentFolder(boost::filesystem::path & path) const
-    {
-        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-            path = stringToPath(eclcc->GetWorkingFolder());
-        else
-        {		
-            boost::filesystem::path userFolder;
-            path = GetUserFolder(userFolder, GetUserId());/*  GJS / boost::filesystem::path(CT2A(GetLabel()), boost::filesystem::native);*/
-        }
-
-        try {
-            boost::filesystem::create_directories(path);
-        } catch (const boost::filesystem::filesystem_error & ex) {
-            _DBGLOG(LEVEL_WARNING, ex.what());
-        }
-
-        return path;
-    }
-
     void Update(IEclCC * eclcc)
     {
         ATLASSERT(eclcc);
