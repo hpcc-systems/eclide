@@ -32,7 +32,7 @@ public:
     CVersion(const CString & url, const CString &version) : m_url(url), m_rawversion(version)
     {
         m_id = m_url + _T("/") + m_rawversion.c_str();
-#ifdef _DEBUG
+#ifdef _DEBUGUNITTEST
         //  <string>-|_<int>.<int>[<char>][.<int>].|-|_<string>[_<int>[<char>]]
         static bool unitTest = false;
         if (!unitTest)
@@ -94,15 +94,18 @@ public:
         return static_cast<float>(_tstof(m_strversion.c_str()));
     }
 
-    const TCHAR * GetString()
+    const TCHAR * GetString(std::_tstring & version)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return m_strversion.c_str();
+        version = m_strversion;
+        return version.c_str();
     }
 
-    const TCHAR * GetPrefix() const
+    const TCHAR * GetPrefix(std::_tstring & prefix) const
     {
-        return m_parsedVersion.preffix.c_str();
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        prefix = m_parsedVersion.prefix;
+        return prefix.c_str();
     }
 
     unsigned int GetMajor() const
@@ -120,9 +123,11 @@ public:
         return m_parsedVersion.pointVersion;
     }
 
-    const TCHAR * GetSuffixString() const
+    const TCHAR * GetSuffixString(std::_tstring & suffix) const
     {
-        return m_parsedVersion.suffixStr.c_str();
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        suffix = m_parsedVersion.suffixStr;
+        return suffix.c_str();
     }
 
     unsigned int GetSuffixInteger() const

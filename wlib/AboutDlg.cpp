@@ -81,7 +81,8 @@ public:
 
 		m_server = _T("Server:\t\t");
 		CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
-		m_server += serverVersion->GetString();
+		std::_tstring version;
+		m_server += serverVersion->GetString(version);
 		SetDlgItemText(IDC_STATIC_SERVER, m_server.c_str());
 
 		m_compiler = _T("Compiler:\t");

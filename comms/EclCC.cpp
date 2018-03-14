@@ -674,6 +674,7 @@ unsigned int FindAllCEclCC(CEclCCVector & results)
     return results.size();
 }
 
+const TCHAR * const warningTpl = _T("Compiler/Server mismatch:\r\nCompiler:\t%1%\r\nServer:\t%2%");
 IEclCC * CreateIEclCC()
 {
     if (g_EnableCompiler != TRI_BOOL_TRUE)
@@ -714,16 +715,18 @@ IEclCC * CreateIEclCC()
             if (bestMatchEclCC_before && versionCompare.distance(serverVersion, bestMatchEclCC_before->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
                 matchedEclCC = bestMatchEclCC_before;
 
-            static const TCHAR * const warningTpl = _T("Compiler/Server mismatch:\r\nCompiler:\t%1%\r\nServer:\t%2%");
             if (matchedEclCC)
             {
-                matchedEclCC->m_warnings = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString() % serverVersion->GetString()).str();
+                std::_tstring eclccBuildStr, serverVersionStr;
+                matchedEclCC->m_warnings = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
                 return matchedEclCC;
             }
 
             //  No good match, just return latest  ---
             matchedEclCC = foundCompilers.rbegin()->get();
-            matchedEclCC->m_errors = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString() % serverVersion->GetString()).str();
+            std::_tstring eclccBuildStr, serverVersionStr;
+            const std::_tstring errors = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
+            matchedEclCC->m_errors = errors;
             matchedEclCC->m_errors += _T("\r\n(To prevent this message from showing, either download and install the matching client tools package or override the default compiler settings in the preferences window)\r\n");
             return matchedEclCC;
         }
