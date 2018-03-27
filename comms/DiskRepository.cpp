@@ -114,7 +114,7 @@ public:
         return 0;
     }
 
-    int GetAllFileModules(IAttributeVector & attributes, const std::_tstring & searchText, const boost::filesystem::wpath & path) const
+    int GetAllFileModules(IAttributeVector & attributes, const std::_tstring & searchText, const std::_tstring & module, const boost::filesystem::wpath & path) const
     {
         std::_tstring in, out, err;
         std::_tstring pathname = pathToWString(path);
@@ -138,6 +138,10 @@ public:
                 pos = moduleName.rfind(_T("\\"));
                 moduleName = moduleName.substr(0, pos);
                 algo::replace_all(moduleName, _T("\\"), _T("."));
+                if (!module.empty() && !boost::equal(moduleName, module) && !boost::starts_with(moduleName, module + _T(".")))
+                {
+                    continue;
+                }
                 std::_tstring label = CA2T(boost::filesystem::basename(filepath).c_str());
                 std::_tstring type = CA2T(boost::filesystem::extension(filepath).c_str());
 
@@ -352,7 +356,7 @@ public:
         {
             for (StringCMonitorFolderMap::const_iterator itr = m_paths.begin(); itr != m_paths.end(); ++itr)
             {
-                GetAllFileModules(attributes, searchText, itr->second);
+                GetAllFileModules(attributes, searchText, module, itr->second);
             }
         }
 
