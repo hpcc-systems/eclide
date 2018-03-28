@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 
 #include "EclCC.h"
+#include "EclMeta.h"
 #include "comms.h"
 #include <cmdProcess.h>
 #include <Logger.h>
@@ -19,9 +20,6 @@ namespace SMC
 {
 IVersion * CreateVersion(const CString & url, const CString & version);
 }
-
-typedef std::pair<std::_tstring, bool> StringBoolPair;	//  Path, include in -I options
-typedef std::vector<StringBoolPair> WPathVector;
 
 TRI_BOOL g_EnableCompiler = TRI_BOOL_UNKNOWN;
 TRI_BOOL g_EnableRemoteDali = TRI_BOOL_UNKNOWN;
@@ -49,6 +47,7 @@ protected:
 public:
     std::_tstring m_errors;
     std::_tstring m_warnings;
+    CEclMeta m_eclMeta;
 
     BEGIN_CLOCKABLEUNKNOWN
     END_CUNKNOWN(CUnknown)
@@ -132,6 +131,8 @@ public:
         StringPathMap::const_iterator found = paths.find(ECLCC_ECLBUNDLE_PATH);
         if (found != paths.end())
             m_eclFolders.push_back(std::make_pair(found->second, false));
+
+        m_eclMeta.LoadMetaData(&m_eclFolders);
     }
 
     const TCHAR * GetCacheID() const
@@ -158,6 +159,12 @@ public:
             m_version = out;
         }
         return m_version.c_str();
+    }
+
+    bool GetAutoC(const std::_tstring & partialLabel, StdStringVector &set)
+    {
+        m_eclMeta.GetAutoC(partialLabel, set);
+        return false;
     }
 
     SMC::IVersion * GetBuild() const
