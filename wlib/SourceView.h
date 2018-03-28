@@ -74,6 +74,7 @@ __interface ISourceSlot
     void RefreshSyntax(ISciSyntaxMarker *errors, size_t curErr, bool forceShow);
     void NewSel();
     void Close();
+    const void GetCompletionList(const std::_tstring & module, StdStringVector &list);
 };
 
 class CSourceSlotImpl : public ISourceSlot
@@ -86,6 +87,7 @@ public:
     void RefreshSyntax(ISciSyntaxMarker * /*errors*/, size_t /*curErr*/, bool /*forceShow*/) {}
     void NewSel() {}
     void Close() {}
+    const void GetCompletionList(const std::_tstring & module, StdStringVector &list) {}
 };
 
 class CMacroEvent : public CUnknown
@@ -123,6 +125,7 @@ protected:
     bool m_modified;
     StlLinked<ILangRef> m_langRef;
     CComPtr<IAttributeType> m_type;
+    IAttribute *m_attribute;
     CSourceCtrl * m_other;
 
     CMacroEventVector m_macro;
@@ -139,6 +142,7 @@ public:
 
     DECLARE_WND_SUPERCLASS(NULL, baseClass::GetWndClassName())
 
+    void SetAttribute(IAttribute * attr);
     void SetType(IAttributeType * type);
     void SetOther(CSourceCtrl * other);
     void SetSourceType(const CString & typeStr);
@@ -200,7 +204,8 @@ public:
     virtual bool OpenFile(const CString & filename);
 
     void SetStyle(signed style, unsigned fore, unsigned back=0xffffff, const std::_tstring & font = _T(""), signed size=10, bool bold=false);
-    static bool IsWordCharForSelWithPreiod(char ch);
+    static bool IsWordCharForSelWithPeriodECL(char ch);
+    static bool IsWordCharForSelWithPeriod(char ch);
     static bool IsWordCharForSelNoPeriod(char ch);
     static bool IsWordCharForSelNoPeriodPlusHash(char ch);
 
@@ -337,7 +342,7 @@ public:
         int startPos = m_view.GetCurrentPos();
         int endPos = m_view.GetCurrentPos();
         int lengthDoc = m_view.GetLength();
-        m_view.RangeExtendAndGrab(result, startPos, endPos, lengthDoc, m_view.IsWordCharForSelWithPreiod);
+        m_view.RangeExtendAndGrab(result, startPos, endPos, lengthDoc, m_view.IsWordCharForSelWithPeriod);
     }
 
     void GetWordAtCurPosNoPeriodPlusHash(CString & result)

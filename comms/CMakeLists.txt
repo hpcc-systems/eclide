@@ -47,6 +47,8 @@ set ( SRCS
 		DropZone.h
 		EclCC.cpp
 		EclCC.h
+		EclMeta.cpp
+		EclMeta.h
 		EclServer.cpp
 		EclServer.h
 		#Entity.cpp

@@ -2,6 +2,7 @@
 #include "..\en_us\resource.h"
 
 #include "SourceView.h"
+#include "EclCC.h"
 #include "AttributeType.h"
 #include "UnicodeFile.h"
 #include "util.h"
@@ -148,6 +149,13 @@ void CSourceCtrl::SetSourceType(const CString & typeStr)
     {
         m_targetType = TARGET_UNKNOWN;
     }
+}
+
+void CSourceCtrl::SetAttribute(IAttribute * attr)
+{
+    ATLASSERT(attr);
+    m_attribute = attr;
+    SetType(m_attribute->GetType());
 }
 
 void CSourceCtrl::SetType(IAttributeType * type)
@@ -337,7 +345,7 @@ int CSourceCtrl::HandleNotify(Scintilla::SCNotification *notification)
                     int endPos = notification->position;
                     int lengthDoc = GetLength();
                     CString _message;
-                    RangeExtendAndGrab(_message, startPos, endPos, lengthDoc, IsWordCharForSelWithPreiod);
+                    RangeExtendAndGrab(_message, startPos, endPos, lengthDoc, IsWordCharForSelWithPeriod);
                     if (_message.GetLength() > 0)
                     {
                         std::_tstring tooltip = m_langRef->GetLangTooltip(static_cast<const TCHAR *>(_message));
@@ -509,7 +517,12 @@ void CSourceCtrl::InitColors(ILangRef * langRef)
     AnnotationSetVisible(ANNOTATION_BOXED);
 }
 
-bool CSourceCtrl::IsWordCharForSelWithPreiod(char ch) 
+bool CSourceCtrl::IsWordCharForSelWithPeriodECL(char ch) 
+{
+    return (IsWordCharForSelWithPeriod(ch) || ch == '$' || ch == '-');
+}
+
+bool CSourceCtrl::IsWordCharForSelWithPeriod(char ch)
 {
     return (strchr(wordchars, ch) != NULL || ch == '.');
 }
@@ -899,7 +912,7 @@ bool CSourceCtrl::StartAutoComplete()
     int startPos = currentPos;
     int endPos = currentPos;
     int lengthDoc = GetLength();
-    RangeExtendAndGrab(word, startPos, endPos, lengthDoc, IsWordCharForSelWithPreiod);
+    RangeExtendAndGrab(word, startPos, endPos, lengthDoc, IsWordCharForSelWithPeriodECL);
     if (word.CompareNoCase(_T("l.")) != 0 &&
         word.CompareNoCase(_T("r.")) != 0 &&
         word.CompareNoCase(_T("left.")) != 0 &&
@@ -916,10 +929,21 @@ bool CSourceCtrl::StartAutoComplete()
         if (periodPos == 0)
             m_langRef->GetLangNamesAutoC(1, list);
 
-        CString module(word, periodPos);
+        std::_tstring  module(word.Mid(0, word.GetLength() - 1));
         if (m_type->IsTypeOf(ATTRIBUTE_TYPE_ECL))
         {
-            m_langRef->GetAutoC((const TCHAR *)module, list);
+            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+            {
+                if (boost::algorithm::starts_with(static_cast<const TCHAR *>(word),_T("$")))
+                {
+                    boost::algorithm::replace_first(module, _T("$"), m_attribute->GetModuleQualifiedLabel(true));
+                }
+                m_owner->GetCompletionList(module, list);
+            }
+            else
+            {
+                m_langRef->GetAutoC(module, list);
+            }
         }
         if (list.size())
         {
