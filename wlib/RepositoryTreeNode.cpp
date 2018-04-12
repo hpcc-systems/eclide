@@ -535,9 +535,21 @@ CModuleFilterNode::CModuleFilterNode(IRepositorySlot *owner, IModule * mod) : CM
 {
 }
 
+bool CModuleFilterNode::HasAttribute(IAttribute *attr)
+{
+	for (IAttributeVector::iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
+	{
+		if (itr->get() == attr)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 void CModuleFilterNode::AddAttribute(IAttribute *attr)
 {
-	m_attrs.push_back(attr);
+	if (!HasAttribute(attr))
+		m_attrs.push_back(attr);
 }
 void CModuleFilterNode::ItemExpanding()
 {
