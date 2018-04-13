@@ -29,7 +29,7 @@ protected:
     CString m_moduleQualifiedLabelNoRoot;
     CString m_label;
     CString m_qualifiedLabel;
-    CString m_qualifiedLabelNoRoot;
+    CString m_qualifiedLabelWithExt;
     CComPtr<IAttributeType> m_type;
     CString m_ecl;
     CString m_description;
@@ -63,6 +63,7 @@ public:
         m_ecl = ecl;
         m_eclSet = true;
         m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
+        m_qualifiedLabelWithExt = m_qualifiedLabel + m_type->GetFileExtension();
         UpdateChecksumLocal();
         UpdateID();
     }
@@ -152,7 +153,9 @@ public:
     const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return (excludeRoot ? m_qualifiedLabelNoRoot : m_qualifiedLabel) + (includeExtension ? m_type->GetFileExtension() : _T(""));
+        if (includeExtension)
+            return m_qualifiedLabelWithExt;
+        return m_qualifiedLabel;
     }
 
     const TCHAR *GetPath() const
@@ -346,6 +349,7 @@ public:
         m_moduleLabel = CW2T(c->ModuleName, CP_UTF8);
         m_label = CW2T(c->Name, CP_UTF8);
         m_qualifiedLabel = m_moduleLabel + _T(".") + m_label;
+        m_qualifiedLabelWithExt = m_qualifiedLabel + m_type->GetFileExtension();
 #if _COMMS_VER < 64801
 #elif _COMMS_VER < 700000
         m_type = CreateIAttributeType((const TCHAR *)CW2T(c->Type, CP_UTF8));
