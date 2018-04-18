@@ -32,7 +32,9 @@ protected:
     CString m_moduleQualifiedLabelNoRoot;
     CString m_label;
     CString m_qualifiedLabel;
+    CString m_qualifiedLabelWithExt;
     CString m_qualifiedLabelNoRoot;
+    CString m_qualifiedLabelNoRootWithExt;
     CComPtr<IAttributeType> m_type;
     CString m_ecl;
     CString m_description;
@@ -161,7 +163,15 @@ public:
     const TCHAR *GetQualifiedLabel(bool excludeRoot = false, bool includeExtension = false) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return (excludeRoot ? m_qualifiedLabelNoRoot : m_qualifiedLabel) + (includeExtension ? m_type->GetFileExtension() : _T(""));
+        if (excludeRoot)
+        {
+            if (includeExtension)
+                return m_qualifiedLabelNoRootWithExt;
+            return m_qualifiedLabelNoRoot;
+        }
+        if (includeExtension)
+            return m_qualifiedLabelWithExt;
+        return m_qualifiedLabel;
     }
 
     const TCHAR *GetPath() const
@@ -391,9 +401,11 @@ public:
         m_moduleQualifiedLabel = moduleName.c_str();
         m_label = label.c_str();
         m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
+        m_qualifiedLabelWithExt = m_qualifiedLabel + m_type->GetFileExtension();
         CModuleHelper modHelper(m_qualifiedLabel);
         m_moduleQualifiedLabelNoRoot = modHelper.GetModuleLabelNoRoot();
         m_qualifiedLabelNoRoot = modHelper.GetQualifiedLabelNoRoot();
+        m_qualifiedLabelNoRootWithExt = m_qualifiedLabelNoRoot + m_type->GetFileExtension();
         m_checkedOut = false;
         m_sandboxed = false;
         m_locked = false;
