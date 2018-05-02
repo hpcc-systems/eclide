@@ -217,6 +217,7 @@ protected:
 public:
     CModuleFilterNode(IRepositorySlot *owner, IModule * mod);
     void AddAttribute(IAttribute *attr);
+    bool HasAttribute(IAttribute *attr);
     virtual void ItemExpanding();
 
     virtual const TCHAR * GetDispText();
