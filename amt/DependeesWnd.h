@@ -2,7 +2,6 @@
 
 #include "Global.h"
 #include "SplitterWnd.h"
-#include "GraphView2.h"
 
 class CMyEdit : public WTL::CWindowImpl<CMyEdit, WTL::CEdit>,
     public WTL::CEditCommands<CMyEdit>

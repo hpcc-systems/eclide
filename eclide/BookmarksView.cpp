@@ -3,8 +3,6 @@
 
 #include "BookmarksView.h"
 #include "EclCC.h"
-#include "ecldlgbuilder.h"
-#include "XmlWriter.h"
 #include "mainfrm.h"
 
 const TCHAR * const BOOKMARKS_FILE = _T("bookmarks.xml");

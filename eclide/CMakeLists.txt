@@ -1,8 +1,6 @@
 project( ECLIDE )
 
 set ( SRCS
-		#AttributeView.cpp
-		#AttributeView.h
 		BasicExcel.cpp
 		BookmarksFrame.cpp
 		BookmarksFrame.h
@@ -12,76 +10,33 @@ set ( SRCS
 		ChildAttributeFrame.h
 		ChildBuilderFrame.cpp
 		ChildBuilderFrame.h
-		#ChildEclFrame.cpp
-		#ChildEclFrame.h
 		ChildFrame.cpp
 		ChildFrame.h
-		ChildGraphFrame.cpp
-		ChildGraphFrame.h
-		#ChildResultFrame.cpp
-		#ChildResultFrame.h
-		#Combos.cpp
-		#Combos.h
-		#CommandManager.cpp
-		#CommandManager.h
 		CommentDlg.cpp
 		CommentDlg.h
 		CSortMFCListCtrl.cpp
 		CSortMFCListCtrl.h
 		DataView.cpp
 		DataView.h
-		DebugGraphView.cpp
-		DebugGraphView.h
-		DebugView.cpp
-		DebugView.h
 		DfuFrame.cpp
 		DfuFrame.h
 		DfuTreeNode.cpp
 		DfuTreeNode.h
 		DfuView.cpp
 		DfuView.h
-		DialogAddBreakpoint.cpp
-		DialogAddBreakpoint.h
-		DockableBreakpointView.cpp
-		DockableBreakpointView.h
-		DockableDataViews.cpp
-		DockableDataViews.h
-		DockablePropertiesView.cpp
-		DockablePropertiesView.h
-		DockablePropertyGridViews.cpp
-		DockablePropertyGridViews.h
-		DockableSearchView.cpp
-		DockableSearchView.h
-		#DockedFrame.cpp
-		#DockedFrame.h
 		EclDlg.cpp
 		EclDlg.h
 		EclDlgAttribute.cpp
 		EclDlgAttribute.h
 		EclDlgBuilder.cpp
 		EclDlgBuilder.h
-		#EclViewDataStruct.h
 		ErrorFrame.cpp
 		ErrorFrame.h
 		ExceptionView.cpp
 		ExceptionView.h
-		#GraphFrm.cpp
-		#GraphFrm.h
-		GraphView.cpp
-		GraphView.h
-		GraphView2.cpp
-		GraphView2.h
-		GraphView3.cpp
-		GraphView3.h
-		#grid.cpp
-		#grid.h
 		GridMixIn.h
-		#HistoryDlg.cpp
-		#HistoryDlg.h
 		HistoryView.cpp
 		HistoryView.h
-		#HtmlFrame.h
-		#HtmlView.h
 		IdlePump.h
 		InsAttrDlg.cpp
 		InsAttrDlg.h
@@ -89,25 +44,13 @@ set ( SRCS
 		ListRow.h
 		mainfrm.cpp
 		mainfrm.h
-		#MDIFrame.cpp
-		#MDIFrame.h
 		OpenWorkunit.cpp
 		OpenWorkunit.h
 		OutputView.cpp
 		OutputView.h
-		#prefdlg.cpp
-		#prefdlg.h
-		PropertyGridView.cpp
-		PropertyGridView.h
 		QueryBuilder.rc
 		QueryBuilder.cpp
 		QueryBuilder.h
-		#RelationshipView.h
-		#RelBinder.cpp
-		#RelBinder.h
-		#RelChildFrm.h
-		#RelLabelView.h
-		#RelTableView.h
 		RepositoryFilterView.cpp
 		RepositoryFilterView.h
 		RepositoryFrame.cpp
@@ -119,11 +62,7 @@ set ( SRCS
 		ResultView.h
 		RoxieDebugSession.cpp
 		RoxieDebugSession.h
-		#RoxieNetView.cpp
-		#RoxieNetView.h
 		SortList.h
-		SourceDataView.cpp
-		SourceDataView.h
 		SummaryView.cpp
 		SummaryView.h
 		SyntaxFrame.cpp
@@ -135,7 +74,6 @@ set ( SRCS
 		TableGridCtrl.h
 		TabPane.cpp
 		TabPane.h
-		#targetver.h
 		TestSocket.cpp
 		TestSocket.h
 		WorkspaceFrame.cpp
@@ -168,7 +106,6 @@ include_directories (
 		../ecllib
 		../comms
 		../wlib
-		../GraphViewCtl
 		../sgrid
 		../EditLog
 
@@ -196,7 +133,6 @@ add_executable ( ECLIDE WIN32
 add_dependencies ( ECLIDE
 		CLIB
 		COMMS
-		GRAPHVIEWCTL
 		WLIB
 		BUGTRAP
 	)
@@ -204,7 +140,6 @@ add_dependencies ( ECLIDE
 target_link_libraries( ECLIDE
 		CLIB
 		COMMS
-		GRAPHVIEWCTL
 		WLIB
 		BUGTRAP
 	)

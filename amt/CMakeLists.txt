@@ -13,8 +13,6 @@ set ( SRCS
 		../wlib/DiffView.cpp
 		../EditLog/EditLog.cpp
 		Filter.h
-		GraphView2.cpp
-		GraphView2.h
 		LogView.cpp
 		LogView.h
 		MainFrm2.cpp
@@ -69,7 +67,6 @@ add_executable ( AMT WIN32
 add_dependencies ( AMT
 		CLIB
 		COMMS
-		GRAPHVIEWCTL
 		WLIB
 		BUGTRAP
 	)
@@ -77,7 +74,6 @@ add_dependencies ( AMT
 target_link_libraries( AMT
 		CLIB
 		COMMS
-		GRAPHVIEWCTL
 		WLIB
 		BUGTRAP
 	)

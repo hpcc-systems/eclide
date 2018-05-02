@@ -1932,9 +1932,6 @@ protected:
 	int m_WorkUnitFetchLimit;
 	int m_WorkUnitPersistLimit;
 
-	WTL::CButton m_buttInstall;
-	WTL::CButton m_buttUninstall;
-
 public:
 	CPrefOtherDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner)
 	{
@@ -1963,7 +1960,6 @@ public:
 		m_IgnoreServerVersion = m_config->Get(GLOBAL_IGNORESERVERVERSION);
 		m_ShowCRLF = m_config->Get(GLOBAL_SHOWCRLF);
 		m_DisableAutoUpdate = m_ini->Get(GLOBAL_DISABLEAUTOUPDATE);
-		m_DisableGraphControl = m_ini->Get(GLOBAL_DISABLEGRAPHCONTROL);
 		m_WorkUnitPollFreq = m_config->Get(GLOBAL_ACTIVEWORKUNIT_REFRESH);
 		m_WorkUnitFetchLimit = m_config->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
 		m_WorkUnitPersistLimit = m_config->Get(GLOBAL_WORKUNIT_PERSISTLIMIT);
@@ -1980,7 +1976,6 @@ public:
 		m_config->Set(GLOBAL_IGNORESERVERVERSION, m_IgnoreServerVersion);
 		m_config->Set(GLOBAL_SHOWCRLF, m_ShowCRLF);
 		m_ini->Set(GLOBAL_DISABLEAUTOUPDATE, m_DisableAutoUpdate);
-		m_ini->Set(GLOBAL_DISABLEGRAPHCONTROL, m_DisableGraphControl);
 		m_config->Set(GLOBAL_ACTIVEWORKUNIT_REFRESH, m_WorkUnitPollFreq);
 		m_config->Set(GLOBAL_WORKUNIT_FETCHLIMIT, m_WorkUnitFetchLimit);
 		m_config->Set(GLOBAL_WORKUNIT_PERSISTLIMIT, m_WorkUnitPersistLimit);
@@ -2000,33 +1995,6 @@ public:
 		m_owner->SetChanged(bChanged);
 	}
 
-	void CalcVersions()
-	{
-		std::_tstring currentVersion;
-		if (GetCurrentVersionString(currentVersion))
-		{
-			m_buttUninstall.SetWindowText((boost::_tformat(_T("Uninstall Version:  %1%")) % currentVersion).str().c_str());
-			m_buttUninstall.EnableWindow();
-		}
-		else
-		{
-			m_buttUninstall.SetWindowText(_T("Uninstall Version"));
-			m_buttUninstall.EnableWindow(false);
-		}
-
-		std::_tstring myVersion;
-		if(GetMyVersionString(myVersion))
-		{
-			m_buttInstall.SetWindowText((boost::_tformat(_T("Install Version:  %1%")) % myVersion).str().c_str());
-			m_buttInstall.EnableWindow(true);
-		}
-		else
-		{
-			m_buttInstall.SetWindowText(_T("Install Version"));
-			m_buttInstall.EnableWindow(false);
-		}
-	}
-
 	BEGIN_MSG_MAP(thisClass)
 		MSG_WM_INITDIALOG(OnInitDialog)
 
@@ -2035,10 +2003,7 @@ public:
 		COMMAND_HANDLER(IDC_CHECK_IGNORESERVERVERSION, BN_CLICKED, OnCheckClicked)
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 		COMMAND_HANDLER(IDC_CHECK_DISABLEAUTOUPDATE, BN_CLICKED, OnCheckClicked)
-		COMMAND_HANDLER(IDC_CHECK_DISABLEGRAPHCONTROL, BN_CLICKED, OnCheckClicked)
 		NOTIFY_CODE_HANDLER(UDN_DELTAPOS, OnSpinChange)
-		COMMAND_HANDLER(IDC_BUTTON_INSTALLVERSION, BN_CLICKED, OnBnClickedInstall)
-		COMMAND_HANDLER(IDC_BUTTON_UNINSTALLVERSION, BN_CLICKED, OnBnClickedUninstall)
 		COMMAND_HANDLER(IDC_BUTTON_GPF, BN_CLICKED, OnBnClickedButtonGpf)
 		REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
@@ -2049,7 +2014,6 @@ public:
 		DDX_CHECK(IDC_CHECK_IGNORESERVERVERSION, m_IgnoreServerVersion)
 		DDX_CHECK(IDC_CHECK_SHOWCRLF, m_ShowCRLF)
 		DDX_CHECK(IDC_CHECK_DISABLEAUTOUPDATE, m_DisableAutoUpdate)
-		DDX_CHECK(IDC_CHECK_DISABLEGRAPHCONTROL, m_DisableGraphControl)
 		DDX_INT(IDC_EDIT_WORKUNITPOLL, m_WorkUnitPollFreq)
 		DDX_INT(IDC_EDIT_WORKUNITFETCHLIMIT, m_WorkUnitFetchLimit)
 		DDX_INT(IDC_EDIT_WORKUNITPERSISTLIMIT, m_WorkUnitPersistLimit)
@@ -2069,11 +2033,6 @@ public:
 		LoadFromConfig(m_config); //this calls PopulateControls
 
 		DoChanged(false);
-
-		m_buttInstall = GetDlgItem(IDC_BUTTON_INSTALLVERSION);
-		m_buttUninstall = GetDlgItem(IDC_BUTTON_UNINSTALLVERSION);
-
-		CalcVersions();
 
 		return TRUE;
 	}
@@ -2096,18 +2055,6 @@ public:
 	{
 		CUpDownCtrl ctrl = GetDlgItem(nId);
 		ctrl.SetRange(lower, upper);
-	}
-	LRESULT OnBnClickedInstall(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-	{
-		if (RegisterMyVersion())
-			CalcVersions();
-		return 0;
-	}
-	LRESULT OnBnClickedUninstall(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-	{
-		if (UnregisterCurrentVersion())
-			CalcVersions();
-		return 0;
 	}
 	LRESULT OnBnClickedButtonGpf(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{

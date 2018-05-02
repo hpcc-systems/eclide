@@ -359,13 +359,6 @@ public:
         ExecEcl(action, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled());
     }
 
-    void OnButtonDebug()
-    {
-        CString ecl;
-        m_dlgview.GetSource(ecl);
-        ExecEcl(Dali::WUActionRun, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled(), true);
-    }
-
     void ExecEcl(Dali::WUAction action, const CString &_ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool supressPath=false)
     {
         bool isSaved = false;
@@ -887,14 +880,11 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
             UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
             UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
             UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
-            UPDATEUI(cui, ID_GO_DEBUG, IsRemoteDaliEnabled());
 
             if (m_dlgview.CanExecute())
             {
                 if (!m_dlgview.m_goButton.IsWindowEnabled())
                     m_dlgview.m_goButton.EnableWindow(true);
-                if (!m_dlgview.m_debugButton.IsWindowEnabled())
-                    m_dlgview.m_debugButton.EnableWindow(true);
                 if (!m_dlgview.m_archiveButton.IsWindowEnabled())
                     m_dlgview.m_archiveButton.EnableWindow(true);
             }
@@ -902,8 +892,6 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
             {
                 if (m_dlgview.m_goButton.IsWindowEnabled())
                     m_dlgview.m_goButton.EnableWindow(false);
-                if (m_dlgview.m_debugButton.IsWindowEnabled())
-                    m_dlgview.m_debugButton.EnableWindow(false);
                 if (m_dlgview.m_archiveButton.IsWindowEnabled())
                     m_dlgview.m_archiveButton.EnableWindow(false);
             }

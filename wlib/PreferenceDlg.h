@@ -13,7 +13,6 @@ static const SectionLabelDefault GLOBAL_AUTOSAVEFREQ(SectionLabel(GeneralSection
 static const SectionLabelDefault GLOBAL_AUTOOPENRESULT(SectionLabel(GeneralSection, _T("AutoOpenResult")), 1);
 static const SectionLabelDefault GLOBAL_IGNORESERVERVERSION(SectionLabel(GeneralSection, _T("IgnoreServerVersion")), 0);
 static const SectionLabelDefault GLOBAL_DISABLEAUTOUPDATE(SectionLabel(GeneralSection, _T("DisableAutoUpdate")), 0);
-static const SectionLabelDefault GLOBAL_DISABLEGRAPHCONTROL(SectionLabel(GeneralSection, _T("DisableGraphControl")), 1);
 
 static const TCHAR ResultSection[](_T("Results"));
 static const SectionLabelDefault GLOBAL_FONT_RESULT(SectionLabel(ResultSection, _T("ResultFont")), _T("Courier New"));
