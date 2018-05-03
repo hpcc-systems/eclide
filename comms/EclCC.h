@@ -34,6 +34,7 @@ __interface IEclCC : public IUnknown
     int GetEclFolderCount() const;
     const TCHAR * GetEclFolder(int i) const;
     bool LocatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const;
+    bool GetAutoC(const std::_tstring & partialLabel, StdStringVector &set);
 
     void CheckSyntax(const std::_tstring & module, const std::_tstring & attribute, const std::_tstring & path, const std::_tstring & ecl, Dali::CEclExceptionVector & errors) const;
     const TCHAR * Compile(const std::_tstring & path, const std::_tstring & ecl, const std::_tstring & wuid, int resultLimit, const std::_tstring & debugString, std::_tstring & wuXml, bool & hasErrors, Dali::CEclExceptionVector & errors) const;
