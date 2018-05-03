@@ -10,6 +10,7 @@
 #include "Repository.h"
 #include "SMC.h"
 #include <UtilFilesystem.h>
+#include "DiskAttribute.h"
 
 namespace algo = boost::algorithm;
 
@@ -43,11 +44,11 @@ protected:
 
     mutable std::_tstring m_version;
     mutable CComPtr<SMC::IVersion> m_compilerVersion;
+    mutable CEclMeta m_eclMeta;
 
 public:
     std::_tstring m_errors;
     std::_tstring m_warnings;
-    CEclMeta m_eclMeta;
 
     BEGIN_CLOCKABLEUNKNOWN
     END_CUNKNOWN(CUnknown)
@@ -161,9 +162,9 @@ public:
         return m_version.c_str();
     }
 
-    bool GetAutoC(const std::_tstring & partialLabel, StdStringVector &set)
+    bool GetAutoC(IAttribute *attr, const std::_tstring & partialLabel, StdStringVector &set)
     {
-        m_eclMeta.GetAutoC(partialLabel, set);
+        m_eclMeta.GetAutoC(attr, partialLabel, set);
         return false;
     }
 
@@ -376,10 +377,20 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         StdStringVector args;
         args.push_back(_T("f\"syntaxcheck=1\""));
+        args.push_back(_T("M"));
 
         std::_tstring out, err;
         bool hasErrors = false;
-        CallEclCC(module, attribute, path, ecl, args, out, err, hasErrors, errors);
+        std::_tstring xmlMeta = CallEclCC(module, attribute, path, ecl, args, out, err, hasErrors, errors);
+        m_eclMeta.Update(xmlMeta);
+
+        // Temporary file saving for developmemnt
+        if (xmlMeta.size() > 0) {
+            std::_tstring filePath = pathToWString(m_workingFolderPath / _T("metadata.xml"));
+            CUnicodeFile file;
+            if (file.Create(filePath.c_str()))
+                file.Write(xmlMeta);
+        }
     }
 
     const TCHAR * GetWorkunitXML(const std::_tstring & wuid, std::_tstring & wuXml) const

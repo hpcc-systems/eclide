@@ -52,7 +52,7 @@ public:
     {
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
         {
-            eclcc->GetAutoC(module, list);
+            eclcc->GetAutoC(m_dlgview.GetAttribute(), module, list);
         }
     }
 
