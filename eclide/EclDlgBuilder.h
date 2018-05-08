@@ -16,7 +16,6 @@ enum BUM
 __interface IEclBuilderSlot : public ISourceSlot
 {
     void OnButtonGo(Dali::WUAction action, bool selected = false);
-    void OnButtonDebug();
 };
 
 class CBuilderDlg : 
@@ -60,7 +59,6 @@ protected:
 
 public:
     WTL::CButtonMenuCtrl m_goButton;
-    WTL::CButton m_debugButton;
     WTL::CButton m_archiveButton;
     
     enum { IDD = IDD_BUILDERVIEW };
@@ -145,7 +143,6 @@ public:
         COMMAND_ID_HANDLER_EX(ID_GO_SUBMIT, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_SUBMITSELECTED, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_COMPILE, OnEclGo)
-        COMMAND_ID_HANDLER_EX(ID_GO_DEBUG, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_GENERATE, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM1, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM2, OnEclGo)
@@ -158,7 +155,6 @@ public:
 
         COMMAND_HANDLER(IDC_CHECK_SCHEDULE, BN_CLICKED, OnBnClickedCheckSchedule)
         COMMAND_HANDLER(IDC_BUTTON_GO, BN_CLICKED, OnBnClickedButtonGo)
-        COMMAND_HANDLER(IDC_BUTTON_DEBUG, BN_CLICKED, OnBnClickedButtonDebug)
         COMMAND_HANDLER(IDC_BUTTON_ADVANCED, BN_CLICKED, OnBnClickedButtonAdvanced)
         COMMAND_HANDLER(IDC_BUTTON_ARCHIVE, BN_CLICKED, OnBnClickedButtonArchive)
         COMMAND_HANDLER(IDC_COMBO_QUEUECLUSTER, CBN_SELENDOK, OnCbnSelendokComboCluster)
@@ -176,7 +172,6 @@ public:
         DLGRESIZE_CONTROL(IDC_COMBO_QUEUECLUSTER, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_BUTTON_ADVANCED, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_EDIT_DEBUG, DLSZ_SIZE_X)
-        DLGRESIZE_CONTROL(IDC_BUTTON_DEBUG, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_BUTTON_ARCHIVE, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_EDIT_ECL, DLSZ_SIZE_X | DLSZ_SIZE_Y)
     END_DLGRESIZE_MAP()
@@ -207,7 +202,6 @@ public:
 
     LRESULT OnBnClickedCheckSchedule(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBnClickedButtonGo(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-    LRESULT OnBnClickedButtonDebug(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBnClickedButtonAdvanced(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBnClickedButtonArchive(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 

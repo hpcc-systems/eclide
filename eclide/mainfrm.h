@@ -16,12 +16,6 @@
 #include "ChildGraphFrame.h"
 #include "BookmarksFrame.h"
 
-#include "DockableDataViews.h"
-#include "DockableBreakpointView.h"
-#include "DockableSearchView.h"
-#include "DockablePropertiesView.h"
-#include "DockablePropertyGridViews.h"
-
 #include "Workspace.h"
 
 class CRepositoryFrame;
@@ -42,7 +36,6 @@ enum PERSIST_ITEM_TYPE
     PERSIST_ITEM_UNKNOWN,
     PERSIST_ITEM_BUILDER,
     PERSIST_ITEM_ATTRIBUTE,
-    PERSIST_ITEM_GRAPH,
     PERSIST_ITEM_LAST
 };
 
@@ -72,8 +65,6 @@ public:
                 CComPtr<IRepository> rep = ::AttachRepository();
                 self->m_attribute = rep->GetAttribute(self->m_props.Get(PERSIST_MODULE), self->m_props.Get(PERSIST_ATTRIBUTE), CreateIAttributeType(self->m_props.Get(PERSIST_ATTRIBUTETYPE)), 0, true, true);
             }
-            break;
-        case PERSIST_ITEM_GRAPH:
             break;
         }
     }
@@ -172,12 +163,6 @@ public:
                 hWnd = OpenAttributeMDI(m_frame, m_attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, m_props), false);
             }
             break;
-        case PERSIST_ITEM_GRAPH:
-            {
-                CComPtr<IRepository> rep = AttachRepository();
-                hWnd = OpenGraphMDI(m_frame, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_GRAPH, m_props));
-            }
-            break;
         }
         if (!hWnd)
         {
@@ -225,10 +210,6 @@ protected:
         {
             return PERSIST_ITEM_ATTRIBUTE;
         }
-        else if (std::_tstring(m_props.Get(PERSIST_TYPE)).compare(PERSISTVAL_GRAPH) == 0)
-        {
-            return PERSIST_ITEM_GRAPH;
-        }
         return PERSIST_ITEM_UNKNOWN;
     }
 };
@@ -253,9 +234,6 @@ enum RIBBON
     RIBBON_UNKNOWN = 0,
     RIBBON_HOME,
     RIBBON_RESULT,
-    RIBBON_GRAPH,
-    RIBBON_GRAPH2,
-    RIBBON_DEBUG,
     RIBBON_BROWSER,
     RIBBON_COMPARE,
     RIBBON_LAST
@@ -315,7 +293,6 @@ enum WORKSPACE
     WORKSPACE_UNKNOWN = 0,
     WORKSPACE_NORMAL,
     WORKSPACE_GRAPH,
-    WORKSPACE_DEBUG,
     WORKSPACE_LAST
 };
 
@@ -391,11 +368,6 @@ public:
     CErrorFrame *m_Error;
 
     CMFCCaptionBar m_wndCaptionBar;
-    CDockableDataViews *m_debugDataViews;
-    CDockableBreakpointView *m_debugBreakpointView;
-    CDockablePropertiesView *m_debugPropertiesView;
-    CDockablePropertyGridViews *m_debugPropertyGridViews;
-    CDockableSearchView *m_debugSearchView;
     CBookmarksFrame *m_Bookmarks;
 
     bool m_tabbedMDI;

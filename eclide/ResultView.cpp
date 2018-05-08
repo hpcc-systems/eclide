@@ -19,10 +19,6 @@
 #include <preferencedlg.h> //wlib
 #include "SummaryView.h"
 #include "ExceptionView.h"
-#include "GraphView.h"
-#include "GraphView2.h"
-#include "GraphView3.h"
-#include "DebugView.h"
 #include "attributedlg.h"
 
 #include "atlsgrid.h"
@@ -2332,12 +2328,6 @@ private:
     CTabPanePtr		 m_debugView;
     CTabPanePtr		 m_summaryView;
     CTabPanePtr		 m_graphSummaryView;
-#ifdef USE_LEGACY_GRAPH
-    StlLinked<CGraphView> m_graphView;
-#else
-    StlLinked<CGraphView3> m_graphView;
-#endif
-    StlLinked<CGraphView2> m_eclGraphView;
     CTabPanePtr		 m_firstResult;
     std::map<std::_tstring, bool> m_loaded;
     BuilderStartup	 m_startupMode;
@@ -2351,12 +2341,9 @@ private:
 
     bool CreateWUSummaryWindow();
     bool CreateDesdlSummaryWindow();
-    bool CreateGraphWindow();
     bool CreateGraphBrowserWindow();
-    bool CreateEclGraphWindow();
     bool CreateResultWindow(Dali::IResult * result);
     bool CreateExceptionWindow();
-    bool CreateDebugWindow();
 
     LRESULT OnInitDialog(HWND hWnd, LPARAM lParam);
     LRESULT OnRefresh(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
@@ -2513,8 +2500,6 @@ void CMultiResultView::CloseTab(unsigned int tab)
         m_summaryView = NULL;
     else if (m_graphSummaryView.get()->GetHWND() == hWnd)
         m_graphSummaryView = NULL;
-    else if (m_graphView.get()->GetHWND() == hWnd)
-        m_graphView = NULL;
 
     m_loaded[static_cast<const TCHAR *>(m_tabs[tab].get()->GetTabName())] = false;
     ::DestroyWindow(hWnd);
@@ -2537,7 +2522,6 @@ void CMultiResultView::CloseAllTabs()
     m_debugView = NULL;
     m_summaryView = NULL;
     m_graphSummaryView = NULL;
-    m_graphView = NULL;
     m_loaded.clear();
     m_drilldown.clear();
     m_tabs.clear();
@@ -2592,18 +2576,10 @@ void CMultiResultView::PostSelectRibbon()
     {
         if (dynamic_cast<CExceptionView *>(m_tabs[n].get()))
             GetIMainFrame()->PostSelectRibbon(RIBBON_HOME);
-        else if (dynamic_cast<CGraphView *>(m_tabs[n].get()))
-            GetIMainFrame()->PostSelectRibbon(RIBBON_GRAPH);
-        else if (dynamic_cast<CGraphView2 *>(m_tabs[n].get()))
-            GetIMainFrame()->PostSelectRibbon(RIBBON_GRAPH2);
-        else if (dynamic_cast<CGraphView3 *>(m_tabs[n].get()))
-            GetIMainFrame()->PostSelectRibbon(RIBBON_GRAPH);
         else if (dynamic_cast<CSummaryView *>(m_tabs[n].get()))
             GetIMainFrame()->PostSelectRibbon(RIBBON_BROWSER);
         else if (dynamic_cast<CResultView *>(m_tabs[n].get()))
             GetIMainFrame()->PostSelectRibbon(RIBBON_RESULT);
-        else if (dynamic_cast<CDebugView *>(m_tabs[n].get()))
-            GetIMainFrame()->PostSelectRibbon(RIBBON_DEBUG);
     }
 }
 
@@ -2735,35 +2711,6 @@ bool CMultiResultView::CreateDesdlSummaryWindow() {
     return false;
 }
 
-bool CMultiResultView::CreateGraphWindow()
-{
-    if (m_wu && !m_graphView.isLinked())
-    {
-#ifdef USE_LEGACY_GRAPH
-        StlLinked<CGraphView> r = new CGraphView(m_wu, m_resultSlot);
-#else
-        StlLinked<CGraphView3> r = new CGraphView3(m_wu, m_resultSlot);
-#endif
-        {
-            m_graphView = r.get();
-            r->Create(m_tabbedChildWindow);
-            CTabPanePtr tab = r;
-            m_tabs.push_back(tab);
-
-            m_tabbedChildWindow.DisplayTab(r.get()->m_hWnd, TRUE);
-        }
-        return true;
-    }
-    else if (m_graphView.isLinked())
-    {
-        //if this is the current tab, refresh it
-        unsigned n = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
-        if (n+1 == m_tabs.size())
-            ::SendMessage(m_graphView->GetHWND(), CWM_REFRESH, 0, 0);
-    }
-    return false;
-}
-
 bool CMultiResultView::CreateGraphBrowserWindow()
 {
     if (m_wu && !m_graphSummaryView.isLinked())
@@ -2789,31 +2736,6 @@ bool CMultiResultView::CreateGraphBrowserWindow()
     return false;
 }
 
-bool CMultiResultView::CreateEclGraphWindow()
-{
-    if (m_wu && !m_eclGraphView.isLinked())
-    {
-        StlLinked<CGraphView2> r = new CGraphView2(m_wu, m_resultSlot);
-        {
-            m_eclGraphView = r.get();
-            r->Create(m_tabbedChildWindow);
-            CTabPanePtr tab = r;
-            m_tabs.push_back(tab);
-
-            m_tabbedChildWindow.DisplayTab(r->m_hWnd, TRUE);
-        }
-        return true;
-    }
-    else if (m_eclGraphView.isLinked())
-    {
-        //if this is the current tab, refresh it
-        unsigned n = m_tabbedChildWindow.GetTabCtrl().GetCurSel();
-        if (n+1 == m_tabs.size())
-            ::SendMessage(m_eclGraphView->GetHWND(), CWM_REFRESH, 0, 0);
-    }
-    return false;
-}
-
 bool CMultiResultView::CreateExceptionWindow()
 {
     bool bNewWindow = false;
@@ -2833,29 +2755,6 @@ bool CMultiResultView::CreateExceptionWindow()
     else
     {
         m_exceptionView->Refresh();
-    }
-    return bNewWindow;
-}
-
-bool CMultiResultView::CreateDebugWindow()
-{
-    bool bNewWindow = false;
-    if ( m_debugView.get() == 0 )
-    {
-        StlLinked<CDebugView> r = new CDebugView(m_wu, m_resultSlot);
-        m_debugView = r.get();
-        r->Create(m_tabbedChildWindow);
-
-        //add as first one
-        m_tabs.insert(m_tabs.begin(), r.get());
-
-        m_tabbedChildWindow.AddTab(r->m_hWnd, r->GetTabName(), -1, 0);
-        m_tabbedChildWindow.DisplayTab(r->m_hWnd);
-        bNewWindow = true;
-    }
-    else
-    {
-        m_debugView->Refresh();
     }
     return bNewWindow;
 }
@@ -2922,12 +2821,7 @@ LRESULT CMultiResultView::OnRefresh(UINT /*uMsg*/, WPARAM bCreated, LPARAM bDele
 
                 if (m_wu->GetGraphCount())
                 {
-                    if (static_cast<bool>(GetIConfig(QUERYBUILDER_INI)->Get(GLOBAL_DISABLEGRAPHCONTROL))) {
-                        CreateGraphBrowserWindow();
-                    }
-                    else {
-                        CreateGraphWindow();
-                    }
+                    CreateGraphBrowserWindow();
                 }
 
                 if (m_wu->IsComplete())
@@ -2960,33 +2854,10 @@ LRESULT CMultiResultView::OnRefresh(UINT /*uMsg*/, WPARAM bCreated, LPARAM bDele
                             else if (result->FindColumn(_T("edge_from_id")) != -1)
                                 ++graphResultCount;
                         }
-
-                        if (graphResultCount == 2)
-                            CreateEclGraphWindow();
                     }
                     m_tabbedChildWindow.GetTabCtrl().SetCurSel(curSel);
                 }
 
-                if (m_wu->IsDebugging())
-                {
-                    CreateDebugWindow();
-                    if (m_launchDebugger)
-                    {
-#define NLAUNCH_DEBUGGING
-#ifdef LAUNCH_DEBUGGING
-                        boost::filesystem::path folder;
-                        GetProgramFolder(folder);
-                        boost::filesystem::path file = folder / boost::filesystem::path("RoxieDebugger.exe", boost::filesystem::native);
-
-                        ::CString cfg = GetIConfig(QUERYBUILDER_CFG)->GetLabel();
-                        ::CString id = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER);
-                        ::CString pw = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD);
-                        std::_tstring params = (boost::_tformat(_T("--cfg %1% --id %2% --pw %3% --wuid %4%")) % (const TCHAR *)cfg % (const TCHAR *)id % (const TCHAR *)pw % (const TCHAR *)wuid).str();
-                        ::ShellExecute(m_hWnd, _T("open"), CA2T(file.native_file_string().c_str()), params.c_str(), CA2T(folder.native_file_string().c_str()), SW_SHOWNORMAL);
-#endif
-                        m_launchDebugger = false;
-                    }
-                }
                 switch (m_startupMode)
                 {
                 case StartNoChange:
@@ -3008,13 +2879,7 @@ LRESULT CMultiResultView::OnRefresh(UINT /*uMsg*/, WPARAM bCreated, LPARAM bDele
                         m_tabbedChildWindow.GetTabCtrl().SetCurSel(0);
                     break;
                 case StartGraph:
-                    if (m_graphView)
-                    {
-                        m_tabbedChildWindow.DisplayTab(m_graphView->GetHWND(), FALSE);
-                        m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_FOLLOWACTIVE);
-                        m_graphView->PostMessage(WM_COMMAND, ID_GRAPH_MINIMIZEINACTIVE);
-                    }
-                    else if (m_summaryView) {
+                    if (m_graphSummaryView) {
                         m_tabbedChildWindow.DisplayTab(m_graphSummaryView->GetHWND(), FALSE);
                     }
                     else
@@ -3064,13 +2929,6 @@ void CMultiResultView::WorkunitUpdated(Dali::IWorkunit * workunit)
 {
     if (::IsWindow(m_hWnd))
     {
-        if (m_debugView)
-        {
-            CDebugView * debugView = dynamic_cast<CDebugView *>(m_debugView.get());
-            if (debugView && debugView->SupressRefresh())
-                return;
-        }
-
         ATLTRACE(_T("CMultiResultView::WorkunitUpdated(%s - %d)\n"), workunit->GetWuid(), workunit->GetState());
         PostMessage(CWM_REFRESH, 0);
     }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Util.h"
-#include "DebugGraphView.h"
 #include "Attribute.h"
 #include "SciSyntaxMarker.h"
 #include "CSortMFCListCtrl.h"

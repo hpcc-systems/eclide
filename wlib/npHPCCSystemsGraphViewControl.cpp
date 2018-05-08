@@ -63,15 +63,3 @@ bool RegisterActiveX(const std::_tstring & dllPath, bool unregister = false)
 		return false;
 	return true;
 }
-
-bool UnregisterCurrentVersion()
-{
-	std::_tstring dllPath;
-	GetActiveXDLLPath(GUID_npHPCCSystemsGraphViewControl, dllPath);	
-	return RegisterActiveX(dllPath, true); 
-}
-
-bool RegisterMyVersion()
-{
-	return RegisterActiveX(DLL_npHPCCSystemsGraphViewControl, false);
-}

@@ -19,6 +19,7 @@
 //#include "InvokeSprayWizard.h"
 #include "AttrListDlg.h"
 #include <UtilFilesystem.h>
+#include <Logger.h>
 
 enum UM
 {
@@ -159,16 +160,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_UPDATE_COMMAND_UI(ID_VIEW_ERROR, OnUpdateViewDockedPane)
     ON_COMMAND_EX(ID_VIEW_ERROR, OnViewDockedPane)
 
-    ON_UPDATE_COMMAND_UI(ID_VIEW_DEBUGBREAKPOINTS, OnUpdateViewDockedPane)
-    ON_COMMAND_EX(ID_VIEW_DEBUGBREAKPOINTS, OnViewDockedPane)
-    ON_UPDATE_COMMAND_UI(ID_VIEW_DEBUGPROPERTYGRID, OnUpdateViewDockedPane)
-    ON_COMMAND_EX(ID_VIEW_DEBUGPROPERTYGRID, OnViewDockedPane)
-    ON_UPDATE_COMMAND_UI(ID_VIEW_DEBUGDATA, OnUpdateViewDockedPane)
-    ON_COMMAND_EX(ID_VIEW_DEBUGDATA, OnViewDockedPane)
-    ON_UPDATE_COMMAND_UI(ID_VIEW_DEBUGPROPERTIES, OnUpdateViewDockedPane)
-    ON_COMMAND_EX(ID_VIEW_DEBUGPROPERTIES, OnViewDockedPane)
-    ON_UPDATE_COMMAND_UI(ID_VIEW_DEBUGSEARCH, OnUpdateViewDockedPane)
-    ON_COMMAND_EX(ID_VIEW_DEBUGSEARCH, OnViewDockedPane)
     ON_UPDATE_COMMAND_UI(ID_VIEW_BOOKMARKS, OnUpdateViewDockedPane)
     ON_COMMAND_EX(ID_VIEW_BOOKMARKS, OnViewDockedPane)
 
@@ -229,11 +220,6 @@ CMainFrame::CMainFrame() : m_threadSave(5)
 #endif
     m_Syntax = new CSyntaxFrame();
     m_Bookmarks = new CBookmarksFrame();
-    m_debugDataViews = new CDockableDataViews();
-    m_debugBreakpointView = new CDockableBreakpointView();
-    m_debugPropertiesView = new CDockablePropertiesView();
-    m_debugPropertyGridViews = new CDockablePropertyGridViews();
-    m_debugSearchView = new CDockableSearchView();
     m_Error = new CErrorFrame();
 
     m_tabbedMDI = true;
@@ -254,11 +240,6 @@ CMainFrame::~CMainFrame()
 
     g_MainFrame = NULL;
     delete m_Error;
-    delete m_debugDataViews;
-    delete m_debugBreakpointView;
-    delete m_debugPropertiesView;
-    delete m_debugPropertyGridViews;
-    delete m_debugSearchView;	//Causes leak, but it is preventing the clean closedown...
     delete m_Syntax;
     delete m_Bookmarks;
 #ifdef DFU_WINDOWS
@@ -432,7 +413,6 @@ void PreAdjustPane(CDockablePane * pane)
     }
 }
 
-const TCHAR * const _STATE_DEBUG = _T("DebugWorkspace");
 const TCHAR * const _STATE_GRAPH = _T("GraphWorkspace");
 const TCHAR * const _STATE_NORMAL = _T("Workspace");
 const TCHAR * const getWorkspaceString(WORKSPACE workspaceMode) {
@@ -442,8 +422,6 @@ const TCHAR * const getWorkspaceString(WORKSPACE workspaceMode) {
         return _STATE_NORMAL;
     case WORKSPACE_GRAPH:
         return _STATE_GRAPH;
-    case WORKSPACE_DEBUG:
-        return _STATE_DEBUG;
     default:
         ATLASSERT(false);
     }
@@ -478,39 +456,7 @@ void CMainFrame::SetWorkspaceMode(WORKSPACE workspaceMode)
         {
             switch (m_workspaceMode)
             {
-            case WORKSPACE_DEBUG:
-                m_debugDataViews->ShowPane(TRUE, FALSE, TRUE);
-                m_debugPropertyGridViews->ShowPane(TRUE, FALSE, TRUE);
-                m_debugBreakpointView->ShowPane(TRUE, FALSE, TRUE);
-                m_debugPropertiesView->ShowPane(TRUE, FALSE, TRUE);
-                m_debugSearchView->ShowPane(TRUE, FALSE, TRUE);
-                m_debugSearchView->ShowPane(TRUE, FALSE, TRUE);
-
-#ifdef WORKSPACE_WINDOW
-                m_Workspace->ShowPane(FALSE, FALSE, TRUE);
-#endif
-                m_Repository->ShowPane(FALSE, FALSE, TRUE);
-                m_RepositoryFilter->ShowPane(FALSE, FALSE, TRUE);
-                m_Workunits->ShowPane(FALSE, FALSE, TRUE);
-                m_WorkunitsActive->ShowPane(FALSE, FALSE, TRUE);
-                m_WorkunitsFilter->ShowPane(FALSE, FALSE, TRUE);
-#ifdef DFU_WINDOWS
-                m_Dfu->ShowPane(FALSE, FALSE, TRUE);
-                m_DfuFilter->ShowPane(FALSE, FALSE, TRUE);
-#endif
-                m_Syntax->ShowPane(FALSE, FALSE, TRUE);
-                m_Bookmarks->ShowPane(FALSE, FALSE, TRUE);
-                m_Error->ShowPane(FALSE, FALSE, TRUE);
-                break;
-
             case WORKSPACE_GRAPH:
-                m_debugDataViews->ShowPane(FALSE, FALSE, TRUE);
-                m_debugPropertyGridViews->ShowPane(FALSE, FALSE, TRUE);
-                m_debugBreakpointView->ShowPane(FALSE, FALSE, TRUE);
-                m_debugPropertiesView->ShowPane(TRUE, FALSE, TRUE);
-                m_debugSearchView->ShowPane(FALSE, FALSE, TRUE);
-                m_debugSearchView->ShowPane(FALSE, FALSE, TRUE);
-
 #ifdef WORKSPACE_WINDOW
                 m_Workspace->ShowPane(FALSE, FALSE, TRUE);
 #endif
@@ -923,44 +869,6 @@ LRESULT CMainFrame::OnSelectRibbon(WPARAM wParam, LPARAM lParam)
             bRecalc = TRUE;
         }
         break;
-    case RIBBON_GRAPH:
-        if (!m_CategoryGraph->IsVisible())
-        {
-            bRecalc = m_wndRibbonBar.HideAllContextCategories();
-            m_wndRibbonBar.ShowContextCategories(wParam);
-            if (!isHidden)
-                m_wndRibbonBar.ActivateContextCategory(wParam);
-            bRecalc = TRUE;
-        }
-        break;
-    case RIBBON_GRAPH2:
-        if (!m_CategoryGraph2->IsVisible())
-        {
-            bRecalc = m_wndRibbonBar.HideAllContextCategories();
-            m_wndRibbonBar.ShowContextCategories(wParam);
-            if (!isHidden)
-                m_wndRibbonBar.ActivateContextCategory(wParam);
-            bRecalc = TRUE;
-        }
-        break;
-    case RIBBON_DEBUG:
-        if (!m_CategoryDebug->IsVisible())
-        {
-            bRecalc = m_wndRibbonBar.HideAllContextCategories();
-            m_wndRibbonBar.ShowContextCategories(wParam);
-            if (!isHidden)
-                m_wndRibbonBar.ActivateContextCategory(wParam);
-            bRecalc = TRUE;
-        }
-        if (!m_CategoryDebugAdvanced->IsVisible())
-        {
-            bRecalc = m_wndRibbonBar.HideAllContextCategories();
-            m_wndRibbonBar.ShowContextCategories(wParam);
-            if (!isHidden)
-                m_wndRibbonBar.ActivateContextCategory(wParam);
-            bRecalc = TRUE;
-        }
-        break;
     case RIBBON_BROWSER:
         if (!m_CategoryBrowser->IsVisible())
         {
@@ -988,18 +896,7 @@ LRESULT CMainFrame::OnSelectRibbon(WPARAM wParam, LPARAM lParam)
         m_wndRibbonBar.RedrawWindow();
         SendMessage(WM_NCPAINT, 0, 0);
 
-        switch((RIBBON)wParam)
-        {
-        case RIBBON_DEBUG:
-            SetWorkspaceMode(WORKSPACE_DEBUG);
-            break;
-        case RIBBON_GRAPH:
-        case RIBBON_GRAPH2:
-            SetWorkspaceMode(WORKSPACE_GRAPH);
-            break;
-        default:
-            SetWorkspaceMode(WORKSPACE_NORMAL);
-        }
+        SetWorkspaceMode(WORKSPACE_NORMAL);
     }
     m_prevRibbon = (RIBBON)wParam;
     return 0;
@@ -1223,14 +1120,6 @@ void CMainFrame::InitializeRibbon()
         strTemp.LoadString(IDS_RIBBON_STATUSBAR);
         pPanelNormal->Add(new CMFCRibbonCheckBox(ID_VIEW_STATUS_BAR, strTemp));
 
-        CMFCRibbonPanel* pPanelDebug = m_CategoryView->AddPanel(_T("Debug\nd"), m_PanelImages.ExtractIcon(7));
-        pPanelDebug->Add(new CMFCRibbonCheckBox(ID_VIEW_DEBUGBREAKPOINTS, _T("Breakpoints\nw")));
-        pPanelDebug->Add(new CMFCRibbonCheckBox(ID_VIEW_DEBUGPROPERTYGRID, _T("Property Grid")));
-        pPanelDebug->Add(new CMFCRibbonCheckBox(ID_VIEW_DEBUGDATA, _T("Data\nf")));
-        pPanelDebug->Add(new CMFCRibbonSeparator());
-        pPanelDebug->Add(new CMFCRibbonCheckBox(ID_VIEW_DEBUGPROPERTIES, _T("Properties\nr")));
-        pPanelDebug->Add(new CMFCRibbonCheckBox(ID_VIEW_DEBUGSEARCH, _T("Search\nr")));
-
         CMFCRibbonPanel* pPanelResetDockedLeft = m_CategoryView->AddPanel(_T("Reset Left"), m_PanelImages.ExtractIcon (7));
         pPanelResetDockedLeft->Add(new CMFCRibbonButton(ID_VIEW_RESETDOCKEDWINDOWS_DEFAULT_LEFT, _T("Default\nd")));
         pPanelResetDockedLeft->Add(new CMFCRibbonButton(ID_VIEW_RESETDOCKEDWINDOWS_ALLPINNED_LEFT, _T("All pinned\np")));
@@ -1277,112 +1166,6 @@ void CMainFrame::InitializeRibbon()
         pPanelNavigation->Add(new CMFCRibbonSeparator());
         pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_BACK, _T("Back\nb"), 7));
         pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_FORWARD, _T("Forward\nf"), 6));
-    }
-
-    {//  Graph Ribbon
-        m_CategoryGraph = m_wndRibbonBar.AddContextCategory(_T("&Graph"), _T("Graph"), RIBBON_GRAPH, AFX_CategoryColor_Orange, IDB_WRITESMALL, IDB_WRITELARGE);
-
-        CMFCRibbonPanel* pPanelNavigation = m_CategoryGraph->AddPanel(_T("Navigation\nn"), m_PanelImages.ExtractIcon (7));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH_LAYOUT, _T("Layout\nl"), 42, 6));
-        pPanelNavigation->Add(new CMFCRibbonSeparator());
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_BACK, _T("Back\nb"), 7));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_FORWARD, _T("Forward\nf"), 6));
-
-        CMFCRibbonPanel* pPanelZoom = m_CategoryGraph->AddPanel(_T("Zoom"), m_PanelImages.ExtractIcon (7));
-        pPanelZoom->Add(new CMFCRibbonButton(ID_GRAPH_ZOOMTOFIT, _T("To Fit\nf"), 33));
-        pPanelZoom->Add(new CMFCRibbonButton(ID_GRAPH_ZOOMTOWIDTH, _T("To Width\nw"), 46));
-
-        CMFCRibbonPanel* pPanelRunning = m_CategoryGraph->AddPanel(_T("Running"), m_PanelImages.ExtractIcon (7));
-        m_graphRefresh = new CMFCRibbonButton(ID_GRAPH_REFRESH, _T("Refresh (30)\nr"), 42);
-        pPanelRunning->Add(m_graphRefresh);
-        pPanelRunning->Add(new CMFCRibbonCheckBox(ID_GRAPH_FOLLOWACTIVE, _T("Follow Active\nf")));
-        pPanelRunning->Add(new CMFCRibbonCheckBox(ID_GRAPH_MINIMIZEINACTIVE, _T("Minimize Inactive\nm")));
-    }
-
-    {//  Graph Ribbon 2
-        m_CategoryGraph2 = m_wndRibbonBar.AddContextCategory(_T("&Graph"), _T("Graph"), RIBBON_GRAPH2, AFX_CategoryColor_Orange, IDB_WRITESMALL, IDB_WRITELARGE);
-
-        CMFCRibbonPanel* pPanelNavigation = m_CategoryGraph2->AddPanel(_T("Layout\nl"), m_PanelImages.ExtractIcon (7));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_DOT, _T("Tree\nt")));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_NEATO, _T("Spring\ns")));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_TWOPI, _T("Radial\nr")));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_FDP, _T("Spring2\n2")));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_CIRCO, _T("Cluster\nc")));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_SFDP, _T("Spring3\n3")));
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_GRAPH2_OSAGE, _T("Osage\no")));
-    }
-
-    {//  Debug Ribbon
-        m_CategoryDebug = m_wndRibbonBar.AddContextCategory(_T("&Basic"), _T("Debug"), RIBBON_DEBUG, AFX_CategoryColor_Red, IDB_DEBUGGER, IDB_WRITELARGE);
-
-        //  Create a "Process" Panel.
-        CMFCRibbonPanel* pPanelProcess = m_CategoryDebug->AddPanel(_T("Process"), m_PanelImages.ExtractIcon (7));
-        pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_DETACH, _T("Detach\nd"), 14));
-        pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_ABORT, _T("Abort\na"), 15));
-        pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_RESTART, _T("Restart\nr"), 19));
-        pPanelProcess->Add(new CMFCRibbonSeparator());
-        pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_BREAK, _T("Break\nb"), 16));
-        pPanelProcess->Add(new CMFCRibbonButton(ID_DEBUGGER_CONTINUE, _T("Continue\nc"), 13));
-
-        //  Create a "Graph" Panel.
-        CMFCRibbonPanel* pPanelGraph = m_CategoryDebug->AddPanel(_T("Graph"), m_PanelImages.ExtractIcon (7));
-        pPanelGraph->Add(new CMFCRibbonButton(ID_DEBUGGER_STEPGRAPH, _T("Step\ng"), 18));
-        pPanelGraph->Add(new CMFCRibbonButton(ID_DEBUGGER_STEPGRAPHSTART, _T("Step Start\ns"), 18));
-        pPanelGraph->Add(new CMFCRibbonButton(ID_DEBUGGER_STEPGRAPHEND, _T("Step End\ne"), 18));
-
-        //  Create a "Edge" Panel.
-        CMFCRibbonPanel* pPanelEdge = m_CategoryDebug->AddPanel(_T("Edge"), m_PanelImages.ExtractIcon (7));
-        pPanelEdge->Add(new CMFCRibbonButton(ID_DEBUGGER_STEP, _T("Step\ns"), 17));
-        pPanelEdge->Add(new CMFCRibbonButton(ID_DEBUGGER_NEXT, _T("Next\nn"), 19));
-
-        //  Create a "Breakpoints" Panel.
-        CMFCRibbonPanel* pPanelBreakpoints = m_CategoryDebug->AddPanel(_T("Breakpoint(s)"), m_PanelImages.ExtractIcon (7));
-        pPanelBreakpoints->Add(new CMFCRibbonButton(ID_DEBUGGER_SETGLOBALBREAKPOINT, _T("Add Global\na"), 20));
-        pPanelBreakpoints->Add(new CMFCRibbonButton(ID_DEBUGGER_SETBREAKPOINT, _T("Add\na"), 20));
-        pPanelBreakpoints->Add(new CMFCRibbonSeparator());
-        pPanelBreakpoints->Add(new CMFCRibbonButton(ID_DEBUGGER_REMOVEBREAKPOINT, _T("Clear\nc"), 21));
-        pPanelBreakpoints->Add(new CMFCRibbonButton(ID_DEBUGGER_REMOVEALLBREAKPOINTS, _T("Clear All\na"), 22));
-
-        //  Create a "Find" Panel.
-        CMFCRibbonPanel* pPanelFind = m_CategoryDebug->AddPanel(_T("Find"));
-        pPanelFind->Add(new CMFCRibbonButton(ID_EDIT_FIND, _T("Find\nf"), 4));
-        pPanelFind->Add(new CMFCRibbonButton(ID_EDIT_FINDNEXT, _T("Next\nn"), 11));
-        pPanelFind->Add(new CMFCRibbonButton(ID_EDIT_FINDPREV, _T("Previous\np"), 10));
-        pPanelFind->Add(new CMFCRibbonSeparator());
-        pPanelFind->Add(new CMFCRibbonButton(ID_EDIT_GOTO, _T("Goto\ng"), 24));
-
-        //  Create a "Graph" Panel.
-        CMFCRibbonPanel* pPanelView = m_CategoryDebug->AddPanel(_T("View"), m_PanelImages.ExtractIcon (7));
-        //pPanelView->Add(new CMFCRibbonCheckBox(ID_DEBUGGER_SHOWALL, _T("Show All")));
-        //pPanelView->Add(new CMFCRibbonCheckBox(ID_DEBUGGER_SHOWACTIVE, _T("Show Active")));
-        //pPanelView->Add(new CMFCRibbonCheckBox(ID_DEBUGGER_SHOWOPTIMIZED, _T("Show Optimized")));
-        //pPanelView->Add(new CMFCRibbonSeparator());
-        pPanelView->Add(new CMFCRibbonLabel(_T("Zoom:")));
-        CMFCRibbonSlider* pBtnZoom = new CMFCRibbonSlider(ID_DEBUGGER_ZOOM, 70 /* Slider width */);
-        pBtnZoom->SetZoomButtons();
-        pBtnZoom->SetRange(10, 100);
-        pBtnZoom->SetPos(100);
-        pPanelView->Add(pBtnZoom);
-        pPanelView->Add(new CMFCRibbonButton(ID_DEBUGGER_RECENTER, _T("Recenter Active\nr")));
-        pPanelView->Add(new CMFCRibbonSeparator());
-        pPanelView->Add(new CMFCRibbonButton(ID_DEBUGGER_LAYOUT, _T("Layout\nl"), 23));
-        CMFCRibbonProgressBar* SocketProgress = new CMFCRibbonProgressBar(ID_DEBUGGER_SOCKETPROGRESS, 100 /* Bar width */);
-        SocketProgress->SetInfiniteMode();
-        pPanelView->Add(SocketProgress);
-        CMFCRibbonProgressBar* LayoutProgress = new CMFCRibbonProgressBar(ID_DEBUGGER_LAYOUTPROGRESS, 100 /* Bar width */);
-        LayoutProgress->SetInfiniteMode();
-        pPanelView->Add(LayoutProgress);
-    }
-
-    {
-        m_CategoryDebugAdvanced = m_wndRibbonBar.AddContextCategory(_T("&Advanced"), _T("Debug"), RIBBON_DEBUG, AFX_CategoryColor_Red, IDB_DEBUGGER, IDB_WRITELARGE);
-        //  Create a "Filter" Panel.
-        CMFCRibbonPanel* pPanelGlobalFilter = m_CategoryDebugAdvanced->AddPanel(_T("Global Filter"), m_PanelImages.ExtractIcon (7));
-        pPanelGlobalFilter->Add(new CMFCRibbonCheckBox(ID_VIEW_RUNNINGONLYGLOBAL, _T("Running Only\nr")));
-        pPanelGlobalFilter->Add(new CMFCRibbonCheckBox(ID_VIEW_FOUNDONLYGLOBAL, _T("Search Results Only\nf")));
-        CMFCRibbonPanel* pPanelActiveFilter = m_CategoryDebugAdvanced->AddPanel(_T("Active Filter"), m_PanelImages.ExtractIcon (7));
-        pPanelActiveFilter->Add(new CMFCRibbonCheckBox(ID_VIEW_RUNNINGONLYACTIVE, _T("Running Only\nr")));
-        pPanelActiveFilter->Add(new CMFCRibbonCheckBox(ID_VIEW_FOUNDONLYACTIVE, _T("Search Results Only\nf")));
     }
 
     {//  Diff Ribbon
@@ -1455,15 +1238,6 @@ void CMainFrame::InitializeDocking(UINT nID)
         break;
     }
 
-    if (!theApp.IsStateExists(getWorkspaceString(WORKSPACE_NORMAL)))
-    {
-        ATLASSERT(m_workspaceMode == WORKSPACE_NORMAL);
-        hiddenPanes.push_back(HiddenPane(m_debugDataViews));
-        hiddenPanes.push_back(HiddenPane(m_debugPropertyGridViews));
-        hiddenPanes.push_back(HiddenPane(m_debugBreakpointView));
-        hiddenPanes.push_back(HiddenPane(m_debugPropertiesView));
-        hiddenPanes.push_back(HiddenPane(m_debugSearchView));
-    }
     DockToMainframe(mainPanes);
     DockToPane(neighbourPanes);
     TabDockToPane(tabbedPanes);
@@ -1479,26 +1253,17 @@ void CMainFrame::InitializeDockingDefaultRight(WinPaneVector & mainPanes, Neighb
     mainPanes.push_back(WinPane(m_Repository, CBRS_ALIGN_RIGHT));
     {
         neighbourPanes.push_back(NeighbourPane(m_Repository, m_Workunits, CBRS_ALIGN_TOP));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_debugPropertiesView));
-        }
+        tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
 #ifdef WORKSPACE_WINDOW
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Workspace));
 #endif
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Dfu));
-        tabbedPanes.push_back(TabbedPane(m_Repository, m_debugSearchView));
     }
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM));
     {
         neighbourPanes.push_back(NeighbourPane(m_Syntax, m_Error, CBRS_ALIGN_RIGHT));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
-        }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
 
@@ -1513,26 +1278,17 @@ void CMainFrame::InitializeDockingPinnedRight(WinPaneVector & mainPanes, Neighbo
     mainPanes.push_back(WinPane(m_Repository, CBRS_ALIGN_RIGHT));
     {
         neighbourPanes.push_back(NeighbourPane(m_Repository, m_Workunits, CBRS_ALIGN_TOP));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_debugPropertiesView));
-        }
+        tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
 #ifdef WORKSPACE_WINDOW
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Workspace));
 #endif
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Dfu));
-        tabbedPanes.push_back(TabbedPane(m_Repository, m_debugSearchView));
     }
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM));
     {
         neighbourPanes.push_back(NeighbourPane(m_Syntax, m_Error, CBRS_ALIGN_RIGHT));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
-        }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
 
@@ -1544,20 +1300,15 @@ void CMainFrame::InitializeDockingUnpinnedRight(WinPaneVector & mainPanes, Neigh
 
     mainPanes.push_back(WinPane(m_Workunits, CBRS_ALIGN_RIGHT, false));
     mainPanes.push_back(WinPane(m_WorkunitsActive, CBRS_ALIGN_RIGHT, false));
-    mainPanes.push_back(WinPane(m_debugPropertiesView, CBRS_ALIGN_RIGHT, false));
 
     mainPanes.push_back(WinPane(m_Repository, CBRS_ALIGN_RIGHT, false));
     mainPanes.push_back(WinPane(m_Workspace, CBRS_ALIGN_RIGHT, false));
     mainPanes.push_back(WinPane(m_Dfu, CBRS_ALIGN_RIGHT, false));
-    mainPanes.push_back(WinPane(m_debugSearchView, CBRS_ALIGN_RIGHT, false));
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM, false));
     mainPanes.push_back(WinPane(m_Bookmarks, CBRS_ALIGN_BOTTOM, false));
-    mainPanes.push_back(WinPane(m_debugBreakpointView, CBRS_ALIGN_BOTTOM, false));
-    mainPanes.push_back(WinPane(m_debugPropertyGridViews, CBRS_ALIGN_BOTTOM, false));
 
     mainPanes.push_back(WinPane(m_Error, CBRS_ALIGN_BOTTOM, false));
-    mainPanes.push_back(WinPane(m_debugDataViews, CBRS_ALIGN_BOTTOM, false));
 }
 
 void CMainFrame::InitializeDockingDefaultLeft(WinPaneVector & mainPanes, NeighbourPaneVector & neighbourPanes, TabbedPaneVector & tabbedPanes, HiddenPaneVector & hiddenPanes)
@@ -1569,26 +1320,17 @@ void CMainFrame::InitializeDockingDefaultLeft(WinPaneVector & mainPanes, Neighbo
     mainPanes.push_back(WinPane(m_Repository, CBRS_ALIGN_LEFT));
     {
         neighbourPanes.push_back(NeighbourPane(m_Repository, m_Workunits, CBRS_ALIGN_TOP));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_debugPropertiesView));
-        }
+        tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
 #ifdef WORKSPACE_WINDOW
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Workspace));
 #endif
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Dfu));
-        tabbedPanes.push_back(TabbedPane(m_Repository, m_debugSearchView));
     }
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM));
     {
         neighbourPanes.push_back(NeighbourPane(m_Syntax, m_Error, CBRS_ALIGN_RIGHT));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
-        }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
 
@@ -1603,26 +1345,17 @@ void CMainFrame::InitializeDockingPinnedLeft(WinPaneVector & mainPanes, Neighbou
     mainPanes.push_back(WinPane(m_Repository, CBRS_ALIGN_LEFT));
     {
         neighbourPanes.push_back(NeighbourPane(m_Repository, m_Workunits, CBRS_ALIGN_TOP));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
-            tabbedPanes.push_back(TabbedPane(m_Workunits, m_debugPropertiesView));
-        }
+        tabbedPanes.push_back(TabbedPane(m_Workunits, m_WorkunitsActive));
 #ifdef WORKSPACE_WINDOW
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Workspace));
 #endif
         tabbedPanes.push_back(TabbedPane(m_Repository, m_Dfu));
-        tabbedPanes.push_back(TabbedPane(m_Repository, m_debugSearchView));
     }
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM));
     {
         neighbourPanes.push_back(NeighbourPane(m_Syntax, m_Error, CBRS_ALIGN_RIGHT));
-        {
-            tabbedPanes.push_back(TabbedPane(m_Error, m_debugDataViews));
-        }
         tabbedPanes.push_back(TabbedPane(m_Syntax, m_Bookmarks));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugBreakpointView));
-        tabbedPanes.push_back(TabbedPane(m_Syntax, m_debugPropertyGridViews));
     }
 }
 
@@ -1634,20 +1367,15 @@ void CMainFrame::InitializeDockingUnpinnedLeft(WinPaneVector & mainPanes, Neighb
 
     mainPanes.push_back(WinPane(m_Workunits, CBRS_ALIGN_LEFT, false));
     mainPanes.push_back(WinPane(m_WorkunitsActive, CBRS_ALIGN_LEFT, false));
-    mainPanes.push_back(WinPane(m_debugPropertiesView, CBRS_ALIGN_LEFT, false));
 
     mainPanes.push_back(WinPane(m_Repository, CBRS_ALIGN_LEFT, false));
     mainPanes.push_back(WinPane(m_Workspace, CBRS_ALIGN_LEFT, false));
     mainPanes.push_back(WinPane(m_Dfu, CBRS_ALIGN_LEFT, false));
-    mainPanes.push_back(WinPane(m_debugSearchView, CBRS_ALIGN_LEFT, false));
 
     mainPanes.push_back(WinPane(m_Syntax, CBRS_ALIGN_BOTTOM, false));
     mainPanes.push_back(WinPane(m_Bookmarks, CBRS_ALIGN_BOTTOM, false));
-    mainPanes.push_back(WinPane(m_debugBreakpointView, CBRS_ALIGN_BOTTOM, false));
-    mainPanes.push_back(WinPane(m_debugPropertyGridViews, CBRS_ALIGN_BOTTOM, false));
 
     mainPanes.push_back(WinPane(m_Error, CBRS_ALIGN_BOTTOM, false));
-    mainPanes.push_back(WinPane(m_debugDataViews, CBRS_ALIGN_BOTTOM, false));
 }
 
 BOOL CMainFrame::CreateDockingWindows()
@@ -1678,18 +1406,6 @@ BOOL CMainFrame::CreateDockingWindows()
         return FALSE; // failed to create
     }
     m_Workunits->EnableDocking(CBRS_ALIGN_ANY);
-    if (!m_debugPropertiesView->Create(_T("Properties"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_DEBUGPROPERTIES, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_HIDE_INPLACE))
-    {
-        TRACE0("Failed to create Properties window\n");
-        return FALSE; // failed to create
-    }
-    m_debugPropertiesView->EnableDocking(CBRS_ALIGN_ANY);
-    if (!m_debugSearchView->Create(_T("Search"), this, TRUE, MAKEINTRESOURCE(IDD_DIALOG_SEARCH), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_HIDE_INPLACE, ID_VIEW_DEBUGSEARCH))
-    {
-        TRACE0("Failed to create Search window\n");
-        return FALSE; // failed to create
-    }
-    m_debugSearchView->EnableDocking(CBRS_ALIGN_ANY);
     if (!m_WorkunitsActive->Create(_T("Active Workunits"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_ACTIVEWORKUNITSTREE, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_HIDE_INPLACE))
     {
         TRACE0("Failed to create Active Workunits window\n");
@@ -1720,18 +1436,6 @@ BOOL CMainFrame::CreateDockingWindows()
         return FALSE; // failed to create
     }
     m_Syntax->EnableDocking(CBRS_ALIGN_ANY);
-    if (!m_debugDataViews->Create(_T("Debug Information"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_DEBUGDATA, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_HIDE_INPLACE))
-    {
-        TRACE0("Failed to create Debug Data window\n");
-        return FALSE; // failed to create
-    }
-    m_debugDataViews->EnableDocking(CBRS_ALIGN_ANY);
-    if (!m_debugBreakpointView->Create(_T("Breakpoints"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_DEBUGBREAKPOINTS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_HIDE_INPLACE))
-    {
-        TRACE0("Failed to create Breakpoints window\n");
-        return FALSE; // failed to create
-    }
-    m_debugBreakpointView->EnableDocking(CBRS_ALIGN_ANY);
     if (!m_Bookmarks->Create(_T("Bookmarks"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_BOOKMARKS, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_HIDE_INPLACE))
     {
         TRACE0("Failed to create Bookmarks window\n");
@@ -1744,12 +1448,6 @@ BOOL CMainFrame::CreateDockingWindows()
         return FALSE; // failed to create
     }
     m_Error->EnableDocking(CBRS_ALIGN_ANY);
-    if (!m_debugPropertyGridViews->Create(_T("Properties"), this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_DEBUGPROPERTYGRID, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_HIDE_INPLACE))
-    {
-        TRACE0("Failed to create Breakpoints window\n");
-        return FALSE; // failed to create
-    }
-    m_debugPropertyGridViews->EnableDocking(CBRS_ALIGN_ANY);
     SetDockingWindowIcons(theApp.m_bHiColorIcons);
 
     if (!m_wndCaptionBar.Create(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS, this, ID_VIEW_CAPTIONBAR, -1, TRUE))
@@ -1798,11 +1496,6 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
     m_DfuFilter->SetIcon(hPropertiesBarIcon, FALSE);
     m_Syntax->SetIcon(hPropertiesBarIcon, FALSE);
     m_Bookmarks->SetIcon(hPropertiesBarIcon, FALSE);
-    m_debugDataViews->SetIcon(hPropertiesBarIcon, FALSE);
-    m_debugBreakpointView->SetIcon(hPropertiesBarIcon, FALSE);
-    m_debugPropertiesView->SetIcon(hPropertiesBarIcon, FALSE);
-    m_debugSearchView->SetIcon(hPropertiesBarIcon, FALSE);
-    m_debugPropertyGridViews->SetIcon(hPropertiesBarIcon, FALSE);
     m_Error->SetIcon(hPropertiesBarIcon, FALSE);
 
     UpdateMDITabbedBarsIcons();
@@ -2093,11 +1786,6 @@ void CMainFrame::DoLogout()
 #endif
 
     m_Syntax->Send_Clear();
-    m_debugDataViews->Send_Clear();
-    m_debugBreakpointView->Send_Clear();
-    m_debugPropertiesView->Send_Clear();
-    m_debugSearchView->Send_Clear();
-    m_debugPropertyGridViews->Send_Clear();
     m_Error->Send_Clear();
 
     ReleaseAllSingletons();
@@ -2207,11 +1895,6 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 
         m_Syntax->Post_Reset();
         m_Bookmarks->Post_Reset();
-        m_debugDataViews->Post_Reset();
-        m_debugBreakpointView->Post_Reset();
-        m_debugPropertiesView->Post_Reset();
-        m_debugSearchView->Post_Reset();
-        m_debugPropertyGridViews->Post_Reset();
     }
 
     SetTimer(TIMER_AUTOSAVE, static_cast<UINT>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_AUTOSAVEFREQ)) * 1000, NULL);
@@ -2511,12 +2194,7 @@ BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 {
     boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
     std::_tstring filename = pathToWString(path.leaf());
-    if (boost::algorithm::iequals(boost::filesystem::extension(path), ".xgmml"))
-    {
-        CComPtr<IRepository> rep = AttachRepository();
-        return OpenFileGraphMDI(this, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_GRAPH, filename, static_cast<const TCHAR *>(sPathName)));
-    }
-    else if (boost::algorithm::iequals(boost::filesystem::extension(path), ".mod"))
+    if (boost::algorithm::iequals(boost::filesystem::extension(path), ".mod"))
     {
         IModuleAdapt targetModule = DoConfirmImportDlg(*this, path);
         m_Repository->Send_Refresh(targetModule);
@@ -3810,16 +3488,10 @@ BOOL CMainFrame::OnViewResetDockedToolbars(UINT nID)
     Undock(m_DfuFilter);
     Undock(m_Syntax);
     Undock(m_Bookmarks);
-    Undock(m_debugDataViews);
-    Undock(m_debugBreakpointView);
-    Undock(m_debugPropertiesView);
-    Undock(m_debugSearchView);
-    Undock(m_debugPropertyGridViews);
     Undock(m_Error);
 
     WORKSPACE workspaceMode = m_workspaceMode;
     SetWorkspaceMode(WORKSPACE_NORMAL);
-    theApp.CleanState(getWorkspaceString(WORKSPACE_DEBUG));
     theApp.CleanState(getWorkspaceString(WORKSPACE_GRAPH));
     theApp.CleanState(getWorkspaceString(WORKSPACE_NORMAL));
 

@@ -4,9 +4,9 @@
 #include "ecldlgbuilder.h"
 
 #include <utilDateTime.h> //clib
-#include <util.h> //clib
-#include <EclCC.h> //commms
 #include <UtilFilesystem.h> //clib
+//#include <util.h> //clib
+//#include <EclCC.h> //commms
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner) : m_attribute(attrInfo.Attribute), m_owner(owner), baseClass(attrInfo, owner)
 {
@@ -262,7 +262,6 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_goButton.SubclassWindow(GetDlgItem(IDC_BUTTON_GO));
     m_goButton.SetMenu(IDR_POPUP_EEGO);
 
-    m_debugButton = GetDlgItem(IDC_BUTTON_DEBUG);
     m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
 
     m_view.SetSourceType(m_comboQueueClusterCtrl->m_value);
@@ -287,7 +286,6 @@ void CBuilderDlg::CustomMenu(const AttrInfo & attrInfo) {
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMIT, MF_BYCOMMAND | MF_STRING, ID_GO_SUBMIT, _T("Publish"));
             m_goButton.m_menu.ModifyMenuW(ID_GO_SUBMITSELECTED, MF_BYCOMMAND | MF_STRING, ID_GO_GENERATE, _T("Generate ECL"));
             m_goButton.m_menu.DeleteMenu(ID_GO_COMPILE, MF_BYCOMMAND);
-            m_goButton.m_menu.DeleteMenu(ID_GO_DEBUG, MF_BYCOMMAND);
         }
     }
 }
@@ -594,7 +592,6 @@ void CBuilderDlg::ShowAdvanced()
     ShowHide(IDC_SPIN_MAXRUNTIME, false);
     ShowHide(IDC_STATIC_DEBUG, false);
     ShowHide(IDC_EDIT_DEBUG, false);
-    ShowHide(IDC_BUTTON_DEBUG, true);	//  No Debug for OSS
     ShowHide(IDC_BUTTON_ARCHIVE, false);
 
     DoDataExchange(true);
@@ -628,7 +625,6 @@ void CBuilderDlg::HideAdvanced()
     ShowHide(IDC_SPIN_MAXRUNTIME, true);
     ShowHide(IDC_STATIC_DEBUG, true);
     ShowHide(IDC_EDIT_DEBUG, true);
-    ShowHide(IDC_BUTTON_DEBUG, true);
     ShowHide(IDC_BUTTON_ARCHIVE, true);
 
     DoDataExchange(true);
@@ -657,9 +653,6 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
         break;
     case ID_GO_COMPILE:
         m_owner->OnButtonGo(Dali::WUActionCompile);
-        break;
-    case ID_GO_DEBUG:
-        m_owner->OnButtonDebug();
         break;
     case ID_GO_GENERATE:
         m_owner->OnButtonGo(Dali::WUActionGenerate);
@@ -731,12 +724,6 @@ LRESULT CBuilderDlg::OnBnClickedButtonGo(WORD /*wNotifyCode*/, WORD /*wID*/, HWN
     }
 
     m_owner->OnButtonGo(Dali::WUActionRun);
-    return 0;
-}
-
-LRESULT CBuilderDlg::OnBnClickedButtonDebug(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-    m_owner->OnButtonDebug();
     return 0;
 }
 

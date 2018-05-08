@@ -65,7 +65,6 @@ ADD_SUBDIRECTORY ( comms )
 ADD_SUBDIRECTORY ( EclEditor )
 ADD_SUBDIRECTORY ( EclLib )
 ADD_SUBDIRECTORY ( en_us )
-ADD_SUBDIRECTORY ( GraphViewCtl )
 ADD_SUBDIRECTORY ( sgrid )
 ADD_SUBDIRECTORY ( wlib )
 ADD_SUBDIRECTORY ( eclide )
@@ -179,23 +178,10 @@ if ( WIN32 )
     set ( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\hpccsystems.com" )
     set ( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\eclide.exe" )
     set ( CPACK_NSIS_CONTACT ${CPACK_PACKAGE_CONTACT} )
-    set ( CPACK_PACKAGE_INSTALL_PLUGINFILE "bin\\\\npHPCCSystemsGraphViewControl.dll")
     if ( "${FB_PLATFORM_ARCH_NAME}" EQUAL "x86_64" )
         SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE x64" )
-        list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
-            ExecWait '\\\"$SYSDIR\\\\regsvr32.exe\\\" /s \\\"$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}\\\"'
-        " )
-        list ( APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "  
-            ExecWait '\\\"$SYSDIR\\\\regsvr32.exe\\\" /s /u \\\"$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}\\\"'
-        " )
     else ()
         SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE" )
-        list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
-            RegDLL '$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}'
-        " )
-        list ( APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "  
-            UnRegDLL '$INSTDIR\\\\${CPACK_PACKAGE_INSTALL_PLUGINFILE}'
-        " )
     endif ()
     list ( APPEND CPACK_NSIS_CREATE_ICONS_EXTRA "  
         CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL IDE.lnk\\\" \\\"$INSTDIR\\\\bin\\\\eclide.exe\\\"

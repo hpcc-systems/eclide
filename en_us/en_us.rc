@@ -332,8 +332,6 @@ BEGIN
     CONTROL         "",IDC_SPIN_WORKUNITPOLL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,189,8,11,14
     PUSHBUTTON      "Test GPF",IDC_BUTTON_GPF,230,9,50,14
     CONTROL         "Disable Invoke",IDC_CHECK_DISABLEINVOKE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,30,63,10
-    CONTROL         "Graph Search Includes Tooltips",IDC_CHECK_SEARCHTOOLTIPS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,30,115,10
     CONTROL         "Ignore Whitespace on Compare",IDC_CHECK_IGNOREWHITESPACE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,45,117,10
     CONTROL         "Show CR/LF on Compare",IDC_CHECK_SHOWCRLF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,45,95,10
@@ -347,12 +345,6 @@ BEGIN
     CONTROL         "",IDC_SPIN_WORKUNITPERSISTLIMIT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,267,74,11,14
     CONTROL         "Disable Update Checking",IDC_CHECK_DISABLEAUTOUPDATE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,76,95,10
-    CONTROL         "Disable GraphControl", IDC_CHECK_DISABLEGRAPHCONTROL,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 10, 91, 95, 10
-    GROUPBOX        "ECL Watch Graph Control",IDC_ECLWATCH_GRAPHCONTROL,0,91,289,65,NOT WS_VISIBLE
-    PUSHBUTTON      "Uninstall Version:  4.5.4.5",IDC_BUTTON_UNINSTALLVERSION,10,106,100,14
-    PUSHBUTTON      "Install Version:  4.5.4.5",IDC_BUTTON_INSTALLVERSION,165,106,100,14
-    LTEXT           "Note:  The install and uninstall methods may require ECL IDE/Web Browser to be restarted before taking affect.  Also it may not be possible to uninstall the control completely if it was installed by a different application.",IDC_STATIC,10,126,271,30
 END
 
 IDD_PREF_EDITOR DIALOGEX 0, 0, 290, 157
@@ -801,7 +793,6 @@ BEGIN
     CONTROL         "",IDC_SPIN_MAXRUNTIME,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,88,61,11,12
     LTEXT           "Debug:",IDC_STATIC_DEBUG,184,20,24,8
     EDITTEXT        IDC_EDIT_DEBUG,210,18,100,41,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL | NOT WS_TABSTOP
-    PUSHBUTTON      "Debug",IDC_BUTTON_DEBUG,215,60,45,14,NOT WS_TABSTOP
     PUSHBUTTON      "Archive",IDC_BUTTON_ARCHIVE,262,60,48,14,NOT WS_TABSTOP
     CONTROL         "Custom2",IDC_EDIT_ECL,"Scintilla",WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x1c4,0,75,310,55,WS_EX_CLIENTEDGE
 END
@@ -1399,10 +1390,6 @@ BEGIN
         MENUITEM "Workunits",                   ID_VIEW_WORKUNITS
         MENUITEM "Active Workunits",            ID_VIEW_ACTIVEWORKUNITS
         MENUITEM "Workunit Filter",             ID_VIEW_WORKUNITFILTER
-        MENUITEM "Debug Properties",            ID_VIEW_DEBUGPROPERTIES
-        MENUITEM "Debug Search",                ID_VIEW_DEBUGSEARCH
-        MENUITEM "Debug Breakpoints",           ID_VIEW_DEBUGBREAKPOINTS
-        MENUITEM "Debug Data",                  ID_VIEW_DEBUGDATA
     END
     POPUP "&Help"
     BEGIN
@@ -1416,39 +1403,6 @@ BEGIN
     POPUP "Editor"
     BEGIN
         MENUITEM "Advanced",                    ID_EDIT_ADVANCED
-    END
-    POPUP "Debugger"
-    BEGIN
-        MENUITEM "Abort",                       ID_DEBUGGER_ABORT
-        MENUITEM "Break",                       ID_DEBUGGER_BREAK
-        MENUITEM "Detach",                      ID_DEBUGGER_DETACH
-        MENUITEM "Continue",                    ID_DEBUGGER_CONTINUE
-        MENUITEM "Restart",                     ID_DEBUGGER_RESTART
-        MENUITEM SEPARATOR
-        MENUITEM "Step",                        ID_DEBUGGER_STEP
-        MENUITEM "Step Graph",                  ID_DEBUGGER_STEPGRAPH
-        MENUITEM "Next",                        ID_DEBUGGER_NEXT
-        MENUITEM SEPARATOR
-        MENUITEM "Set Global Breakpoint",       ID_DEBUGGER_SETGLOBALBREAKPOINT
-        MENUITEM "Set Breakpoint",              ID_DEBUGGER_SETBREAKPOINT
-        MENUITEM "Remove Breakpoint",           ID_DEBUGGER_REMOVEBREAKPOINT
-        MENUITEM "Remove All Breakpoints",      ID_DEBUGGER_REMOVEALLBREAKPOINTS
-        MENUITEM SEPARATOR
-        MENUITEM "Continue To selected",        33200
-        MENUITEM SEPARATOR
-        MENUITEM "Show All",                    33201
-        MENUITEM "Show Active",                 33202
-        MENUITEM "Show Optimized",              33203
-        MENUITEM "Zoom",                        ID_DEBUGGER_ZOOM
-        MENUITEM "Layout",                      ID_DEBUGGER_LAYOUT
-        MENUITEM "Layout Progress",             33206
-        MENUITEM "Socket Progress",             33207
-        MENUITEM "Add Global Breakpoint",       33208
-        MENUITEM "Recenter",                    ID_DEBUGGER_RECENTER
-        MENUITEM "Step Graph Start",            ID_DEBUGGER_STEPGRAPHSTART
-        MENUITEM "Step Graph End",              ID_DEBUGGER_STEPGRAPHEND
-        MENUITEM "Socket Progress",             ID_DEBUGGER_SOCKETPROGRESS
-        MENUITEM "Layout Progress",             ID_DEBUGGER_LAYOUTPROGRESS
     END
     POPUP "View"
     BEGIN
@@ -1505,11 +1459,6 @@ BEGIN
         MENUITEM "DFU Filter",                  ID_VIEW_DFUFILTER
         MENUITEM "Syntax",                      ID_VIEW_SYNTAX
         MENUITEM "Error",                       ID_VIEW_ERROR
-        MENUITEM "Breakpoints",                 ID_VIEW_DEBUGBREAKPOINTS
-        MENUITEM "Properties",                  ID_VIEW_DEBUGPROPERTIES
-        MENUITEM "DebugSearch",                 ID_VIEW_DEBUGSEARCH
-        MENUITEM "Debug Data",                  ID_VIEW_DEBUGDATA
-        MENUITEM "Property Grid",               ID_VIEW_DEBUGPROPERTYGRID
         MENUITEM "Reset Docked Windows DEfault Left", ID_VIEW_RESETDOCKEDWINDOWS_DEFAULT_LEFT
         MENUITEM "Reset Docked Windows DEfault Right", ID_VIEW_RESETDOCKEDWINDOWS_DEFAULT_RIGHT
         MENUITEM "Reset Docked Windows All Pinned Left", ID_VIEW_RESETDOCKEDWINDOWS_ALLPINNED_LEFT
@@ -1545,17 +1494,6 @@ BEGIN
         MENUITEM "Back",                        ID_BROWSER_BACK
         MENUITEM "Forward",                     ID_BROWSER_FORWARD
     END
-    POPUP "Graph"
-    BEGIN
-        MENUITEM "Layout",                      ID_GRAPH_LAYOUT
-        MENUITEM "Zoom to Fit",                 ID_GRAPH_ZOOMTOFIT
-        MENUITEM "Zoom To Width",               ID_GRAPH_ZOOMTOWIDTH
-        MENUITEM SEPARATOR
-        MENUITEM "Refresh",                     ID_GRAPH_REFRESH
-        MENUITEM "Follow Active",               ID_GRAPH_FOLLOWACTIVE
-        MENUITEM "Minimize Inactive",           ID_GRAPH_MINIMIZEINACTIVE
-        MENUITEM SEPARATOR
-    END
     POPUP "Format"
     BEGIN
         MENUITEM "Font COlor",                  ID_FORMAT_FONTCOLOR
@@ -1589,16 +1527,6 @@ BEGIN
         MENUITEM "Add",                         ID_WORKSPACE_ADD
         MENUITEM "Remove",                      ID_WORKSPACE_REMOVE
         MENUITEM "List",                        ID_WORKSPACE_LIST
-    END
-    POPUP "Graph2"
-    BEGIN
-        MENUITEM "DOT",                         ID_GRAPH2_DOT
-        MENUITEM "NEATO",                       ID_GRAPH2_NEATO
-        MENUITEM "FDP",                         ID_GRAPH2_FDP
-        MENUITEM "TWOPI",                       ID_GRAPH2_TWOPI
-        MENUITEM "CIRCO",                       ID_GRAPH2_CIRCO
-        MENUITEM "SFDP",                        ID_GRAPH2_SFDP
-        MENUITEM "OSAGE",                       ID_GRAPH2_OSAGE
     END
 END
 
@@ -1913,103 +1841,11 @@ BEGIN
     END
 END
 
-IDR_RD_POPUP_GRAPH_VERTEX MENU
-BEGIN
-    POPUP "Graph_Vertex"
-    BEGIN
-        MENUITEM "Zoom to fit",                 ID_GRAPH_ZOOMTOFIT
-    END
-END
-
-IDR_RD_POPUP_GRAPH_SUBGRAPH MENU
-BEGIN
-    POPUP "Graph_Subgraph"
-    BEGIN
-        MENUITEM "Continue to ""%1""",          ID_GRAPH_CONTINUEHERE
-        MENUITEM SEPARATOR
-        MENUITEM "&Minimize",                   ID_GRAPH_MINIMIZE
-        MENUITEM "Restore Single",              ID_GRAPH_RESTORESINGLE
-        MENUITEM SEPARATOR
-        MENUITEM "Zoom to fit",                 ID_GRAPH_ZOOMTOFIT
-    END
-END
-
-IDR_RD_POPUP_GRAPH_GRAPH MENU
-BEGIN
-    POPUP "Graph_Graph"
-    BEGIN
-        MENUITEM "Add Breakpoint",              ID_GRAPH_ADDBREAKPOINT
-        MENUITEM SEPARATOR
-        MENUITEM "&Minimize All",               ID_GRAPH_MINIMIZE
-        MENUITEM "Zoom to fit",                 ID_GRAPH_ZOOMTOFIT
-    END
-END
-
-IDR_RD_POPUP_GRAPH_EDGE MENU
-BEGIN
-    POPUP "Graph_Edge"
-    BEGIN
-        MENUITEM "Continue to ""%1""",          ID_GRAPH_CONTINUEHERE
-        MENUITEM SEPARATOR
-        MENUITEM "Set Breakpoint",              ID_GRAPH_SETBREAKPOINT
-        MENUITEM "Add Breakpoint",              ID_GRAPH_ADDBREAKPOINT
-        MENUITEM "Clear Breakpoint(s)",         ID_GRAPH_CLEARBREAKPOINT
-        MENUITEM SEPARATOR
-        MENUITEM "&Zoom to fit",                ID_GRAPH_ZOOMTOFIT
-        MENUITEM SEPARATOR
-        MENUITEM "Goto &Source",                ID_GRAPH_GOTOSOURCE
-        MENUITEM "Goto &Target",                ID_GRAPH_GOTOTARGET
-    END
-END
-
 IDR_POPUP_RESULTS_SUMMARY MENU
 BEGIN
     POPUP "Results"
     BEGIN
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY, GRAYED
-    END
-END
-
-IDR_POPUP_GRAPH_VERTEX MENU
-BEGIN
-    POPUP "Graph_Vertex"
-    BEGIN
-        MENUITEM "&Copy Tooltip",               ID_GRAPH_COPYTOOLTIP
-        MENUITEM SEPARATOR
-        MENUITEM "Zoom to fit",                 ID_GRAPH_ZOOMTOFIT
-    END
-END
-
-IDR_POPUP_GRAPH_SUBGRAPH MENU
-BEGIN
-    POPUP "Graph_Subgraph"
-    BEGIN
-        MENUITEM "&Minimize",                   ID_GRAPH_MINIMIZE
-        MENUITEM "Zoom to fit",                 ID_GRAPH_ZOOMTOFIT
-    END
-END
-
-IDR_POPUP_GRAPH_GRAPH MENU
-BEGIN
-    POPUP "Graph_Graph"
-    BEGIN
-        MENUITEM "&Minimize All",               ID_GRAPH_MINIMIZE
-        MENUITEM "Zoom to fit",                 ID_GRAPH_ZOOMTOFIT
-        MENUITEM SEPARATOR
-        MENUITEM "Save &As...",                 ID_GRAPH_SAVEAS
-    END
-END
-
-IDR_POPUP_GRAPH_EDGE MENU
-BEGIN
-    POPUP "Graph_Vertex"
-    BEGIN
-        MENUITEM "&Copy Tooltip",               ID_GRAPH_COPYTOOLTIP
-        MENUITEM SEPARATOR
-        MENUITEM "&Zoom to fit",                ID_GRAPH_ZOOMTOFIT
-        MENUITEM SEPARATOR
-        MENUITEM "Goto &Source",                ID_GRAPH_GOTOSOURCE
-        MENUITEM "Goto &Target",                ID_GRAPH_GOTOTARGET
     END
 END
 
@@ -2137,19 +1973,6 @@ BEGIN
     END
 END
 
-IDR_POPUP_DEBUGSOURCEVIEW MENU
-BEGIN
-    POPUP "Debug Source View"
-    BEGIN
-        POPUP "&Locate"
-        BEGIN
-            MENUITEM "None",                        ID_LOCATE_NONE
-        END
-        MENUITEM "&Set Breakpoint",             ID_DEBUGSOURCEVIEW_SETBREAKPOINT
-        MENUITEM "&Add Breakpoint",             ID_DEBUGSOURCEVIEW_ADDBREAKPOINT
-    END
-END
-
 IDR_POPUP_GO MENU
 BEGIN
     POPUP "Go"
@@ -2166,7 +1989,6 @@ BEGIN
         MENUITEM "&Submit",                     ID_GO_SUBMIT
         MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
         MENUITEM "&Compile",                    ID_GO_COMPILE
-        MENUITEM "&Debug",                      ID_GO_DEBUG
     END
 END
 
@@ -2181,7 +2003,6 @@ BEGIN
     MENUITEM "&Submit",                     ID_GO_SUBMIT
     MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
     MENUITEM "&Compile",                    ID_GO_COMPILE
-    MENUITEM "&Debug",                      ID_GO_DEBUG
 END
 
 IDR_POPUP_ERRORLOG MENU
@@ -2245,13 +2066,6 @@ BEGIN
     BUTTON      ID_PROPERTIES2
 END
 
-IDR_BREAKPOINTS TOOLBAR 16, 16
-BEGIN
-    BUTTON      ID_DEBUGGER_SETBREAKPOINT
-    BUTTON      ID_DEBUGGER_REMOVEBREAKPOINT
-END
-
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Cursor
@@ -2299,7 +2113,6 @@ END
 STRINGTABLE
 BEGIN
     IDR_BUILDERWINDOW       "builder.ecl"
-    IDR_GRAPHWINDOW         "Graph"
     IDR_ATTRIBUTEWINDOW     "folder.file"
     IDR_MAINFRAME_GQB       "Graphical ETL"
     IDS_PROCESS_HEADER      "Process Graph"
