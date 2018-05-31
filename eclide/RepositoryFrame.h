@@ -298,6 +298,9 @@ public:
         case ID_REPOSITORY_REFRESH:
             pT->m_view.RefreshRepository();
             break;
+        case ID_REPOSITORY_COLLAPSEALL:
+            pT->m_view.CollapseAll();
+            break;
         case ID_CHANGETYPELOCAL_DUD:
             pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_DUD);
             break;
