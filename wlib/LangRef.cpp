@@ -370,6 +370,7 @@ protected:
 	CLanguageColor * m_defaultColor;
 	std::_tstring m_emptyStr;
 	std::_tstring m_elementType;
+	bool m_saved;
 
 public:
 	BEGIN_CUNKNOWN
@@ -378,7 +379,9 @@ public:
 	CLangRef()
 	{
 		m_defaultColor = NULL;
-		m_elementType = _T("");	}
+		m_elementType = _T("");
+		m_saved = false;
+	}
 
 	~CLangRef()
 	{
@@ -577,13 +580,20 @@ public:
 			{
 				diffColors[itr->first] = itr->second;
 				diffColors[itr->first].Cleanup(&defaultColors[itr->first]);
-				diffFound = true;
+				diffColors[itr->first].Cleanup(m_defaultColor);
+				if (defaultColors[itr->first] != diffColors[itr->first])
+					diffFound = true;
 			}
 		}
 
 		if (diffFound)
 		{
 			save(diffColors, file.string().c_str());
+			m_saved = true;
+		}
+		else
+		{
+			boost::filesystem::remove(file);
 		}
 	}
 
@@ -753,6 +763,11 @@ public:
 		}
 		return false;
 	}
+
+	bool IsSaved()
+	{
+		return m_saved;
+	}
 	
 	int GetColorRowCount() const
 	{
@@ -909,8 +924,11 @@ void SaveColorFiles()
 	CLangRef *langref = NULL;
 	for (std::map<std::_tstring, StlLinked<CLangRef >>::iterator itr = g_langRef.begin(); itr != g_langRef.end(); itr++) {
 		langref = itr->second;
-		langref->SetElementType(itr->first.c_str());
-		langref->Save();
+		if (!langref->IsSaved())
+		{
+			langref->SetElementType(itr->first.c_str());
+			langref->Save();
+		}
 	}
 }
 
