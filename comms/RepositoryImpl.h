@@ -582,7 +582,7 @@ public:
 
     IWorkspaceItem * CreateIWorkspaceItem(WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path)
     {
-        return ::CreateIWorkspaceItem(this, type, label, path);
+        return ::CreateIWorkspaceItem(this, type, NULL, label, path);
     }
 
     IWorkspaceItem * CreateIWorkspaceItem(IAttribute * attr, const std::_tstring & path)

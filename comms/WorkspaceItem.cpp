@@ -332,6 +332,11 @@ public:
         return m_attribute;
     }
 
+    IAttribute * GetAttributePointer() const
+    {
+        return m_attribute;
+    }
+
     std::wstring GetModuleLabel() const
     {
         return m_moduleLabel;
@@ -489,9 +494,13 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, const std::strin
     return workspaceItem.get();
 }
 
-IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, const std::_tstring & label, const std::_tstring & path)
+IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, IAttribute *attr, const std::_tstring & label, const std::_tstring & path)
 {
     StlLinked<CWorkspaceItem> workspaceItem = CWorkspaceItemCache.Get(new CWorkspaceItem(repository, type, label, path));
+    if (!workspaceItem->m_attribute)
+    {
+        workspaceItem->m_attribute = attr;
+    }
     return workspaceItem.get();
 }
 
@@ -529,7 +538,7 @@ IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_T
         if (!CWorkspaceItemCache.Exists(wideFilePath))
             break;
     }
-    return CreateIWorkspaceItem(repository, type, wideFileName, wideFilePath);
+    return CreateIWorkspaceItem(repository, type, attr, wideFileName, wideFilePath);
 }
 
 IWorkspaceItem * CreateIWorkspaceItem(IRepository * repository, WORKSPACE_ITEM_TYPE type, const CPersistMap & pm)
