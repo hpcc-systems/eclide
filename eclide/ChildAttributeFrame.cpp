@@ -179,7 +179,7 @@ public:
         MSG_WM_SETFOCUS(OnSetFocus)
         NOTIFY_CODE_HANDLER(CTCN_SELCHANGE, OnTabSelected)
 
-        COMMAND_ID_HANDLER_EX(ID_HELP, OnEclHelp)
+        COMMAND_ID_HANDLER_EX(ID_ECL_HELP, OnEclHelp)
 
         CHAIN_COMMANDS_MEMBER(m_tabbedChildWindow)
         CHAIN_MSG_MAP(baseClass)

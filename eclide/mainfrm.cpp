@@ -207,6 +207,8 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame() : m_threadSave(5)
 {
+    m_helpFlag = true;
+
     // TODO: add member initialization code here
     theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_OFF_2007_BLUE);
 
@@ -1827,7 +1829,9 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 void CMainFrame::OnWindowManager()
 {
+    m_helpFlag = false;
     ShowWindowsDialog();
+    m_helpFlag = true;
 }
 
 void CMainFrame::OnWindowCascade()

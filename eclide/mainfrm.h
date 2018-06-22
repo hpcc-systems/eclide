@@ -403,6 +403,7 @@ public:
     bool m_closeOnTab;
     WORKSPACE m_workspaceMode;
     bool m_supressSyncTOC;
+    bool m_helpFlag;
 
 // Generated message map functions
 protected:
