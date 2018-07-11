@@ -373,7 +373,7 @@ public:
     void CalculateContextMenuState(CRepositorySelections &s, ContextState &state)
     {
         bool RemoteRepository = true;
-        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
             RemoteRepository = false;
 
         #define WRITEACCESS(mod) ((mod->GetAccess() & SecAccess_Write) == SecAccess_Write)

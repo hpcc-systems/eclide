@@ -8,6 +8,7 @@
 #include <Aclapi.h>
 #include <authz.h>
 #include <UtilFilesystem.h>
+#include "CmdProcess.h"
 
 //  ===========================================================================
 class CFileAccess
@@ -416,7 +417,13 @@ public:
     bool IsPlugin() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return m_plugin || m_parent == NULL;
+        return m_plugin && IsTopFolder();
+    }
+
+    bool IsTopFolder() const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        return m_parent == NULL;
     }
 
     bool IsTrash() const
@@ -513,7 +520,7 @@ public:
                 m_access = SecAccess_Read;
         }
 
-        m_plugin = false;
+        m_plugin = boost::algorithm::iends_with(m_url.GetString(), PLUGINS_FOLDER);
 
         if (!noBroadcast)
         {

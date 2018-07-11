@@ -32,6 +32,7 @@ __interface IModule : public clib::ILockableUnknown
     unsigned GetModules(IModuleVector & modules, bool noRefresh=false) const;
     unsigned GetAttributes(IAttributeVector & attributes, bool noRefresh=false) const;
     bool IsPlugin() const;
+    bool IsTopFolder() const;
     bool IsTrash() const;
     const TCHAR *GetChecksum() const;
     IModule * Rename(const TCHAR* label);
