@@ -3101,7 +3101,15 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
     _tcsncpy(m_fr.m_szFindWhat, searchTerm.c_str(), sizeof(m_fr.m_szFindWhat));
     m_fr.m_mode = findmode;
     CComPtr<IRepository> rep = AttachRepository();
-    HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
+    HWND hwnd = NULL;
+    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+    {
+        hwnd = ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, attribute));
+    }
+    else
+    {
+        hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
+    }
     if (hwnd)
         PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 }
