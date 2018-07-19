@@ -77,7 +77,7 @@ public:
             case CN_COMMAND:
                 if (pExtra == NULL)
                 {
-                    int id = (nID == ID_HELP && GetIMainFrame()->m_helpFlag) ? ID_ECL_HELP : ID_HELP;
+                    int id = (nID == ID_HELP && GetIMainFrame()->m_helpFlag) ? ID_ECL_HELP : nID;
                     m_view->SendMessage(WM_COMMAND, id);
                     if (m_viewHandlesCommand[nID] == true)
                         return TRUE;
