@@ -1135,7 +1135,7 @@ bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
 {
     for (std::map<WorksaceID, FramePair>::iterator itr = g_builder_window.begin(); itr != g_builder_window.end(); ++itr)
     {
-        if (itr->first->GetAttributePointer() == workspaceItem->GetAttributePointer())
+        if (itr->first->GetAttributePointer() && itr->first->GetAttributePointer() == workspaceItem->GetAttributePointer())
         {
             FramePair win = itr->second;
             if (win.first && win.second && win.second->IsWindow())
