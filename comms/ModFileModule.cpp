@@ -125,7 +125,13 @@ public:
     bool IsPlugin() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        return m_plugin;
+        return m_plugin && IsTopFolder();
+    }
+
+    bool IsTopFolder() const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        return m_parent == NULL;
     }
 
     bool IsTrash() const

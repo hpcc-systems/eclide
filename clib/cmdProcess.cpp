@@ -309,7 +309,7 @@ int CLIB_API runProcess(const std::_tstring &command, const std::_tstring &direc
     std::_tstring envPath;
     if (!_path.empty())
     {
-        std::_tstring path = _path + _T(";") + _path + _T("\\plugins");
+        std::_tstring path = _path + _T(";") + _path + _T("\\") + PLUGINS_FOLDER;
         envPath = _tgetenv(_T("PATH")) == NULL ? _T("") : _tgetenv(_T("PATH"));
         if (!envPath.empty())
         {
