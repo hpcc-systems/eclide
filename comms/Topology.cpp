@@ -61,17 +61,6 @@ unsigned GetClusters(const CString & url, const std::_tstring & queueFilter, ICl
     CachePoolAccessor<IClusterVector> knownClusters(*g_knownClusters.get(queueFilter), (const TCHAR *)url, queueFilter);
     if (knownClusters.needs_update())
     {
-        if (queueFilter.empty() || boost::algorithm::iequals(queueFilter, _T("Local")))
-        {
-            if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-            {
-                StlLinked<ICluster> cluster = CreateCluster(url, _T("Local"), _T("Local"));
-                clusters->push_back(cluster);
-            }
-            //if (!queueFilter.empty())	//  Hack
-            //	return clusters->size();
-        }
-
         CSoapInitialize<WsTopologyServiceSoapProxy> server(url);
 
         _ns5__TpLogicalClusterQueryRequest request;
