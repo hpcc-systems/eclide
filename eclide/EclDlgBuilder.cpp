@@ -274,13 +274,6 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
         }
     }
 
-	if (IsLocalRepositoryEnabled())
-	{
-		ShowHide(IDC_STATIC_QUEUECLUSTER, true);
-		ShowHide(IDC_COMBO_QUEUECLUSTER, true);
-		ShowHide(IDC_BUTTON_ADVANCED, true);
-	}
-
     DoDataExchange();
 
     return 0;
