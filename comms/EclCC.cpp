@@ -256,12 +256,12 @@ public:
                 e->m_code = err.code;
                 e->m_message = err.message.c_str();
                 e->m_column = err.col;
-                if (markAllAsErrors || algo::equals(err.type, "error"))
+                if (markAllAsErrors || algo::iequals(err.type, "error"))
                 {
                     e->m_severity = _T("Error");
                     hasErrors = true;
                 }
-                else if (algo::equals(err.type, "warning"))
+                else if (algo::iequals(err.type, "warning"))
                     e->m_severity = _T("Warning");
                 else 
                     e->m_severity = err.type.c_str();
