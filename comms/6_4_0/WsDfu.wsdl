@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:hpccsystems:ws:wsdfu" targetNamespace="urn:hpccsystems:ws:wsdfu"><types><xsd:schema elementFormDefault="qualified" targetNamespace="urn:hpccsystems:ws:wsdfu" >
+<xsd:complexType name="EspException"><xsd:all><xsd:element name="Code" type="xsd:string"  minOccurs="0"/><xsd:element name="Audience" type="xsd:string" minOccurs="0"/><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Message" type="xsd:string" minOccurs="0"/></xsd:all></xsd:complexType>
+<xsd:complexType name="ArrayOfEspException"><xsd:sequence><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Exception" type="tns:EspException" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+<xsd:element name="Exceptions" type="tns:ArrayOfEspException"/>
+<xsd:complexType name="DFUDataColumn">
+<xsd:all><xsd:element minOccurs="0" name="ColumnID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ColumnLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnValue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnSize" type="xsd:int"/>
+<xsd:element minOccurs="0" name="MaxSize" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ColumnEclType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnRawSize" type="xsd:int"/>
+<xsd:element minOccurs="0" name="IsNaturalColumn" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsKeyedColumn" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DataColumns" type="tns:ArrayOfDFUDataColumn"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFUDataColumn">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUDataColumn" type="tns:DFUDataColumn"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="DFUFileDetail">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filename" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Prefix" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NodeGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumParts" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Dir" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PathMask" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filesize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ActualSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RecordSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RecordCount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="JobName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Persistent" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Format" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MaxRecordSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CsvSeparate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CsvQuote" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CsvTerminate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CsvEscape" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Modified" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Ecl" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="ZipFile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Stat" type="tns:DFUFileStat"/>
+<xsd:element minOccurs="0" name="DFUFileParts" type="tns:ArrayOfDFUPart"/>
+<xsd:element minOccurs="0" name="DFUFilePartsOnClusters" type="tns:ArrayOfDFUFilePartsOnCluster"/>
+<xsd:element minOccurs="0" default="false" name="isSuperfile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="ShowFileContent" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="subfiles" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="Superfiles" type="tns:ArrayOfDFULogicalFile"/>
+<xsd:element minOccurs="0" name="ProtectList" type="tns:ArrayOfDFUFileProtect"/>
+<xsd:element minOccurs="0" name="FromRoxieCluster" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Graphs"><xsd:complexType><xsd:sequence><xsd:element name="ECLGraph" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="UserPermission" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ContentType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CompressedFileSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PercentCompressed" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="IsCompressed" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="BrowseData" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="DFUFileStat">
+<xsd:all><xsd:element minOccurs="0" name="MinSkew" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MaxSkew" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="DFUPart">
+<xsd:all><xsd:element minOccurs="0" name="Id" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Copy" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ActualSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Ip" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Partsize" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="DFUFilePartsOnCluster">
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BaseDir" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ReplicateDir" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Replicate" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CanReplicate" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DFUFileParts" type="tns:ArrayOfDFUPart"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFUPart">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUPart" type="tns:DFUPart"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="DFULogicalFile">
+<xsd:all><xsd:element minOccurs="0" name="Prefix" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NodeGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Directory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Parts" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Totalsize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RecordCount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Modified" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LongSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LongRecordCount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="isSuperfile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="isZipfile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="isDirectory" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="Replicate" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IntSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="IntRecordCount" type="xsd:long"/>
+<xsd:element minOccurs="0" name="FromRoxieCluster" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BrowseData" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsKeyFile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsCompressed" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ContentType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CompressedFileSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="SuperOwners" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Persistent" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IsProtected" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="DFUFileProtect">
+<xsd:all><xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Modified" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="EspStringArray"><xsd:sequence><xsd:element name="Item" type="xsd:string"  minOccurs="0" maxOccurs="unbounded" /></xsd:sequence></xsd:complexType>
+<xsd:complexType name="ArrayOfDFUFilePartsOnCluster">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUFilePartsOnCluster" type="tns:DFUFilePartsOnCluster"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFUFileProtect">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUFileProtect" type="tns:DFUFileProtect"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFULogicalFile">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFULogicalFile" type="tns:DFULogicalFile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="AddRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="dstname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="xmlmap" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="AddResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="AddRemoteRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="dstname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="srcname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="srcdali" type="xsd:string"/>
+<xsd:element minOccurs="0" name="srcusername" type="xsd:string"/>
+<xsd:element minOccurs="0" name="srcpassword" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="AddRemoteResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="AddtoSuperfileRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Superfile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Subfiles" type="xsd:string"/>
+<xsd:element minOccurs="0" name="names" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" default="false" name="ExistingFile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BackToPage" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="AddtoSuperfileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Subfiles" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BackToPage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubfileNames"><xsd:complexType><xsd:sequence><xsd:element name="SubfileName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUArrayActionRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Type" type="tns:DFUArrayActions"/>
+<xsd:element minOccurs="0" name="NoDelete" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BackToPage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalFiles" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" default="false" name="removeFromSuperfiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="removeRecursively" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="DFUArrayActions"><xsd:restriction base="xsd:string"><xsd:enumeration value="Delete"/><xsd:enumeration value="Add To Superfile"/></xsd:restriction></xsd:simpleType><xsd:element name="DFUArrayActionResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="BackToPage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RedirectTo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ActionResults" type="tns:ArrayOfDFUActionInfo"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="DFUActionInfo">
+<xsd:all><xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NodeGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ActionResult" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Failed" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFUActionInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUActionInfo" type="tns:DFUActionInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="DFUBrowseDataRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowColumns" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="SchemaOnly" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="StartForGoback" type="xsd:long"/>
+<xsd:element minOccurs="0" name="CountForGoback" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ChooseFile" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ParentName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DisableUppercaseTranslation" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUBrowseDataResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterForGoBack" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnsHidden">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ColumnHidden" type="tns:DFUDataColumn"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="ColumnCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StartForGoback" type="xsd:long"/>
+<xsd:element minOccurs="0" name="CountForGoback" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ChooseFile" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="SchemaOnly" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ParentName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MsgToDisplay" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DisableUppercaseTranslation" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUDefFileRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Format" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUDefFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="defFile" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUFileViewRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IncludeSuperOwner" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUFileViewResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumFiles" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DFULogicalFiles" type="tns:ArrayOfDFULogicalFile"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUGetDataColumnsRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="OpenLogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowColumns" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ChooseFile" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="EndIndex" type="xsd:long"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUGetDataColumnsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="EndIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns1" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns2" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns3" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns4" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns5" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns6" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns7" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns8" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns9" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns10" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns11" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns12" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns13" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns14" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns15" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns16" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns17" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns18" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns19" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns20" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns1" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns2" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns3" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns4" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns5" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns6" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns7" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns8" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns9" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns10" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns11" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns12" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns13" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns14" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns15" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns16" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns17" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns18" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns19" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns20" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="RowCount" type="xsd:long"/>
+<xsd:element minOccurs="0" name="ShowColumns" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ChooseFile" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUGetFileMetaDataRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="LogicalFileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="IncludeXmlSchema" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="AddHeaderInXmlSchema" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeXmlXPathSchema" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="AddHeaderInXmlXPathSchema" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUGetFileMetaDataResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TotalColumnCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="KeyedColumnCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DataColumns" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="XmlSchema" type="xsd:string"/>
+<xsd:element minOccurs="0" name="XmlXPathSchema" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TotalResultRows" type="xsd:long"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUInfoRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="UpdateDescription" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileDesc" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="FileDetail" type="tns:DFUFileDetail"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Prefix" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NodeGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ContentType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileType" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="FileSizeFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="FileSizeTo" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="FirstN" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PageStartFrom" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="OneLevelDirFileReturn" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="MaxNumberOfFiles" type="xsd:int"/>
+<xsd:element minOccurs="0" name="IncludeSuperOwner" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="DFULogicalFiles" type="tns:ArrayOfDFULogicalFile"/>
+<xsd:element minOccurs="0" name="Prefix" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NodeGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileType" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="FileSizeFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="FileSizeTo" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="FirstN" type="xsd:int"/>
+<xsd:element minOccurs="0" default="20" name="PageSize" type="xsd:int"/>
+<xsd:element minOccurs="0" default="1" name="PageStartFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="LastPageFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageEndAt" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="PrevPageFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="NextPageFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="NumFiles" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BasicQuery" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ParametersForPaging" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filters" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="IsSubsetOfFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Warning" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUSearchRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ShowExample" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUSearchResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ShowExample" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterNames"><xsd:complexType><xsd:sequence><xsd:element name="ClusterName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="FileTypes"><xsd:complexType><xsd:sequence><xsd:element name="FileType" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUSearchDataRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OpenLogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowColumns" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ChooseFile" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StartIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="EndIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ParentName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartForGoback" type="xsd:long"/>
+<xsd:element minOccurs="0" name="CountForGoback" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="File" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Key" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="SchemaOnly" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="RoxieSelections" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DisableUppercaseTranslation" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SelectedKey" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUSearchDataResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="OpenLogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ParentName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="EndIndex" type="xsd:long"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns1" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns2" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns3" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns4" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns5" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns6" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns7" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns8" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns9" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns10" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns11" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns12" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns13" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns14" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns15" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns16" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns17" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns18" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns19" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataKeyedColumns20" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns1" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns2" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns3" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns4" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns5" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns6" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns7" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns8" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns9" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns10" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns11" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns12" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns13" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns14" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns15" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns16" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns17" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns18" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns19" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="DFUDataNonKeyedColumns20" type="tns:ArrayOfDFUDataColumn"/>
+<xsd:element minOccurs="0" name="RowCount" type="xsd:long"/>
+<xsd:element minOccurs="0" name="ShowColumns" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ChooseFile" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterForGoBack" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnsHidden">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ColumnHidden" type="tns:DFUDataColumn"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="ColumnCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StartForGoback" type="xsd:long"/>
+<xsd:element minOccurs="0" name="CountForGoback" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MsgToDisplay" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="File" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Key" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SchemaOnly" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="RoxieSelections" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DisableUppercaseTranslation" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="AutoUppercaseTranslation" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SelectedKey" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUSpaceRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="CountBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ScopeUnder" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OwnerUnder" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Interval" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="DFUSpaceResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="CountBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ScopeUnder" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OwnerUnder" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Interval" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DFUSpaceItems" type="tns:ArrayOfDFUSpaceItem"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="DFUSpaceItem">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumOfFiles" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumOfFilesUnknown" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TotalSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LargestFile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LargestSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SmallestFile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SmallestSize" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFUSpaceItem">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUSpaceItem" type="tns:DFUSpaceItem"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="EraseHistoryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="EraseHistoryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="History">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Origin" type="tns:History"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="History">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Operation" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Timestamp" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Workunit" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="ListHistoryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="ListHistoryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="History">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Origin" type="tns:History"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SavexmlRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SavexmlResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="xmlmap" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SuperfileActionRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="action" type="xsd:string"/>
+<xsd:element minOccurs="0" name="superfile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="subfiles" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="before" type="xsd:string"/>
+<xsd:element minOccurs="0" name="delete" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="removeSuperfile" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SuperfileActionResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="superfile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="retcode" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SuperfileListRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="superfile" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SuperfileListResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="superfile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="subfiles" type="tns:EspStringArray"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="string" nillable="true" type="xsd:string" />
+</xsd:schema></types><message name="AddSoapIn"><part name="parameters" element="tns:AddRequest"/></message><message name="AddSoapOut"><part name="parameters" element="tns:AddResponse"/></message><message name="AddRemoteSoapIn"><part name="parameters" element="tns:AddRemoteRequest"/></message><message name="AddRemoteSoapOut"><part name="parameters" element="tns:AddRemoteResponse"/></message><message name="AddtoSuperfileSoapIn"><part name="parameters" element="tns:AddtoSuperfileRequest"/></message><message name="AddtoSuperfileSoapOut"><part name="parameters" element="tns:AddtoSuperfileResponse"/></message><message name="DFUArrayActionSoapIn"><part name="parameters" element="tns:DFUArrayActionRequest"/></message><message name="DFUArrayActionSoapOut"><part name="parameters" element="tns:DFUArrayActionResponse"/></message><message name="DFUBrowseDataSoapIn"><part name="parameters" element="tns:DFUBrowseDataRequest"/></message><message name="DFUBrowseDataSoapOut"><part name="parameters" element="tns:DFUBrowseDataResponse"/></message><message name="DFUDefFileSoapIn"><part name="parameters" element="tns:DFUDefFileRequest"/></message><message name="DFUDefFileSoapOut"><part name="parameters" element="tns:DFUDefFileResponse"/></message><message name="DFUFileViewSoapIn"><part name="parameters" element="tns:DFUFileViewRequest"/></message><message name="DFUFileViewSoapOut"><part name="parameters" element="tns:DFUFileViewResponse"/></message><message name="DFUGetDataColumnsSoapIn"><part name="parameters" element="tns:DFUGetDataColumnsRequest"/></message><message name="DFUGetDataColumnsSoapOut"><part name="parameters" element="tns:DFUGetDataColumnsResponse"/></message><message name="DFUGetFileMetaDataSoapIn"><part name="parameters" element="tns:DFUGetFileMetaDataRequest"/></message><message name="DFUGetFileMetaDataSoapOut"><part name="parameters" element="tns:DFUGetFileMetaDataResponse"/></message><message name="DFUInfoSoapIn"><part name="parameters" element="tns:DFUInfoRequest"/></message><message name="DFUInfoSoapOut"><part name="parameters" element="tns:DFUInfoResponse"/></message><message name="DFUQuerySoapIn"><part name="parameters" element="tns:DFUQueryRequest"/></message><message name="DFUQuerySoapOut"><part name="parameters" element="tns:DFUQueryResponse"/></message><message name="DFUSearchSoapIn"><part name="parameters" element="tns:DFUSearchRequest"/></message><message name="DFUSearchSoapOut"><part name="parameters" element="tns:DFUSearchResponse"/></message><message name="DFUSearchDataSoapIn"><part name="parameters" element="tns:DFUSearchDataRequest"/></message><message name="DFUSearchDataSoapOut"><part name="parameters" element="tns:DFUSearchDataResponse"/></message><message name="DFUSpaceSoapIn"><part name="parameters" element="tns:DFUSpaceRequest"/></message><message name="DFUSpaceSoapOut"><part name="parameters" element="tns:DFUSpaceResponse"/></message><message name="EraseHistorySoapIn"><part name="parameters" element="tns:EraseHistoryRequest"/></message><message name="EraseHistorySoapOut"><part name="parameters" element="tns:EraseHistoryResponse"/></message><message name="ListHistorySoapIn"><part name="parameters" element="tns:ListHistoryRequest"/></message><message name="ListHistorySoapOut"><part name="parameters" element="tns:ListHistoryResponse"/></message><message name="SavexmlSoapIn"><part name="parameters" element="tns:SavexmlRequest"/></message><message name="SavexmlSoapOut"><part name="parameters" element="tns:SavexmlResponse"/></message><message name="SuperfileActionSoapIn"><part name="parameters" element="tns:SuperfileActionRequest"/></message><message name="SuperfileActionSoapOut"><part name="parameters" element="tns:SuperfileActionResponse"/></message><message name="SuperfileListSoapIn"><part name="parameters" element="tns:SuperfileListRequest"/></message><message name="SuperfileListSoapOut"><part name="parameters" element="tns:SuperfileListResponse"/></message><message name="EspSoapFault"><part name="parameters" element="tns:Exceptions"/></message><portType name="WsDfuServiceSoap"><operation name="Add"><input message="tns:AddSoapIn"/><output message="tns:AddSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="AddRemote"><input message="tns:AddRemoteSoapIn"/><output message="tns:AddRemoteSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="AddtoSuperfile"><input message="tns:AddtoSuperfileSoapIn"/><output message="tns:AddtoSuperfileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUArrayAction"><input message="tns:DFUArrayActionSoapIn"/><output message="tns:DFUArrayActionSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUBrowseData"><input message="tns:DFUBrowseDataSoapIn"/><output message="tns:DFUBrowseDataSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUDefFile"><input message="tns:DFUDefFileSoapIn"/><output message="tns:DFUDefFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUFileView"><input message="tns:DFUFileViewSoapIn"/><output message="tns:DFUFileViewSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUGetDataColumns"><input message="tns:DFUGetDataColumnsSoapIn"/><output message="tns:DFUGetDataColumnsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUGetFileMetaData"><input message="tns:DFUGetFileMetaDataSoapIn"/><output message="tns:DFUGetFileMetaDataSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUInfo"><input message="tns:DFUInfoSoapIn"/><output message="tns:DFUInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUQuery"><input message="tns:DFUQuerySoapIn"/><output message="tns:DFUQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUSearch"><input message="tns:DFUSearchSoapIn"/><output message="tns:DFUSearchSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUSearchData"><input message="tns:DFUSearchDataSoapIn"/><output message="tns:DFUSearchDataSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="DFUSpace"><input message="tns:DFUSpaceSoapIn"/><output message="tns:DFUSpaceSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="EraseHistory"><input message="tns:EraseHistorySoapIn"/><output message="tns:EraseHistorySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="ListHistory"><input message="tns:ListHistorySoapIn"/><output message="tns:ListHistorySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="Savexml"><input message="tns:SavexmlSoapIn"/><output message="tns:SavexmlSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="SuperfileAction"><input message="tns:SuperfileActionSoapIn"/><output message="tns:SuperfileActionSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="SuperfileList"><input message="tns:SuperfileListSoapIn"/><output message="tns:SuperfileListSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation></portType><binding name="WsDfuServiceSoap" type="tns:WsDfuServiceSoap"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/><operation name="Add"><soap:operation soapAction="WsDfu/Add?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="AddRemote"><soap:operation soapAction="WsDfu/AddRemote?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="AddtoSuperfile"><soap:operation soapAction="WsDfu/AddtoSuperfile?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUArrayAction"><soap:operation soapAction="WsDfu/DFUArrayAction?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUBrowseData"><soap:operation soapAction="WsDfu/DFUBrowseData?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUDefFile"><soap:operation soapAction="WsDfu/DFUDefFile?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUFileView"><soap:operation soapAction="WsDfu/DFUFileView?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUGetDataColumns"><soap:operation soapAction="WsDfu/DFUGetDataColumns?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUGetFileMetaData"><soap:operation soapAction="WsDfu/DFUGetFileMetaData?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUInfo"><soap:operation soapAction="WsDfu/DFUInfo?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUQuery"><soap:operation soapAction="WsDfu/DFUQuery?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUSearch"><soap:operation soapAction="WsDfu/DFUSearch?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUSearchData"><soap:operation soapAction="WsDfu/DFUSearchData?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="DFUSpace"><soap:operation soapAction="WsDfu/DFUSpace?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="EraseHistory"><soap:operation soapAction="WsDfu/EraseHistory?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="ListHistory"><soap:operation soapAction="WsDfu/ListHistory?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="Savexml"><soap:operation soapAction="WsDfu/Savexml?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="SuperfileAction"><soap:operation soapAction="WsDfu/SuperfileAction?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="SuperfileList"><soap:operation soapAction="WsDfu/SuperfileList?ver_=1.36" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation></binding><service name="WsDfu"><port name="WsDfuServiceSoap" binding="tns:WsDfuServiceSoap"><soap:address location="http://192.168.3.22:8010/WsDfu?ver_=1.36"/></port></service></definitions>

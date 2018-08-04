@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:hpccsystems:ws:wssmc" targetNamespace="urn:hpccsystems:ws:wssmc"><types><xsd:schema elementFormDefault="qualified" targetNamespace="urn:hpccsystems:ws:wssmc" >
+<xsd:complexType name="EspException"><xsd:all><xsd:element name="Code" type="xsd:string"  minOccurs="0"/><xsd:element name="Audience" type="xsd:string" minOccurs="0"/><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Message" type="xsd:string" minOccurs="0"/></xsd:all></xsd:complexType>
+<xsd:complexType name="ArrayOfEspException"><xsd:sequence><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Exception" type="tns:EspException" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+<xsd:element name="Exceptions" type="tns:ArrayOfEspException"/>
+<xsd:element name="Activity"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ChatURL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerContent" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerColor" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerScroll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerAction" type="xsd:int"/>
+<xsd:element minOccurs="0" name="EnableChatURL" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="FromSubmitBtn" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SortBy" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="ActivityResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorClusterList" type="tns:ArrayOfTargetCluster"/>
+<xsd:element minOccurs="0" name="RoxieClusterList" type="tns:ArrayOfTargetCluster"/>
+<xsd:element minOccurs="0" name="HThorClusterList" type="tns:ArrayOfTargetCluster"/>
+<xsd:element minOccurs="0" name="DFUJobs" type="tns:ArrayOfDFUJob"/>
+<xsd:element minOccurs="0" name="Running" type="tns:ArrayOfActiveWorkunit"/>
+<xsd:element minOccurs="0" name="BannerContent" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerColor" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerScroll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ChatURL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowBanner" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ShowChatURL" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SortBy" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="SuperUser" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="AccessRight" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerJobQueues" type="tns:ArrayOfServerJobQueue"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="TargetCluster">
+<xsd:all><xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StatusDetails" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Warning" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ClusterSize" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ClusterStatus" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="DFUJob">
+<xsd:all><xsd:element minOccurs="0" name="TimeStarted" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Done" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Command" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ActiveWorkunit">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StateID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Server" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Instance" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Extra" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Duration" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MemoryBlocked" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="IsPausing" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Warning" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterQueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TargetClusterName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ServerJobQueue">
+<xsd:all><xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StatusDetails" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetworkAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfActiveWorkunit">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ActiveWorkunit" type="tns:ActiveWorkunit"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDFUJob">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DFUJob" type="tns:DFUJob"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfServerJobQueue">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ServerJobQueue" type="tns:ServerJobQueue"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTargetCluster">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TargetCluster" type="tns:TargetCluster"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="BrowseResources"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="BrowseResourcesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="PortalURL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OS" type="xsd:int"/>
+<xsd:element minOccurs="0" name="UseResource" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="HPCCResourceRepositories" type="tns:ArrayOfHPCCResourceRepository"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="HPCCResourceRepository">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="HPCCResources" type="tns:ArrayOfHPCCResource"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="HPCCResource">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Version" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfHPCCResource">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="HPCCResource" type="tns:HPCCResource"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfHPCCResourceRepository">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="HPCCResourceRepository" type="tns:HPCCResourceRepository"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="ClearQueue"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetworkAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SMCQueueResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="StatusServerInfo" type="tns:StatusServerInfo"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="StatusServerInfo">
+<xsd:all><xsd:element minOccurs="0" name="TargetClusterInfo" type="tns:TargetCluster"/>
+<xsd:element minOccurs="0" name="ServerInfo" type="tns:ServerJobQueue"/>
+<xsd:element minOccurs="0" name="Workunits" type="tns:ArrayOfActiveWorkunit"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="GetStatusServerInfo"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ServerName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetworkAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetStatusServerInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="StatusServerInfo" type="tns:StatusServerInfo"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GetThorQueueAvailability"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="GetThorQueueAvailabilityResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ThorClusters" type="tns:ArrayOfThorCluster"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ThorCluster">
+<xsd:all><xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueAvailable" type="xsd:int"/>
+<xsd:element minOccurs="0" name="JobsRunning" type="xsd:int"/>
+<xsd:element minOccurs="0" name="JobsInQueue" type="xsd:int"/>
+<xsd:element minOccurs="0" name="QueueStatus2" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ThorLCR" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterSize" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfThorCluster">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ThorCluster" type="tns:ThorCluster"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="Index"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="SMCIndexResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="LockQuery"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="EPIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="XPath" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DurationMSLow" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="DurationMSHigh" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="TimeLockedLow" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimeLockedHigh" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Mode" type="tns:LockModes"/>
+<xsd:element minOccurs="0" default="false" name="AllFileLocks" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="LockModes"><xsd:restriction base="xsd:string"><xsd:enumeration value="ALL"/><xsd:enumeration value="READ"/><xsd:enumeration value="WRITE"/><xsd:enumeration value="HOLD"/><xsd:enumeration value="SUB"/></xsd:restriction></xsd:simpleType><xsd:element name="LockQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Locks" type="tns:ArrayOfLock"/>
+<xsd:element minOccurs="0" name="NumLocks" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="Lock">
+<xsd:all><xsd:element minOccurs="0" name="EPIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="XPath" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalFile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SessionID" type="xsd:long"/>
+<xsd:element minOccurs="0" name="DurationMS" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="TimeLocked" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Modes" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModeNames" type="tns:EspStringArray"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="EspStringArray"><xsd:sequence><xsd:element name="Item" type="xsd:string"  minOccurs="0" maxOccurs="unbounded" /></xsd:sequence></xsd:complexType>
+<xsd:complexType name="ArrayOfLock">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Lock" type="tns:Lock"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="MoveJobBack"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SMCJobResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="MoveJobDown"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="MoveJobFront"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="MoveJobUp"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="NotInCommunityEdition"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="EEPortal" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="NotInCommunityEditionResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="PauseQueue"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetworkAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="RemoveJob"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="ResumeQueue"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetworkAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="RoxieControlCmd"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ProcessCluster" type="xsd:string"/>
+<xsd:element minOccurs="0" default="Attach" name="Command" type="tns:RoxieControlCmd"/>
+<xsd:element minOccurs="0" name="Wait" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="RoxieControlCmdResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Endpoints">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Endpoint" type="tns:RoxieControlEndpointInfo"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="RoxieControlEndpointInfo">
+<xsd:all><xsd:element minOccurs="0" name="Address" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Attached" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="StateHash" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Status" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="SetBanner"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ChatURL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerContent" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerColor" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerScroll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BannerAction" type="xsd:int"/>
+<xsd:element minOccurs="0" name="EnableChatURL" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="FromSubmitBtn" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SetBannerResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SetJobPriority"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SMCJobs" type="tns:ArrayOfSMCJob"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="SMCJob">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfSMCJob">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="SMCJob" type="tns:SMCJob"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="SMCPriorityResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="StopQueue"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServerType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetworkAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="string" nillable="true" type="xsd:string" />
+</xsd:schema></types><message name="ActivitySoapIn"><part name="parameters" element="tns:Activity"/></message><message name="ActivitySoapOut"><part name="parameters" element="tns:ActivityResponse"/></message><message name="BrowseResourcesSoapIn"><part name="parameters" element="tns:BrowseResources"/></message><message name="BrowseResourcesSoapOut"><part name="parameters" element="tns:BrowseResourcesResponse"/></message><message name="ClearQueueSoapIn"><part name="parameters" element="tns:ClearQueue"/></message><message name="ClearQueueSoapOut"><part name="parameters" element="tns:SMCQueueResponse"/></message><message name="GetStatusServerInfoSoapIn"><part name="parameters" element="tns:GetStatusServerInfo"/></message><message name="GetStatusServerInfoSoapOut"><part name="parameters" element="tns:GetStatusServerInfoResponse"/></message><message name="GetThorQueueAvailabilitySoapIn"><part name="parameters" element="tns:GetThorQueueAvailability"/></message><message name="GetThorQueueAvailabilitySoapOut"><part name="parameters" element="tns:GetThorQueueAvailabilityResponse"/></message><message name="IndexSoapIn"><part name="parameters" element="tns:Index"/></message><message name="IndexSoapOut"><part name="parameters" element="tns:SMCIndexResponse"/></message><message name="LockQuerySoapIn"><part name="parameters" element="tns:LockQuery"/></message><message name="LockQuerySoapOut"><part name="parameters" element="tns:LockQueryResponse"/></message><message name="MoveJobBackSoapIn"><part name="parameters" element="tns:MoveJobBack"/></message><message name="MoveJobBackSoapOut"><part name="parameters" element="tns:SMCJobResponse"/></message><message name="MoveJobDownSoapIn"><part name="parameters" element="tns:MoveJobDown"/></message><message name="MoveJobDownSoapOut"><part name="parameters" element="tns:SMCJobResponse"/></message><message name="MoveJobFrontSoapIn"><part name="parameters" element="tns:MoveJobFront"/></message><message name="MoveJobFrontSoapOut"><part name="parameters" element="tns:SMCJobResponse"/></message><message name="MoveJobUpSoapIn"><part name="parameters" element="tns:MoveJobUp"/></message><message name="MoveJobUpSoapOut"><part name="parameters" element="tns:SMCJobResponse"/></message><message name="NotInCommunityEditionSoapIn"><part name="parameters" element="tns:NotInCommunityEdition"/></message><message name="NotInCommunityEditionSoapOut"><part name="parameters" element="tns:NotInCommunityEditionResponse"/></message><message name="PauseQueueSoapIn"><part name="parameters" element="tns:PauseQueue"/></message><message name="PauseQueueSoapOut"><part name="parameters" element="tns:SMCQueueResponse"/></message><message name="RemoveJobSoapIn"><part name="parameters" element="tns:RemoveJob"/></message><message name="RemoveJobSoapOut"><part name="parameters" element="tns:SMCJobResponse"/></message><message name="ResumeQueueSoapIn"><part name="parameters" element="tns:ResumeQueue"/></message><message name="ResumeQueueSoapOut"><part name="parameters" element="tns:SMCQueueResponse"/></message><message name="RoxieControlCmdSoapIn"><part name="parameters" element="tns:RoxieControlCmd"/></message><message name="RoxieControlCmdSoapOut"><part name="parameters" element="tns:RoxieControlCmdResponse"/></message><message name="SetBannerSoapIn"><part name="parameters" element="tns:SetBanner"/></message><message name="SetBannerSoapOut"><part name="parameters" element="tns:SetBannerResponse"/></message><message name="SetJobPrioritySoapIn"><part name="parameters" element="tns:SetJobPriority"/></message><message name="SetJobPrioritySoapOut"><part name="parameters" element="tns:SMCPriorityResponse"/></message><message name="StopQueueSoapIn"><part name="parameters" element="tns:StopQueue"/></message><message name="StopQueueSoapOut"><part name="parameters" element="tns:SMCQueueResponse"/></message><message name="EspSoapFault"><part name="parameters" element="tns:Exceptions"/></message><portType name="WsSMCServiceSoap"><operation name="Activity"><input message="tns:ActivitySoapIn"/><output message="tns:ActivitySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="BrowseResources"><input message="tns:BrowseResourcesSoapIn"/><output message="tns:BrowseResourcesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="ClearQueue"><input message="tns:ClearQueueSoapIn"/><output message="tns:ClearQueueSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetStatusServerInfo"><input message="tns:GetStatusServerInfoSoapIn"/><output message="tns:GetStatusServerInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="GetThorQueueAvailability"><input message="tns:GetThorQueueAvailabilitySoapIn"/><output message="tns:GetThorQueueAvailabilitySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="Index"><input message="tns:IndexSoapIn"/><output message="tns:IndexSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="LockQuery"><input message="tns:LockQuerySoapIn"/><output message="tns:LockQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="MoveJobBack"><input message="tns:MoveJobBackSoapIn"/><output message="tns:MoveJobBackSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="MoveJobDown"><input message="tns:MoveJobDownSoapIn"/><output message="tns:MoveJobDownSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="MoveJobFront"><input message="tns:MoveJobFrontSoapIn"/><output message="tns:MoveJobFrontSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="MoveJobUp"><input message="tns:MoveJobUpSoapIn"/><output message="tns:MoveJobUpSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="NotInCommunityEdition"><input message="tns:NotInCommunityEditionSoapIn"/><output message="tns:NotInCommunityEditionSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="PauseQueue"><input message="tns:PauseQueueSoapIn"/><output message="tns:PauseQueueSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="RemoveJob"><input message="tns:RemoveJobSoapIn"/><output message="tns:RemoveJobSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="ResumeQueue"><input message="tns:ResumeQueueSoapIn"/><output message="tns:ResumeQueueSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="RoxieControlCmd"><input message="tns:RoxieControlCmdSoapIn"/><output message="tns:RoxieControlCmdSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="SetBanner"><input message="tns:SetBannerSoapIn"/><output message="tns:SetBannerSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="SetJobPriority"><input message="tns:SetJobPrioritySoapIn"/><output message="tns:SetJobPrioritySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="StopQueue"><input message="tns:StopQueueSoapIn"/><output message="tns:StopQueueSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation></portType><binding name="WsSMCServiceSoap" type="tns:WsSMCServiceSoap"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/><operation name="Activity"><soap:operation soapAction="WsSMC/Activity?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="BrowseResources"><soap:operation soapAction="WsSMC/BrowseResources?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="ClearQueue"><soap:operation soapAction="WsSMC/ClearQueue?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetStatusServerInfo"><soap:operation soapAction="WsSMC/GetStatusServerInfo?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="GetThorQueueAvailability"><soap:operation soapAction="WsSMC/GetThorQueueAvailability?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="Index"><soap:operation soapAction="WsSMC/Index?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="LockQuery"><soap:operation soapAction="WsSMC/LockQuery?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="MoveJobBack"><soap:operation soapAction="WsSMC/MoveJobBack?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="MoveJobDown"><soap:operation soapAction="WsSMC/MoveJobDown?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="MoveJobFront"><soap:operation soapAction="WsSMC/MoveJobFront?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="MoveJobUp"><soap:operation soapAction="WsSMC/MoveJobUp?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="NotInCommunityEdition"><soap:operation soapAction="WsSMC/NotInCommunityEdition?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="PauseQueue"><soap:operation soapAction="WsSMC/PauseQueue?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="RemoveJob"><soap:operation soapAction="WsSMC/RemoveJob?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="ResumeQueue"><soap:operation soapAction="WsSMC/ResumeQueue?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="RoxieControlCmd"><soap:operation soapAction="WsSMC/RoxieControlCmd?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="SetBanner"><soap:operation soapAction="WsSMC/SetBanner?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="SetJobPriority"><soap:operation soapAction="WsSMC/SetJobPriority?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="StopQueue"><soap:operation soapAction="WsSMC/StopQueue?ver_=1.19" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation></binding><service name="WsSMC"><port name="WsSMCServiceSoap" binding="tns:WsSMCServiceSoap"><soap:address location="http://192.168.3.22:8010/WsSMC?ver_=1.19"/></port></service></definitions>
