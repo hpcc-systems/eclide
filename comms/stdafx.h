@@ -5,7 +5,7 @@
 #pragma warning(disable:4503)
 #pragma warning(disable:4127)
 
-#define _COMMS_VER 604000
+#define _COMMS_VER 604000  //  Server 6.04.000 (aka 6.4.0)
 
 //  Leak Checking ---
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
@@ -125,7 +125,7 @@ const TCHAR * const _COMMS_VER_STR = _T("build_3_08");
 #  include "3_08/WebService.h"
 #elif _COMMS_VER == 402682
 #  include "4_02-68200/WebService.h"
-#elif _COMMS_VER == 604000  //  Server 6.04.000
+#elif _COMMS_VER == 604000  //  Server 6.04.000 (aka 6.4.0)
 #  include "6_4_0/WebService.h"
 #else
 #  include "WebService.h"

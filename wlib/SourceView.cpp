@@ -127,28 +127,19 @@ CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false
     CSourceCtrl(attrInfo, owner);
 }
 
-void CSourceCtrl::SetSourceType(const CString & typeStr)
+void CSourceCtrl::SetSourceType(Topology::ICluster * cluster)
 {
-    CString typeLower = typeStr;
-    typeLower.MakeLower();
-    if (typeLower.Find(_T("roxie"),0) >= 0)
-    {
-        m_targetType = TARGET_ROXIE;
-    }
-    else if (typeLower.Find(_T("hthor"), 0) >= 0)
-    {
+    switch (cluster != NULL ? cluster->GetType() : Topology::CLUSTERTYPE_UNKNOWN) {
+    case Topology::CLUSTERTYPE_HTHOR:
         m_targetType = TARGET_HTHOR;
-    }
-    else if (typeLower.Find(_T("local"), 0) >= 0)
-    {
-        m_targetType = TARGET_LOCAL;
-    }
-    else if (typeLower.Find(_T("thor"), 0) >= 0)
-    {
+        break;
+    case Topology::CLUSTERTYPE_THOR:
         m_targetType = TARGET_THOR;
-    }
-    else
-    {
+        break;
+    case Topology::CLUSTERTYPE_ROXIE:
+        m_targetType = TARGET_ROXIE;
+        break;
+    default:
         m_targetType = TARGET_UNKNOWN;
     }
 }
@@ -174,7 +165,7 @@ void CSourceCtrl::SetOther(CSourceCtrl * other)
 BOOL CSourceCtrl::PreTranslateMessage(MSG* /*pMsg*/)
 {
     //if (__super::PreTranslateMessage(pMsg))
-    //	return true;
+    //  return true;
     return FALSE;
 }
 
@@ -198,7 +189,7 @@ void CSourceCtrl::ResumeRecording()
 }
 
 void CSourceCtrl::PlaybackRecording()
-{	
+{
     BeginUndoAction();
     for (CMacroEventVector::const_iterator itr = m_macro.begin(); itr != m_macro.end(); ++itr)
     {   
@@ -260,7 +251,7 @@ LRESULT CSourceCtrl::OnNotify(int /*wParam*/, LPNMHDR lParam)
             //Sci_CharacterRange otherSel = m_other->GetSelection();
             //Sci_CharacterRange thisSel = GetSelection();
             //if (otherSel.cpMin != thisSel.cpMin || otherSel.cpMax != thisSel.cpMax)
-            //	m_other->SetSel(thisSel);
+            //  m_other->SetSel(thisSel);
         }
         HandleNotify((SCNotification *)lParam);
     }
@@ -447,7 +438,7 @@ void CSourceCtrl::DoInit()
     IndicSetStyle(1, INDIC_SQUIGGLE);//INDIC_TT, INDIC_DIAGONAL INDIC_STRIKE, INDIC_SQUIGGLE
     IndicSetFore(1, 0x007f00);
 
-#ifdef _UNICODE	
+#ifdef _UNICODE
     SetCodePage(SC_CP_UTF8);
 #endif
     //SetEOLMode(SC_EOL_CRLF);
@@ -477,7 +468,7 @@ void CSourceCtrl::InitLanguage(IAttributeType *attrType)
 {
     if (attrType) {
         SetType(attrType);
-        SetSourceType(_T(""));
+        SetSourceType(NULL);
     }
     else if (!m_type)
     {
@@ -663,7 +654,7 @@ bool CSourceCtrl::DoReplaceCurrent(const std::_tstring & findText, const CString
             ReplaceSel(replaceText);
     }
 
-    return DoFind(findText, flags, FINDMODE_NONE, false, bNext);	
+    return DoFind(findText, flags, FINDMODE_NONE, false, bNext);
 }
 
 bool CSourceCtrl::DoReplaceAll(const std::_tstring & findText, const CString & replaceText, DWORD flags)
@@ -743,17 +734,17 @@ void CSourceCtrl::ClearSel()
 
 const TCHAR* CSourceCtrl::RFind (const TCHAR* str, const TCHAR ch)
 {
-    TCHAR* p = (TCHAR*)str;	
+    TCHAR* p = (TCHAR*)str;
     while (*p++);
     while (--p != str)
         if(*p == ch) 
-            return p;	
+            return p;
     return 0;
 }
 
 const TCHAR* CSourceCtrl::RFind (const TCHAR* str, const TCHAR* ss)
 {
-    TCHAR* p = (TCHAR*)str;	
+    TCHAR* p = (TCHAR*)str;
     while (*p++);
     while (--p != str) {
         const TCHAR* p1 = ss;

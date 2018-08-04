@@ -194,51 +194,6 @@ protected:
     Topology::IClusterVector m_clusters;
 };
 
-class WLIB_API CComboGroup : public CComboTopologyBase
-{
-public:
-    CComboGroup();
-
-    virtual void Load(const TCHAR *ip=0);
-    Topology::IGroup *GetSelectedGroup();
-    void SelectDefault(const TCHAR *selection);
-
-protected:
-    Topology::IGroupVector m_groups;
-};
-
-class WLIB_API CComboEclServer : public CComboTopologyBase
-{
-public:
-    CComboEclServer();
-
-    virtual void Load(const TCHAR *ip=0);
-
-    void RestrictType(const TCHAR *typeName);
-    Topology::IEclServer *GetSelectedEclServer();
-
-protected:
-    CString m_restrictToType;
-    Topology::IEclServerVector m_ecl_servers;
-};
-
-class WLIB_API CComboEclServerQueue : public CComboTopologyBase
-{
-public:
-    CComboEclServerQueue();
-
-    virtual void Load(const TCHAR *ip=0);
-    static void GetQueues(CComPtr<CComboEclServerQueue> self);
-    void LoadQueues(Topology::IEclServerVector & queues);
-
-    void RestrictType(const TCHAR *typeName);
-    Topology::IEclServer *GetSelectedEclServerQueue();
-
-protected:
-    CString m_restrictToType;
-    Topology::IEclServerVector m_ecl_servers;
-};
-
 typedef std::pair<Topology::IEclServerAdapt, Topology::IClusterAdapt> QueueClusterPair;
 typedef std::vector<QueueClusterPair> QueueClusterPairVector;
 class WLIB_API CComboQueueCluster : public CComboTopologyBase

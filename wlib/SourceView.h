@@ -8,6 +8,7 @@
 
 #include "scilexer.h"
 #include "Attribute.h"
+#include "Cluster.h"
 #include "FindReplace.h"
 
 typedef CWinTraits<WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_TABSTOP, WS_EX_CLIENTEDGE> CScintillaWinTraits;
@@ -45,7 +46,7 @@ enum INDICATOR
     INDICATOR_LAST
 };
 
-enum PANE	//  See "arrParts" in mainfrm.cpp
+enum PANE   //  See "arrParts" in mainfrm.cpp
 {
     PANE_DEFAULT = ID_DEFAULT_PANE,
     PANE_POS,
@@ -145,7 +146,7 @@ public:
     void SetAttribute(IAttribute * attr);
     void SetType(IAttributeType * type);
     void SetOther(CSourceCtrl * other);
-    void SetSourceType(const CString & typeStr);
+    void SetSourceType(Topology::ICluster * cluster);
 
     BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -223,7 +224,7 @@ class CSourceDlgImpl:
     typedef WTL::CDialogImpl<T> baseClass;
 
 public:
-    CSourceCtrl m_view;	
+    CSourceCtrl m_view;
 
     CSourceCtrl & GetView()
     {
@@ -327,14 +328,14 @@ public:
         ::FormatMessage ( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
                         NULL, dwError,
                         MAKELANGID ( LANG_ENGLISH, SUBLANG_ENGLISH_US ),
-                        (LPTSTR)&lpMessageBuffer, 0, NULL);			
+                        (LPTSTR)&lpMessageBuffer, 0, NULL);
         sErrorMessage += lpMessageBuffer;
         ::LocalFree ( lpMessageBuffer ); // FormatMessage() requires this
         
         // display the error message
         CString title;
         title.LoadString(IDR_MAINFRAME);
-        ::MessageBox ( NULL, sErrorMessage, title, MB_OK | MB_ICONEXCLAMATION );	
+        ::MessageBox ( NULL, sErrorMessage, title, MB_OK | MB_ICONEXCLAMATION );
     }
 
     void GetWordAtCurPos(CString & result)

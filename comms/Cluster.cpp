@@ -22,7 +22,8 @@ protected:
     std::_tstring m_Queue;
 
     std::_tstring m_Url;
-    std::_tstring m_Type;
+    std::_tstring m_TypeStr;
+    CLUSTERTYPE m_Type;
     std::_tstring m_Directory;
     std::_tstring m_Desc;
     std::_tstring m_Prefix;
@@ -32,7 +33,7 @@ protected:
 public:
     IMPLEMENT_CUNKNOWN;
 
-    CCluster(const std::_tstring & url, const std::_tstring & name, const std::_tstring & queue = _T("")) : m_Url(url), m_Name(name), m_Queue(queue)
+    CCluster(const std::_tstring & url, const std::_tstring & name, const std::_tstring & queue = _T("")) : m_Url(url), m_Name(name), m_Queue(queue), m_Type(CLUSTERTYPE_UNKNOWN)
     {
     }
 
@@ -56,9 +57,12 @@ public:
     {
         return m_Queue.c_str();
     }
-    const TCHAR *GetType() const
+    CLUSTERTYPE GetType() const
     {
-        return m_Type.c_str();
+        return m_Type;
+    }
+    const TCHAR *GetTypeStr() const {
+        return m_TypeStr.c_str();
     }
     const TCHAR *GetDirectory() const
     {
@@ -105,11 +109,31 @@ public:
         m_DataModel = CW2T(c->DataModel, CP_UTF8);
         Refresh();
     }
+#elif _COMMS_VER < 604000
+    void Update(const ns5__TpLogicalCluster * c)
+    {
+        SAFE_ASSIGN(m_Name, c->Name);
+        SAFE_ASSIGN(m_Queue, c->Queue);
+        Refresh();
+    }
 #elif _COMMS_VER < 700000
     void Update(const ns5__TpLogicalCluster * c)
     {
         SAFE_ASSIGN(m_Name, c->Name);
         SAFE_ASSIGN(m_Queue, c->Queue);
+        SAFE_ASSIGN(m_TypeStr, c->Type);
+        if (boost::algorithm::iequals(m_TypeStr, _T("hthor"))) {
+            m_Type = CLUSTERTYPE_HTHOR;
+        }
+        else if (boost::algorithm::iequals(m_TypeStr, _T("thor"))) {
+            m_Type = CLUSTERTYPE_THOR;
+        }
+        else if (boost::algorithm::iequals(m_TypeStr, _T("roxie"))) {
+            m_Type = CLUSTERTYPE_ROXIE;
+        }
+        else {
+            m_Type = CLUSTERTYPE_UNKNOWN;
+        }
         Refresh();
     }
 #else
@@ -136,14 +160,9 @@ void ClearClusterCache()
     ClusterCache.Clear();
 }
 
-CCluster * CreateClusterRaw(const CString & url, const CString & wuid, const std::_tstring & queue = _T(""))
+CCluster * CreateClusterRaw(const CString & url, const CString & name, const std::_tstring & queue = _T(""))
 {
-    return ClusterCache.Get(new CCluster(static_cast<const TCHAR *>(url), static_cast<const TCHAR *>(wuid), queue));
-}
-
-ICluster * CreateCluster(const CString & url, const CString & wuid, const std::_tstring & queue)
-{
-    return CreateClusterRaw(url, wuid, queue);
+    return ClusterCache.Get(new CCluster(static_cast<const TCHAR *>(url), static_cast<const TCHAR *>(name), queue));
 }
 
 #if _COMMS_VER < 68200
@@ -169,14 +188,6 @@ ICluster * CreateCluster(const CString & url, const ns5__TpLogicalCluster * data
     ATLASSERT(attr);
     attr->Update(data);
     return attr;
-}
-ICluster * CreateCluster(const CString & url, const ns5__TpCluster * data)
-{
-    ATLASSERT(!"This is not used any more - please tell Gordon");
-    //CCluster * attr = CreateClusterRaw(url, data->Name);
-    //ATLASSERT(attr);
-    //attr->Update(data);
-    return NULL;//attr;
 }
 #else
 ICluster * CreateCluster(const CString & url, const LogicalCluster * data)

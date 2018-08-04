@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 
 #include "combo.h"
-#include <topology.h>
 
 //=================================================================
 CComboTopologyBase::CComboTopologyBase()
@@ -58,12 +57,12 @@ void CComboTopologyBase::SetIP(const TCHAR *ip)
 CComboCluster::CComboCluster()
 {
 	m_includeAllClusters = false;
-	m_defaultItem = _T("hthor");
+	m_defaultItem = _T("roxie");
 }
 CComboCluster::CComboCluster(bool includeAllClusters)
 {
 	m_includeAllClusters = includeAllClusters;
-	m_defaultItem = _T("hthor");
+	m_defaultItem = _T("roxie");
 }
 void CComboCluster::RestrictType(const TCHAR *typeName)
 {
@@ -88,13 +87,9 @@ void CComboCluster::GetClusters(CComPtr<CComboCluster> self)
 	{
 		server->GetClusters(_T(""), clusters);
 	}
-	else if (self->m_restrictToType.IsEmpty())
-	{
-		server->GetClusters(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), clusters);
-	}
 	else
 	{
-		server->GetClustersX(self->m_restrictToType, clusters);
+		server->GetClusters(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), clusters, static_cast<const TCHAR *>(self->m_restrictToType));
 	}
 	self->LoadClusters(clusters);
 }
@@ -142,139 +137,9 @@ void CComboCluster::SelectDefault(const TCHAR *defSel)
 }
 
 //=================================================================
-CComboGroup::CComboGroup()
-{
-	m_defaultItem = _T("");
-}
-
-void CComboGroup::Load(const TCHAR *ip)
-{
-	m_groups.clear();
-	ResetContent();
-	SetIP(ip);
-
-	StlLinked<Topology::ITopology> server = AttachTopology(m_topoIP, m_topoIP);
-	server->GetGroups(m_groups);
-	//in order for GetSelectedGroup to work, they must stay in same order
-	//unless we search the array by name!
-
-	std::_tstring name;
-	for( int i=0; i<(int)m_groups.size(); i++ )
-	{
-		//InsertItem(-1, m_groups[i]->GetName(), 0, 0, 0);
-		InsertString(-1, m_groups[i]->GetName());
-	}
-}
-
-Topology::IGroup * CComboGroup::GetSelectedGroup()
-{
-	int nSel = GetCurSel();
-	if ( nSel >= 0 && nSel < (int)m_groups.size() )
-	{
-		return m_groups[nSel];
-	}
-	return 0;
-}
-
-void CComboGroup::SelectDefault(const TCHAR *defSel)
-{
-	int d = FindStringExact(-1, defSel);
-	GetLBText(d, m_value);
-	SetCurSel(d);
-}
-
-//=================================================================
-CComboEclServer::CComboEclServer()
-{
-	m_defaultItem = _T("hthor");
-}
-void CComboEclServer::RestrictType(const TCHAR *typeName)
-{
-	m_restrictToType = typeName;
-}
-
-void CComboEclServer::Load(const TCHAR *ip)
-{
-	m_ecl_servers.clear();
-	ResetContent();
-	SetIP(ip);
-
-	StlLinked<Topology::ITopology> server = AttachTopology(m_topoIP, m_topoIP);
-	if ( m_restrictToType.IsEmpty() )
-		server->GetEclServers(m_ecl_servers);
-	else
-		server->GetEclServers(m_ecl_servers);
-	//in order for GetSelectedEclServer to work, they must stay in same order
-	//unless we search the array by name!
-	std::_tstring name;
-	for( int i=0; i<(int)m_ecl_servers.size(); i++ )
-	{
-		InsertString(-1, m_ecl_servers[i]->GetName());
-	}
-}
-
-Topology::IEclServer * CComboEclServer::GetSelectedEclServer()
-{
-	int nSel = GetCurSel();
-	if ( nSel >= 0 && nSel < (int)m_ecl_servers.size() )
-	{
-		return m_ecl_servers[nSel];
-	}
-	return 0;
-}
-//=================================================================
-CComboEclServerQueue::CComboEclServerQueue()
-{
-	m_defaultItem = _T("hthor");
-}
-void CComboEclServerQueue::RestrictType(const TCHAR *typeName)
-{
-	m_restrictToType = typeName;
-}
-
-void CComboEclServerQueue::Load(const TCHAR *ip)
-{
-	m_ecl_servers.clear();
-	ResetContent();
-	SetIP(ip);
-
-	clib::thread run(__FUNCTION__, boost::bind(&GetQueues, this));
-}
-
-void CComboEclServerQueue::GetQueues(CComPtr<CComboEclServerQueue> self)
-{
-	StlLinked<Topology::ITopology> server = AttachTopology(self->m_topoIP, self->m_topoIP);
-	if (self->m_restrictToType.IsEmpty())
-		server->GetEclServers(self->m_ecl_servers);
-	else
-		server->GetEclServers(self->m_ecl_servers);
-	self->LoadQueues(self->m_ecl_servers);
-}
-
-void CComboEclServerQueue::LoadQueues(Topology::IEclServerVector & queues)
-{
-	//in order for GetSelectedEclServer to work, they must stay in same order
-	//unless we search the array by name!
-	std::_tstring name;
-	for( int i=0; i<(int)m_ecl_servers.size(); i++ )
-	{
-		InsertString(-1, m_ecl_servers[i]->GetQueue());
-	}
-}
-
-Topology::IEclServer * CComboEclServerQueue::GetSelectedEclServerQueue()
-{
-	int nSel = GetCurSel();
-	if ( nSel >= 0 && nSel < (int)m_ecl_servers.size() )
-	{
-		return m_ecl_servers[nSel];
-	}
-	return 0;
-}
-//=================================================================
 CComboQueueCluster::CComboQueueCluster()
 {
-	m_defaultItem = _T("hthor");
+	m_defaultItem = _T("roxie");
 }
 
 void CComboQueueCluster::Load(const TCHAR *ip)
