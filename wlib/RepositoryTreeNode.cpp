@@ -253,6 +253,10 @@ int CModuleNode::GetDispSelectedImage()
 	{
 		return IID_PLUGINFOLDER_CLOSED;
 	}
+	else if (m_module->IsTopFolder())
+	{
+		return IID_TOPFOLDER_CLOSED;
+	}
 	else if (m_module->IsTrash())
 	{
 		if (GetDispChildren())
