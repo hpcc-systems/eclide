@@ -626,6 +626,11 @@ public:
             newImg = IID_PLUGINFOLDER_CLOSED;
             newImgSel = IID_PLUGINFOLDER_OPEN;
         }
+        else if (img == IID_TOPFOLDER_CLOSED || imgSel == IID_TOPFOLDER_OPEN)
+        {
+            newImg = IID_TOPFOLDER_CLOSED;
+            newImgSel = IID_TOPFOLDER_OPEN;
+        }
         else if (img == IID_PLUGINFOLDER_UNMATCHED || imgSel == IID_PLUGINFOLDER_OPEN_UNMATCHED)
         {
             newImg = IID_PLUGINFOLDER_UNMATCHED;

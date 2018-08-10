@@ -479,6 +479,11 @@ public:
         m_Root->Expand();
         return true;
     }
+    void CollapseAll()
+    {
+        m_Root->Expand(TVE_COLLAPSE | TVE_COLLAPSERESET);
+        m_Root->Expand();
+    }
 };
 //  ===========================================================================
 class CRepositoryView :

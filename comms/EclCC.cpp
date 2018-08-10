@@ -123,7 +123,7 @@ public:
         if (clib::filesystem::exists(stdLibPath))
             m_eclFolders.push_back(std::make_pair(pathToWString(stdLibPath), false));
 
-        boost::filesystem::wpath pluginsPath = clientToolsFolderPath / _T("plugins");
+        boost::filesystem::wpath pluginsPath = clientToolsFolderPath / PLUGINS_FOLDER;
         if (clib::filesystem::exists(pluginsPath))
             m_eclFolders.push_back(std::make_pair(pathToWString(pluginsPath), false));
 

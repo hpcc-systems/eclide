@@ -229,6 +229,10 @@ int CModuleNode::GetDispImage()
 	{
 		return IID_PLUGINFOLDER_CLOSED;
 	}
+	else if (m_module->IsTopFolder())
+	{
+		return IID_TOPFOLDER_CLOSED;
+	}
 	else if (m_module->IsTrash())
 	{
 		if (GetDispChildren())
@@ -248,6 +252,10 @@ int CModuleNode::GetDispSelectedImage()
 	if (m_module->IsPlugin())
 	{
 		return IID_PLUGINFOLDER_CLOSED;
+	}
+	else if (m_module->IsTopFolder())
+	{
+		return IID_TOPFOLDER_CLOSED;
 	}
 	else if (m_module->IsTrash())
 	{

@@ -298,6 +298,9 @@ public:
         case ID_REPOSITORY_REFRESH:
             pT->m_view.RefreshRepository();
             break;
+        case ID_REPOSITORY_COLLAPSEALL:
+            pT->m_view.CollapseAll();
+            break;
         case ID_CHANGETYPELOCAL_DUD:
             pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_DUD);
             break;
@@ -370,7 +373,7 @@ public:
     void CalculateContextMenuState(CRepositorySelections &s, ContextState &state)
     {
         bool RemoteRepository = true;
-        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
             RemoteRepository = false;
 
         #define WRITEACCESS(mod) ((mod->GetAccess() & SecAccess_Write) == SecAccess_Write)

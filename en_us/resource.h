@@ -816,6 +816,8 @@
 #define ID_GO_CUSTOM3                   33110
 #define ID_GO_CUSTOM4                   33111
 #define ID_GO_GENERATE                  33112
+#define ID_REPOSITORY_COLLAPSEALL       33113
+#define ID_ECL_HELP                     33114
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -844,7 +846,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33113
+#define _APS_NEXT_COMMAND_VALUE         33115
 #define _APS_NEXT_CONTROL_VALUE         542
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

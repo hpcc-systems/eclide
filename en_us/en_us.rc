@@ -1730,6 +1730,7 @@ BEGIN
         MENUITEM "Delete File\tDel",            ID_REPOSITORY_DELETEATTRIBUTE
         MENUITEM SEPARATOR
         MENUITEM "Refresh",                     ID_REPOSITORY_REFRESH
+        MENUITEM "Collapse All",                ID_REPOSITORY_COLLAPSEALL
     END
 END
 

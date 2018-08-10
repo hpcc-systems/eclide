@@ -198,6 +198,8 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame() : m_threadSave(5)
 {
+    m_helpFlag = true;
+
     // TODO: add member initialization code here
     theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_OFF_2007_BLUE);
 
@@ -1520,7 +1522,9 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 void CMainFrame::OnWindowManager()
 {
+    m_helpFlag = false;
     ShowWindowsDialog();
+    m_helpFlag = true;
 }
 
 void CMainFrame::OnWindowCascade()
@@ -2775,7 +2779,15 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
     _tcsncpy(m_fr.m_szFindWhat, searchTerm.c_str(), sizeof(m_fr.m_szFindWhat));
     m_fr.m_mode = findmode;
     CComPtr<IRepository> rep = AttachRepository();
-    HWND hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
+    HWND hwnd = NULL;
+    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+    {
+        hwnd = ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, attribute));
+    }
+    else
+    {
+        hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
+    }
     if (hwnd)
         PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 }

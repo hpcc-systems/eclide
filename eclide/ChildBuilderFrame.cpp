@@ -212,7 +212,7 @@ public:
         COMMAND_ID_HANDLER_EX(ID_TAB_REMOVE, OnRemoveActiveTab)
         COMMAND_ID_HANDLER_EX(ID_TAB_REMOVE_ALL, OnRemoveAllTabs)
         COMMAND_ID_HANDLER_EX(ID_ECL_SYNCTOC, OnEclSyncToc)
-        COMMAND_ID_HANDLER_EX(ID_HELP, OnEclHelp)
+        COMMAND_ID_HANDLER_EX(ID_ECL_HELP, OnEclHelp)
         COMMAND_ID_HANDLER_EX(ID_ECL_GOTO, OnEclGoto)
         COMMAND_ID_HANDLER_EX(ID_ECL_GOTOSYNCTOC, OnEclGotoSyncToc)
 
@@ -1121,16 +1121,23 @@ END_MESSAGE_MAP()
 //  ===========================================================================
 bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
 {
-    FramePair win = g_builder_window[workspaceItem];
-    if (win.first && win.second && win.second->IsWindow())
+    for (std::map<WorksaceID, FramePair>::iterator itr = g_builder_window.begin(); itr != g_builder_window.end(); ++itr)
     {
-        if (win.first->IsIconic())
-            win.first->ShowWindow(SW_RESTORE);
-        win.first->BringWindowToTop();
+        if (itr->first->GetAttributePointer() && itr->first->GetAttributePointer() == workspaceItem->GetAttributePointer())
+        {
+            FramePair win = itr->second;
+            if (win.first && win.second && win.second->IsWindow())
+            {
+                if (win.first->IsIconic())
+                    win.first->ShowWindow(SW_RESTORE);
+                win.first->BringWindowToTop();
 
-        *pChild = win.first;
-        return true;
+                *pChild = win.first;
+                return true;
+            }
+        }
     }
+
     return false;
 }
 
