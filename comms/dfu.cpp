@@ -108,7 +108,11 @@ public:
 
         _ns3__DFUQueryRequest request;
         CStringAssign Prefix(request.Prefix, searchPrefix); 
+#if _COMMS_VER < 604000
         CStringAssign ClusterName(request.ClusterName, searchCluster); 
+#else
+        CStringAssign ClusterName(request.NodeGroup, searchCluster);
+#endif
         CStringAssign LogicalName(request.LogicalName, searchLogicalName); 
         CStringAssign Description(request.Description, searchDescription); 
         CStringAssign Owner(request.Owner, searchOwner); 

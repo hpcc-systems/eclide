@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:hpccsystems:ws:wstopology" targetNamespace="urn:hpccsystems:ws:wstopology"><types><xsd:schema elementFormDefault="qualified" targetNamespace="urn:hpccsystems:ws:wstopology" >
+<xsd:complexType name="EspException"><xsd:all><xsd:element name="Code" type="xsd:string"  minOccurs="0"/><xsd:element name="Audience" type="xsd:string" minOccurs="0"/><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Message" type="xsd:string" minOccurs="0"/></xsd:all></xsd:complexType>
+<xsd:complexType name="ArrayOfEspException"><xsd:sequence><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Exception" type="tns:EspException" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+<xsd:element name="Exceptions" type="tns:ArrayOfEspException"/>
+<xsd:complexType name="TpTargetCluster">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Prefix" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpClusters" type="tns:ArrayOfTpCluster"/>
+<xsd:element minOccurs="0" name="TpEclCCServers" type="tns:ArrayOfTpEclServer"/>
+<xsd:element minOccurs="0" name="TpEclServers" type="tns:ArrayOfTpEclServer"/>
+<xsd:element minOccurs="0" name="TpEclAgents" type="tns:ArrayOfTpEclAgent"/>
+<xsd:element minOccurs="0" name="TpEclSchedulers" type="tns:ArrayOfTpEclScheduler"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpCluster">
+<xsd:all><xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueueName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Directory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Desc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Prefix" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DataModel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OS" type="xsd:int"/>
+<xsd:element minOccurs="0" name="HasThorSpareProcess" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpMachine">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Netaddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ConfigNetaddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Domain" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Directory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Available" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OS" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ProcessNumber" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpMachine">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpMachine" type="tns:TpMachine"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="TpEclServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpEclAgent">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DaliServer" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDir" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpEclScheduler">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpCluster">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpCluster" type="tns:TpCluster"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpEclAgent">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpEclAgent" type="tns:TpEclAgent"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpEclScheduler">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpEclScheduler" type="tns:TpEclScheduler"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpEclServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpEclServer" type="tns:TpEclServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="TpServices">
+<xsd:all><xsd:element minOccurs="0" name="TpDalis" type="tns:ArrayOfTpDali"/>
+<xsd:element minOccurs="0" name="TpDfuServers" type="tns:ArrayOfTpDfuServer"/>
+<xsd:element minOccurs="0" name="TpDkcSlaves" type="tns:ArrayOfTpDkcSlave"/>
+<xsd:element minOccurs="0" name="TpDropZones" type="tns:ArrayOfTpDropZone"/>
+<xsd:element minOccurs="0" name="TpEclAgents" type="tns:ArrayOfTpEclAgent"/>
+<xsd:element minOccurs="0" name="TpEclServers" type="tns:ArrayOfTpEclServer"/>
+<xsd:element minOccurs="0" name="TpEclCCServers" type="tns:ArrayOfTpEclServer"/>
+<xsd:element minOccurs="0" name="TpEclSchedulers" type="tns:ArrayOfTpEclScheduler"/>
+<xsd:element minOccurs="0" name="TpEspServers" type="tns:ArrayOfTpEspServer"/>
+<xsd:element minOccurs="0" name="TpFTSlaves" type="tns:ArrayOfTpFTSlave"/>
+<xsd:element minOccurs="0" name="TpGenesisServers" type="tns:ArrayOfTpGenesisServer"/>
+<xsd:element minOccurs="0" name="TpLdapServers" type="tns:ArrayOfTpLdapServer"/>
+<xsd:element minOccurs="0" name="TpMySqlServers" type="tns:ArrayOfTpMySqlServer"/>
+<xsd:element minOccurs="0" name="TpSashaServers" type="tns:ArrayOfTpSashaServer"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpDali">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BackupComputer" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BackupDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpDfuServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpDkcSlave">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpDropZone">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ECLWatchVisible" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="UMask" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpEspServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+<xsd:element minOccurs="0" name="TpBindings" type="tns:ArrayOfTpBinding"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpBinding">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Service" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServiceType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BindingType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServiceBuildSet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Protocol" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpBinding">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpBinding" type="tns:TpBinding"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="TpFTSlave">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpGenesisServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpLdapServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpMySqlServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpSashaServer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Build" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpDali">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpDali" type="tns:TpDali"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpDfuServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpDfuServer" type="tns:TpDfuServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpDkcSlave">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpDkcSlave" type="tns:TpDkcSlave"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpDropZone">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpDropZone" type="tns:TpDropZone"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpEspServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpEspServer" type="tns:TpEspServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpFTSlave">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpFTSlave" type="tns:TpFTSlave"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpGenesisServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpGenesisServer" type="tns:TpGenesisServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpLdapServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpLdapServer" type="tns:TpLdapServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpMySqlServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpMySqlServer" type="tns:TpMySqlServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpSashaServer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpSashaServer" type="tns:TpSashaServer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="TpQueryType">
+<xsd:all><xsd:element minOccurs="0" name="TPCLUSTER" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TPNODE" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpLogicalCluster">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LanguageVersion" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Process" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="TpGroup">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Kind" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ReplicateOutputs" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="SystemLogRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Zip" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="SystemLogResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="thefile" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpClusterInfoRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpClusterInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WorkUnit" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpQueues" type="tns:ArrayOfTpQueue"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="TpQueue">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WorkUnit" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpQueue">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpQueue" type="tns:TpQueue"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="TpClusterQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpClusterQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="EnableSNMP" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="AcceptLanguage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpClusters" type="tns:ArrayOfTpCluster"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpDropZoneQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ECLWatchVisibleOnly" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpDropZoneQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TpDropZones" type="tns:ArrayOfTpDropZone"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpGetComponentFileRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="CompType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CompName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Directory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OsType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PlainText" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpGetComponentFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="FileContents" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpGetServicePluginsRequest"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="TpGetServicePluginsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Plugins">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Plugin" type="tns:TpEspServicePlugin"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="TpEspServicePlugin">
+<xsd:all><xsd:element minOccurs="0" name="ShortName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LongName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FolderName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WidgetName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="TpGroupQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Kind" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpGroupQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TpGroups" type="tns:ArrayOfTpGroup"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfTpGroup">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpGroup" type="tns:TpGroup"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="TpListTargetClustersRequest"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="TpListTargetClustersResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TargetClusters" type="tns:ArrayOfTpClusterNameType"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="TpClusterNameType">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IsDefault" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTpClusterNameType">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpClusterNameType" type="tns:TpClusterNameType"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="TpLogFileRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LastHours" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FirstRows" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LastRows" type="xsd:int"/>
+<xsd:element minOccurs="0" name="FilterType" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="Reversely" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="Zip" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="PageNumber" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="LoadData" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpLogFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LastHours" type="xsd:int"/>
+<xsd:element minOccurs="0" name="FirstRows" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LastRows" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Reversely" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Zip" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="FilterType" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LogData" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="HasDate" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="FileSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageTo" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageNumber" type="xsd:int"/>
+<xsd:element minOccurs="0" default="-1" name="PrevPage" type="xsd:int"/>
+<xsd:element minOccurs="0" default="-1" name="NextPage" type="xsd:int"/>
+<xsd:element minOccurs="0" name="TotalPages" type="xsd:int"/>
+<xsd:element minOccurs="0" name="AcceptLanguage" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpLogicalClusterQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="EclServerQueue" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpLogicalClusterQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TpLogicalClusters" type="tns:ArrayOfTpLogicalCluster"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfTpLogicalCluster">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpLogicalCluster" type="tns:TpLogicalCluster"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="TpMachineInfoRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NetAddress" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpMachineInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="MachineInfo" type="tns:TpMachine"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpMachineQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OldIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Directory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpMachineQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="EnablePreflightInfo" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="HasThorSpareProcess" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OldIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDirectory" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MemThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DiskThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="CpuThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="MemThresholdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DiskThresholdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PreflightProcessFilter" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EnableSNMP" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="AcceptLanguage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpMachines" type="tns:ArrayOfTpMachine"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpServiceQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpServiceQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="MemThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DiskThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="CpuThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="EncapsulatedSystem" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="EnableSNMP" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="PreflightProcessFilter" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AcceptLanguage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MemThresholdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DiskThresholdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ServiceList" type="tns:TpServices"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpSetMachineStatusRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="MachinePath" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StatusValue" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpSetMachineStatusResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TpSetMachineStatusResult" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpSwapNodeRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OldIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NewIP" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpSwapNodeResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="TpSwapNodeResult" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpTargetClusterQueryRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="ShowDetails" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpTargetClusterQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" default="false" name="ShowDetails" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="MemThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DiskThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="CpuThreshold" type="xsd:int"/>
+<xsd:element minOccurs="0" name="MemThresholdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DiskThresholdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PreflightProcessFilter" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AcceptLanguage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TpTargetClusters" type="tns:ArrayOfTpTargetCluster"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfTpTargetCluster">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TpTargetCluster" type="tns:TpTargetCluster"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="TpThorStatusRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpThorStatusResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Group" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorMasterIPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Port" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StartTime" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogFile" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Graph" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraph" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SubGraphDuration" type="xsd:int"/>
+<xsd:element minOccurs="0" name="AutoRefresh" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpXMLFileRequest"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="TpXMLFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="thefile" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="string" nillable="true" type="xsd:string" />
+</xsd:schema></types><message name="SystemLogSoapIn"><part name="parameters" element="tns:SystemLogRequest"/></message><message name="SystemLogSoapOut"><part name="parameters" element="tns:SystemLogResponse"/></message><message name="TpClusterInfoSoapIn"><part name="parameters" element="tns:TpClusterInfoRequest"/></message><message name="TpClusterInfoSoapOut"><part name="parameters" element="tns:TpClusterInfoResponse"/></message><message name="TpClusterQuerySoapIn"><part name="parameters" element="tns:TpClusterQueryRequest"/></message><message name="TpClusterQuerySoapOut"><part name="parameters" element="tns:TpClusterQueryResponse"/></message><message name="TpDropZoneQuerySoapIn"><part name="parameters" element="tns:TpDropZoneQueryRequest"/></message><message name="TpDropZoneQuerySoapOut"><part name="parameters" element="tns:TpDropZoneQueryResponse"/></message><message name="TpGetComponentFileSoapIn"><part name="parameters" element="tns:TpGetComponentFileRequest"/></message><message name="TpGetComponentFileSoapOut"><part name="parameters" element="tns:TpGetComponentFileResponse"/></message><message name="TpGetServicePluginsSoapIn"><part name="parameters" element="tns:TpGetServicePluginsRequest"/></message><message name="TpGetServicePluginsSoapOut"><part name="parameters" element="tns:TpGetServicePluginsResponse"/></message><message name="TpGroupQuerySoapIn"><part name="parameters" element="tns:TpGroupQueryRequest"/></message><message name="TpGroupQuerySoapOut"><part name="parameters" element="tns:TpGroupQueryResponse"/></message><message name="TpListTargetClustersSoapIn"><part name="parameters" element="tns:TpListTargetClustersRequest"/></message><message name="TpListTargetClustersSoapOut"><part name="parameters" element="tns:TpListTargetClustersResponse"/></message><message name="TpLogFileSoapIn"><part name="parameters" element="tns:TpLogFileRequest"/></message><message name="TpLogFileSoapOut"><part name="parameters" element="tns:TpLogFileResponse"/></message><message name="TpLogFileDisplaySoapIn"><part name="parameters" element="tns:TpLogFileRequest"/></message><message name="TpLogFileDisplaySoapOut"><part name="parameters" element="tns:TpLogFileResponse"/></message><message name="TpLogicalClusterQuerySoapIn"><part name="parameters" element="tns:TpLogicalClusterQueryRequest"/></message><message name="TpLogicalClusterQuerySoapOut"><part name="parameters" element="tns:TpLogicalClusterQueryResponse"/></message><message name="TpMachineInfoSoapIn"><part name="parameters" element="tns:TpMachineInfoRequest"/></message><message name="TpMachineInfoSoapOut"><part name="parameters" element="tns:TpMachineInfoResponse"/></message><message name="TpMachineQuerySoapIn"><part name="parameters" element="tns:TpMachineQueryRequest"/></message><message name="TpMachineQuerySoapOut"><part name="parameters" element="tns:TpMachineQueryResponse"/></message><message name="TpServiceQuerySoapIn"><part name="parameters" element="tns:TpServiceQueryRequest"/></message><message name="TpServiceQuerySoapOut"><part name="parameters" element="tns:TpServiceQueryResponse"/></message><message name="TpSetMachineStatusSoapIn"><part name="parameters" element="tns:TpSetMachineStatusRequest"/></message><message name="TpSetMachineStatusSoapOut"><part name="parameters" element="tns:TpSetMachineStatusResponse"/></message><message name="TpSwapNodeSoapIn"><part name="parameters" element="tns:TpSwapNodeRequest"/></message><message name="TpSwapNodeSoapOut"><part name="parameters" element="tns:TpSwapNodeResponse"/></message><message name="TpTargetClusterQuerySoapIn"><part name="parameters" element="tns:TpTargetClusterQueryRequest"/></message><message name="TpTargetClusterQuerySoapOut"><part name="parameters" element="tns:TpTargetClusterQueryResponse"/></message><message name="TpThorStatusSoapIn"><part name="parameters" element="tns:TpThorStatusRequest"/></message><message name="TpThorStatusSoapOut"><part name="parameters" element="tns:TpThorStatusResponse"/></message><message name="TpXMLFileSoapIn"><part name="parameters" element="tns:TpXMLFileRequest"/></message><message name="TpXMLFileSoapOut"><part name="parameters" element="tns:TpXMLFileResponse"/></message><message name="EspSoapFault"><part name="parameters" element="tns:Exceptions"/></message><portType name="WsTopologyServiceSoap"><operation name="SystemLog"><input message="tns:SystemLogSoapIn"/><output message="tns:SystemLogSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpClusterInfo"><input message="tns:TpClusterInfoSoapIn"/><output message="tns:TpClusterInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpClusterQuery"><input message="tns:TpClusterQuerySoapIn"/><output message="tns:TpClusterQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpDropZoneQuery"><input message="tns:TpDropZoneQuerySoapIn"/><output message="tns:TpDropZoneQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpGetComponentFile"><input message="tns:TpGetComponentFileSoapIn"/><output message="tns:TpGetComponentFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpGetServicePlugins"><input message="tns:TpGetServicePluginsSoapIn"/><output message="tns:TpGetServicePluginsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpGroupQuery"><input message="tns:TpGroupQuerySoapIn"/><output message="tns:TpGroupQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpListTargetClusters"><input message="tns:TpListTargetClustersSoapIn"/><output message="tns:TpListTargetClustersSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpLogFile"><input message="tns:TpLogFileSoapIn"/><output message="tns:TpLogFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpLogFileDisplay"><input message="tns:TpLogFileDisplaySoapIn"/><output message="tns:TpLogFileDisplaySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpLogicalClusterQuery"><input message="tns:TpLogicalClusterQuerySoapIn"/><output message="tns:TpLogicalClusterQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpMachineInfo"><input message="tns:TpMachineInfoSoapIn"/><output message="tns:TpMachineInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpMachineQuery"><input message="tns:TpMachineQuerySoapIn"/><output message="tns:TpMachineQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpServiceQuery"><input message="tns:TpServiceQuerySoapIn"/><output message="tns:TpServiceQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpSetMachineStatus"><input message="tns:TpSetMachineStatusSoapIn"/><output message="tns:TpSetMachineStatusSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpSwapNode"><input message="tns:TpSwapNodeSoapIn"/><output message="tns:TpSwapNodeSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpTargetClusterQuery"><input message="tns:TpTargetClusterQuerySoapIn"/><output message="tns:TpTargetClusterQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpThorStatus"><input message="tns:TpThorStatusSoapIn"/><output message="tns:TpThorStatusSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="TpXMLFile"><input message="tns:TpXMLFileSoapIn"/><output message="tns:TpXMLFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation></portType><binding name="WsTopologyServiceSoap" type="tns:WsTopologyServiceSoap"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/><operation name="SystemLog"><soap:operation soapAction="WsTopology/SystemLog?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpClusterInfo"><soap:operation soapAction="WsTopology/TpClusterInfo?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpClusterQuery"><soap:operation soapAction="WsTopology/TpClusterQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpDropZoneQuery"><soap:operation soapAction="WsTopology/TpDropZoneQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpGetComponentFile"><soap:operation soapAction="WsTopology/TpGetComponentFile?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpGetServicePlugins"><soap:operation soapAction="WsTopology/TpGetServicePlugins?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpGroupQuery"><soap:operation soapAction="WsTopology/TpGroupQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpListTargetClusters"><soap:operation soapAction="WsTopology/TpListTargetClusters?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpLogFile"><soap:operation soapAction="WsTopology/TpLogFile?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpLogFileDisplay"><soap:operation soapAction="WsTopology/TpLogFileDisplay?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpLogicalClusterQuery"><soap:operation soapAction="WsTopology/TpLogicalClusterQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpMachineInfo"><soap:operation soapAction="WsTopology/TpMachineInfo?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpMachineQuery"><soap:operation soapAction="WsTopology/TpMachineQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpServiceQuery"><soap:operation soapAction="WsTopology/TpServiceQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpSetMachineStatus"><soap:operation soapAction="WsTopology/TpSetMachineStatus?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpSwapNode"><soap:operation soapAction="WsTopology/TpSwapNode?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpTargetClusterQuery"><soap:operation soapAction="WsTopology/TpTargetClusterQuery?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpThorStatus"><soap:operation soapAction="WsTopology/TpThorStatus?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="TpXMLFile"><soap:operation soapAction="WsTopology/TpXMLFile?ver_=1.26" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation></binding><service name="WsTopology"><port name="WsTopologyServiceSoap" binding="tns:WsTopologyServiceSoap"><soap:address location="http://192.168.3.22:8010/WsTopology?ver_=1.26"/></port></service></definitions>

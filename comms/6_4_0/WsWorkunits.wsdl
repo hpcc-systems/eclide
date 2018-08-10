@@ -1,0 +1,1746 @@
+<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:hpccsystems:ws:wsworkunits" targetNamespace="urn:hpccsystems:ws:wsworkunits"><types><xsd:schema elementFormDefault="qualified" targetNamespace="urn:hpccsystems:ws:wsworkunits" >
+<xsd:complexType name="EspException"><xsd:all><xsd:element name="Code" type="xsd:string"  minOccurs="0"/><xsd:element name="Audience" type="xsd:string" minOccurs="0"/><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Message" type="xsd:string" minOccurs="0"/></xsd:all></xsd:complexType>
+<xsd:complexType name="ArrayOfEspException"><xsd:sequence><xsd:element name="Source" type="xsd:string"  minOccurs="0"/><xsd:element name="Exception" type="tns:EspException" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+<xsd:element name="Exceptions" type="tns:ArrayOfEspException"/>
+<xsd:element name="GVCAjaxGraph"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraphId" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SubGraphOnly" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="GVCAjaxGraphResponse"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraphId" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SubGraphOnly" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUAbort"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuids" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="BlockTillFinishTimer" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="EspStringArray"><xsd:sequence><xsd:element name="Item" type="xsd:string"  minOccurs="0" maxOccurs="unbounded" /></xsd:sequence></xsd:complexType>
+<xsd:element name="WUAbortResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ActionResults" type="tns:ArrayOfWUActionResult"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="WUActionResult">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Action" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfWUActionResult">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="WUActionResult" type="tns:WUActionResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUAction"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuids" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="WUActionType" type="tns:ECLWUActions"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ECL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Test" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="CurrentPage" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="PageSize" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="" name="EventServer" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="PageFrom" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BlockTillFinishTimer" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="ECLWUActions"><xsd:restriction base="xsd:string"><xsd:enumeration value="Abort"/><xsd:enumeration value="Delete"/><xsd:enumeration value="Deschedule"/><xsd:enumeration value="Reschedule"/><xsd:enumeration value="Pause"/><xsd:enumeration value="PauseNow"/><xsd:enumeration value="Protect"/><xsd:enumeration value="Unprotect"/><xsd:enumeration value="Restore"/><xsd:enumeration value="Resume"/><xsd:enumeration value="SetToFailed"/></xsd:restriction></xsd:simpleType><xsd:element name="WUActionResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ActionResults" type="tns:ArrayOfWUActionResult"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUAddLocalFileToWorkunit"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Val" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DefVal" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Length" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUAddLocalFileToWorkunitResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCDebug"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Command" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUDebugResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCheckFeatures"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="WUCheckFeaturesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="BuildVersionMajor" type="xsd:int"/>
+<xsd:element minOccurs="0" name="BuildVersionMinor" type="xsd:int"/>
+<xsd:element minOccurs="0" name="BuildVersionPoint" type="xsd:int"/>
+<xsd:element minOccurs="0" name="maxRequestEntityLength" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="Deployment" type="tns:DeploymentFeatures"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="DeploymentFeatures">
+<xsd:all><xsd:element minOccurs="0" name="UseCompression" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUClusterJobQueueLOG"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobQueueLOGResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="thefile" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobQueueXLS"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowType" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobQueueXLSResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Result" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobSummaryXLS"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowAll" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BusinessStartTime" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BusinessEndTime" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobSummaryXLSResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Result" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobXLS"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowAll" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BusinessStartTime" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BusinessEndTime" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUClusterJobXLSResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Result" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCompileECL"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ECL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="IncludeDependencies" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IncludeComplexity" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="60000" name="TimeToWait" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCompileECLResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Complexity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Errors" type="tns:ArrayOfECLException"/>
+<xsd:element minOccurs="0" name="Dependencies">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLAttribute" type="tns:WUECLAttribute"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ECLException">
+<xsd:all><xsd:element minOccurs="0" name="Source" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Severity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Code" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Message" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LineNo" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Column" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Activity" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="WUECLAttribute">
+<xsd:all><xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IsLocked" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsCheckedOut" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsSandbox" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="IsOrphaned" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLException">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLException" type="tns:ECLException"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUCopyLogicalFiles"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CopyLocal" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCopyLogicalFilesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterFiles">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Cluster" type="tns:WUCopyLogicalClusterFileSections"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="WUCopyLogicalClusterFileSections">
+<xsd:all><xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="OnCluster" type="tns:ArrayOfWULogicalFileCopyInfo"/>
+<xsd:element minOccurs="0" name="NotOnCluster" type="tns:ArrayOfWULogicalFileCopyInfo"/>
+<xsd:element minOccurs="0" name="Foreign" type="tns:ArrayOfWULogicalFileCopyInfo"/>
+<xsd:element minOccurs="0" name="NotFound" type="tns:ArrayOfWULogicalFileCopyInfo"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="WULogicalFileCopyInfo">
+<xsd:all><xsd:element minOccurs="0" name="IsIndex" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DfuCopyWuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DfuCopyError" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Clusters" type="tns:EspStringArray"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfWULogicalFileCopyInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="WULogicalFileCopyInfo" type="tns:WULogicalFileCopyInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUCopyQuerySet"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Source" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="ActiveOnly" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="CloneActiveState" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="AllowForeignFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DfsServer" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="CopyFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="OverwriteDfs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SourceProcess" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="UpdateSuperFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateCloneFrom" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="AppendCluster" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeFileErrors" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCopyQuerySetResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="CopiedQueries"><xsd:complexType><xsd:sequence><xsd:element name="QueryId" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="ExistingQueries"><xsd:complexType><xsd:sequence><xsd:element name="QueryId" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="FileErrors">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="File" type="tns:LogicalFileError"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="LogicalFileError">
+<xsd:all><xsd:element minOccurs="0" name="Error" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUCreate"><xsd:complexType><xsd:all/></xsd:complexType></xsd:element>
+<xsd:element name="WUCreateResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Workunit" type="tns:ECLWorkunit"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ECLWorkunit">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RoxieCluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StateID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StateEx" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Protected" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Active" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Action" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ActionEx" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DateTimeScheduled" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="PriorityClass" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PriorityLevel" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ResultLimit" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Archived" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IsPausing" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="ThorLCR" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="EventSchedule" type="xsd:int"/>
+<xsd:element minOccurs="0" name="HaveSubGraphTimings" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="TotalClusterTime" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AbortBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AbortTime" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Query" type="tns:ECLQuery"/>
+<xsd:element minOccurs="0" name="Helpers" type="tns:ArrayOfECLHelpFile"/>
+<xsd:element minOccurs="0" name="Exceptions" type="tns:ArrayOfECLException"/>
+<xsd:element minOccurs="0" name="Graphs" type="tns:ArrayOfECLGraph"/>
+<xsd:element minOccurs="0" name="SourceFiles" type="tns:ArrayOfECLSourceFile"/>
+<xsd:element minOccurs="0" name="Results" type="tns:ArrayOfECLResult"/>
+<xsd:element minOccurs="0" name="Variables" type="tns:ArrayOfECLResult"/>
+<xsd:element minOccurs="0" name="Timers" type="tns:ArrayOfECLTimer"/>
+<xsd:element minOccurs="0" name="DebugValues" type="tns:ArrayOfDebugValue"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+<xsd:element minOccurs="0" name="Workflows" type="tns:ArrayOfECLWorkflow"/>
+<xsd:element minOccurs="0" name="TimingData" type="tns:ArrayOfECLTimingData"/>
+<xsd:element minOccurs="0" name="AllowedClusters"><xsd:complexType><xsd:sequence><xsd:element name="AllowedCluster" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="ErrorCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="WarningCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="InfoCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="AlertCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="GraphCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SourceFileCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResultCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="VariableCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="TimerCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="HasDebugValue" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ApplicationValueCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="XmlParams" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AccessFlag" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ClusterFlag" type="xsd:int"/>
+<xsd:element minOccurs="0" name="HelpersDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphsDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SourceFilesDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ResultsDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="VariablesDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimersDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DebugValuesDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ApplicationValuesDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WorkflowsDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="HasArchiveQuery" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ThorLogList" type="tns:ArrayOfThorLogInfo"/>
+<xsd:element minOccurs="0" name="ResourceURLs"><xsd:complexType><xsd:sequence><xsd:element name="URL" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="ResultViewCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResourceURLCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DebugValueCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="WorkflowCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="HelpersCount" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLQuery">
+<xsd:all><xsd:element minOccurs="0" name="Text" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cpp" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ResTxt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Dll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorLog" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryMainDefinition" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLHelpFile">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PID" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="minActivityId" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="maxActivityId" type="xsd:unsignedInt"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLGraph">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Running" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Complete" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Failed" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="RunningId" type="xsd:long"/>
+<xsd:element minOccurs="0" name="WhenStarted" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WhenFinished" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLSourceFile">
+<xsd:all><xsd:element minOccurs="0" name="FileCluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IsSuperFile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Subs" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ECLSourceFiles" type="tns:ArrayOfECLSourceFile"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLSourceFile">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLSourceFile" type="tns:ECLSourceFile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ECLResult">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Value" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Link" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IsSupplied" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="ShowFileContent" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:long"/>
+<xsd:element minOccurs="0" name="ECLSchemas" type="tns:ArrayOfECLSchemaItem"/>
+<xsd:element minOccurs="0" name="XmlSchema" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLSchemaItem">
+<xsd:all><xsd:element minOccurs="0" name="ColumnName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ColumnTypeCode" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="isConditional" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLSchemaItem">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLSchemaItem" type="tns:ECLSchemaItem"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ECLTimer">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Value" type="xsd:string"/>
+<xsd:element minOccurs="0" name="count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="GraphName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraphId" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="DebugValue">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Value" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ApplicationValue">
+<xsd:all><xsd:element minOccurs="0" name="Application" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Value" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLWorkflow">
+<xsd:all><xsd:element minOccurs="0" name="WFID" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventText" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" default="-1" name="CountRemaining" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ECLTimingData">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphNum" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SubGraphNum" type="xsd:int"/>
+<xsd:element minOccurs="0" name="GID" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Min" type="xsd:int"/>
+<xsd:element minOccurs="0" name="MS" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ThorLogInfo">
+<xsd:all><xsd:element minOccurs="0" name="ProcessName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumberSlaves" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfApplicationValue">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ApplicationValue" type="tns:ApplicationValue"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfDebugValue">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="DebugValue" type="tns:DebugValue"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLGraph">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLGraph" type="tns:ECLGraph"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLHelpFile">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLHelpFile" type="tns:ECLHelpFile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLResult">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLResult" type="tns:ECLResult"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLTimer">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLTimer" type="tns:ECLTimer"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLTimingData">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLTimingData" type="tns:ECLTimingData"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLWorkflow">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLWorkflow" type="tns:ECLWorkflow"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfThorLogInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ThorLogInfo" type="tns:ThorLogInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUCreateAndUpdate"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StateOrig" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="JobnameOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryText" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Action" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DescriptionOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AddDrilldownFields" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ResultLimit" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Protected" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ProtectedOrig" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="PriorityClass" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PriorityLevel" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ScopeOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterSelection" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="XmlParams" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorSlaveIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryMainDefinition" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DebugValues" type="tns:ArrayOfDebugValue"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUUpdateResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Workunit" type="tns:ECLWorkunit"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCreateZAPInfo"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ESPIPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorIPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BuildVersion" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ProblemDescription" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WhatChanged" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WhereSlow" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Password" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ZAPFileName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="IncludeThorSlaveLog" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUCreateZAPInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="thefile" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUDelete"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuids" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="BlockTillFinishTimer" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUDeleteResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ActionResults" type="tns:ArrayOfWUActionResult"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUDeployWorkunit"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ObjType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Object" type="xsd:base64Binary"/>
+<xsd:element minOccurs="0" name="ResultLimit" type="xsd:int"/>
+<xsd:element minOccurs="0" name="QueryMainDefinition" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DebugValues" type="tns:ArrayOfNamedValue"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="NamedValue">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Value" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfNamedValue">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="NamedValue" type="tns:NamedValue"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUDeployWorkunitResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Workunit" type="tns:ECLWorkunit"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUExport"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUExportResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ExportData" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUFile"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Option" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SlaveIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Query" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Process" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterGroup" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogDate" type="xsd:string"/>
+<xsd:element minOccurs="0" default="1" name="SlaveNumber" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SizeLimit" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PlainText" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WULogFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DaliServer" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thefile" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUFullResult"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="NoRootTag" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="info" name="ExceptionSeverity" type="tns:WUExceptionSeverity"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="WUExceptionSeverity"><xsd:restriction base="xsd:string"><xsd:enumeration value="info"/><xsd:enumeration value="warning"/><xsd:enumeration value="error"/><xsd:enumeration value="alert"/></xsd:restriction></xsd:simpleType><xsd:element name="WUFullResultResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Results" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGVCGraphInfo"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BatchWU" type="xsd:int"/>
+<xsd:element minOccurs="0" name="SubgraphId" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGVCGraphInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Running" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="TheGraph" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BatchWU" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetArchiveFile"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetArchiveFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="File" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetDependancyTrees"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Items" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimeoutMilliSec" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetDependancyTreesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Errors" type="tns:ArrayOfECLException"/>
+<xsd:element minOccurs="0" name="DependancyTrees" type="xsd:base64Binary"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetGraph"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraphId" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetGraphResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Graphs" type="tns:ArrayOfECLGraphEx"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ECLGraphEx">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Graph" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Running" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="RunningId" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Complete" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Failed" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLGraphEx">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLGraphEx" type="tns:ECLGraphEx"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUGetGraphNameAndTypes"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetGraphNameAndTypesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="GraphNameAndTypes">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="GraphNameAndType" type="tns:NameAndType"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="NameAndType">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUGetNumFileToCopy"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageStartFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetNumFileToCopyResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Endpoints">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Endpoint" type="tns:ClusterEndpoint"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:long"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ClusterEndpoint">
+<xsd:all><xsd:element minOccurs="0" name="URL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Status" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumQueryFileToCopy" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUGetStats"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CreatorType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Creator" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ScopeType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Kind" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Measure" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MinScopeDepth" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="MaxScopeDepth" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="IncludeGraphs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CreateDescriptions" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="MinValue" type="xsd:long"/>
+<xsd:element minOccurs="0" name="MaxValue" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Filter" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetStatsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Statistics" type="tns:ArrayOfWUStatisticItem"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="WUStatisticItem">
+<xsd:all><xsd:element minOccurs="0" name="Creator" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CreatorType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ScopeType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimeStamp" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Measure" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Kind" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Value" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RawValue" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Max" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfWUStatisticItem">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="WUStatisticItem" type="tns:WUStatisticItem"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUGetZAPInfo"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGetZAPInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ESPIPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorIPAddress" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BuildVersion" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Archive" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGraphInfo"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BatchWU" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGraphInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="BatchWU" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Running" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGraphTiming"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUGraphTimingResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Workunit" type="tns:ECLWorkunit"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUInfo"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="TruncateEclTo64k" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="IncludeExceptions" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeGraphs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeSourceFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeResults" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeResultsViewNames" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeVariables" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeTimers" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeDebugValues" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeApplicationValues" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeWorkflows" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeXmlSchemas" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeResourceURLs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeECL" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeHelpers" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeAllowedClusters" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="SuppressResultSchemas" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ThorSlaveIP" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUInfoResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Workunit" type="tns:ECLWorkunit"/>
+<xsd:element minOccurs="0" name="AutoRefresh" type="xsd:int"/>
+<xsd:element minOccurs="0" name="CanCompile" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ThorSlaveIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ResultViews"><xsd:complexType><xsd:sequence><xsd:element name="View" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="SecMethod" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUInfoDetails"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="TruncateEclTo64k" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="IncludeExceptions" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeGraphs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeSourceFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeResults" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeResultsViewNames" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeVariables" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeTimers" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeDebugValues" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeApplicationValues" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeWorkflows" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeXmlSchemas" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeResourceURLs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeECL" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeHelpers" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="IncludeAllowedClusters" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="SuppressResultSchemas" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ThorSlaveIP" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUJobList"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Process" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ShowAll" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BusinessStartHour" type="xsd:int"/>
+<xsd:element minOccurs="0" name="BusinessEndHour" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUJobListResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobs" type="tns:ArrayOfECLJob"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ECLJob">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Graph" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartedDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FinishedDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphNum" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraphNum" type="xsd:string"/>
+<xsd:element minOccurs="0" name="NumOfRuns" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Duration" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLJob">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLJob" type="tns:ECLJob"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WULightWeightQuery"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="JobName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+<xsd:element minOccurs="0" name="PageStartFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="SortBy" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WULightWeightQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="NumWUs" type="xsd:int"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Workunits" type="tns:ArrayOfECLWorkunitLW"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ECLWorkunitLW">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="JobName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WuScope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StateDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Action" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ActionDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Priority" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PriorityDesc" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PriorityLevel" type="xsd:int"/>
+<xsd:element minOccurs="0" name="IsProtected" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DateTimeScheduled" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="TotalClusterTime" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfECLWorkunitLW">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLWorkunitLW" type="tns:ECLWorkunitLW"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUListArchiveFiles"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUListArchiveFilesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ArchiveModules">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ArchiveModule" type="tns:WUArchiveModule"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="Files">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="File" type="tns:WUArchiveFile"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="Message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="WUArchiveModule">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FullName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Flags" type="xsd:unsignedInt"/>
+<xsd:element minOccurs="0" name="Key" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Plugin" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SourcePath" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Version" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ArchiveModules">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ArchiveModule" type="tns:WUArchiveModule"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="Files">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="File" type="tns:WUArchiveFile"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType>
+<xsd:complexType name="WUArchiveFile">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Key" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SourcePath" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Path" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUListLocalFileRequired"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUListLocalFileRequiredResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="LocalFileUploads" type="tns:ArrayOfLogicalFileUpload"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="LogicalFileUpload">
+<xsd:all><xsd:element minOccurs="0" name="Type" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Source" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Destination" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EventTag" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfLogicalFileUpload">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="LogicalFileUpload" type="tns:LogicalFileUpload"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUListQueries"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LibraryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MemoryLimitLow" type="xsd:long"/>
+<xsd:element minOccurs="0" name="MemoryLimitHigh" type="xsd:long"/>
+<xsd:element minOccurs="0" name="TimeLimitLow" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="TimeLimitHigh" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="WarnTimeLimitLow" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="WarnTimeLimitHigh" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="PriorityLow" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="PriorityHigh" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="Activated" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SuspendedByUser" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PublishedBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="PageStartFrom" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="CheckAllNodes" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUListQueriesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="NumberOfQueries" type="xsd:int"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="QuerysetQueries" type="tns:ArrayOfQuerySetQuery"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="QuerySetQuery">
+<xsd:all><xsd:element minOccurs="0" name="Id" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Dll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Suspended" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Clusters" type="tns:ArrayOfClusterQueryState"/>
+<xsd:element minOccurs="0" name="memoryLimit" type="xsd:string"/>
+<xsd:element minOccurs="0" name="timeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="warnTimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySetId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="IsLibrary" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Activated" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="PublishedBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="snapshot" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ClusterQueryState">
+<xsd:all><xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Errors" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MixedNodeStates" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfClusterQueryState">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ClusterQueryState" type="tns:ClusterQueryState"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfQuerySetQuery">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="QuerySetQuery" type="tns:QuerySetQuery"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUListQueriesUsingFile"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Process" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUListQueriesUsingFileResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Process" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Targets" type="tns:ArrayOfTargetQueriesUsingFile"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="TargetQueriesUsingFile">
+<xsd:all><xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" name="PackageMap" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queries" type="tns:ArrayOfQueryUsingFile"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="QueryUsingFile">
+<xsd:all><xsd:element minOccurs="0" name="Id" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Package" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfQueryUsingFile">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="QueryUsingFile" type="tns:QueryUsingFile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfTargetQueriesUsingFile">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="TargetQueriesUsingFile" type="tns:TargetQueriesUsingFile"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUMultiQuerysetDetails"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filter" type="xsd:string"/>
+<xsd:element minOccurs="0" default="All" name="FilterType" type="tns:WUQuerySetFilterType"/>
+<xsd:element minOccurs="0" default="true" name="CheckAllNodes" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="WUQuerySetFilterType"><xsd:restriction base="xsd:string"><xsd:enumeration value="All"/><xsd:enumeration value="Id"/><xsd:enumeration value="Name"/><xsd:enumeration value="Alias"/><xsd:enumeration value="Status"/></xsd:restriction></xsd:simpleType><xsd:element name="WUMultiQuerySetDetailsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Querysets" type="tns:ArrayOfWUQuerySetDetail"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="WUQuerySetDetail">
+<xsd:all><xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queries" type="tns:ArrayOfQuerySetQuery"/>
+<xsd:element minOccurs="0" name="Aliases" type="tns:ArrayOfQuerySetAlias"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="QuerySetAlias">
+<xsd:all><xsd:element minOccurs="0" name="Id" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfQuerySetAlias">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="QuerySetAlias" type="tns:QuerySetAlias"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfWUQuerySetDetail">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="WUQuerySetDetail" type="tns:WUQuerySetDetail"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUProcessGraph"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUProcessGraphResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="theGraph" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUProtect"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuids" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" default="true" name="Protect" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUProtectResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ActionResults" type="tns:ArrayOfWUActionResult"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUPublishWorkunit"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="JobName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Activate" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="NotifyCluster" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="10000" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="NoReload" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateWorkUnitName" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="memoryLimit" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="WarnTimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="Priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RemoteDali" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="DontCopyFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SourceProcess" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="AllowForeignFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateDfs" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateSuperFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateCloneFrom" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="AppendCluster" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeFileErrors" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUPublishWorkunitResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ReloadFailed" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Suspended" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ErrorMessage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterFiles">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Cluster" type="tns:WUCopyLogicalClusterFileSections"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="FileErrors">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="File" type="tns:LogicalFileError"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUPushEvent"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" default="" name="EventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventText" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUPushEventResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuery"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RoxieCluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ECL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalFile" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="LogicalFileSearchType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+<xsd:element minOccurs="0" name="After" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Before" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageStartFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageEndAt" type="xsd:long"/>
+<xsd:element minOccurs="0" name="LastNDays" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" default="" name="Type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="RoxieCluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StartDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="EndDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ECL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalFile" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="LogicalFileSearchType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Current" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Next" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PageSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PrevPage" type="xsd:long"/>
+<xsd:element minOccurs="0" name="NextPage" type="xsd:long"/>
+<xsd:element minOccurs="0" default="-1" name="LastPage" type="xsd:long"/>
+<xsd:element minOccurs="0" name="NumWUs" type="xsd:int"/>
+<xsd:element minOccurs="0" default="true" name="First" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="-1" name="PageStartFrom" type="xsd:long"/>
+<xsd:element minOccurs="0" name="PageEndAt" type="xsd:long"/>
+<xsd:element minOccurs="0" name="LastNDays" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Sortby" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="Descending" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="BasicQuery" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filters" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CacheHint" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Workunits" type="tns:ArrayOfECLWorkunit"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ArrayOfECLWorkunit">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ECLWorkunit" type="tns:ECLWorkunit"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUQueryConfig"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" default="10000" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="NoReload" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="memoryLimit" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="WarnTimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="Priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQueryConfigResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ReloadFailed" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Results">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Result" type="tns:WUQueryConfigResult"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="WUQueryConfigResult">
+<xsd:all><xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQueryDetails"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="IncludeStateOnClusters" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeSuperFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeWsEclAddresses" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="CheckAllNodes" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQueryDetailsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Dll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Suspended" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Activated" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="SuspendedBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Clusters" type="tns:ArrayOfClusterQueryState"/>
+<xsd:element minOccurs="0" name="PublishedBy" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalFiles" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="SuperFiles">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="SuperFile" type="tns:QuerySuperFile"/></xsd:sequence></xsd:complexType></xsd:element><xsd:element minOccurs="0" name="IsLibrary" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="WUSnapShot" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CompileTime" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LibrariesUsed" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="CountGraphs" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResourceURLCount" type="xsd:int"/>
+<xsd:element minOccurs="0" name="WsEclAddresses"><xsd:complexType><xsd:sequence><xsd:element name="Address" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="WUGraphs" type="tns:ArrayOfECLGraph"/>
+<xsd:element minOccurs="0" name="WUTimers" type="tns:ArrayOfECLTimer"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="QuerySuperFile">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubFiles"><xsd:complexType><xsd:sequence><xsd:element name="File" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType>
+</xsd:element>
+<xsd:element minOccurs="0" name="SuperFiles">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="SuperFile" type="tns:QuerySuperFile"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQueryFiles"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQueryFilesResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Files">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="File" type="tns:FileUsedByQuery"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="FileUsedByQuery">
+<xsd:all><xsd:element minOccurs="0" name="FileName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileSize" type="xsd:long"/>
+<xsd:element minOccurs="0" name="NumberOfParts" type="xsd:unsignedInt"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQueryGetGraph"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="GraphName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SubGraphId" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQueryGetGraphResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Graphs" type="tns:ArrayOfECLGraphEx"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuerysetAliasAction"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Action" type="tns:QuerySetAliasActionTypes"/>
+<xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Aliases">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Alias" type="tns:QuerySetAliasActionItem"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="QuerySetAliasActionTypes"><xsd:restriction base="xsd:string"><xsd:enumeration value="Deactivate"/></xsd:restriction></xsd:simpleType><xsd:complexType name="QuerySetAliasActionItem">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQuerySetAliasActionResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Action" type="tns:QuerySetAliasActionTypes"/>
+<xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Results">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Result" type="tns:QuerySetAliasActionResult"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="QuerySetAliasActionResult">
+<xsd:all><xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Success" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Code" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQuerysetCopyQuery"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Source" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Target" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DaliServer" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Activate" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="Overwrite" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="DontCopyFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="10000" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="NoReload" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="memoryLimit" type="xsd:string"/>
+<xsd:element minOccurs="0" name="TimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="WarnTimeLimit" type="xsd:nonNegativeInteger"/>
+<xsd:element minOccurs="0" name="priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="SourceProcess" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DestName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="true" name="AllowForeignFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateSuperFiles" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="UpdateCloneFrom" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="true" name="AppendCluster" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="IncludeFileErrors" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuerySetCopyQueryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FileErrors">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="File" type="tns:LogicalFileError"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuerysetDetails"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filter" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="All" name="FilterType" type="tns:WUQuerySetFilterType"/>
+<xsd:element minOccurs="0" default="true" name="CheckAllNodes" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuerySetDetailsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QuerysetQueries" type="tns:ArrayOfQuerySetQuery"/>
+<xsd:element minOccurs="0" name="QuerysetAliases" type="tns:ArrayOfQuerySetAlias"/>
+<xsd:element minOccurs="0" name="ClusterName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Filter" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterType" type="tns:WUQuerySetFilterType"/>
+<xsd:element minOccurs="0" name="ClusterNames" type="tns:EspStringArray"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuerysetQueryAction"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Action" type="tns:QuerySetQueryActionTypes"/>
+<xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queries">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Query" type="tns:QuerySetQueryActionItem"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:simpleType name="QuerySetQueryActionTypes"><xsd:restriction base="xsd:string"><xsd:enumeration value="Suspend"/><xsd:enumeration value="Unsuspend"/><xsd:enumeration value="ToggleSuspend"/><xsd:enumeration value="Activate"/><xsd:enumeration value="Delete"/><xsd:enumeration value="RemoveAllAliases"/><xsd:enumeration value="ResetQueryStats"/></xsd:restriction></xsd:simpleType><xsd:complexType name="QuerySetQueryActionItem">
+<xsd:all><xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClientState" type="tns:QuerySetQueryClientState"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="QuerySetQueryClientState">
+<xsd:all><xsd:element minOccurs="0" name="Suspended" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQuerySetQueryActionResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Action" type="tns:QuerySetQueryActionTypes"/>
+<xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Results">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="Result" type="tns:QuerySetQueryActionResult"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="QuerySetQueryActionResult">
+<xsd:all><xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Suspended" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Success" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Code" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUQuerysets"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="test" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUQuerysetsResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Querysets" type="tns:ArrayOfQuerySet"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="QuerySet">
+<xsd:all><xsd:element minOccurs="0" name="QuerySetName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfQuerySet">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="QuerySet" type="tns:QuerySet"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUResubmit"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuids" type="tns:EspStringArray"/>
+<xsd:element minOccurs="0" name="BlockTillFinishTimer" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResetWorkflow" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="CloneWorkunit" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResubmitResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="WUs">
+<xsd:complexType><xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="WU" type="tns:ResubmittedWU"/></xsd:sequence></xsd:complexType></xsd:element></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ResubmittedWU">
+<xsd:all><xsd:element minOccurs="0" name="WUID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ParentWUID" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:element name="WUResult"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResultName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="SuppressXmlSchema" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="BypassCachedResult" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="FilterBy" type="tns:ArrayOfNamedValue"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Requested" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultBin"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="LogicalName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ResultName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" default="raw" name="Format" type="xsd:string"/>
+<xsd:element minOccurs="0" name="FilterBy" type="tns:ArrayOfNamedValue"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultBinResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Start" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Requested" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Total" type="xsd:long"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:base64Binary"/>
+<xsd:element minOccurs="0" name="Format" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultSummary"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultSummaryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Format" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Result" type="tns:ECLResult"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultView"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ViewName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Sequence" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ResultName" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUResultViewResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ViewName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Result" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WURun"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Query" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="CloneWorkunit" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Input" type="xsd:string"/>
+<xsd:element minOccurs="0" default="false" name="NoRootTag" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="DebugValues" type="tns:ArrayOfNamedValue"/>
+<xsd:element minOccurs="0" name="Variables" type="tns:ArrayOfNamedValue"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+<xsd:element minOccurs="0" default="info" name="ExceptionSeverity" type="tns:WUExceptionSeverity"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WURunResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Results" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUSchedule"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" name="When" type="xsd:dateTime"/>
+<xsd:element minOccurs="0" name="MaxRunTime" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUScheduleResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUShowScheduled"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" default="" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="PushEventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="PushEventText" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="State" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUShowScheduledResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="ClusterSelected" type="xsd:int"/>
+<xsd:element minOccurs="0" default="" name="EventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="PushEventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="PushEventText" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="Query" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Clusters" type="tns:ArrayOfServerInfo"/>
+<xsd:element minOccurs="0" name="Workunits" type="tns:ArrayOfScheduledWU"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:complexType name="ServerInfo">
+<xsd:all><xsd:element minOccurs="0" default="" name="Name" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="NetAddress" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ScheduledWU">
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventName" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="EventText" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="JobName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="StateID" type="xsd:int"/>
+<xsd:element minOccurs="0" default="" name="State" type="xsd:string"/>
+<xsd:element minOccurs="0" default="" name="Owner" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfScheduledWU">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ScheduledWU" type="tns:ScheduledWU"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfServerInfo">
+<xsd:sequence>
+<xsd:element minOccurs="0" maxOccurs="unbounded" name="ServerInfo" type="tns:ServerInfo"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="WUSubmit"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" name="MaxRunTime" type="xsd:int"/>
+<xsd:element minOccurs="0" name="BlockTillFinishTimer" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="SyntaxCheck" type="xsd:boolean"/>
+<xsd:element minOccurs="0" default="false" name="NotifyCluster" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUSubmitResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUSyntaxCheckECL"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="ECL" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ModuleName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AttributeName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Queue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Cluster" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Snapshot" type="xsd:string"/>
+<xsd:element minOccurs="0" default="60000" name="TimeToWait" type="xsd:int"/>
+<xsd:element minOccurs="0" name="DebugValues" type="tns:ArrayOfDebugValue"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUSyntaxCheckResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="Errors" type="tns:ArrayOfECLException"/>
+<xsd:element minOccurs="0" name="Message" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUUpdate"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" name="State" type="xsd:int"/>
+<xsd:element minOccurs="0" name="StateOrig" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Jobname" type="xsd:string"/>
+<xsd:element minOccurs="0" name="JobnameOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryText" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Action" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Description" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DescriptionOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="AddDrilldownFields" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ResultLimit" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Protected" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="ProtectedOrig" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="PriorityClass" type="xsd:int"/>
+<xsd:element minOccurs="0" name="PriorityLevel" type="xsd:int"/>
+<xsd:element minOccurs="0" name="Scope" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ScopeOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterSelection" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ClusterOrig" type="xsd:string"/>
+<xsd:element minOccurs="0" name="XmlParams" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ThorSlaveIP" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryMainDefinition" type="xsd:string"/>
+<xsd:element minOccurs="0" name="DebugValues" type="tns:ArrayOfDebugValue"/>
+<xsd:element minOccurs="0" name="ApplicationValues" type="tns:ArrayOfApplicationValue"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUUpdateQueryEntry"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="QuerySet" type="xsd:string"/>
+<xsd:element minOccurs="0" name="QueryId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="Comment" type="xsd:string"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUUpdateQueryEntryResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/></xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUWaitCompiled"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="ReturnOnWait" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUWaitResponse"><xsd:complexType>
+<xsd:all><xsd:element name="Exceptions" type="tns:ArrayOfEspException" minOccurs="0" maxOccurs="1"/><xsd:element minOccurs="0" name="StateID" type="xsd:int"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="WUWaitComplete"><xsd:complexType>
+<xsd:all><xsd:element minOccurs="0" name="Wuid" type="xsd:string"/>
+<xsd:element minOccurs="0" default="-1" name="Wait" type="xsd:int"/>
+<xsd:element minOccurs="0" default="false" name="ReturnOnWait" type="xsd:boolean"/>
+</xsd:all>
+</xsd:complexType></xsd:element>
+<xsd:element name="string" nillable="true" type="xsd:string" />
+</xsd:schema></types><message name="GVCAjaxGraphSoapIn"><part name="parameters" element="tns:GVCAjaxGraph"/></message><message name="GVCAjaxGraphSoapOut"><part name="parameters" element="tns:GVCAjaxGraphResponse"/></message><message name="WUAbortSoapIn"><part name="parameters" element="tns:WUAbort"/></message><message name="WUAbortSoapOut"><part name="parameters" element="tns:WUAbortResponse"/></message><message name="WUActionSoapIn"><part name="parameters" element="tns:WUAction"/></message><message name="WUActionSoapOut"><part name="parameters" element="tns:WUActionResponse"/></message><message name="WUAddLocalFileToWorkunitSoapIn"><part name="parameters" element="tns:WUAddLocalFileToWorkunit"/></message><message name="WUAddLocalFileToWorkunitSoapOut"><part name="parameters" element="tns:WUAddLocalFileToWorkunitResponse"/></message><message name="WUCDebugSoapIn"><part name="parameters" element="tns:WUCDebug"/></message><message name="WUCDebugSoapOut"><part name="parameters" element="tns:WUDebugResponse"/></message><message name="WUCheckFeaturesSoapIn"><part name="parameters" element="tns:WUCheckFeatures"/></message><message name="WUCheckFeaturesSoapOut"><part name="parameters" element="tns:WUCheckFeaturesResponse"/></message><message name="WUClusterJobQueueLOGSoapIn"><part name="parameters" element="tns:WUClusterJobQueueLOG"/></message><message name="WUClusterJobQueueLOGSoapOut"><part name="parameters" element="tns:WUClusterJobQueueLOGResponse"/></message><message name="WUClusterJobQueueXLSSoapIn"><part name="parameters" element="tns:WUClusterJobQueueXLS"/></message><message name="WUClusterJobQueueXLSSoapOut"><part name="parameters" element="tns:WUClusterJobQueueXLSResponse"/></message><message name="WUClusterJobSummaryXLSSoapIn"><part name="parameters" element="tns:WUClusterJobSummaryXLS"/></message><message name="WUClusterJobSummaryXLSSoapOut"><part name="parameters" element="tns:WUClusterJobSummaryXLSResponse"/></message><message name="WUClusterJobXLSSoapIn"><part name="parameters" element="tns:WUClusterJobXLS"/></message><message name="WUClusterJobXLSSoapOut"><part name="parameters" element="tns:WUClusterJobXLSResponse"/></message><message name="WUCompileECLSoapIn"><part name="parameters" element="tns:WUCompileECL"/></message><message name="WUCompileECLSoapOut"><part name="parameters" element="tns:WUCompileECLResponse"/></message><message name="WUCopyLogicalFilesSoapIn"><part name="parameters" element="tns:WUCopyLogicalFiles"/></message><message name="WUCopyLogicalFilesSoapOut"><part name="parameters" element="tns:WUCopyLogicalFilesResponse"/></message><message name="WUCopyQuerySetSoapIn"><part name="parameters" element="tns:WUCopyQuerySet"/></message><message name="WUCopyQuerySetSoapOut"><part name="parameters" element="tns:WUCopyQuerySetResponse"/></message><message name="WUCreateSoapIn"><part name="parameters" element="tns:WUCreate"/></message><message name="WUCreateSoapOut"><part name="parameters" element="tns:WUCreateResponse"/></message><message name="WUCreateAndUpdateSoapIn"><part name="parameters" element="tns:WUCreateAndUpdate"/></message><message name="WUCreateAndUpdateSoapOut"><part name="parameters" element="tns:WUUpdateResponse"/></message><message name="WUCreateZAPInfoSoapIn"><part name="parameters" element="tns:WUCreateZAPInfo"/></message><message name="WUCreateZAPInfoSoapOut"><part name="parameters" element="tns:WUCreateZAPInfoResponse"/></message><message name="WUDeleteSoapIn"><part name="parameters" element="tns:WUDelete"/></message><message name="WUDeleteSoapOut"><part name="parameters" element="tns:WUDeleteResponse"/></message><message name="WUDeployWorkunitSoapIn"><part name="parameters" element="tns:WUDeployWorkunit"/></message><message name="WUDeployWorkunitSoapOut"><part name="parameters" element="tns:WUDeployWorkunitResponse"/></message><message name="WUExportSoapIn"><part name="parameters" element="tns:WUExport"/></message><message name="WUExportSoapOut"><part name="parameters" element="tns:WUExportResponse"/></message><message name="WUFileSoapIn"><part name="parameters" element="tns:WUFile"/></message><message name="WUFileSoapOut"><part name="parameters" element="tns:WULogFileResponse"/></message><message name="WUFullResultSoapIn"><part name="parameters" element="tns:WUFullResult"/></message><message name="WUFullResultSoapOut"><part name="parameters" element="tns:WUFullResultResponse"/></message><message name="WUGVCGraphInfoSoapIn"><part name="parameters" element="tns:WUGVCGraphInfo"/></message><message name="WUGVCGraphInfoSoapOut"><part name="parameters" element="tns:WUGVCGraphInfoResponse"/></message><message name="WUGetArchiveFileSoapIn"><part name="parameters" element="tns:WUGetArchiveFile"/></message><message name="WUGetArchiveFileSoapOut"><part name="parameters" element="tns:WUGetArchiveFileResponse"/></message><message name="WUGetDependancyTreesSoapIn"><part name="parameters" element="tns:WUGetDependancyTrees"/></message><message name="WUGetDependancyTreesSoapOut"><part name="parameters" element="tns:WUGetDependancyTreesResponse"/></message><message name="WUGetGraphSoapIn"><part name="parameters" element="tns:WUGetGraph"/></message><message name="WUGetGraphSoapOut"><part name="parameters" element="tns:WUGetGraphResponse"/></message><message name="WUGetGraphNameAndTypesSoapIn"><part name="parameters" element="tns:WUGetGraphNameAndTypes"/></message><message name="WUGetGraphNameAndTypesSoapOut"><part name="parameters" element="tns:WUGetGraphNameAndTypesResponse"/></message><message name="WUGetNumFileToCopySoapIn"><part name="parameters" element="tns:WUGetNumFileToCopy"/></message><message name="WUGetNumFileToCopySoapOut"><part name="parameters" element="tns:WUGetNumFileToCopyResponse"/></message><message name="WUGetStatsSoapIn"><part name="parameters" element="tns:WUGetStats"/></message><message name="WUGetStatsSoapOut"><part name="parameters" element="tns:WUGetStatsResponse"/></message><message name="WUGetZAPInfoSoapIn"><part name="parameters" element="tns:WUGetZAPInfo"/></message><message name="WUGetZAPInfoSoapOut"><part name="parameters" element="tns:WUGetZAPInfoResponse"/></message><message name="WUGraphInfoSoapIn"><part name="parameters" element="tns:WUGraphInfo"/></message><message name="WUGraphInfoSoapOut"><part name="parameters" element="tns:WUGraphInfoResponse"/></message><message name="WUGraphTimingSoapIn"><part name="parameters" element="tns:WUGraphTiming"/></message><message name="WUGraphTimingSoapOut"><part name="parameters" element="tns:WUGraphTimingResponse"/></message><message name="WUInfoSoapIn"><part name="parameters" element="tns:WUInfo"/></message><message name="WUInfoSoapOut"><part name="parameters" element="tns:WUInfoResponse"/></message><message name="WUInfoDetailsSoapIn"><part name="parameters" element="tns:WUInfoDetails"/></message><message name="WUInfoDetailsSoapOut"><part name="parameters" element="tns:WUInfoResponse"/></message><message name="WUJobListSoapIn"><part name="parameters" element="tns:WUJobList"/></message><message name="WUJobListSoapOut"><part name="parameters" element="tns:WUJobListResponse"/></message><message name="WULightWeightQuerySoapIn"><part name="parameters" element="tns:WULightWeightQuery"/></message><message name="WULightWeightQuerySoapOut"><part name="parameters" element="tns:WULightWeightQueryResponse"/></message><message name="WUListArchiveFilesSoapIn"><part name="parameters" element="tns:WUListArchiveFiles"/></message><message name="WUListArchiveFilesSoapOut"><part name="parameters" element="tns:WUListArchiveFilesResponse"/></message><message name="WUListLocalFileRequiredSoapIn"><part name="parameters" element="tns:WUListLocalFileRequired"/></message><message name="WUListLocalFileRequiredSoapOut"><part name="parameters" element="tns:WUListLocalFileRequiredResponse"/></message><message name="WUListQueriesSoapIn"><part name="parameters" element="tns:WUListQueries"/></message><message name="WUListQueriesSoapOut"><part name="parameters" element="tns:WUListQueriesResponse"/></message><message name="WUListQueriesUsingFileSoapIn"><part name="parameters" element="tns:WUListQueriesUsingFile"/></message><message name="WUListQueriesUsingFileSoapOut"><part name="parameters" element="tns:WUListQueriesUsingFileResponse"/></message><message name="WUMultiQuerysetDetailsSoapIn"><part name="parameters" element="tns:WUMultiQuerysetDetails"/></message><message name="WUMultiQuerysetDetailsSoapOut"><part name="parameters" element="tns:WUMultiQuerySetDetailsResponse"/></message><message name="WUProcessGraphSoapIn"><part name="parameters" element="tns:WUProcessGraph"/></message><message name="WUProcessGraphSoapOut"><part name="parameters" element="tns:WUProcessGraphResponse"/></message><message name="WUProtectSoapIn"><part name="parameters" element="tns:WUProtect"/></message><message name="WUProtectSoapOut"><part name="parameters" element="tns:WUProtectResponse"/></message><message name="WUPublishWorkunitSoapIn"><part name="parameters" element="tns:WUPublishWorkunit"/></message><message name="WUPublishWorkunitSoapOut"><part name="parameters" element="tns:WUPublishWorkunitResponse"/></message><message name="WUPushEventSoapIn"><part name="parameters" element="tns:WUPushEvent"/></message><message name="WUPushEventSoapOut"><part name="parameters" element="tns:WUPushEventResponse"/></message><message name="WUQuerySoapIn"><part name="parameters" element="tns:WUQuery"/></message><message name="WUQuerySoapOut"><part name="parameters" element="tns:WUQueryResponse"/></message><message name="WUQueryConfigSoapIn"><part name="parameters" element="tns:WUQueryConfig"/></message><message name="WUQueryConfigSoapOut"><part name="parameters" element="tns:WUQueryConfigResponse"/></message><message name="WUQueryDetailsSoapIn"><part name="parameters" element="tns:WUQueryDetails"/></message><message name="WUQueryDetailsSoapOut"><part name="parameters" element="tns:WUQueryDetailsResponse"/></message><message name="WUQueryFilesSoapIn"><part name="parameters" element="tns:WUQueryFiles"/></message><message name="WUQueryFilesSoapOut"><part name="parameters" element="tns:WUQueryFilesResponse"/></message><message name="WUQueryGetGraphSoapIn"><part name="parameters" element="tns:WUQueryGetGraph"/></message><message name="WUQueryGetGraphSoapOut"><part name="parameters" element="tns:WUQueryGetGraphResponse"/></message><message name="WUQuerysetAliasActionSoapIn"><part name="parameters" element="tns:WUQuerysetAliasAction"/></message><message name="WUQuerysetAliasActionSoapOut"><part name="parameters" element="tns:WUQuerySetAliasActionResponse"/></message><message name="WUQuerysetCopyQuerySoapIn"><part name="parameters" element="tns:WUQuerysetCopyQuery"/></message><message name="WUQuerysetCopyQuerySoapOut"><part name="parameters" element="tns:WUQuerySetCopyQueryResponse"/></message><message name="WUQuerysetDetailsSoapIn"><part name="parameters" element="tns:WUQuerysetDetails"/></message><message name="WUQuerysetDetailsSoapOut"><part name="parameters" element="tns:WUQuerySetDetailsResponse"/></message><message name="WUQuerysetQueryActionSoapIn"><part name="parameters" element="tns:WUQuerysetQueryAction"/></message><message name="WUQuerysetQueryActionSoapOut"><part name="parameters" element="tns:WUQuerySetQueryActionResponse"/></message><message name="WUQuerysetsSoapIn"><part name="parameters" element="tns:WUQuerysets"/></message><message name="WUQuerysetsSoapOut"><part name="parameters" element="tns:WUQuerysetsResponse"/></message><message name="WUResubmitSoapIn"><part name="parameters" element="tns:WUResubmit"/></message><message name="WUResubmitSoapOut"><part name="parameters" element="tns:WUResubmitResponse"/></message><message name="WUResultSoapIn"><part name="parameters" element="tns:WUResult"/></message><message name="WUResultSoapOut"><part name="parameters" element="tns:WUResultResponse"/></message><message name="WUResultBinSoapIn"><part name="parameters" element="tns:WUResultBin"/></message><message name="WUResultBinSoapOut"><part name="parameters" element="tns:WUResultBinResponse"/></message><message name="WUResultSummarySoapIn"><part name="parameters" element="tns:WUResultSummary"/></message><message name="WUResultSummarySoapOut"><part name="parameters" element="tns:WUResultSummaryResponse"/></message><message name="WUResultViewSoapIn"><part name="parameters" element="tns:WUResultView"/></message><message name="WUResultViewSoapOut"><part name="parameters" element="tns:WUResultViewResponse"/></message><message name="WURunSoapIn"><part name="parameters" element="tns:WURun"/></message><message name="WURunSoapOut"><part name="parameters" element="tns:WURunResponse"/></message><message name="WUScheduleSoapIn"><part name="parameters" element="tns:WUSchedule"/></message><message name="WUScheduleSoapOut"><part name="parameters" element="tns:WUScheduleResponse"/></message><message name="WUShowScheduledSoapIn"><part name="parameters" element="tns:WUShowScheduled"/></message><message name="WUShowScheduledSoapOut"><part name="parameters" element="tns:WUShowScheduledResponse"/></message><message name="WUSubmitSoapIn"><part name="parameters" element="tns:WUSubmit"/></message><message name="WUSubmitSoapOut"><part name="parameters" element="tns:WUSubmitResponse"/></message><message name="WUSyntaxCheckECLSoapIn"><part name="parameters" element="tns:WUSyntaxCheckECL"/></message><message name="WUSyntaxCheckECLSoapOut"><part name="parameters" element="tns:WUSyntaxCheckResponse"/></message><message name="WUUpdateSoapIn"><part name="parameters" element="tns:WUUpdate"/></message><message name="WUUpdateSoapOut"><part name="parameters" element="tns:WUUpdateResponse"/></message><message name="WUUpdateQueryEntrySoapIn"><part name="parameters" element="tns:WUUpdateQueryEntry"/></message><message name="WUUpdateQueryEntrySoapOut"><part name="parameters" element="tns:WUUpdateQueryEntryResponse"/></message><message name="WUWaitCompiledSoapIn"><part name="parameters" element="tns:WUWaitCompiled"/></message><message name="WUWaitCompiledSoapOut"><part name="parameters" element="tns:WUWaitResponse"/></message><message name="WUWaitCompleteSoapIn"><part name="parameters" element="tns:WUWaitComplete"/></message><message name="WUWaitCompleteSoapOut"><part name="parameters" element="tns:WUWaitResponse"/></message><message name="EspSoapFault"><part name="parameters" element="tns:Exceptions"/></message><portType name="WsWorkunitsServiceSoap"><operation name="GVCAjaxGraph"><input message="tns:GVCAjaxGraphSoapIn"/><output message="tns:GVCAjaxGraphSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUAbort"><input message="tns:WUAbortSoapIn"/><output message="tns:WUAbortSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUAction"><input message="tns:WUActionSoapIn"/><output message="tns:WUActionSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUAddLocalFileToWorkunit"><input message="tns:WUAddLocalFileToWorkunitSoapIn"/><output message="tns:WUAddLocalFileToWorkunitSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCDebug"><input message="tns:WUCDebugSoapIn"/><output message="tns:WUCDebugSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCheckFeatures"><input message="tns:WUCheckFeaturesSoapIn"/><output message="tns:WUCheckFeaturesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUClusterJobQueueLOG"><input message="tns:WUClusterJobQueueLOGSoapIn"/><output message="tns:WUClusterJobQueueLOGSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUClusterJobQueueXLS"><input message="tns:WUClusterJobQueueXLSSoapIn"/><output message="tns:WUClusterJobQueueXLSSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUClusterJobSummaryXLS"><input message="tns:WUClusterJobSummaryXLSSoapIn"/><output message="tns:WUClusterJobSummaryXLSSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUClusterJobXLS"><input message="tns:WUClusterJobXLSSoapIn"/><output message="tns:WUClusterJobXLSSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCompileECL"><input message="tns:WUCompileECLSoapIn"/><output message="tns:WUCompileECLSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCopyLogicalFiles"><input message="tns:WUCopyLogicalFilesSoapIn"/><output message="tns:WUCopyLogicalFilesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCopyQuerySet"><input message="tns:WUCopyQuerySetSoapIn"/><output message="tns:WUCopyQuerySetSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCreate"><input message="tns:WUCreateSoapIn"/><output message="tns:WUCreateSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCreateAndUpdate"><input message="tns:WUCreateAndUpdateSoapIn"/><output message="tns:WUCreateAndUpdateSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUCreateZAPInfo"><input message="tns:WUCreateZAPInfoSoapIn"/><output message="tns:WUCreateZAPInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUDelete"><input message="tns:WUDeleteSoapIn"/><output message="tns:WUDeleteSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUDeployWorkunit"><input message="tns:WUDeployWorkunitSoapIn"/><output message="tns:WUDeployWorkunitSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUExport"><input message="tns:WUExportSoapIn"/><output message="tns:WUExportSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUFile"><input message="tns:WUFileSoapIn"/><output message="tns:WUFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUFullResult"><input message="tns:WUFullResultSoapIn"/><output message="tns:WUFullResultSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGVCGraphInfo"><input message="tns:WUGVCGraphInfoSoapIn"/><output message="tns:WUGVCGraphInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetArchiveFile"><input message="tns:WUGetArchiveFileSoapIn"/><output message="tns:WUGetArchiveFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetDependancyTrees"><input message="tns:WUGetDependancyTreesSoapIn"/><output message="tns:WUGetDependancyTreesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetGraph"><input message="tns:WUGetGraphSoapIn"/><output message="tns:WUGetGraphSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetGraphNameAndTypes"><input message="tns:WUGetGraphNameAndTypesSoapIn"/><output message="tns:WUGetGraphNameAndTypesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetNumFileToCopy"><input message="tns:WUGetNumFileToCopySoapIn"/><output message="tns:WUGetNumFileToCopySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetStats"><input message="tns:WUGetStatsSoapIn"/><output message="tns:WUGetStatsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGetZAPInfo"><input message="tns:WUGetZAPInfoSoapIn"/><output message="tns:WUGetZAPInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGraphInfo"><input message="tns:WUGraphInfoSoapIn"/><output message="tns:WUGraphInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUGraphTiming"><input message="tns:WUGraphTimingSoapIn"/><output message="tns:WUGraphTimingSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUInfo"><input message="tns:WUInfoSoapIn"/><output message="tns:WUInfoSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUInfoDetails"><input message="tns:WUInfoDetailsSoapIn"/><output message="tns:WUInfoDetailsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUJobList"><input message="tns:WUJobListSoapIn"/><output message="tns:WUJobListSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WULightWeightQuery"><input message="tns:WULightWeightQuerySoapIn"/><output message="tns:WULightWeightQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUListArchiveFiles"><input message="tns:WUListArchiveFilesSoapIn"/><output message="tns:WUListArchiveFilesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUListLocalFileRequired"><input message="tns:WUListLocalFileRequiredSoapIn"/><output message="tns:WUListLocalFileRequiredSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUListQueries"><input message="tns:WUListQueriesSoapIn"/><output message="tns:WUListQueriesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUListQueriesUsingFile"><input message="tns:WUListQueriesUsingFileSoapIn"/><output message="tns:WUListQueriesUsingFileSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUMultiQuerysetDetails"><input message="tns:WUMultiQuerysetDetailsSoapIn"/><output message="tns:WUMultiQuerysetDetailsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUProcessGraph"><input message="tns:WUProcessGraphSoapIn"/><output message="tns:WUProcessGraphSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUProtect"><input message="tns:WUProtectSoapIn"/><output message="tns:WUProtectSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUPublishWorkunit"><input message="tns:WUPublishWorkunitSoapIn"/><output message="tns:WUPublishWorkunitSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUPushEvent"><input message="tns:WUPushEventSoapIn"/><output message="tns:WUPushEventSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQuery"><input message="tns:WUQuerySoapIn"/><output message="tns:WUQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQueryConfig"><input message="tns:WUQueryConfigSoapIn"/><output message="tns:WUQueryConfigSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQueryDetails"><input message="tns:WUQueryDetailsSoapIn"/><output message="tns:WUQueryDetailsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQueryFiles"><input message="tns:WUQueryFilesSoapIn"/><output message="tns:WUQueryFilesSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQueryGetGraph"><input message="tns:WUQueryGetGraphSoapIn"/><output message="tns:WUQueryGetGraphSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQuerysetAliasAction"><input message="tns:WUQuerysetAliasActionSoapIn"/><output message="tns:WUQuerysetAliasActionSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQuerysetCopyQuery"><input message="tns:WUQuerysetCopyQuerySoapIn"/><output message="tns:WUQuerysetCopyQuerySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQuerysetDetails"><input message="tns:WUQuerysetDetailsSoapIn"/><output message="tns:WUQuerysetDetailsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQuerysetQueryAction"><input message="tns:WUQuerysetQueryActionSoapIn"/><output message="tns:WUQuerysetQueryActionSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUQuerysets"><input message="tns:WUQuerysetsSoapIn"/><output message="tns:WUQuerysetsSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUResubmit"><input message="tns:WUResubmitSoapIn"/><output message="tns:WUResubmitSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUResult"><input message="tns:WUResultSoapIn"/><output message="tns:WUResultSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUResultBin"><input message="tns:WUResultBinSoapIn"/><output message="tns:WUResultBinSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUResultSummary"><input message="tns:WUResultSummarySoapIn"/><output message="tns:WUResultSummarySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUResultView"><input message="tns:WUResultViewSoapIn"/><output message="tns:WUResultViewSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WURun"><input message="tns:WURunSoapIn"/><output message="tns:WURunSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUSchedule"><input message="tns:WUScheduleSoapIn"/><output message="tns:WUScheduleSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUShowScheduled"><input message="tns:WUShowScheduledSoapIn"/><output message="tns:WUShowScheduledSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUSubmit"><input message="tns:WUSubmitSoapIn"/><output message="tns:WUSubmitSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUSyntaxCheckECL"><input message="tns:WUSyntaxCheckECLSoapIn"/><output message="tns:WUSyntaxCheckECLSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUUpdate"><input message="tns:WUUpdateSoapIn"/><output message="tns:WUUpdateSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUUpdateQueryEntry"><input message="tns:WUUpdateQueryEntrySoapIn"/><output message="tns:WUUpdateQueryEntrySoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUWaitCompiled"><input message="tns:WUWaitCompiledSoapIn"/><output message="tns:WUWaitCompiledSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation><operation name="WUWaitComplete"><input message="tns:WUWaitCompleteSoapIn"/><output message="tns:WUWaitCompleteSoapOut"/><fault name="excfault" message="tns:EspSoapFault"/></operation></portType><binding name="WsWorkunitsServiceSoap" type="tns:WsWorkunitsServiceSoap"><soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/><operation name="GVCAjaxGraph"><soap:operation soapAction="WsWorkunits/GVCAjaxGraph?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUAbort"><soap:operation soapAction="WsWorkunits/WUAbort?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUAction"><soap:operation soapAction="WsWorkunits/WUAction?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUAddLocalFileToWorkunit"><soap:operation soapAction="WsWorkunits/WUAddLocalFileToWorkunit?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCDebug"><soap:operation soapAction="WsWorkunits/WUCDebug?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCheckFeatures"><soap:operation soapAction="WsWorkunits/WUCheckFeatures?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUClusterJobQueueLOG"><soap:operation soapAction="WsWorkunits/WUClusterJobQueueLOG?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUClusterJobQueueXLS"><soap:operation soapAction="WsWorkunits/WUClusterJobQueueXLS?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUClusterJobSummaryXLS"><soap:operation soapAction="WsWorkunits/WUClusterJobSummaryXLS?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUClusterJobXLS"><soap:operation soapAction="WsWorkunits/WUClusterJobXLS?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCompileECL"><soap:operation soapAction="WsWorkunits/WUCompileECL?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCopyLogicalFiles"><soap:operation soapAction="WsWorkunits/WUCopyLogicalFiles?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCopyQuerySet"><soap:operation soapAction="WsWorkunits/WUCopyQuerySet?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCreate"><soap:operation soapAction="WsWorkunits/WUCreate?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCreateAndUpdate"><soap:operation soapAction="WsWorkunits/WUCreateAndUpdate?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUCreateZAPInfo"><soap:operation soapAction="WsWorkunits/WUCreateZAPInfo?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUDelete"><soap:operation soapAction="WsWorkunits/WUDelete?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUDeployWorkunit"><soap:operation soapAction="WsWorkunits/WUDeployWorkunit?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUExport"><soap:operation soapAction="WsWorkunits/WUExport?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUFile"><soap:operation soapAction="WsWorkunits/WUFile?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUFullResult"><soap:operation soapAction="WsWorkunits/WUFullResult?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGVCGraphInfo"><soap:operation soapAction="WsWorkunits/WUGVCGraphInfo?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetArchiveFile"><soap:operation soapAction="WsWorkunits/WUGetArchiveFile?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetDependancyTrees"><soap:operation soapAction="WsWorkunits/WUGetDependancyTrees?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetGraph"><soap:operation soapAction="WsWorkunits/WUGetGraph?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetGraphNameAndTypes"><soap:operation soapAction="WsWorkunits/WUGetGraphNameAndTypes?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetNumFileToCopy"><soap:operation soapAction="WsWorkunits/WUGetNumFileToCopy?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetStats"><soap:operation soapAction="WsWorkunits/WUGetStats?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGetZAPInfo"><soap:operation soapAction="WsWorkunits/WUGetZAPInfo?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGraphInfo"><soap:operation soapAction="WsWorkunits/WUGraphInfo?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUGraphTiming"><soap:operation soapAction="WsWorkunits/WUGraphTiming?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUInfo"><soap:operation soapAction="WsWorkunits/WUInfo?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUInfoDetails"><soap:operation soapAction="WsWorkunits/WUInfoDetails?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUJobList"><soap:operation soapAction="WsWorkunits/WUJobList?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WULightWeightQuery"><soap:operation soapAction="WsWorkunits/WULightWeightQuery?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUListArchiveFiles"><soap:operation soapAction="WsWorkunits/WUListArchiveFiles?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUListLocalFileRequired"><soap:operation soapAction="WsWorkunits/WUListLocalFileRequired?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUListQueries"><soap:operation soapAction="WsWorkunits/WUListQueries?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUListQueriesUsingFile"><soap:operation soapAction="WsWorkunits/WUListQueriesUsingFile?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUMultiQuerysetDetails"><soap:operation soapAction="WsWorkunits/WUMultiQuerysetDetails?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUProcessGraph"><soap:operation soapAction="WsWorkunits/WUProcessGraph?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUProtect"><soap:operation soapAction="WsWorkunits/WUProtect?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUPublishWorkunit"><soap:operation soapAction="WsWorkunits/WUPublishWorkunit?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUPushEvent"><soap:operation soapAction="WsWorkunits/WUPushEvent?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQuery"><soap:operation soapAction="WsWorkunits/WUQuery?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQueryConfig"><soap:operation soapAction="WsWorkunits/WUQueryConfig?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQueryDetails"><soap:operation soapAction="WsWorkunits/WUQueryDetails?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQueryFiles"><soap:operation soapAction="WsWorkunits/WUQueryFiles?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQueryGetGraph"><soap:operation soapAction="WsWorkunits/WUQueryGetGraph?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQuerysetAliasAction"><soap:operation soapAction="WsWorkunits/WUQuerysetAliasAction?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQuerysetCopyQuery"><soap:operation soapAction="WsWorkunits/WUQuerysetCopyQuery?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQuerysetDetails"><soap:operation soapAction="WsWorkunits/WUQuerysetDetails?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQuerysetQueryAction"><soap:operation soapAction="WsWorkunits/WUQuerysetQueryAction?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUQuerysets"><soap:operation soapAction="WsWorkunits/WUQuerysets?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUResubmit"><soap:operation soapAction="WsWorkunits/WUResubmit?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUResult"><soap:operation soapAction="WsWorkunits/WUResult?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUResultBin"><soap:operation soapAction="WsWorkunits/WUResultBin?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUResultSummary"><soap:operation soapAction="WsWorkunits/WUResultSummary?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUResultView"><soap:operation soapAction="WsWorkunits/WUResultView?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WURun"><soap:operation soapAction="WsWorkunits/WURun?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUSchedule"><soap:operation soapAction="WsWorkunits/WUSchedule?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUShowScheduled"><soap:operation soapAction="WsWorkunits/WUShowScheduled?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUSubmit"><soap:operation soapAction="WsWorkunits/WUSubmit?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUSyntaxCheckECL"><soap:operation soapAction="WsWorkunits/WUSyntaxCheckECL?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUUpdate"><soap:operation soapAction="WsWorkunits/WUUpdate?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUUpdateQueryEntry"><soap:operation soapAction="WsWorkunits/WUUpdateQueryEntry?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUWaitCompiled"><soap:operation soapAction="WsWorkunits/WUWaitCompiled?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation><operation name="WUWaitComplete"><soap:operation soapAction="WsWorkunits/WUWaitComplete?ver_=1.69" style="document"/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output><fault  name="excfault"><soap:fault name="excfault" use="literal"/></fault></operation></binding><service name="WsWorkunits"><port name="WsWorkunitsServiceSoap" binding="tns:WsWorkunitsServiceSoap"><soap:address location="http://192.168.3.22:8010/WsWorkunits?ver_=1.69"/></port></service></definitions>
