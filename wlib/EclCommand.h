@@ -163,7 +163,7 @@ public:
         //we really shouldn't be setting these since we don't handle them
         UPDATEUI(cui, ID_FILE_SAVE, m_ecl->GetModify());	
         UPDATEUI(cui, ID_FILE_PRINT, TRUE);
-        UPDATEUI(cui, ID_ECL_CHECKSYNTAX, bCanSubmit);
+        UPDATEUI(cui, ID_ECL_CHECKSYNTAX, bHasContents);
         UPDATEUI(cui, ID_ECL_GOTOSYNCTOC, bHasContents);
 
         if (cui->m_nID == ID_MACRO_RECORD)
