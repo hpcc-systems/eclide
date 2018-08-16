@@ -42,6 +42,8 @@ public:
     BEGIN_CLOCKABLEUNKNOWN
     END_CUNKNOWN(CChildFrame)
 
+    const void GetCompletionList(const std::_tstring & module, StdStringVector &list) {}
+
     BOOL PreTranslateMessage(MSG* pMsg)
     {
         if ((pMsg->message == WM_KEYDOWN )&& (pMsg->wParam == VK_F4))

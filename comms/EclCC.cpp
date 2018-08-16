@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 
 #include "EclCC.h"
+#include "EclMeta.h"
 #include "comms.h"
 #include <cmdProcess.h>
 #include <Logger.h>
@@ -9,6 +10,7 @@
 #include "Repository.h"
 #include "SMC.h"
 #include <UtilFilesystem.h>
+#include "DiskAttribute.h"
 
 namespace algo = boost::algorithm;
 
@@ -19,9 +21,6 @@ namespace SMC
 {
 IVersion * CreateVersion(const CString & url, const CString & version);
 }
-
-typedef std::pair<std::_tstring, bool> StringBoolPair;	//  Path, include in -I options
-typedef std::vector<StringBoolPair> WPathVector;
 
 TRI_BOOL g_EnableCompiler = TRI_BOOL_UNKNOWN;
 TRI_BOOL g_EnableRemoteDali = TRI_BOOL_UNKNOWN;
@@ -45,6 +44,7 @@ protected:
 
     mutable std::_tstring m_version;
     mutable CComPtr<SMC::IVersion> m_compilerVersion;
+    mutable CEclMeta m_eclMeta;
 
 public:
     std::_tstring m_errors;
@@ -132,6 +132,8 @@ public:
         StringPathMap::const_iterator found = paths.find(ECLCC_ECLBUNDLE_PATH);
         if (found != paths.end())
             m_eclFolders.push_back(std::make_pair(found->second, false));
+
+        m_eclMeta.LoadMetaData(&m_eclFolders);
     }
 
     const TCHAR * GetCacheID() const
@@ -158,6 +160,12 @@ public:
             m_version = out;
         }
         return m_version.c_str();
+    }
+
+    bool GetAutoC(IAttribute *attr, const std::_tstring & partialLabel, StdStringVector &set)
+    {
+        m_eclMeta.GetAutoC(attr, partialLabel, set);
+        return false;
     }
 
     SMC::IVersion * GetBuild() const
@@ -369,10 +377,20 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         StdStringVector args;
         args.push_back(_T("f\"syntaxcheck=1\""));
+        args.push_back(_T("M"));
 
         std::_tstring out, err;
         bool hasErrors = false;
-        CallEclCC(module, attribute, path, ecl, args, out, err, hasErrors, errors);
+        std::_tstring xmlMeta = CallEclCC(module, attribute, path, ecl, args, out, err, hasErrors, errors);
+        m_eclMeta.Update(xmlMeta);
+
+        // Temporary file saving for developmemnt
+        if (xmlMeta.size() > 0) {
+            std::_tstring filePath = pathToWString(m_workingFolderPath / _T("metadata.xml"));
+            CUnicodeFile file;
+            if (file.Create(filePath.c_str()))
+                file.Write(xmlMeta);
+        }
     }
 
     const TCHAR * GetWorkunitXML(const std::_tstring & wuid, std::_tstring & wuXml) const

@@ -48,6 +48,14 @@ public:
     CComPtr<Dali::IWorkunit> m_recentWorkunit;
     boost::signals::connection m_attrConnection;
 
+    const void GetCompletionList(const std::_tstring & module, StdStringVector &list)
+    {
+        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        {
+            eclcc->GetAutoC(m_dlgview.GetAttribute(), module, list);
+        }
+    }
+
     IResultViewer *FindResult(const TCHAR *tcpszWuid)
     {
         CString wuid(tcpszWuid);
