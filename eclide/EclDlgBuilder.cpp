@@ -14,7 +14,7 @@ CBuilderDlg::CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner) : m
     {
         m_sigConn = m_attribute->on_refresh_connect(boost::ref(*this));
         m_attrMonitor = new CAttributeMonitor(m_attribute);
-        m_view.SetType(m_attribute->GetType());
+        m_view.SetAttribute(m_attribute);
 
         CBookmarksFrame * pFrame = GetBookmarksFrame();
         if (pFrame)
@@ -273,6 +273,13 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
             m_advancedCtrl.EnableWindow(FALSE);
         }
     }
+
+	if (IsLocalRepositoryEnabled())
+	{
+		ShowHide(IDC_STATIC_QUEUECLUSTER, true);
+		ShowHide(IDC_COMBO_QUEUECLUSTER, true);
+		ShowHide(IDC_BUTTON_ADVANCED, true);
+	}
 
     DoDataExchange();
 

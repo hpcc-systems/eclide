@@ -2,12 +2,14 @@
 #include "..\en_us\resource.h"
 
 #include "SourceView.h"
+#include "EclCC.h"
 #include "AttributeType.h"
 #include "UnicodeFile.h"
 #include "util.h"
 #include "eclparser.h"
 #include "preferencedlg.h"
 #include "SciLexer.h"
+#include "EclCC.h"
 
 const char * const wordchars = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const char * const wordcharsWithDot = "._0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -116,6 +118,7 @@ CSourceCtrl::CSourceCtrl(const AttrInfo & attrInfo, ISourceSlot * owner) : m_own
     m_recording = false;
     m_addedChar = '\0';
     m_targetType = TARGET_UNKNOWN;
+    m_attribute = NULL;
 }
 
 CSourceCtrl::CSourceCtrl(ISourceSlot * owner) : m_owner(owner), m_modified(false)
@@ -148,6 +151,13 @@ void CSourceCtrl::SetSourceType(const CString & typeStr)
     {
         m_targetType = TARGET_UNKNOWN;
     }
+}
+
+void CSourceCtrl::SetAttribute(IAttribute * attr)
+{
+    ATLASSERT(attr);
+    m_attribute = attr;
+    SetType(m_attribute->GetType());
 }
 
 void CSourceCtrl::SetType(IAttributeType * type)
@@ -337,7 +347,7 @@ int CSourceCtrl::HandleNotify(SCNotification *notification)
                     int endPos = notification->position;
                     int lengthDoc = GetLength();
                     CString _message;
-                    RangeExtendAndGrab(_message, startPos, endPos, lengthDoc, IsWordCharForSelWithPreiod);
+                    RangeExtendAndGrab(_message, startPos, endPos, lengthDoc, IsWordCharForSelWithPeriod);
                     if (_message.GetLength() > 0)
                     {
                         std::_tstring tooltip = m_langRef->GetLangTooltip(static_cast<const TCHAR *>(_message));
@@ -509,7 +519,12 @@ void CSourceCtrl::InitColors(ILangRef * langRef)
     AnnotationSetVisible(ANNOTATION_BOXED);
 }
 
-bool CSourceCtrl::IsWordCharForSelWithPreiod(char ch) 
+bool CSourceCtrl::IsWordCharForSelWithPeriodECL(char ch) 
+{
+    return (IsWordCharForSelWithPeriod(ch) || ch == '$' || ch == '-');
+}
+
+bool CSourceCtrl::IsWordCharForSelWithPeriod(char ch)
 {
     return (strchr(wordchars, ch) != NULL || ch == '.');
 }
@@ -780,13 +795,15 @@ bool CSourceCtrl::SaveFile(const CString & filename)
 
 bool CSourceCtrl::OpenFile(const CString & filename)
 {
+    bool retVal = false;
+    std::_tstring text;
+
     if (boost::algorithm::iends_with(static_cast<const TCHAR *>(filename), _T(".dll")))
     {
-        std::_tstring ecl;
-        if (GetPluginECL(static_cast<const TCHAR *>(filename), ecl))
+        if (GetPluginECL(static_cast<const TCHAR *>(filename), text))
         {
-            SetText(ecl.c_str());
-            return true;
+            SetText(text.c_str());
+            retVal = true;
         }
         else
         {
@@ -795,16 +812,24 @@ bool CSourceCtrl::OpenFile(const CString & filename)
     }
     else 
     {
-        std::_tstring text;
         CUnicodeFile file;
         if (file.Open(filename))
         {
             file.Read(text);
             SetText(text.c_str());
-            return true;
+            retVal = true;
         }
     }
-    return false;
+    if (text.length() > 0 && m_attribute != NULL)
+    {
+        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        {
+            Dali::CEclExceptionVector errors;
+            eclcc->CheckSyntax(m_attribute->GetModuleQualifiedLabel(true), m_attribute->GetLabel(), static_cast<const TCHAR *>(filename), text, errors);
+        }
+    }
+
+    return retVal;
 }
 
 void CSourceCtrl::SetFoldStyle(FOLD_STYLE style)
@@ -899,7 +924,7 @@ bool CSourceCtrl::StartAutoComplete()
     int startPos = currentPos;
     int endPos = currentPos;
     int lengthDoc = GetLength();
-    RangeExtendAndGrab(word, startPos, endPos, lengthDoc, IsWordCharForSelWithPreiod);
+    RangeExtendAndGrab(word, startPos, endPos, lengthDoc, IsWordCharForSelWithPeriodECL);
     if (word.CompareNoCase(_T("l.")) != 0 &&
         word.CompareNoCase(_T("r.")) != 0 &&
         word.CompareNoCase(_T("left.")) != 0 &&
@@ -907,25 +932,56 @@ bool CSourceCtrl::StartAutoComplete()
         word.CompareNoCase(_T("self.")) != 0)
     {
         CWaitCursor wait;
-        int periodPos = 0;
+        int periodPos = -1;
+        bool ctrlSpace = false;
+        int periodCount = 0;
+
         for (int newPos = word.Find('.'); newPos >= 0; newPos = word.Find('.', newPos + 1))
         {
             periodPos = newPos;
+            periodCount++;
         }
-        StdStringVector list;
-        if (periodPos == 0)
-            m_langRef->GetLangNamesAutoC(1, list);
+        if (periodCount == word.GetLength())
+            return false;
 
-        CString module(word, periodPos);
+        StdStringVector list;
+        std::_tstring module = word;
+        if (periodPos == (word.GetLength() - 1))
+        {
+            module =  word.Mid(0, word.GetLength() - 1);
+        }
+        else if (module.size())
+        {
+            ctrlSpace = true;
+        }
+        else
+        {
+            m_langRef->GetLangNamesAutoC(1, list);
+        }
         if (m_type->IsTypeOf(ATTRIBUTE_TYPE_ECL))
         {
-            m_langRef->GetAutoC((const TCHAR *)module, list);
+            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+            {
+                m_owner->GetCompletionList(module, list);
+            }
+            else
+            {
+                m_langRef->GetAutoC(module, list);
+            }
         }
         if (list.size())
         {
             std::_tstring listStr;
-            SortedSerialize(list, listStr);
-            AutoCShow(currentPos - (startPos + (periodPos == 0 ? 0 : periodPos + 1)), listStr.c_str());
+            if (ctrlSpace)
+            {
+                SortedSerialize(list, listStr, _T(" ."));
+                listStr = _T(".") + listStr;
+            }
+            else
+            {
+                SortedSerialize(list, listStr);
+            }
+            AutoCShow(0, listStr.c_str());
         }
     }
     return false;
