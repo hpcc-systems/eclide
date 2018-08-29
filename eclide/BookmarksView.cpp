@@ -304,6 +304,8 @@ void CBookmarksView::OnUpdateOpen(CCmdUI* pCmdUI)
 LRESULT CBookmarksView::OnNmDblClk(int idCtrl, LPNMHDR pNMHDR, BOOL& bHandled)
 {
     LPNMITEMACTIVATE pNMIA = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    if (pNMIA->iItem < 0)
+        return 0;
     int col = 0;
     std::_tstring id = _T("");
 
