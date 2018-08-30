@@ -24,9 +24,9 @@ enum UM2
 
 class CBuilderFrame;
 class CChildBuilderFrm;
-typedef IWorkspaceItem * WorksaceID;
 typedef std::pair<CChildBuilderFrm *, CBuilderFrame *> FramePair;
-std::map<WorksaceID, FramePair> g_builder_window;
+typedef std::map<StlLinked<IWorkspaceItem>, FramePair> WorkspaceFramePairMap;
+WorkspaceFramePairMap g_builder_window;
 
 class CBuilderFrame : 
     public CChildFrame, 
@@ -135,9 +135,8 @@ public:
         if (dattr)
         {
             CComPtr<IWorkspaceItem> toID = m_workspaceItem->GetRepository()->CreateIWorkspaceItem(attr, dattr->GetPath());
-            g_builder_window[toID] = g_builder_window[fromID];
-            //g_attr_window[toID] = this;
-            g_builder_window[fromID] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
+            g_builder_window[toID.p] = g_builder_window[fromID.p];
+            g_builder_window[fromID.p] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
             m_dlgview.SetNamePath(dattr->GetPath());
             UIUpdateTitle();
             (*this)(attr, false, NULL, false);
@@ -825,7 +824,7 @@ LRESULT	CBuilderFrame::OnSubmitDone(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
 
 LRESULT	CBuilderFrame::OnSyncCluster(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    m_dlgview.SetQueueCluster(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER), _T("hthor"));
+    m_dlgview.SetQueueCluster(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER), _T("roxie"));
     return 0;
 }
 
@@ -1043,10 +1042,10 @@ void CBuilderFrame::RestorePersistInfo(const CPersistMap & persistInfo)
 {
     std::_tstring queue = persistInfo.Get(PERSIST_QUEUE);
     std::_tstring cluster = persistInfo.Get(PERSIST_CLUSTER);
-    if (queue.length() && cluster.length())
+    if (cluster.length())
         m_dlgview.SetQueueCluster(queue.c_str(), cluster.c_str());
     else if (queue.length())
-        m_dlgview.SetQueueCluster(queue.c_str(), _T("hthor"));
+        m_dlgview.SetQueueCluster(queue.c_str(), _T("roxie"));
     else
         m_dlgview.SetQueueCluster(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_QUEUE), GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_CLUSTER));
 
@@ -1096,7 +1095,7 @@ public:
     }
     virtual ~CChildBuilderFrm()
     {
-        g_builder_window[m_workspaceItem] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
+        g_builder_window[m_workspaceItem.p] = std::make_pair<CChildBuilderFrm *, CBuilderFrame *>(NULL, NULL);
     }
 
     void construct(const AttrInfo & attrInfo, IWorkspaceItem * workspaceItem) {
@@ -1129,19 +1128,21 @@ END_MESSAGE_MAP()
 //  ===========================================================================
 bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
 {
-    for (std::map<WorksaceID, FramePair>::iterator itr = g_builder_window.begin(); itr != g_builder_window.end(); ++itr)
+    for (WorkspaceFramePairMap::iterator itr = g_builder_window.begin(); itr != g_builder_window.end(); ++itr)
     {
-        if (itr->first->GetAttributePointer() && itr->first->GetAttributePointer() == workspaceItem->GetAttributePointer())
-        {
-            FramePair win = itr->second;
-            if (win.first && win.second && win.second->IsWindow())
+        if (CComQIPtr<IWorkspaceItem> wi = itr->first) {
+            if (wi->GetAttributePointer() && wi->GetAttributePointer() == workspaceItem->GetAttributePointer())
             {
-                if (win.first->IsIconic())
-                    win.first->ShowWindow(SW_RESTORE);
-                win.first->BringWindowToTop();
+                FramePair win = itr->second;
+                if (win.first && win.second && win.second->IsWindow())
+                {
+                    if (win.first->IsIconic())
+                        win.first->ShowWindow(SW_RESTORE);
+                    win.first->BringWindowToTop();
 
-                *pChild = win.first;
-                return true;
+                    *pChild = win.first;
+                    return true;
+                }
             }
         }
     }

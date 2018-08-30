@@ -33,8 +33,8 @@ extern COMMS_API const SectionLabelDefault GLOBAL_ACTION_CLASSIFY;
 extern COMMS_API const SectionLabelDefault GLOBAL_ACTION_RESOLVE;
 extern COMMS_API const SectionLabelDefault GLOBAL_ACTION_ENHANCE;
 
-extern COMMS_API const SectionLabelDefault GLOBAL_CLUSTER; //(SectionLabel(_T("Server"), _T("Cluster")), _T("hthor"));
-extern COMMS_API const SectionLabelDefault GLOBAL_GROUP; //(SectionLabel(_T("Server"), _T("Cluster")), _T("hthor"));
+extern COMMS_API const SectionLabelDefault GLOBAL_CLUSTER; //(SectionLabel(_T("Server"), _T("Cluster")), _T("thor"));
+extern COMMS_API const SectionLabelDefault GLOBAL_GROUP; //(SectionLabel(_T("Server"), _T("Cluster")), _T(""));
 extern COMMS_API const SectionLabelDefault GLOBAL_QUEUE; //(SectionLabel(_T("Server"), _T("Queue")), _T(""));
 extern COMMS_API const SectionLabelDefault GLOBAL_WORKUNIT_RESULTLIMIT; //(SectionLabel(_T("Workunit"), _T("ResultLimit")), 100);
 

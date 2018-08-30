@@ -264,7 +264,7 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
 
     m_archiveButton = GetDlgItem(IDC_BUTTON_ARCHIVE);
 
-    m_view.SetSourceType(m_comboQueueClusterCtrl->m_value);
+    m_view.SetSourceType(m_comboQueueClusterCtrl->GetSelectedCluster());
     if (m_attribute != NULL)
     {
         if (m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ESDL) || m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECM))
@@ -788,7 +788,7 @@ LRESULT CBuilderDlg::OnCbnSelendokComboCluster(WORD /*wNotifyCode*/, WORD /*wID*
     m_comboQueueClusterCtrl->m_cluster = queueCluster->second.get()->GetID();
     GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_comboQueueClusterCtrl->m_queue);
     GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_comboQueueClusterCtrl->m_cluster);
-    m_view.SetSourceType(m_comboQueueClusterCtrl->m_cluster.c_str());
+    m_view.SetSourceType(m_comboQueueClusterCtrl->GetSelectedCluster());
     m_view.DoInit();
     PostMessage(BUM_REFRESHQUEUECLUSTER);
     return 0;

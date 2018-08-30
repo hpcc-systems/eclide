@@ -16,9 +16,8 @@ __interface ITopology : public IUnknown
     const TCHAR *GetID() const;
     const TCHAR *GetLabel() const;
     const TCHAR *GetUrl() const;
-    unsigned GetClusters(const _variant_t & queueFilter, IClusterVector & clusters) const;
+    unsigned GetClusters(const _variant_t & queueFilter, IClusterVector & clusters, const std::_tstring & type = _T("")) const;
     unsigned GetGroups(IGroupVector & groups) const;
-    unsigned GetClustersX(const TCHAR *type, IClusterVector & clusters) const;
     unsigned GetDropZones(IDropZoneVector & dropZones) const;
     IDropZone * GetDropZone(const std::_tstring & ip) const;
     unsigned GetDfuServers(IDfuServerVector & servers) const;

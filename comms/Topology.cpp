@@ -25,7 +25,6 @@ typedef CWsEnvironmentT<CCustomActionSecureSoapSocketClient> ServerT;
 
 namespace Topology
 {
-ICluster * CreateCluster(const CString & url, const CString & wuid, const std::_tstring & queue = _T(""));
 IGroup * CreateGroup(const CString & url, const std::_tstring & data);
 IEclServer * CreateEclServer(const CString & url, const CString & wuid);
 #if _COMMS_VER < 68200
@@ -36,14 +35,13 @@ IDfuServer * CreateDfuServer(const CString & url, const TpDfuServer * data);
 IEclServer * CreateEclServer(const CString & url, const TpEclServer * data);
 #elif _COMMS_VER < 700000
 ICluster * CreateCluster(const CString & url, const ns5__TpLogicalCluster * data);
-ICluster * CreateCluster(const CString & url, const ns5__TpCluster * data);
 IDropZone * CreateDropZone(const CString & url, const ns5__TpDropZone * data);
 IDfuServer * CreateDfuServer(const CString & url, const ns5__TpDfuServer * data);
 IEclServer * CreateEclServer(const CString & url, const ns5__TpEclServer * data);
 #else
 ICluster * CreateCluster(const CString & url, const LogicalCluster * data);
 ICluster * CreateCluster(const CString & url, const Cluster * data);
-IEclServer * CreateEclServer(const CString & url, const	ServiceDetail * data);
+IEclServer * CreateEclServer(const CString & url, const ServiceDetail * data);
 IDropZone * CreateDropZone(const CString & url, const ServiceDetail * data);
 IDfuServer * CreateDfuServer(const CString & url, const ServiceDetail * data);
 #endif
@@ -56,7 +54,7 @@ static CachePoolMap<IClusterVector> g_knownClusters;
 
 #if _COMMS_VER >= 68200
 #define ESP_EXCEPTION_LOG3(T) CReportingGSoapEspException<ns5__ArrayOfEspException> exceptions(T, __FILE__, __LINE__)
-unsigned GetClusters(const CString & url, const std::_tstring & queueFilter, IClusterVector * clusters) 
+unsigned GetClusters(const CString & url, const std::_tstring & queueFilter, IClusterVector * clusters, const std::_tstring & type)
 {
     CachePoolAccessor<IClusterVector> knownClusters(*g_knownClusters.get(queueFilter), (const TCHAR *)url, queueFilter);
     if (knownClusters.needs_update())
@@ -81,8 +79,10 @@ unsigned GetClusters(const CString & url, const std::_tstring & queueFilter, ICl
                     std::_tstring queue = cluster->GetQueue();
                     if (dedupMap[static_cast<const TCHAR *>(labelLower)] == false)
                     {
-                        clusters->push_back(cluster);
-                        dedupMap[static_cast<const TCHAR *>(labelLower)] = true;
+                        if (type.empty() || boost::algorithm::iequals(type, cluster->GetTypeStr())) {
+                            clusters->push_back(cluster);
+                            dedupMap[static_cast<const TCHAR *>(labelLower)] = true;
+                        }
                     }
                 }
             }
@@ -215,32 +215,6 @@ unsigned GetEclServers(const std::_tstring & url, IEclServerVector * eclservers)
     return eclservers->size();
 }
 
-unsigned GetClustersX(const ATL::CString & url, const TCHAR *pType, IClusterVector * clusters) 
-{
-    CSoapInitialize<WsTopologyServiceSoapProxy> server(url);
-
-    _ns5__TpClusterQueryRequest request;
-    CStringAssign Type(request.Type, pType);
-
-    _ns5__TpClusterQueryResponse response;
-    ESP_EXCEPTION_LOG3(response.Exceptions);
-    if (server.TpClusterQuery(&request, &response) == SOAP_OK)
-    {
-        if (response.TpClusters)
-        {
-            for(std::size_t i = 0; i < response.TpClusters->TpCluster.size(); ++i)
-            {
-                StlLinked<ICluster> cluster = CreateCluster(url, response.TpClusters->TpCluster[i]);
-                clusters->push_back(cluster);
-            }
-        }
-    }
-    else
-        _DBGLOG(url, LEVEL_WARNING, server.GetClientErrorMsg());
-
-    return clusters->size();
-}
-
 unsigned GetDropZones(const std::_tstring & url, IDropZoneVector * dropZones) 
 {
     thread_PrimeAllServices(url);
@@ -297,18 +271,11 @@ public:
         return m_url.c_str();
     }
 
-    unsigned GetClusters(const _variant_t & _queueFilter, IClusterVector & clusters) const
+    unsigned GetClusters(const _variant_t & _queueFilter, IClusterVector & clusters, const std::_tstring & type) const
     {
         //clib::recursive_mutex::scoped_lock proc(m_mutex);
         CString queueFilter = _queueFilter;
-        Topology::GetClusters(m_url.c_str(), (const TCHAR *)queueFilter, &clusters);
-        return clusters.size();
-    }
-
-    unsigned GetClustersX(const TCHAR *type, IClusterVector & clusters) const
-    {
-        //clib::recursive_mutex::scoped_lock proc(m_mutex);
-        Topology::GetClustersX(m_url.c_str(), type, &clusters);
+        Topology::GetClusters(m_url.c_str(), (const TCHAR *)queueFilter, &clusters, type);
         return clusters.size();
     }
 
@@ -358,7 +325,7 @@ public:
     bool HasEclServers() const
     {
         IEclServerVector eclservers;
-        return GetEclServers(eclservers) > 1;	//  Always has a "Local"
+        return GetEclServers(eclservers) > 1;   //  Always has a "Local"
     }
 };
 
@@ -570,56 +537,6 @@ unsigned GetEclServers(const CString & url, IEclServerVector * eclservers)
     return eclservers->size();
 }
 
-unsigned GetClustersX(const TCHAR* url, const TCHAR *pType, IClusterVector * clusters) 
-{
-    CComInitialize com;
-    ServerT server;
-    server.SetUrl(url);
-
-#if _COMMS_VER < 67205
-    CStructArrayOut<TpCluster> results;
-    _bstr_t type(pType);
-    ESP_EXCEPTION_LOG(EspException);
-    if (server.TpClusterQuery(type, exceptions.GetArrayAddress(), exceptions.GetCountAddress(), results.GetArrayAddress(), results.GetCountAddress()) == S_OK)
-    {
-        for(int i = 0; i < results.GetCount(); ++i)
-        {
-            StlLinked<ICluster> cluster = CreateCluster(url, results.GetItem(i));
-            clusters->push_back(cluster);
-        }
-    }
-#elif _COMMS_VER < 700000
-    CStructArrayOut<TpCluster> results;
-    _bstr_t type(pType);
-    ESP_EXCEPTION_LOG2(EspException);
-    if (server.TpClusterQuery(type, exceptions, results.GetArrayAddress(), results.GetCountAddress()) == S_OK)
-    {
-        for(int i = 0; i < results.GetCount(); ++i)
-        {
-            StlLinked<ICluster> cluster = CreateCluster(url, results.GetItem(i));
-            clusters->push_back(cluster);
-        }
-    }
-#else
-    CComBSTR type(pType);
-
-    CStructArrayOut<Cluster> results;
-    ESP_STATUS_LOG;
-    if (server.ListClusters(type, results.GetArrayAddress(), results.GetCountAddress(), &status.m_statusCode, &status.m_statusMessage) == S_OK)
-    {
-        for(int i = 0; i < results.GetCount(); ++i)
-        {
-            StlLinked<ICluster> cluster = CreateCluster(url, results.GetItem(i));
-            clusters->push_back(cluster);
-        }
-    }
-#endif
-    else
-        _DBGLOG(m_url, LEVEL_WARNING, server.GetClientError());
-
-    return results.GetCount();
-}
-
 class DropZoneCompare
 {
 public:
@@ -799,12 +716,6 @@ public:
     unsigned GetClusters(const CString & queueFilter, IClusterVector & clusters) const
     {
         Topology::GetClusters(m_url, static_cast<const TCHAR *>(queueFilter), &clusters);
-        return clusters.size();
-    }
-
-    unsigned GetClustersX(const TCHAR *type, IClusterVector & clusters) const
-    {
-        Topology::GetClustersX(m_url, type, &clusters);
         return clusters.size();
     }
 

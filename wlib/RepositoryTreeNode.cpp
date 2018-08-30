@@ -411,14 +411,13 @@ const TCHAR *GetSyntaxTargetCluster(std::_tstring & targetCluster)
 			//  Default to first cluster  ---
 			targetCluster = itr->get()->GetName();
 		}
-		if (boost::algorithm::iequals(itr->get()->GetName(), _T("hthor")) || boost::algorithm::iequals(itr->get()->GetType(), _T("hthor"))) {
-			//  Prefer hthor cluster  ---
-			//  TODO:  Retest when HPCC-13787 is resolved  ---
+		if (itr->get()->GetType() == Topology::CLUSTERTYPE_ROXIE || boost::algorithm::iequals(itr->get()->GetName(), _T("roxie"))) {
+			//  Prefer roxie cluster  ---
 			targetCluster = itr->get()->GetName();
 			break;
-		} else if (boost::algorithm::icontains(itr->get()->GetName(), _T("hthor"))) {
+		} else if (boost::algorithm::icontains(itr->get()->GetName(), _T("roxie"))) {
 			targetCluster = itr->get()->GetName();
-			//  Continue in case we find an actual hthor  ---
+			//  Continue in case we find an actual roxie  ---
 		}
 	}
 	return targetCluster.c_str();
