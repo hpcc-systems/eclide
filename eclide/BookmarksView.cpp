@@ -495,6 +495,7 @@ void CBookmarksView::ParseBookmarksEcl(const std::_tstring & ecl, const std::_ts
                     ss << (index);
                     std::_tstring nStr = ss.str();
                     found = false;
+                    std::_tstring comment = trim(line.substr(n + m_listMaster.m_bookmarks[b].length()));
 
                     for (int i = 0; i < m_listMaster.GetItemCount(); ++i)
                     {
@@ -505,6 +506,11 @@ void CBookmarksView::ParseBookmarksEcl(const std::_tstring & ecl, const std::_ts
 
                         if (liner == nStr && module == inModule && attributeName == inAttributeName)
                         {
+                            std::_tstring inComment = m_listMaster.GetItemText(i, 6);
+                            if (comment != inComment)
+                            {
+                                m_listMaster.SetItemText(i, 6, comment.c_str());
+                            }
                             found = true;
                             BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_listMaster.GetItemData(i));
                             data->marked = true;
@@ -527,7 +533,7 @@ void CBookmarksView::ParseBookmarksEcl(const std::_tstring & ecl, const std::_ts
                         m_listMaster.SetItemText(row, col++, inModule.c_str());
                         m_listMaster.SetItemText(row, col++, inAttributeName.c_str());
                         m_listMaster.SetItemText(row, col++, attrType->GetRepositoryCode());
-                        m_listMaster.SetItemText(row, col++, trim(line.substr(n + m_listMaster.m_bookmarks[b].length())).c_str());
+                        m_listMaster.SetItemText(row, col++, comment.c_str());
                         BookmarkItemData *data = new BookmarkItemData;
                         data->marked = true;
                         data->bookmarkType = (BM_TYPE)b;
