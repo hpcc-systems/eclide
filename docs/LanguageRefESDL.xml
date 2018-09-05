@@ -63,7 +63,7 @@
     string LastName;
     int Age;
   };
-  ESParray&lt;ESPstruct NameBlock="", Name=""&gt; Names;
+  ESParray &lt;ESPstruct PersonInfo, Name&gt; Names;
       </tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
@@ -98,7 +98,7 @@
       <categoryid>1</categoryid>
       <name>ESPservice</name>
       <tooltip>  EXAMPLE:
-  SPservice MyService
+  ESPservice [version("1.1"), auth_feature("AllowMyService")] MyService
   {
     ESPmethod MyMethod1(MyMethod1Request, MyMethod1Response);
     ESPmethod MyMethod2(MyMethod2Request, MyMethod2Response);
