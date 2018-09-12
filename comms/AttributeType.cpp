@@ -334,7 +334,6 @@ IAttributeType * CreateIAttributeLUCIFAMILYType()
 }
 unsigned int GetAttributeTypes(IAttributeTypeVector & types)
 {
-    types.push_back(CreateIAttributeGENERALType());
     types.push_back(CreateIAttributeECLType());
     types.push_back(CreateIAttributeESDLType());
     types.push_back(CreateIAttributeSALTType());
