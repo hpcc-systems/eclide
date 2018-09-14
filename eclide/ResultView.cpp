@@ -52,6 +52,7 @@ const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
     url = str.c_str();
     url += wu->GetWuid();
     url += "&Widget=WUDetailsWidget";
+    url = url.Trim();
     return url;
 }
 
@@ -62,6 +63,7 @@ const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
     boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=WUDetailsWidget&Wuid="));
     url = str.c_str();
     url += wu->GetWuid();
+    url = url.Trim();
     return url;
 }
 
@@ -71,6 +73,7 @@ const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url)
     boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=GraphsWidget&Wuid="));
     url = str.c_str();
     url += wu->GetWuid();
+    url = url.Trim();
     return url;
 }
 
@@ -84,6 +87,7 @@ const TCHAR * GetResultEclWatchURL(Dali::IWorkunit *wu, CString &url, int sequen
     url += wu->GetWuid();
     url += _T("&Sequence=");
     url += boost::lexical_cast<std::_tstring>(sequence).c_str();
+    url = url.Trim();
     return url;
 }
 
@@ -100,6 +104,7 @@ const TCHAR * GetDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tst
     url += desdlID.c_str();
     url += _T(".");
     url += desdlVersion.c_str();
+    url = url.Trim();
     return url;
 }
 
