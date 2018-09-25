@@ -82,13 +82,13 @@ public:
 
 CEclFile *CEclMeta::GetSourceFromPath(const std::wstring & path)
 {
+    boost::filesystem::path pathIn = path;
     for (std::map<std::wstring, StlLinked<CEclMetaData>>::iterator itr = m_masterMeta.begin(); itr != m_masterMeta.end(); ++itr)
     {
         CEclMetaData *meta = itr->second;
         if (meta != NULL && meta->HasPath())
         {
-            std::_tstring pather = meta->GetPath().c_str();
-            if (boost::algorithm::equals(pather, path))
+            if (boost::filesystem::equivalent(meta->GetPath(),pathIn))
             {
                 return (CEclFile *)meta;
             }
