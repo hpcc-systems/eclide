@@ -606,7 +606,7 @@ public:
 	{
 		boost::filesystem::path appFolder;
 		GetApplicationFolder(appFolder);
-		boost::filesystem::path file = appFolder / stringToPath(ColorFileName().GetString());
+		boost::filesystem::path file = appFolder / stringToPath(ColorFileName(true).GetString());
 		if (clib::filesystem::exists(file))
 			boost::filesystem::remove(file);
 		loadMergedColor();

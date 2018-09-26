@@ -1744,6 +1744,7 @@ public:
 		{
 			m_langRef->RestoreDefaults();
 			m_sourceCtrl.InitColors(m_langRef);
+			DoLoadElement();
 		}
 		return 0;
 	}
