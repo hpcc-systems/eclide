@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
   <s class_id="0" tracking_level="0" version="0">
-    <count>363</count>
+    <count>367</count>
     <item_version>0</item_version>
     <item class_id="1" tracking_level="0" version="0">
       <categoryid>1</categoryid>
@@ -1614,6 +1614,14 @@
     </item>
     <item>
       <categoryid>3</categoryid>
+      <name>LABEL</name>
+      <tooltip></tooltip>
+      <insertbeforecursor>LABEL</insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
       <name>LAST</name>
       <tooltip></tooltip>
       <insertbeforecursor>LAST</insertbeforecursor>
@@ -1825,6 +1833,14 @@
       <name>PACKED</name>
       <tooltip></tooltip>
       <insertbeforecursor>PACKED</insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>PROBABILITY</name>
+      <tooltip></tooltip>
+      <insertbeforecursor>PROBABILITY</insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
@@ -2078,6 +2094,14 @@
     </item>
     <item>
       <categoryid>3</categoryid>
+      <name>WHITESPACE</name>
+      <tooltip></tooltip>
+      <insertbeforecursor>WHITESPACE</insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
       <name>WHOLE</name>
       <tooltip></tooltip>
       <insertbeforecursor>WHOLE</insertbeforecursor>
@@ -2121,6 +2145,14 @@
       <name>AFTER</name>
       <tooltip></tooltip>
       <insertbeforecursor>AFTER</insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>3</categoryid>
+      <name>BLOOM</name>
+      <tooltip></tooltip>
+      <insertbeforecursor>BLOOM</insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
