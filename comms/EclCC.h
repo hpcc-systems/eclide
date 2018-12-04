@@ -12,6 +12,7 @@ static const SectionLabelDefault GLOBAL_COMPILER_STDLIB(SectionLabel(CompilerSec
 static const SectionLabelDefault GLOBAL_COMPILER_ARGUMENTS(SectionLabel(CompilerSection, _T("Arguments")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_WUARGUMENTS(SectionLabel(CompilerSection, _T("WUArguments")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLWORKINGFOLDER(SectionLabel(CompilerSection, _T("EclWorkingFolder")), _T(""));
+static const SectionLabelDefault GLOBAL_COMPILER_METADATA(SectionLabel(CompilerSection, _T("MetaData")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER00(SectionLabel(CompilerSection, _T("EclFolder00")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER01(SectionLabel(CompilerSection, _T("EclFolder01")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER02(SectionLabel(CompilerSection, _T("EclFolder02")), _T(""));

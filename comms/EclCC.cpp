@@ -133,7 +133,8 @@ public:
         if (found != paths.end())
             m_eclFolders.push_back(std::make_pair(found->second, false));
 
-        m_eclMeta.LoadMetaData(m_eclFolders);
+        if (m_config->Get(GLOBAL_COMPILER_METADATA))
+            m_eclMeta.LoadMetaData(m_eclFolders);
     }
 
     const TCHAR * GetCacheID() const
