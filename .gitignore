@@ -1,0 +1,6 @@
+/comms/6_4_0
+!/comms/6_4_0/hpcc
+!/comms/6_4_0/gsoap_build.bat
+!/comms/6_4_0/*.wsdl
+/config.h
+/doStageECLIDE.bat

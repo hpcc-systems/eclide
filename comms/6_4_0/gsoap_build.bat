@@ -1,4 +1,4 @@
-set GSOAP=..\..\..\gsoap-2.7\gsoap
+set GSOAP=..\..\vcpkg\buildtrees\gsoap\src\gsoap-2.7\gsoap
 set GSOAP_BIN=%GSOAP%\bin\win32
 set wsdl2h=%GSOAP_BIN%\wsdl2h.exe -I%GSOAP% -I.\hpcc
 set soapcpp2=%GSOAP_BIN%\soapcpp2.exe -C -x -i -I%GSOAP%\import

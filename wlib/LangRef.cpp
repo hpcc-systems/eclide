@@ -548,7 +548,8 @@ public:
 		boost::filesystem::path file = binFolder / stringToPath(fileName.GetString());
 		if (!clib::filesystem::exists(file))
 		{
-			ATLASSERT(!(_T("Unable to locate ") + fileName));
+			std::_tstring msg = _T("Unable to locate ") + fileName;
+			ATLASSERT(!msg.c_str());
 		}
 		restore(m_lang, file.string().c_str());
 		std::sort(m_lang.begin(), m_lang.end());

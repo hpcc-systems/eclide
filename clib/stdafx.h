@@ -24,7 +24,7 @@
 //  WTL  ---
 #define _WTL_NO_CSTRING
 #define _WTL_NO_WTYPES
-#include <atlapp.h>
+#include <wtl/atlapp.h>
 #define _Module (*_pModule)
 #include "stdwtl.h"
 

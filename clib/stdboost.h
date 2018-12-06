@@ -10,24 +10,9 @@
 #include <boost/version.hpp>
 #include <boost/algorithm/string.hpp>
 //#include <boost/algorithm/string/regex.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/graph/graphviz.hpp>
-#include <boost/graph/random.hpp>
-#include <boost/random/linear_congruential.hpp>
-#include <boost/graph/visitors.hpp>
-#include <boost/graph/breadth_first_search.hpp>
-#include <boost/graph/graphviz.hpp>
-#include <boost/graph/subgraph.hpp>
-#if BOOST_VERSION >= 103300
-#  include <boost/graph/circle_layout.hpp>
-#  include <boost/graph/kamada_kawai_spring_layout.hpp>
-#  include <boost/graph/fruchterman_reingold.hpp>
-#endif
 #ifdef max
 #undef max
 #endif
-#include <boost/progress.hpp>
 #if BOOST_VERSION > 105000
 #define BOOST_FILESYSTEM_VERSION 3
 #else
@@ -74,11 +59,6 @@ namespace boost
     #define _ttokenizer wtokenizer
     //#define _tregex wregex
     #define _tcommand_line_parser wcommand_line_parser
-    namespace archive
-    {
-        #define xml__toarchive xml_woarchive
-        #define xml__tiarchive xml_wiarchive
-    }
     namespace filesystem
     {
         #define _tpath wpath;
