@@ -121,17 +121,3 @@ SOAP_NMAC struct Namespace * GetNamespace(const std::_tstring & url)
 
     return NULL;
 }
-//  ===========================================================================
-#if _COMMS_VER == 68200
-#  include "68200/WebService.cpp"
-#elif _COMMS_VER == 300682
-#  include "3_08-68200/WebService.cpp"
-#elif _COMMS_VER == 300800
-#  include "3_08/WebService.cpp"
-#elif _COMMS_VER == 402682
-#  include "4_02-68200/WebService.cpp"
-#elif _COMMS_VER == 604000
-#  include "6_4_0/WebService.cpp"
-#else
-#  error Unspecified WebService.cpp
-#endif
