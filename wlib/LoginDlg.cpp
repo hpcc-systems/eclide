@@ -12,6 +12,7 @@
 #include <CustomMessages.h>
 #include <AutoUpdate.h>
 #include <UtilFilesystem.h>
+#include "ChangePasswordDlg.h""
 
 static const SectionLabelDefault GLOBAL_LASTCONFIG(SectionLabel(_T("General"), _T("LastConfig")), _T("default"));
 static const SectionLabelDefault GLOBAL_LASTCONFIG_LHS(SectionLabel(_T("General"), _T("LastConfigLHS")), _T("default"));
@@ -179,16 +180,20 @@ public:
 		//}
 
 		int retCode = 0;
+		int passwordDaysRemaining = 0;
+		int passwordExpirationWarningDays = 0;
 		CString retMsg;
 
 		m_autoUpdateLink.ShowWindow(SW_HIDE);
 		CString accountServer = m_config->Get(GLOBAL_SERVER_ACCOUNT);
-		if (!m_verifyUser || accountServer.IsEmpty() || VerifyUser(m_config, m_User, m_Password, retCode, retMsg))
+		if (!m_verifyUser || accountServer.IsEmpty() || VerifyUser(m_config, m_User, m_Password, retCode, retMsg, passwordExpirationWarningDays, passwordDaysRemaining))
 		{
 			ReleaseAllSingletons();
-			//prime the repository cache with the new credentials
-			CString server(m_config->Get(GLOBAL_SERVER_ATTRIBUTE));
-			CComPtr<IRepository> rep = ::AttachRepository(server, m_User, m_Password, m_ConfigLabel);
+			if (CheckPasswordExpiration(passwordExpirationWarningDays, passwordDaysRemaining, retMsg))
+			{
+				CString server(m_config->Get(GLOBAL_SERVER_ATTRIBUTE));
+				CComPtr<IRepository> rep = ::AttachRepository(server, m_User, m_Password, m_ConfigLabel);
+			}
 			EndDialog(nID);
 		}
 		else
@@ -434,7 +439,8 @@ public:
 	}
 	static void thread_VerifyUser(IConfig * config, CString user, CString password, int *pRetCode, CString *pRetMsg, bool *result)
 	{
-		*result = VerifyUser(config, user, password, *pRetCode, *pRetMsg);
+		int passwordDaysRemaining, passwordExpirationWarningDays;
+		*result = VerifyUser(config, user, password, *pRetCode, *pRetMsg, passwordExpirationWarningDays, passwordDaysRemaining);
 	}
 	void OnOk(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 	{
@@ -499,6 +505,8 @@ public:
 		int RHSRetCode = 0;
 		CString RHSRetMsg;
 		bool RHSVerify = false;
+		int passwordDaysRemaining, passwordExpirationWarningDays;
+
 		if (m_modeLHS == MODE_REPOSITORY && m_modeRHS == MODE_REPOSITORY)
 		{
 			clib::thread lhs_run(__FUNCTION__, boost::bind(&thread_VerifyUser, m_configLHS, m_UserLHS, m_PasswordLHS, &LHSRetCode, &LHSRetMsg, &LHSVerify));
@@ -508,11 +516,13 @@ public:
 		}
 		else if (m_modeLHS == MODE_REPOSITORY)
 		{
-			LHSVerify = VerifyUser(m_configLHS, m_UserLHS, m_PasswordLHS, LHSRetCode, LHSRetMsg);
+			LHSVerify = VerifyUser(m_configLHS, m_UserLHS, m_PasswordLHS, LHSRetCode, LHSRetMsg, passwordExpirationWarningDays, passwordDaysRemaining);
+			CheckPasswordExpiration(passwordExpirationWarningDays, passwordDaysRemaining, LHSRetMsg);
 		}
 		else if (m_modeRHS == MODE_REPOSITORY)
 		{
-			RHSVerify = VerifyUser(m_configRHS, m_UserRHS, m_PasswordRHS, RHSRetCode, RHSRetMsg);
+			RHSVerify = VerifyUser(m_configRHS, m_UserRHS, m_PasswordRHS, RHSRetCode, RHSRetMsg, passwordExpirationWarningDays, passwordDaysRemaining);
+			CheckPasswordExpiration(passwordExpirationWarningDays, passwordDaysRemaining, RHSRetMsg);
 		}
 
 		switch(m_modeLHS)
@@ -588,12 +598,57 @@ public:
 		RefreshGlobal(true, false);
 	}
 
+	void OnCbnSelchangeComboConfig(UINT /*nId*/, int /*wID*/, HWND /*hWndCtl*/)
+	{
+		DoDataExchange(true);
+		LocalCheck();
+	}
+
+	void LocalCheck()
+	{
+		m_modeLHS = (MODE)m_ComboLHSMode.GetCurSel();
+		CString accountServer = m_configLHS->Get(GLOBAL_SERVER_ACCOUNT);
+		if (accountServer.IsEmpty())
+		{
+			GetDlgItem(IDC_EDIT_USER).EnableWindow(false);
+			GetDlgItem(IDC_EDIT_PASSWORD).EnableWindow(false);
+		}
+		else
+		{
+			GetDlgItem(IDC_EDIT_USER).EnableWindow(true);
+			GetDlgItem(IDC_EDIT_PASSWORD).EnableWindow(true);
+		}
+	}
+
 	void OnCbnSelendokComboConfigRHS(UINT /*nId*/, int /*wID*/, HWND /*hWndCtl*/)
 	{
 		//get name of selected config
 		m_ComboRHS.GetLBText(m_ComboRHS.GetCurSel(), m_ConfigLabelRHS);
 		RefreshGlobal(false, true);
 	}
+
+	void OnCbnSelchangeComboConfigRHS(UINT /*nId*/, int /*wID*/, HWND /*hWndCtl*/)
+	{
+		DoDataExchange(true);
+		LocalCheckRHS();
+	}
+
+	void LocalCheckRHS()
+	{
+		m_modeRHS = (MODE)m_ComboRHSMode.GetCurSel();
+		CString accountServer = m_configRHS->Get(GLOBAL_SERVER_ACCOUNT);
+		if (accountServer.IsEmpty())
+		{
+			GetDlgItem(IDC_EDIT_USER_RHS).EnableWindow(false);
+			GetDlgItem(IDC_EDIT_PASSWORD_RHS).EnableWindow(false);
+		}
+		else
+		{
+			GetDlgItem(IDC_EDIT_USER_RHS).EnableWindow(true);
+			GetDlgItem(IDC_EDIT_PASSWORD_RHS).EnableWindow(true);
+		}
+	}
+
 
 	void SavePathLHS(MODE mode)
 	{
@@ -716,6 +771,7 @@ public:
 		::ShowWindow(::GetDlgItem(m_hWnd, IDC_STATIC_PASSWORD), (m_modeLHS != MODE_REPOSITORY) ? SW_HIDE : SW_SHOW);
 
 		LoadPathLHS(m_modeLHS);
+		LocalCheck();
 
 		return 0;
 	}
@@ -735,6 +791,7 @@ public:
 		::ShowWindow(::GetDlgItem(m_hWnd, IDC_STATIC_PASSWORD_RHS), (m_modeRHS != MODE_REPOSITORY) ? SW_HIDE : SW_SHOW);
 
 		LoadPathRHS(m_modeRHS);
+		LocalCheckRHS();
 
 		return 0;
 	}
@@ -900,3 +957,18 @@ const TCHAR * GetAboutVersion(std::_tstring &version)
 	return version.c_str();
 }
 
+bool CheckPasswordExpiration(int passwordExpirationWarningDays, int passwordDaysRemaining, CString &retMsg)
+{
+	if (passwordExpirationWarningDays && passwordDaysRemaining <= passwordExpirationWarningDays) {
+		CString msg;
+		msg.Format(_T("Your password expires in %i day(s)\nDo you want to change it?"), passwordDaysRemaining, retMsg);
+		if (::MessageBox(NULL, msg, _T("ECL IDE"), MB_ICONASTERISK | MB_YESNO) == IDYES)
+		{
+			if (DoModalChangePassword()) {
+				retMsg = _T("Password changed");
+				return true;
+			}
+		}
+	}
+	return false;
+}

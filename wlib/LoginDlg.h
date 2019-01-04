@@ -31,3 +31,4 @@ WLIB_API INT_PTR DoModalLoginAMT(ILoginConfigPreferences *prefs, IConfig* config
 WLIB_API bool PopulateConfigCombo(WTL::CComboBox &configCombo, const std::_tstring &defaultValue);
 WLIB_API void SetDefaultConfig(IConfig *iniFile, const std::_tstring & defaultConfig);
 WLIB_API const TCHAR * GetAboutVersion(std::_tstring &version);
+WLIB_API bool CheckPasswordExpiration(int passwordExpirationWarningDays, int passwordDaysRemaining, CString &retMsg);
