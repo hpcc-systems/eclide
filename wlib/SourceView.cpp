@@ -886,8 +886,7 @@ void CSourceCtrl::SetStyle(signed style, unsigned fore, unsigned back, const std
         face = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_FONT);
 
     int size = _size >= 1 ? _size : GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_FONTSIZE);
-    if (fore)
-        StyleSetFore(style, fore);
+    StyleSetFore(style, fore);
     StyleSetBack(style, back);
     if (size >= 1)
         StyleSetSize(style, size);

@@ -227,6 +227,7 @@ public:
 			GetDlgItem(IDC_EDIT_PASSWORD).EnableWindow(false);
 			m_User = _T("");
 			m_Password = _T("");
+			m_Msg = _T("(No username or password required)");
 		}
 		else
 		{
@@ -234,6 +235,7 @@ public:
 			GetDlgItem(IDC_EDIT_PASSWORD).EnableWindow(true);
 			m_User = config->Get(GLOBAL_USER);
 			m_Password = config->Get(GLOBAL_PASSWORD);
+			m_Msg = _T("(Please enter username and password)");
 		}
 		if (m_configPrefs)
 			GetDlgItem(IDC_LOGIN_PREFS).EnableWindow(m_ConfigLabel.IsEmpty()==false);

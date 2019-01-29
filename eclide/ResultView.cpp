@@ -70,7 +70,7 @@ const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
     std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=GraphsWidget&Wuid="));
+    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=GraphsWUWidget&Wuid="));
     url = str.c_str();
     url += wu->GetWuid();
     url = url.Trim();
