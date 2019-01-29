@@ -682,6 +682,7 @@ protected:
 	CString m_ConfigLabel;
 
 	bool m_overrideAutoCompilerSelect;
+	bool m_metaData;
 	CString m_Location;
 	CString m_Arguments;
 	CString m_WUArguments;
@@ -707,6 +708,7 @@ public:
 	void LoadDefaults()
 	{
 		m_overrideAutoCompilerSelect = false;
+		m_metaData = false;
 		m_Arguments = _T("");
 		m_WUArguments = _T("");
 		m_listFolders.ResetContent();
@@ -779,6 +781,7 @@ public:
 	{
 		m_config = config;
 		m_overrideAutoCompilerSelect = m_config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
+		m_metaData = m_config->Get(GLOBAL_COMPILER_METADATA);
 		m_Location = m_config->Get(GLOBAL_COMPILER_LOCATION);
 		m_Arguments = m_config->Get(GLOBAL_COMPILER_ARGUMENTS);
 		m_WUArguments = m_config->Get(GLOBAL_COMPILER_WUARGUMENTS);
@@ -831,6 +834,7 @@ public:
 	{
 		DoDataExchange(true);
 		m_config->Set(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION, m_overrideAutoCompilerSelect);
+		m_config->Set(GLOBAL_COMPILER_METADATA, m_metaData);
 		m_config->Set(GLOBAL_COMPILER_LOCATION, m_Location);
 		m_config->Set(GLOBAL_COMPILER_ARGUMENTS, m_Arguments);
 		m_config->Set(GLOBAL_COMPILER_WUARGUMENTS, m_WUArguments);
@@ -902,6 +906,7 @@ public:
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 
 		COMMAND_HANDLER(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_CHECK_METADATA, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLCOMPILER, BN_CLICKED, OnEclCompilerClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLWORKINGFOLDER, BN_CLICKED, OnEclWorkingFolderClicked)
 		COMMAND_HANDLER(IDC_BUTTON_MOVEUP, BN_CLICKED, OnEclFolderMoveUpClicked)
@@ -916,6 +921,7 @@ public:
 
 	BEGIN_DDX_MAP(thisClass)
 		DDX_CHECK(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, m_overrideAutoCompilerSelect)
+		DDX_CHECK(IDC_CHECK_METADATA, m_metaData)
 		DDX_TEXT(IDC_EDIT_LOCATION, m_Location)
 		DDX_TEXT(IDC_EDIT_ARGUMENTS, m_Arguments)
 		DDX_TEXT(IDC_EDIT_WUARGUMENTS, m_WUArguments)
