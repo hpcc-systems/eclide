@@ -2,17 +2,17 @@ language: cpp
 os: windows
 cache:
   directories:
-  - ./vcpkg/buildtrees
-  - ./vcpkg/downloads
-  - ./vcpkg/installed
-  - ./vcpkg/packages
+    - ./vcpkg/buildtrees
+    - ./vcpkg/downloads
+    - ./vcpkg/installed
+    - ./vcpkg/packages
 env:
   - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
 script:
   - export PATH=$MSBUILD_PATH:$PATH
   - cd vcpkg
   - ./bootstrap-vcpkg.bat
-  - ./vcpkg.exe install boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
+  - travis_wait 60 ./vcpkg.exe install boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
   - cd ..
   - cd ..
   - mkdir build
