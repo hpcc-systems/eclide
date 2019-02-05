@@ -11,6 +11,7 @@
 #include "SMC.h"
 #include <UtilFilesystem.h>
 #include "DiskAttribute.h"
+#include "ModuleHelper.h"
 
 namespace algo = boost::algorithm;
 
@@ -135,6 +136,14 @@ public:
 
         if (m_config->Get(GLOBAL_COMPILER_METADATA))
             m_eclMeta.LoadMetaData(m_eclFolders);
+    }
+
+    void PopulateMeta(IAttribute *attribute)
+    {
+        if (!attribute) return;
+        CModuleHelper modHelper(attribute->GetQualifiedLabel());
+        int level = modHelper.GetQualifiedDepth() >= 3 ? modHelper.GetQualifiedDepth() - 2 : 0;
+        m_eclMeta.PopulateMeta(attribute->GetPath(), modHelper.GetModuleLabelNoRoot(), level);
     }
 
     const TCHAR * GetCacheID() const

@@ -6,7 +6,7 @@
 #include <utilDateTime.h> //clib
 #include <UtilFilesystem.h> //clib
 //#include <util.h> //clib
-//#include <EclCC.h> //commms
+#include <EclCC.h> //comms
 //  ===========================================================================
 CBuilderDlg::CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner) : m_attribute(attrInfo.Attribute), m_owner(owner), baseClass(attrInfo, owner)
 {
@@ -473,6 +473,8 @@ void CBuilderDlg::DoCheckSyntax()
     {
         if (!m_path.IsEmpty() && IsDirty()) 
             DoFileSave(m_path);
+        if (m_attribute)
+            eclcc->PopulateMeta(m_attribute);
     }
 
     if (!m_attribute || m_attribute->GetType() == CreateIAttributeECLType())

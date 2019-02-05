@@ -207,7 +207,7 @@ public:
     std::_tstring m_autoLast;
 
     void LoadMetaData(const WPathVector & folders);
-    void PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::wstring & dottedPath, int level = 0);
+    void PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath = _T(""), int level = 0);
     void CEclMeta::Update(const std::wstring & xml);
     CEclFile *GetSourceFromPath(const std::_tstring & path);
     bool GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, StdStringVector &set);
