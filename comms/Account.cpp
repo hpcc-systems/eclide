@@ -8,6 +8,28 @@
 #define ESP_EXCEPTION_LOG3(T) CReportingGSoapEspException<ns1__ArrayOfEspException> exceptions(T, __FILE__, __LINE__)
 
 #if _COMMS_VER >= 68200
+
+COMMS_API bool MyAcountPasswordInfo(IConfig * config, const CString &user, const CString &password, int &retCode, CString &retMsg, int &retPasswordExpirationWarningDays, int &retPasswordDaysRemaining)
+{
+    CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(config->Get(GLOBAL_SERVER_ACCOUNT), user, password);
+
+    _ns1__MyAccountRequest request;
+    _ns1__MyAccountResponse response;
+    ESP_EXCEPTION_LOG3(response.Exceptions);
+    if (server.MyAccount(&request, &response) == SOAP_OK)
+    {
+        SAFE_ASSIGN(retPasswordExpirationWarningDays, response.passwordExpirationWarningDays);
+        SAFE_ASSIGN(retPasswordDaysRemaining, response.passwordDaysRemaining);
+        return true;
+    }
+    else
+    {
+        retCode = server.GetClientErrorCode();
+        retMsg = _T("MyAccount Info SOAP Failure");
+    }
+    return false;
+}
+
 COMMS_API bool ChangePassword(const CString &serverIP, const CString &user, const CString &oldPassword, const CString &newPassword, const CString &confirmPassword, int &retCode, CString &retMsg)
 {
     CSoapInitialize<ws_USCOREaccountServiceSoapProxy> server(serverIP, user, oldPassword);
@@ -36,9 +58,11 @@ COMMS_API bool ChangePassword(const CString &serverIP, const CString &user, cons
     return false;
 }
 
-COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &password, int &retCode, CString &retMsg)
+COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &password, int &retCode, CString &retMsg, int &retPasswordExpirationWarningDays, int &retPasswordDaysRemaining)
 {
     CommsInitialize();
+    retPasswordExpirationWarningDays = 0;
+    retPasswordDaysRemaining = 0;
 
     if (boost::algorithm::contains(static_cast<const TCHAR *>(user), _T(" ")))
     {
@@ -86,14 +110,15 @@ COMMS_API bool VerifyUser(IConfig * config, const CString &user, const CString &
                 }
             }
         }
-        return true;
+        if (MyAcountPasswordInfo(config, user, password, retCode, retMsg, retPasswordExpirationWarningDays, retPasswordDaysRemaining))
+            return true;
     }
     else
     {
         _DBGLOG(config->Get(GLOBAL_SERVER_ACCOUNT), LEVEL_WARNING, server.GetClientErrorMsg());
         retCode = server.GetClientErrorCode();
         if (retCode == 401)
-            retMsg = _T("Invalid User ID/Password");	//Parse error _could_ mean bad password for Verify User
+            retMsg = _T("Invalid User ID/Password\nor password has expired");
         else
             retMsg = server.GetClientErrorMsg();
     }
