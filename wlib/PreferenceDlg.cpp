@@ -781,7 +781,6 @@ public:
 	{
 		m_config = config;
 		m_overrideAutoCompilerSelect = m_config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
-		m_metaData = m_config->Get(GLOBAL_COMPILER_METADATA);
 		m_Location = m_config->Get(GLOBAL_COMPILER_LOCATION);
 		m_Arguments = m_config->Get(GLOBAL_COMPILER_ARGUMENTS);
 		m_WUArguments = m_config->Get(GLOBAL_COMPILER_WUARGUMENTS);
@@ -834,7 +833,6 @@ public:
 	{
 		DoDataExchange(true);
 		m_config->Set(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION, m_overrideAutoCompilerSelect);
-		m_config->Set(GLOBAL_COMPILER_METADATA, m_metaData);
 		m_config->Set(GLOBAL_COMPILER_LOCATION, m_Location);
 		m_config->Set(GLOBAL_COMPILER_ARGUMENTS, m_Arguments);
 		m_config->Set(GLOBAL_COMPILER_WUARGUMENTS, m_WUArguments);
