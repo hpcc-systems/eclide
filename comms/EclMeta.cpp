@@ -9,12 +9,13 @@ private:
 
 protected:
     CEclMeta *m_meta;
+    WPathVector m_folders;
     CComPtr<CEclFile> m_currSource;
     std::stack<CEclDefinitionAdapt> m_defStack;
     std::stack<CEclImportAdapt> m_importStack;
 
 public:
-    CECLCCMetaHandler(CEclMeta *meta) :m_meta(meta) {};
+    CECLCCMetaHandler(const WPathVector & folders, CEclMeta *meta) :m_folders(folders), m_meta(meta) {};
     ~CECLCCMetaHandler() {};
 
     typedef std::map<std::_tstring, std::_tstring> edge_type;
@@ -35,6 +36,7 @@ public:
         HRESULT retval = __super::startElement(pwchNamespaceUri, cchNamespaceUri, pwchLocalName, cchLocalName, pwchQName, cchQName, pAttributes);
         Element &e = m_stack.top();
         if (e.m_tag.compare(_T("Source")) == 0) {
+            m_meta->PopulateMetaUpwards(m_folders, e.m_attr[_T("sourcePath")]);
             m_currSource = m_meta->GetSourceFromPath(e.m_attr[_T("sourcePath")]);
         }
         else if (e.m_tag.compare(_T("Definition")) == 0)
@@ -60,9 +62,19 @@ public:
         if (e.m_tag.compare(_T("Definition")) == 0) {
             CEclDefinition *def = m_defStack.top();
             def->UpdateAttrs(e);
-            if (m_currSource)
-                m_currSource->UpdateDef(def);
-            m_defStack.pop();
+            if (m_defStack.size() < 2)
+            {
+                if (m_currSource)
+                    m_currSource->UpdateDef(def);
+                m_defStack.pop();
+            }
+            else
+            {
+                CEclDefinition *defNew = new CEclDefinition(*def);
+                m_defStack.pop();
+                CEclDefinition *defParent = m_defStack.top();
+                defParent->AddDef(defNew);
+            }
         }
         else if (e.m_tag.compare(_T("Field")) == 0) {
             CEclDefinition *def = m_defStack.top();
@@ -80,6 +92,30 @@ public:
     }
 };
 
+bool CEclMeta::MetaExists(const std::_tstring & key)
+{
+	return m_masterMeta.find(key) != m_masterMeta.end();
+}
+
+CEclFile *CEclMeta::GetSourceFileFromPath(const std::wstring & path)
+{
+    boost::filesystem::path pathIn = path;
+    std::wstring key = _T("");
+    std::wstring stem = _T("");
+
+    while (pathIn.size()) {
+        stem = pathIn.stem().c_str();
+        if (key.size())
+            key = stem + _T(".") + key;
+        else
+            key = stem;
+        if (MetaExists(key))
+            return (CEclFile *)m_masterMeta[key].get();
+        pathIn = pathIn.parent_path();
+    }
+    return NULL;
+}
+
 CEclFile *CEclMeta::GetSourceFromPath(const std::wstring & path)
 {
     boost::filesystem::path pathIn = path;
@@ -88,7 +124,7 @@ CEclFile *CEclMeta::GetSourceFromPath(const std::wstring & path)
         CEclMetaData *meta = itr->second;
         if (meta != NULL && meta->HasPath())
         {
-            if (boost::filesystem::equivalent(meta->GetPath(),pathIn))
+            if (boost::filesystem::equivalent(meta->GetPath(), pathIn))
             {
                 return (CEclFile *)meta;
             }
@@ -97,13 +133,60 @@ CEclFile *CEclMeta::GetSourceFromPath(const std::wstring & path)
     return NULL;
 }
 
-void CEclMeta::Update(const std::wstring & xml)
+bool CEclMeta::GetPathFromModule(const std::_tstring & module, const WPathVector & folders, CString &retPath, bool &retIsFolder)
+{
+    std::wstring dirpath = _T("");
+    typedef boost::tokenizer<boost::char_separator<TCHAR>, std::_tstring::const_iterator, std::_tstring> tokenizer;
+    boost::char_separator<TCHAR> sep(_T("."));
+    tokenizer tokens(module, sep);
+    tokenizer::iterator tok_iter = tokens.begin();
+    std::wstring mod = _T("");
+    bool recursing = false;
+
+    for (WPathVector::const_iterator itr = folders.begin(); itr != folders.end(); ++itr)
+    {
+        CString pathstr = itr->first.c_str();
+        if (clib::filesystem::is_directory(pathstr.GetString())) {
+            boost::filesystem::directory_iterator end_itr;
+            mod = tok_iter->c_str();
+            while (tok_iter != tokens.end()) {
+                for (boost::filesystem::directory_iterator itrDir(pathstr.GetString()); itrDir != end_itr; ++itrDir)
+                {
+                    if (boost::algorithm::iequals(boost::filesystem::basename(*itrDir), mod))
+                    {
+                        tok_iter++;
+                        if (tok_iter != tokens.end())
+                        {
+                            pathstr += _T("\\");
+                            pathstr += mod.c_str();
+                            mod = tok_iter->c_str();
+                            recursing = true;
+                            break;
+                        }
+                        else
+                        {
+                            retPath = pathToString(itrDir->path()).c_str();
+                            retIsFolder = boost::filesystem::is_directory(*itrDir) ? true : false;
+                            return true;
+                        }
+                    }
+                }
+                if (!recursing)
+                    break;
+            }
+        }
+    }
+
+    return false;
+}
+
+void CEclMeta::Update(const WPathVector & folders, const std::wstring & xml)
 {
     CComInitialize com;
     CComPtr<ISAXXMLReader> reader;
     HRESULT hr = reader.CoCreateInstance(CLSID_SAXXMLReader30);
 
-    CComPtr <CECLCCMetaHandler> handler = new CECLCCMetaHandler(this);
+    CComPtr <CECLCCMetaHandler> handler = new CECLCCMetaHandler(folders, this);
     hr = reader->putContentHandler(handler);
     if (hr == S_OK)
     {
@@ -111,11 +194,93 @@ void CEclMeta::Update(const std::wstring & xml)
     }
 }
 
-void CEclMeta::LoadMetaData(const WPathVector & folders)
+bool CEclMeta::LoadImports(const std::_tstring & path, const WPathVector & folders)
 {
-    for (WPathVector::const_iterator itr = folders.begin(); itr != folders.end(); ++itr)
+    bool found = false;
+    bool isFolder = false;
+    if (CEclFile *file = GetSourceFileFromPath(path))
     {
-        PopulateMeta(itr->first);
+        EclImportMap imports = file->GetImports();
+        std::wstring dirpath = _T("");
+        for (EclImportMap::iterator itrImport = imports.begin(); itrImport != imports.end(); ++itrImport)
+        {
+            std::wstring module = itrImport->second.get()->GetRef();
+            if (!MetaExists(module) && module.size())
+            {
+                CString dirPath = _T("");
+
+                if (GetPathFromModule(module, folders, dirPath, isFolder))
+                {
+                    if (isFolder)
+                    {
+                        m_masterMeta[module] = new CEclFolder(stringToPath(dirPath.GetString()));
+                    }
+                    else
+                    {
+                        m_masterMeta[module] = new CEclFile(stringToPath(dirPath.GetString()));
+                    }
+                    found = true;
+                }
+            }
+        }
+    }
+
+    return found;
+}
+
+void CEclMeta::PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path)
+{
+    boost::filesystem::path p = wpathToPath(path);
+    bool found = false;
+    std::_tstring pather = _T("");
+    std::vector<std::_tstring> tokens;
+    int c = 0;
+
+    while (p.parent_path().size() > 0 && !found)
+    {
+        found = false;
+        for (WPathVector::const_iterator itr = folders.begin(); itr != folders.end(); ++itr)
+        {
+            std::wstring pathstr = itr->first;
+            if (boost::algorithm::iequals(pathstr, p.c_str()))
+            {
+                pather = pathstr;
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            tokens.insert(tokens.begin(), p.stem().c_str());
+            c++;
+        }
+        p = p.parent_path();
+    }
+
+    int count = 1;
+    p = wpathToPath(path);
+    std::_tstring dottedPath = _T("");
+    typedef  std::vector <std::_tstring>::iterator tIntIter;
+
+    for (tIntIter iter = tokens.begin(); iter != tokens.end(); iter++)
+    {
+        if (dottedPath.size())
+            dottedPath += _T(".") + *iter;
+        else
+            dottedPath = *iter;
+        pather += _T("\\") + *iter;
+        if (!MetaExists(dottedPath))
+        {
+            if (count < c)
+            {
+                m_masterMeta[dottedPath] = new CEclFolder(pather);
+            }
+            else
+            {
+                m_masterMeta[dottedPath] = new CEclFile(path);
+            }
+        }
+        count++;
     }
 }
 
@@ -135,7 +300,7 @@ void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const st
 
         if (boost::filesystem::is_directory(fileOrDir))
         {
-            if (level)
+            if (level && !MetaExists(newDottedPath))
                 m_masterMeta[newDottedPath] = new CEclFolder(fileOrDir);
             boost::filesystem::directory_iterator end_itr;
             for (boost::filesystem::directory_iterator itr(wpathToPath(fileOrDir)); itr != end_itr; ++itr)
@@ -143,7 +308,7 @@ void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const st
                 PopulateMeta(pathToWString(*itr), newDottedPath, ++level);
             }
         }
-        else if (HasValidExtension(pathToWString(fileOrDir)))
+        else if (HasValidExtension(pathToWString(fileOrDir)) && !MetaExists(newDottedPath))
         {
             m_masterMeta[newDottedPath] = new CEclFile(fileOrDir);
         }
@@ -163,7 +328,7 @@ int CEclMeta::NormalizeAutoC(IAttribute *attr)
     for (tokenizer::iterator tok_iter = tokens.begin(); tok_iter != tokens.end(); ++tok_iter)
     {
         tok = tok_iter->c_str();
-        if (boost::algorithm::equals(tok,_T("$")))
+        if (boost::algorithm::equals(tok, _T("$")))
         {
             tok = attr->GetModuleQualifiedLabel(true);
         }
@@ -182,13 +347,17 @@ int CEclMeta::NormalizeAutoC(IAttribute *attr)
     return tokenCount;
 }
 
-void CEclMeta::BuildTokenStr()
+void CEclMeta::BuildTokenStr(int numTokens)
 {
-    std::_tstring newTokenStr= _T("");
+    std::_tstring newTokenStr = _T("");
     typedef  std::vector <std::_tstring>::iterator tIntIter;
     bool first = true;
+    int count = 0;
+
     for (tIntIter iter = m_autoTokens.begin(); iter != m_autoTokens.end(); iter++)
     {
+        if (numTokens && count++ >= numTokens)
+            break;
         if (first)
         {
             m_autoString = *iter;
@@ -205,7 +374,7 @@ bool CEclMeta::FindImportAs()
 {
     bool found = false;
 
-    if (m_masterMeta.find(m_autoString) == m_masterMeta.end() && m_autoTokens.size())
+    if (!MetaExists(m_autoString) && m_autoTokens.size())
     {
         for (std::map<std::wstring, StlLinked<CEclMetaData> >::iterator itr = m_masterMeta.begin(); itr != m_masterMeta.end(); ++itr)
         {
@@ -226,76 +395,94 @@ bool CEclMeta::FindImportAs()
 
 bool CEclMeta::GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, StdStringVector &set)
 {
+	if (!attr)
+		return false;
+
     m_autoString = token;
     int startSize = set.size();
     NormalizeAutoC(attr);
 
-    // Look for module chaining
-    if (m_masterMeta.find(m_autoString) != m_masterMeta.end())
-    {
-        const StlLinked<CEclMetaData> meta = m_masterMeta[m_autoString];
-        if (meta)
-        {
-            boost::filesystem::directory_iterator end_itr;
-            if (boost::filesystem::is_directory(meta.get()->GetPath())) {
-                for (boost::filesystem::directory_iterator itr(meta.get()->GetPath()); itr != end_itr; ++itr)
-                {
-                    boost::filesystem::wpath path = *itr;
-                    if (boost::filesystem::is_directory(path) || boost::algorithm::ends_with(path.extension().c_str(), ATTRIBUTE_TYPE_ECL))
-                    {
-                        AddAutoStr(set, path.stem().c_str());
-                    }
-                }
-            }
-        }
-    }
-
-    // Look for fields
-    if (m_masterMeta.find(m_autoString) != m_masterMeta.end())
-    {
-        for (std::map<std::wstring, StlLinked<CEclMetaData> >::iterator itr = m_masterMeta.begin(); itr != m_masterMeta.end(); ++itr)
-        {
-            if (CEclFile *file = dynamic_cast<CEclFile*>(itr->second.get()))
-            {
-                if (CEclDefinition *def = file->GetDefinitions(m_autoLast))
-                {
-                    for (std::map<std::wstring, std::wstring>::iterator fieldItr = def->m_fields.begin(); fieldItr != def->m_fields.end(); ++fieldItr) {
-                        if (boost::algorithm::iends_with(_T(".") + m_autoString, fieldItr->first))
-                        {
-                            break;
-                        }
-                        AddAutoStr(set, fieldItr->first);
-                    }
-                }
-            }
-        }
-    }
-
-     return (int)set.size() > startSize;
-}
-
-bool CEclMeta::GetMetaParseInfo(const std::_tstring & token, const std::_tstring & key, StdStringVector &set)
-{
-    const StlLinked<CEclMetaData> meta = m_masterMeta[key];
-    if (!meta)
+    if (!MetaExists(m_autoString))
         return false;
 
-    CEclFile *file = (CEclFile *)meta.get();
-    if (file->GetDefStrings(token, set))
-        return true;
+    const StlLinked<CEclMetaData> meta = m_masterMeta[m_autoString];
+    boost::filesystem::directory_iterator end_itr;
 
-    return false;
+    // Find attribute files
+    if (boost::filesystem::is_directory(meta.get()->GetPath())) {
+        for (boost::filesystem::directory_iterator itr(meta.get()->GetPath()); itr != end_itr; ++itr)
+        {
+            boost::filesystem::wpath path = *itr;
+            if (boost::filesystem::is_directory(path) || boost::algorithm::ends_with(path.extension().c_str(), ATTRIBUTE_TYPE_ECL))
+            {
+                AddAutoStr(set, path.stem().c_str());
+            }
+        }
+    }
+
+    // Check for records
+    CEclFile *file = dynamic_cast<CEclFile*>(meta.get());
+    if (file)
+    {
+        file->GetRecordStrings(token, m_autoLast, set);
+    }
+
+    return (int)set.size() > startSize;
+}
+
+bool CEclMeta::GetRecordFields(const std::_tstring & token, const std::_tstring & key, StdStringVector &set)
+{
+    bool found = false;
+
+    if (!MetaExists(key))
+        return false;
+    const StlLinked<CEclMetaData> meta = m_masterMeta[key];
+
+    if (CEclFile *file = dynamic_cast<CEclFile*>(meta.get()))
+    {
+        CEclDefinition *def = NULL;
+        if (def = file->GetDefinition(token))
+        {
+            for (std::map<std::wstring, std::wstring>::iterator fieldItr = def->m_fields.begin(); fieldItr != def->m_fields.end(); ++fieldItr) {
+                if (boost::algorithm::iends_with(_T(".") + m_autoString, fieldItr->first))
+                {
+                    break;
+                }
+                AddAutoStr(set, fieldItr->first);
+                found = true;
+            }
+        }
+    }
+
+    return found;
 }
 
 bool CEclMeta::GetAutoC(IAttribute *attr, const std::_tstring & token, StdStringVector &set)
 {
+	int startSize = set.size();
+
     if (token.size()) {
+        bool fieldsFound = false;
+
         GetMetaModuleInfo(attr, token, set);
-        std::_tstring key = attr ? attr->GetQualifiedLabel(true) : token;
-        GetMetaParseInfo(token, key, set);
+
+        // Look for fields in current file
+        if (attr)
+            fieldsFound = GetRecordFields(m_autoLast, attr->GetQualifiedLabel(true), set);
+
+        // Check for fields in meta
+        if (!fieldsFound && !GetRecordFields(m_autoLast, m_autoString, set))
+        {
+            // Check for mod files with records and fields
+            if (m_autoTokens.size() > 1)
+            {
+                BuildTokenStr(m_autoTokens.size() - 1);
+                GetRecordFields(m_autoLast, m_autoString, set);
+            }
+        }
     }
 
-    return false;
+	return (int)set.size() > startSize;;
 }
 
 std::_tstring CEclMeta::AddAutoStr(StdStringVector &set, const std::_tstring & str)
