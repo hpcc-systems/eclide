@@ -1,14 +1,13 @@
 ###
 ## Version Information
 ###
-set ( HPCC_PROJECT "community" )
+set ( HPCC_NAME "ECL IDE" )
+set ( HPCC_PROJECT "eclide" )
 set ( HPCC_MAJOR 7 )
-
-
 set ( HPCC_MINOR 0 )
-set ( HPCC_POINT 7 )
-set ( HPCC_MATURITY "closedown" )
-set ( HPCC_SEQUENCE 0 )
+set ( HPCC_POINT 22 )
+set ( HPCC_MATURITY "rc" )
+set ( HPCC_SEQUENCE 1 )
 ###
 IF ( ${HPCC_POINT} GREATER 65 )
   error ( "HPCC_POINT must be less than 66." )
