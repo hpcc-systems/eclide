@@ -115,11 +115,11 @@ void CEclMeta::LoadMetaData(const WPathVector & folders)
 {
     for (WPathVector::const_iterator itr = folders.begin(); itr != folders.end(); ++itr)
     {
-        PopulateMeta(itr->first, _T(""));
+        PopulateMeta(itr->first);
     }
 }
 
-void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::wstring & dottedPath, int level)
+void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath, int level)
 {
     if (clib::filesystem::exists(fileOrDir))
     {
