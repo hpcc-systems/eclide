@@ -2,7 +2,7 @@
 ## Version Information
 ###
 set ( HPCC_NAME "ECL IDE" )
-set ( HPCC_PROJECT "community" )
+set ( HPCC_PROJECT "eclide" )
 set ( HPCC_MAJOR 7 )
 
 
