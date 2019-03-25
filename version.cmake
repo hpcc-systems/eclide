@@ -1,10 +1,9 @@
 ###
 ## Version Information
 ###
-set ( HPCC_PROJECT "community" )
+set ( HPCC_NAME "ECL IDE" )
+set ( HPCC_PROJECT "eclide" )
 set ( HPCC_MAJOR 7 )
-
-
 set ( HPCC_MINOR 2 )
 set ( HPCC_POINT 0 )
 set ( HPCC_MATURITY "closedown" )
