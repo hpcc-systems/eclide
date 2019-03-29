@@ -146,3 +146,33 @@ IAutoUpdate * CreateIAutoUpdate()
 {
     return new CAutoUpdate();
 }
+
+COMMS_API bool DNSLookup(std::_tstring & url) {
+    size_t found = url.find_first_of(_T("://"));
+    if (found == std::string::npos) return false;
+    std::_tstring protocol = url.substr(0, found);
+    std::_tstring url_new = url.substr(found + 3);
+    size_t found1 = url_new.find_first_of(_T(":"));
+    if (found1 == std::string::npos) return false;
+    std::_tstring host = url_new.substr(0, found1);
+    size_t found2 = url_new.find_first_of(_T("/"));
+    if (found2 == std::string::npos) return false;
+    std::_tstring port = url_new.substr(found1 + 1, found2 - found1 - 1);
+    std::_tstring path = url_new.substr(found2);
+
+    boost::asio::io_service io_service;
+    tcp::resolver resolver(io_service);
+    try {
+        std::string hostname = CT2A(host.c_str());
+        tcp::resolver::query query(hostname, "");
+        tcp::resolver::iterator found = resolver.resolve(query);
+        if (found != tcp::resolver::iterator()) {
+            tcp::endpoint end = *found;
+            std::_tstring ipAddr = CA2T(end.address().to_string().c_str());
+            url = protocol + _T("://") + ipAddr + _T(":") + port + path;
+            return true;
+        }
+    } catch (std::exception & e){
+    }
+    return false;
+}
