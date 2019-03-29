@@ -9,3 +9,4 @@ __interface IAutoUpdate : public IUnknown
 };
 
 COMMS_API IAutoUpdate * CreateIAutoUpdate();
+COMMS_API bool DNSLookup(std::_tstring & url);

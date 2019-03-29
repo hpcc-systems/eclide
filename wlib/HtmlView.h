@@ -6,6 +6,7 @@
 
 #include <exdispid.h>
 #include <file_ver.h>
+#include <Autoupdate.h>
 
 const int _nDispatchID = 1;
 
@@ -55,7 +56,8 @@ public:
     virtual HRESULT Navigate(const TCHAR *pszUrl)
     {
         m_url = pszUrl;
-        _bstr_t url(pszUrl);
+        DNSLookup(m_url);
+        _bstr_t url(m_url.c_str());
         CComVariant vNull;
         return m_spBrowser->Navigate( url, &vNull, &vNull, &vNull, &vNull );
     }
@@ -63,6 +65,7 @@ public:
     virtual HRESULT Navigate(const TCHAR *pszUrl, const TCHAR *pszUserID, const TCHAR *pszPassword, bool newWindow)
     {
         m_url = pszUrl;
+        DNSLookup(m_url);
         CString extraHeaders;
         CString auth = pszUserID;
         auth += ":";
@@ -75,7 +78,7 @@ public:
         extraHeaders += CString(buff, buffLen);
         //extraHeaders += "\r\n";
 
-        _bstr_t url(pszUrl);
+        _bstr_t url(m_url.c_str());
         CComVariant vTargetFrameName = newWindow ? _T("_blank") : _T("_top");
         CComVariant vFlags;
         CComVariant vPostData;
