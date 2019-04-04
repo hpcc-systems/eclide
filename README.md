@@ -5,7 +5,7 @@
 ### Prerequisits 
 * git (optional - needed to clone sources)
 * cmake
-* Visual Studio 2015 (or newer)
+* Visual Studio 2015/2017
 * NSIS (optional - needed to create install package)
 
 ### Clone the repository
@@ -19,7 +19,7 @@ git submodule update --init --recursive
 ```
 cd vcpkg
 bootstrap-vcpkg.bat
-vcpkg install boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
+vcpkg install --keep-going boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
 ```
 
 ### Create an out of source build folder
