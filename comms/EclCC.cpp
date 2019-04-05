@@ -133,9 +133,6 @@ public:
         StringPathMap::const_iterator found = paths.find(ECLCC_ECLBUNDLE_PATH);
         if (found != paths.end())
             m_eclFolders.push_back(std::make_pair(found->second, false));
-
-        if (m_config->Get(GLOBAL_COMPILER_METADATA))
-            m_eclMeta.LoadMetaData(m_eclFolders);
     }
 
     void PopulateMeta(IAttribute *attribute)
@@ -392,7 +389,9 @@ public:
         std::_tstring out, err;
         bool hasErrors = false;
         std::_tstring xmlMeta = CallEclCC(module, attribute, path, ecl, args, out, err, hasErrors, errors);
-        m_eclMeta.Update(xmlMeta);
+        m_eclMeta.PopulateMetaUpwards(m_eclFolders, path);
+        m_eclMeta.Update(m_eclFolders, xmlMeta);
+        m_eclMeta.LoadImports(path,m_eclFolders);
 
 #ifdef _DEBUG
         // Temporary file saving for developmemnt
