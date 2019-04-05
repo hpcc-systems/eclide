@@ -421,8 +421,7 @@ bool CEclMeta::GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, 
     }
 
     // Check for records
-    CEclFile *file = dynamic_cast<CEclFile*>(meta.get());
-    if (file)
+    if (CEclFile *file = dynamic_cast<CEclFile*>(meta.get()))
     {
         file->GetRecordStrings(token, m_autoLast, set);
     }

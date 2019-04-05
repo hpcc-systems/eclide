@@ -97,7 +97,7 @@ public:
         CEclDefinition *def = NULL;
         for (std::map<std::wstring, StlLinked<CEclDefinition>>::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
         {
-            def = dynamic_cast<CEclDefinition*>(itr->second.get());
+            def = itr->second.get();
             if (CEclDefinition *subdef = def->GetDefinition(defName))
             {
                 return subdef;
@@ -120,7 +120,7 @@ public:
             CEclDefinition *def = NULL;
             for (std::map<std::wstring, StlLinked<CEclDefinition> >::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
             {
-                def = dynamic_cast<CEclDefinition*>(itr->second.get());
+                def = itr->second.get();
                 if (def->GetRecordStrings(token, set))
                 {
                     found = true;
@@ -214,7 +214,7 @@ public:
 
         for (EclDefinitionMap::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
         {
-            def = dynamic_cast<CEclDefinition*>(itr->second.get());
+            def = itr->second.get();
             // reject if the token is a record itself
             if (boost::algorithm::iequals(def->GetType(), _T("record")) && boost::algorithm::iequals(def->GetName(), last))
             {
@@ -233,7 +233,7 @@ public:
         {
             if (boost::algorithm::iequals(importAsName, itr->first) && !boost::algorithm::iequals(importAsName, itr->second->GetRef()))
             {
-                return dynamic_cast<CEclImport*>(itr->second.get());
+                return itr->second.get();
             }
         }
         return NULL;
@@ -245,7 +245,7 @@ public:
 
         for (std::map<std::wstring, StlLinked<CEclDefinition>>::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
         {
-            def = dynamic_cast<CEclDefinition*>(itr->second.get());
+            def = itr->second.get();
             if ((defFound = def->GetDefinition(defName)))
             {
                 return defFound;
