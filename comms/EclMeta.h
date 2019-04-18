@@ -63,6 +63,7 @@ public:
     std::map<std::wstring, std::wstring> m_fields;
 
     CEclDefinition() { m_body = m_end = m_line = m_start = 0; }
+    CEclDefinition(const CEclDefinition & def) { m_name = def.m_name; m_type = def.m_type; m_body = def.m_body; m_end = def.m_end;  m_line = def.m_line; m_start = def.m_start; m_fields = def.m_fields; m_defs = def.m_defs; }
     std::_tstring GetName() { return m_name; }
     std::_tstring GetType() { return m_type; }
     void UpdateAttrs(Element &e)
@@ -74,15 +75,63 @@ public:
         GetIntValue(e, _T("end"), m_end);
         GetIntValue(e, _T("line"), m_line);
         GetIntValue(e, _T("start"), m_start);
-    };
+    }
     void AddField(Element e)
     {
         std::wstring name, type;
         GetValue(e, _T("name"), name);
         GetValue(e, _T("type"), type);
         m_fields[name] = type;
-    };
+    }
+    void AddDef(CEclDefinition * def)
+    {
+        m_defs[def->GetName()] = def;
+    }
+    CEclDefinition * GetDefinition(const std::_tstring & defName)
+    {
+        if (boost::algorithm::iequals(defName, GetName()))
+        {
+            return this;
+        }
+
+        CEclDefinition *def = NULL;
+        for (std::map<std::wstring, StlLinked<CEclDefinition>>::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
+        {
+            def = itr->second.get();
+            if (CEclDefinition *subdef = def->GetDefinition(defName))
+            {
+                return subdef;
+            }
+        }
+
+        return NULL;
+    }
+    bool GetRecordStrings(const std::_tstring & token, StdStringVector &set)
+    {
+        bool found = false;
+
+        if (boost::algorithm::iequals(GetType(), "record"))
+        {
+            set.push_back(GetName().c_str());
+            found = true;
+        }
+        else if (boost::algorithm::iequals(GetType(), "module"))
+        {
+            CEclDefinition *def = NULL;
+            for (std::map<std::wstring, StlLinked<CEclDefinition> >::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
+            {
+                def = itr->second.get();
+                if (def->GetRecordStrings(token, set))
+                {
+                    found = true;
+                }
+            }
+        }
+
+        return found;
+    }
 };
+
 typedef StlLinked<CEclDefinition> CEclDefinitionAdapt;
 typedef std::map<std::wstring, StlLinked<CEclDefinition> > EclDefinitionMap;
 
@@ -140,6 +189,10 @@ public:
     {
         m_imports[import->GetName()] = import;
     }
+    EclImportMap GetImports()
+    {
+        return m_imports;
+    }
     /*
         Scenarios:
         "MyMod" and presses ctrl+space
@@ -148,26 +201,28 @@ public:
         "MyModule.MyAttribute." (should auto popup suggestions)
         Cursor in "MyModule.MyAttribute" and user presses F12
         Mouse over tooltip "MyModule.MyAttribute"
-        
+
         IMPORT $.MyModule;
         IMPORT MyModule AS MyMod;
         IMPORT $ AS MyMod;
         (Where MyModule could be a folder an attr file or a library (like std))
         */
-    bool GetDefStrings(const std::_tstring & definitionName, StdStringVector &set)
+    bool GetRecordStrings(const std::_tstring & token, const std::_tstring & last, StdStringVector &set)
     {
         bool found = false;
+        CEclDefinition *def = NULL;
+
         for (EclDefinitionMap::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
         {
-            if (boost::algorithm::equals(definitionName, itr->first)) {
-                for (std::map<std::wstring, std::wstring>::iterator fieldItr = itr->second->m_fields.begin(); fieldItr != itr->second->m_fields.end(); ++fieldItr)
-                {
-                    if (std::find(set.begin(), set.end(), fieldItr->first) == set.end())
-                    {
-                        set.push_back(fieldItr->first);
-                        found = true;
-                    }
-                }
+            def = itr->second.get();
+            // reject if the token is a record itself
+            if (boost::algorithm::iequals(def->GetType(), _T("record")) && boost::algorithm::iequals(def->GetName(), last))
+            {
+                return false;
+            }
+            if (def->GetRecordStrings(token, set))
+            {
+                found = true;
             }
         }
         return found;
@@ -176,20 +231,24 @@ public:
     {
         for (EclImportMap::iterator itr = m_imports.begin(); itr != m_imports.end(); ++itr)
         {
-            if (boost::algorithm::iequals(importAsName, itr->first) && !boost::algorithm::equals(importAsName, itr->second->GetRef()))
+            if (boost::algorithm::iequals(importAsName, itr->first) && !boost::algorithm::iequals(importAsName, itr->second->GetRef()))
             {
-                return dynamic_cast<CEclImport*>(itr->second.get());
+                return itr->second.get();
             }
         }
         return NULL;
     }
-    CEclDefinition * GetDefinitions(const std::_tstring & defName)
+    CEclDefinition * GetDefinition(const std::_tstring & defName)
     {
+        CEclDefinition *def = NULL;
+        CEclDefinition *defFound = NULL;
+
         for (std::map<std::wstring, StlLinked<CEclDefinition>>::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
         {
-            if (boost::algorithm::iequals(defName, itr->first))
+            def = itr->second.get();
+            if ((defFound = def->GetDefinition(defName)))
             {
-                return dynamic_cast<CEclDefinition*>(itr->second.get());
+                return defFound;
             }
         }
         return NULL;
@@ -206,15 +265,19 @@ public:
     std::_tstring m_autoString;
     std::_tstring m_autoLast;
 
-    void LoadMetaData(const WPathVector & folders);
+    bool CEclMeta::MetaExists(const std::_tstring & key);
     void PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath = _T(""), int level = 0);
-    void CEclMeta::Update(const std::wstring & xml);
+    void Update(const WPathVector & folders, const std::wstring & xml);
+    void PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path);
+    bool LoadImports(const std::_tstring & path, const WPathVector & folders);
+    bool GetPathFromModule(const std::_tstring & module, const WPathVector & folders, CString &retPath, bool &retIsFolder);
+    CEclFile *GetSourceFileFromPath(const std::wstring & path);
     CEclFile *GetSourceFromPath(const std::_tstring & path);
     bool GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, StdStringVector &set);
     std::_tstring AddAutoStr(StdStringVector &set, const std::_tstring & str);
-    bool GetMetaParseInfo(const std::_tstring & token, const std::_tstring & key, StdStringVector &set);
+    bool GetRecordFields(const std::_tstring & token, const std::_tstring & key, StdStringVector &set);
     bool GetAutoC(IAttribute *attr, const std::_tstring & partialLabel, StdStringVector & set);
     int NormalizeAutoC(IAttribute *attr);
     bool FindImportAs();
-    void BuildTokenStr();
+    void BuildTokenStr(int numTokens = 0);
 };

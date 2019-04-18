@@ -2580,7 +2580,7 @@ void CMainFrame::OpenBuilder(IAttribute * attribute)
     CComPtr<IRepository> rep = AttachRepository();
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
-        std::_tstring label, path;
+        std::_tstring path;
         ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
@@ -2704,7 +2704,7 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
         CComPtr<IRepository> rep = AttachRepository();
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
         {
-            std::_tstring label, path;
+            std::_tstring path;
             ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), errors);
         }
         else
@@ -2756,7 +2756,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
     HWND hwnd = NULL;
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
-        std::_tstring label, path;
+        std::_tstring path;
         ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
@@ -2780,9 +2780,10 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
     m_fr.m_mode = findmode;
     CComPtr<IRepository> rep = AttachRepository();
     HWND hwnd = NULL;
-    if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
+    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
-        hwnd = ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, attribute));
+        std::_tstring path;
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
     }
     else
     {
@@ -2797,7 +2798,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu)
     CComPtr<IRepository> rep = AttachRepository();
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
-        std::_tstring label, path;
+        std::_tstring path;
         ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
     }
     else
