@@ -39,6 +39,9 @@ public:
             m_meta->PopulateMetaUpwards(m_folders, e.m_attr[_T("sourcePath")]);
             m_currSource = m_meta->GetSourceFromPath(e.m_attr[_T("sourcePath")]);
         }
+        else if (e.m_tag.compare(_T("Query")) == 0) {
+            m_currSource = m_meta->CreateFile(_T("query"), _T(".\"));
+        }
         else if (e.m_tag.compare(_T("Definition")) == 0)
         {
             m_defStack.push(new CEclDefinition());
@@ -94,7 +97,7 @@ public:
 
 bool CEclMeta::MetaExists(const std::_tstring & key)
 {
-	return m_masterMeta.find(key) != m_masterMeta.end();
+    return m_masterMeta.find(key) != m_masterMeta.end();
 }
 
 CEclFile *CEclMeta::GetSourceFileFromPath(const std::wstring & path)
@@ -315,6 +318,13 @@ void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const st
     }
 }
 
+CEclFile *CEclMeta::CreateFile(const std::_tstring & dottedPath, const std::_tstring & path)
+{
+    CEclFile *file = new CEclFile(path);
+    m_masterMeta[dottedPath] = file;
+    return file;
+}
+
 int CEclMeta::NormalizeAutoC(IAttribute *attr)
 {
     typedef boost::tokenizer<boost::char_separator<TCHAR>, std::_tstring::const_iterator, std::_tstring> tokenizer;
@@ -395,8 +405,8 @@ bool CEclMeta::FindImportAs()
 
 bool CEclMeta::GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, StdStringVector &set)
 {
-	if (!attr)
-		return false;
+    if (!attr)
+        return false;
 
     m_autoString = token;
     int startSize = set.size();
@@ -458,7 +468,7 @@ bool CEclMeta::GetRecordFields(const std::_tstring & token, const std::_tstring 
 
 bool CEclMeta::GetAutoC(IAttribute *attr, const std::_tstring & token, StdStringVector &set)
 {
-	int startSize = set.size();
+    int startSize = set.size();
 
     if (token.size()) {
         bool fieldsFound = false;
@@ -478,10 +488,15 @@ bool CEclMeta::GetAutoC(IAttribute *attr, const std::_tstring & token, StdString
                 BuildTokenStr(m_autoTokens.size() - 1);
                 GetRecordFields(m_autoLast, m_autoString, set);
             }
+            // Check for fields in builder windows
+            else
+            {
+                GetRecordFields(token, _T("query"), set);
+            }
         }
     }
 
-	return (int)set.size() > startSize;;
+    return (int)set.size() > startSize;;
 }
 
 std::_tstring CEclMeta::AddAutoStr(StdStringVector &set, const std::_tstring & str)
