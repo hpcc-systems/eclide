@@ -49,21 +49,54 @@ public:
     }
 };
 
+class CEclParam : public CEclMetaData
+{
+protected:
+    std::_tstring m_name;
+    std::_tstring m_type;
+public:
+    BEGIN_CUNKNOWN
+    END_CUNKNOWN(CUnknown)
+
+    CEclParam() { }
+    std::_tstring GetName() { return m_name; }
+    std::_tstring GetType() { return m_type; }
+    void UpdateAttrs(Element &e)
+    {
+        GetValue(e, _T("name"), m_name);
+        GetValue(e, _T("type"), m_type);
+    };
+    void AddType(Element e)
+    {
+        GetValue(e, _T("type"), m_type);
+    }
+    void AddName(Element e)
+    {
+        GetValue(e, _T("name"), m_name);
+    }
+};
+typedef StlLinked<CEclParam> CEclParamAdapt;
+typedef std::map<std::wstring, StlLinked<CEclParam> > EclParamMap;
+
 class CEclDefinition : public CEclMetaData
 {
 protected:
     int m_body, m_end, m_line, m_start;
     std::_tstring m_name;
     std::_tstring m_type;
+    std::_tstring m_functionType;
+    std::_tstring m_content;
     std::map<std::wstring, StlLinked<CEclDefinition> > m_defs;
+    EclParamMap m_params;
+
 public:
     BEGIN_CUNKNOWN
-
     END_CUNKNOWN(CUnknown)
+
     std::map<std::wstring, std::wstring> m_fields;
 
     CEclDefinition() { m_body = m_end = m_line = m_start = 0; }
-    CEclDefinition(const CEclDefinition & def) { m_name = def.m_name; m_type = def.m_type; m_body = def.m_body; m_end = def.m_end;  m_line = def.m_line; m_start = def.m_start; m_fields = def.m_fields; m_defs = def.m_defs; }
+    CEclDefinition(const CEclDefinition & def) { m_name = def.m_name; m_type = def.m_type; m_body = def.m_body; m_end = def.m_end; m_line = def.m_line; m_start = def.m_start; m_fields = def.m_fields; m_defs = def.m_defs; m_params = def.m_params; m_content = def.m_content; m_functionType = def.m_functionType; }
     std::_tstring GetName() { return m_name; }
     std::_tstring GetType() { return m_type; }
     void UpdateAttrs(Element &e)
@@ -75,6 +108,22 @@ public:
         GetIntValue(e, _T("end"), m_end);
         GetIntValue(e, _T("line"), m_line);
         GetIntValue(e, _T("start"), m_start);
+    }
+	bool HasDefinitions()
+	{
+		return m_defs.size() ? true : false;
+	}
+    void AddFunctionType(Element e)
+    {
+        GetValue(e, _T("type"), m_functionType);
+    }
+    void AddDocumentation(Element e)
+    {
+        m_content = e.GetContent();
+    }
+    void AddParam(CEclParam *param)
+    {
+        m_params[param->GetName()] = param;
     }
     void AddField(Element e)
     {
@@ -130,6 +179,28 @@ public:
 
         return found;
     }
+	bool GetFunctions(std::map<std::wstring, StlLinked<CEclDefinition> > & defs)
+	{
+		bool found = false;
+		CEclDefinition *def = NULL;
+
+		for (std::map<std::wstring, StlLinked<CEclDefinition>>::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
+		{
+			def = itr->second.get();
+			if (boost::algorithm::iequals(def->GetType(), _T("module")) && def->HasDefinitions())
+			{
+				def->GetFunctions(defs);
+			}
+			else if (boost::algorithm::iequals(def->GetType(), _T("function")))
+			{
+				def = itr->second.get();
+				CEclDefinition *defNew = new CEclDefinition(*def);
+				defs[def->GetName()] = defNew;
+				found = true;
+			}
+		}
+		return found;
+	}
 };
 
 typedef StlLinked<CEclDefinition> CEclDefinitionAdapt;
@@ -253,6 +324,18 @@ public:
         }
         return NULL;
     }
+	bool GetFunctions(std::map<std::wstring, StlLinked<CEclDefinition> > & defs)
+	{
+		bool found = false;
+		CEclDefinition *def = NULL;
+
+		for (EclDefinitionMap::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
+		{
+			def = itr->second.get();
+			found = def->GetFunctions(defs);
+		}
+		return found;
+	}
 };
 
 typedef std::map<std::wstring, StlLinked<CEclMetaData> > EclMetaDataMap;
@@ -271,6 +354,7 @@ public:
     void PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path);
     CEclFile * CreateMetaFile(const std::_tstring & dottedPath, const std::_tstring & path = _T(""));
     bool LoadImports(const std::_tstring & path, const WPathVector & folders);
+	bool LoadTooltips(const std::_tstring & path);
     bool GetPathFromModule(const std::_tstring & module, const WPathVector & folders, CString &retPath, bool &retIsFolder);
     CEclFile *GetSourceFileFromPath(const std::wstring & path);
     CEclFile *GetSourceFromPath(const std::_tstring & path);

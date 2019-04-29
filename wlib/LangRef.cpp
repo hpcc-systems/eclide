@@ -741,6 +741,11 @@ public:
 		return true;
 	}
 
+	bool AddTooltip(const std::_tstring &label, const std::_tstring &documentation)
+	{
+		//m_langNameIndex[label].m_cat = itr->GetCategoryID();
+	}
+
 	const TCHAR * GetLangTooltip(const std::_tstring &label)
 	{
 		std::_tstring lower = label;

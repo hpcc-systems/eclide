@@ -392,6 +392,7 @@ public:
         m_eclMeta.PopulateMetaUpwards(m_eclFolders, path);
         m_eclMeta.Update(m_eclFolders, xmlMeta);
         m_eclMeta.LoadImports(path,m_eclFolders);
+        m_eclMeta.LoadTooltips(path);
 
 #ifdef _DEBUG
         // Temporary file saving for developmemnt

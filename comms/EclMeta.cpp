@@ -12,6 +12,7 @@ protected:
     WPathVector m_folders;
     CComPtr<CEclFile> m_currSource;
     std::stack<CEclDefinitionAdapt> m_defStack;
+    std::stack<CEclParamAdapt> m_paramStack;
     std::stack<CEclImportAdapt> m_importStack;
 
 public:
@@ -50,6 +51,10 @@ public:
         {
             m_importStack.push(new CEclImport());
         }
+        else if (e.m_tag.compare(_T("Param")) == 0)
+        {
+            m_paramStack.push(new CEclParam());
+        }
         return retval;
     }
 
@@ -82,6 +87,28 @@ public:
         else if (e.m_tag.compare(_T("Field")) == 0) {
             CEclDefinition *def = m_defStack.top();
             def->AddField(e);
+        }
+        else if (e.m_tag.compare(_T("Type")) == 0) {
+            if (m_paramStack.size() > 0)
+            {
+                CEclParam *param = m_paramStack.top();
+                param->AddType(e);
+            }
+            else
+            {
+                CEclDefinition *def = m_defStack.top();
+                def->AddFunctionType(e);
+            }
+        }
+        else if (e.m_tag.compare(_T("Param")) == 0) {
+            CEclParam *param = m_paramStack.top();
+            param->AddName(e);
+            CEclDefinition *def = m_defStack.top();
+            def->AddParam(param);
+        }
+        else if (e.m_tag.compare(_T("content")) == 0) {
+            CEclDefinition *def = m_defStack.top();
+            def->AddDocumentation(e);
         }
         else if (e.m_tag.compare(_T("Import")) == 0) {
             CEclImport *import = m_importStack.top();
@@ -228,6 +255,30 @@ bool CEclMeta::LoadImports(const std::_tstring & path, const WPathVector & folde
         }
     }
 
+    return found;
+}
+
+bool CEclMeta::LoadTooltips(const std::_tstring & path)
+{
+    bool found = false;
+    std::map<std::wstring, StlLinked<CEclDefinition> > funcs;
+
+    for (std::map<std::wstring, StlLinked<CEclMetaData> >::iterator itr = m_masterMeta.begin(); itr != m_masterMeta.end(); ++itr)
+    {
+        if (CEclFile *file = dynamic_cast<CEclFile*>(itr->second.get()))
+        {
+            found = file->GetFunctions(funcs);
+        }
+    }
+    if (found)
+    {
+        CEclDefinition *func = NULL;
+        for (EclDefinitionMap::iterator itr = funcs.begin(); itr != funcs.end(); ++itr)
+        {
+            func = itr->second.get();
+            //AddTooltip(label, documentation);
+        }
+    }
     return found;
 }
 
