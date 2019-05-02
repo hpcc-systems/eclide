@@ -8,7 +8,7 @@ set ( HPCC_MAJOR 7 )
 
 set ( HPCC_MINOR 0 )
 set ( HPCC_POINT 34 )
-set ( HPCC_MATURITY "rc" )
+set ( HPCC_MATURITY "release" )
 set ( HPCC_SEQUENCE 1 )
 ###
 IF ( ${HPCC_POINT} GREATER 65 )
