@@ -269,7 +269,7 @@ public:
     void PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath = _T(""), int level = 0);
     void Update(const WPathVector & folders, const std::wstring & xml);
     void PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path);
-    CEclFile * CreateFile(const std::_tstring & dottedPath, const std::_tstring & path = _T(""));
+    CEclFile * CreateMetaFile(const std::_tstring & dottedPath, const std::_tstring & path = _T(""));
     bool LoadImports(const std::_tstring & path, const WPathVector & folders);
     bool GetPathFromModule(const std::_tstring & module, const WPathVector & folders, CString &retPath, bool &retIsFolder);
     CEclFile *GetSourceFileFromPath(const std::wstring & path);
