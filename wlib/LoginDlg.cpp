@@ -959,9 +959,12 @@ const TCHAR * GetAboutVersion(std::_tstring &version)
 
 bool CheckPasswordExpiration(int passwordExpirationWarningDays, int passwordDaysRemaining, CString &retMsg)
 {
-	if (passwordExpirationWarningDays && passwordDaysRemaining <= passwordExpirationWarningDays) {
+	if (passwordExpirationWarningDays && passwordDaysRemaining >= -1 && passwordDaysRemaining <= passwordExpirationWarningDays) {
 		CString msg;
-		msg.Format(_T("Your password expires in %i day(s)\nDo you want to change it?"), passwordDaysRemaining, retMsg);
+		if (passwordDaysRemaining == -1)
+			msg = _T("Your password has expired.\nDo you want to change it?");
+		else
+			msg.Format(_T("Your password expires in %i day(s)\nDo you want to change it?"), passwordDaysRemaining, retMsg);
 		if (::MessageBox(NULL, msg, _T("ECL IDE"), MB_ICONASTERISK | MB_YESNO) == IDYES)
 		{
 			if (DoModalChangePassword()) {
