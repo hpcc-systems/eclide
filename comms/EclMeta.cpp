@@ -40,7 +40,7 @@ public:
             m_currSource = m_meta->GetSourceFromPath(e.m_attr[_T("sourcePath")]);
         }
         else if (e.m_tag.compare(_T("Query")) == 0) {
-            m_currSource = m_meta->CreateFile(_T("query"), _T(".\"));
+            m_currSource = m_meta->CreateMetaFile(_T("query"), _T(".\\"));
         }
         else if (e.m_tag.compare(_T("Definition")) == 0)
         {
@@ -318,7 +318,7 @@ void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const st
     }
 }
 
-CEclFile *CEclMeta::CreateFile(const std::_tstring & dottedPath, const std::_tstring & path)
+CEclFile *CEclMeta::CreateMetaFile(const std::_tstring & dottedPath, const std::_tstring & path)
 {
     CEclFile *file = new CEclFile(path);
     m_masterMeta[dottedPath] = file;
