@@ -33,6 +33,7 @@ struct ContextState
     bool CanMoveAttribute;
     bool CanDeleteAttribute;
     bool CanLabel;
+    bool CanCombine;
 };
 
 template<typename T>
@@ -106,6 +107,7 @@ public:
         m.EnableMenuItem(ID_REPOSITORY_MOVEATTRIBUTE, state.CanMoveAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_COPYATTRIBUTE, state.CanMoveAttribute ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_DELETEATTRIBUTE, state.CanDeleteAttribute ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_FILE_CREATEMODFILE, state.CanCombine ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_LABEL, state.CanLabel ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_REFRESH, MF_ENABLED);
 
@@ -316,6 +318,9 @@ public:
         case ID_CHANGETYPELOCAL_SALT:
             pT->m_view.DoChangeAttributeType(s.attrs[0].get(), s.attrs[0]->GetLabel(), ATTRIBUTE_TYPE_SALT);
             break;
+        case ID_FILE_CREATEMODFILE:
+            pT->m_view.DoCreateModFile(s.attrs);
+            break;
         default:
             if (pick >= ID_REPOSITORY_INVOKE + 100)
             {
@@ -380,6 +385,7 @@ public:
 
         state.CanOpen = s.attrs.size() > 0;
         state.CanOpenBuilder = s.attrs.size() > 0;
+        state.CanCombine = s.attrs.size() > 1;
         state.CanOpenInExplorer = (s.mods.size() + s.attrs.size() == 1);
         state.CanPrint = false;
         state.CanCopy = s.mods.size() == 0 && s.attrs.size() > 0;
