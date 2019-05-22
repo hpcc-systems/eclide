@@ -102,9 +102,10 @@ public:
         }
         else if (e.m_tag.compare(_T("Param")) == 0) {
             CEclParam *param = m_paramStack.top();
-            param->AddName(e);
+            param->UpdateAttrs(e);
             CEclDefinition *def = m_defStack.top();
             def->AddParam(param);
+            m_paramStack.pop();
         }
         else if (e.m_tag.compare(_T("content")) == 0) {
             CEclDefinition *def = m_defStack.top();
@@ -163,7 +164,7 @@ CEclFile *CEclMeta::GetSourceFromPath(const std::wstring & path)
     return NULL;
 }
 
-bool CEclMeta::GetPathFromModule(const std::_tstring & module, const WPathVector & folders, CString &retPath, bool &retIsFolder)
+bool CEclMeta::GetPathFromModule(const std::_tstring & module, const WPathVector & folders, std::_tstring & retPath, bool &retIsFolder)
 {
     std::wstring dirpath = _T("");
     typedef boost::tokenizer<boost::char_separator<TCHAR>, std::_tstring::const_iterator, std::_tstring> tokenizer;
@@ -195,7 +196,7 @@ bool CEclMeta::GetPathFromModule(const std::_tstring & module, const WPathVector
                         }
                         else
                         {
-                            retPath = pathToString(itrDir->path()).c_str();
+                            retPath = itrDir->path().c_str();
                             retIsFolder = boost::filesystem::is_directory(*itrDir) ? true : false;
                             return true;
                         }
@@ -237,17 +238,17 @@ bool CEclMeta::LoadImports(const std::_tstring & path, const WPathVector & folde
             std::wstring module = itrImport->second.get()->GetRef();
             if (!MetaExists(module) && module.size())
             {
-                CString dirPath = _T("");
+                std::wstring dirPath = _T("");
 
                 if (GetPathFromModule(module, folders, dirPath, isFolder))
                 {
                     if (isFolder)
                     {
-                        m_masterMeta[module] = new CEclFolder(stringToPath(dirPath.GetString()));
+                        m_masterMeta[module] = new CEclFolder(stringToPath(dirPath));
                     }
                     else
                     {
-                        m_masterMeta[module] = new CEclFile(stringToPath(dirPath.GetString()));
+                        m_masterMeta[module] = new CEclFile(stringToPath(dirPath));
                     }
                     found = true;
                 }
@@ -258,28 +259,68 @@ bool CEclMeta::LoadImports(const std::_tstring & path, const WPathVector & folde
     return found;
 }
 
-bool CEclMeta::LoadTooltips(const std::_tstring & path)
+bool CEclMeta::LoadFunctions(const std::_tstring & path)
 {
     bool found = false;
-    std::map<std::wstring, StlLinked<CEclDefinition> > funcs;
 
     for (std::map<std::wstring, StlLinked<CEclMetaData> >::iterator itr = m_masterMeta.begin(); itr != m_masterMeta.end(); ++itr)
     {
         if (CEclFile *file = dynamic_cast<CEclFile*>(itr->second.get()))
         {
-            found = file->GetFunctions(funcs);
+            found = file->GetFunctions(m_funcs) ? true : found;
         }
     }
-    if (found)
-    {
-        CEclDefinition *func = NULL;
-        for (EclDefinitionMap::iterator itr = funcs.begin(); itr != funcs.end(); ++itr)
-        {
-            func = itr->second.get();
-            //AddTooltip(label, documentation);
-        }
-    }
+
     return found;
+}
+
+const TCHAR * CEclMeta::GetFunctionTooltip(const std::_tstring & key, std::_tstring & tooltip)
+{
+    tooltip = _T("");
+    std::_tstring content = _T("");
+
+    CEclDefinition *func = NULL;
+    for (EclDefinitionMap::iterator itr = m_funcs.begin(); itr != m_funcs.end(); ++itr)
+    {
+        if (boost::algorithm::iequals(itr->second.get()->GetFullname(), key) || boost::algorithm::iends_with(itr->second.get()->GetName(), key))
+            {
+            std::_tstring content = itr->second.get()->GetContent();
+            if (content.size())
+            {
+                tooltip += _T("\n");
+            }
+            tooltip += itr->second.get()->GetFunctionType();
+            tooltip += _T(" ") + (std::_tstring)itr->second.get()->GetName();
+
+            CEclParam *param = NULL;
+            EclParamMap params = itr->second.get()->GetParams();
+            if (params.size())
+            {
+                tooltip += _T(" (");
+            }
+            for (EclParamMap::iterator itrp = params.begin(); itrp != params.end();)
+            {
+                param = itrp->second.get();
+                tooltip += (std::_tstring)param->GetType() + _T(" ") + param->GetName();
+                if (++itrp != params.end())
+                {
+                    tooltip += _T(", ");
+                }
+            }
+            if (params.size())
+            {
+                tooltip += _T(")");
+            }
+
+            if (content.size())
+            {
+                tooltip += _T("\n") + content;
+            }
+            break;
+        }
+    }
+
+    return tooltip.c_str();
 }
 
 void CEclMeta::PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path)
@@ -443,7 +484,7 @@ bool CEclMeta::FindImportAs()
             {
                 if (CEclImport *ref = file->GetImportRefs(m_autoTokens[0]))
                 {
-                    m_autoTokens[0] = ref->GetRef().c_str();
+                    m_autoTokens[0] = ref->GetRef();
                     BuildTokenStr();
                     found = true;
                     break;

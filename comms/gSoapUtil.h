@@ -1,5 +1,7 @@
 #pragma once
 
+#define NSOAP_DEBUG // Change to SOAP_DEBUG to turn on SOAP log files
+
 #include "SoapUtil.h"
 #include "Global.h"
 #include "..\config.h"

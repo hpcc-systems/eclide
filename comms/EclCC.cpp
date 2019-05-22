@@ -175,6 +175,11 @@ public:
         return false;
     }
 
+    const TCHAR * GetToolTip(const std::_tstring & key, std::_tstring & tooltip)
+    {
+        return m_eclMeta.GetFunctionTooltip(key, tooltip);
+    }
+
     SMC::IVersion * GetBuild() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -392,7 +397,7 @@ public:
         m_eclMeta.PopulateMetaUpwards(m_eclFolders, path);
         m_eclMeta.Update(m_eclFolders, xmlMeta);
         m_eclMeta.LoadImports(path,m_eclFolders);
-        m_eclMeta.LoadTooltips(path);
+        m_eclMeta.LoadFunctions(path);
 
 #ifdef _DEBUG
         // Temporary file saving for developmemnt

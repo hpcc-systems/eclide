@@ -68,7 +68,7 @@ class CLIB_API Element
 {
 protected:
     std::wstring m_content;
-    std::_tstring m_public_content;
+    mutable std::_tstring m_public_content;
 
 public:
     std::_tstring m_tag;
@@ -101,7 +101,7 @@ public:
         m_content.append(content, len);
     }
 
-    const TCHAR * GetContent()
+    const TCHAR * GetContent() const
     {
         m_public_content = CW2T(m_content.c_str(), CP_UTF8);
         return m_public_content.c_str();
