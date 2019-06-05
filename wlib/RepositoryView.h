@@ -10,6 +10,7 @@
 #include "utilDateTime.h"
 #include <ModuleHelper.h>
 #include "AttrListDlg.h"
+#include "ModFileRepository.h"
 
 template<typename T>
 class CRepositoryViewT
@@ -450,6 +451,27 @@ public:
                 CString prog_title;
                 prog_title.LoadString(IDR_MAINFRAME);
                 pT->MessageBox(_T("WARNING:  Some files could not be moved."), prog_title, MB_ICONEXCLAMATION);
+            }
+        }
+    }
+    void DoCreateModFile(IAttributeVector & attrs)
+    {
+        static const TCHAR szFilter[] = _T("Mod Files(*.mod)\0*.mod\0All Files (*.*)\0*.*\0\0");
+        T* pT = static_cast<T*>(this);
+        CFileDialogEx wndFileDialog(FALSE, _T(".mod"), _T("Unamed.mod"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, pT->m_hWnd);
+        if (IDOK == wndFileDialog.DoModal())
+        {
+            CUnicodeFile file;
+            if (file.Create(wndFileDialog.GetPathName()))
+            {
+                for (IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
+                {
+                    file.Write(IMPORT_MARKER);
+                    file.Write(itr->get()->GetQualifiedLabel(true));
+                    file.Write(_T("\n"));
+                    file.Write(itr->get()->GetText());
+                }
+                file.Close();
             }
         }
     }

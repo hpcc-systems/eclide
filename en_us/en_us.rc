@@ -1728,6 +1728,7 @@ BEGIN
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
         MENUITEM "Delete File\tDel",            ID_REPOSITORY_DELETEATTRIBUTE
+        MENUITEM "Create Mod File",             ID_FILE_CREATEMODFILE
         MENUITEM SEPARATOR
         MENUITEM "Refresh",                     ID_REPOSITORY_REFRESH
         MENUITEM "Collapse All",                ID_REPOSITORY_COLLAPSEALL

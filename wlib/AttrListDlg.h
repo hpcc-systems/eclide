@@ -1,5 +1,8 @@
 #pragma once
 
+#define IMPORT_MARKER _T("//Import:")
+#define COMMENT_MARKER _T("//Comment:")
+
 #include "wlib.h"
 #include <Repository.h> 
 #include <Workspace.h> 
