@@ -4,6 +4,7 @@
 #include <UtilFilesystem.h>
 #include <Thread.h>
 #include "DiskAttribute.h"
+#include "Logger.h"
 
 CDiskMonitor::CDiskMonitor() : m_doMonitor(false)
 {
@@ -12,12 +13,18 @@ CDiskMonitor::CDiskMonitor() : m_doMonitor(false)
 void CDiskMonitor::monitor(const boost::filesystem::path & path)
 {
     ATLASSERT(!clib::filesystem::is_directory(path));
-    ATLASSERT(clib::filesystem::exists(path));
-    m_file = path;
-    m_folder = path;
-    m_folder.remove_filename();
-    m_doMonitor = true;
-    clib::thread run(__FUNCTION__, boost::bind(&thread_MonitorFolder, this));
+    if (clib::filesystem::exists(path))
+    {
+        m_file = path;
+        m_folder = path;
+        m_folder.remove_filename();
+        m_doMonitor = true;
+        clib::thread run(__FUNCTION__, boost::bind(&thread_MonitorFolder, this));
+    }
+    else
+    {
+        _DBGLOG(LEVEL_WARNING, (boost::format("File not found - %1%") % path).str().c_str());
+    }
 }
 
 CDiskMonitor::~CDiskMonitor()
