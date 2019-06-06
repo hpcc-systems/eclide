@@ -1148,20 +1148,11 @@ public:
         return true;
     }
 
-    void FoldAll() 
+    void FoldAll(bool expanding = false)
     {
         T* pT = static_cast<T*>(this);
         pT->Colourise(0, -1);
         int maxLine = pT->GetLineCount();
-        bool expanding = true;
-        for (int lineSeek = 0; lineSeek < maxLine; lineSeek++) 
-        {
-            if (pT->GetFoldLevel(lineSeek) & SC_FOLDLEVELHEADERFLAG) 
-            {
-                expanding = !pT->GetFoldExpanded(lineSeek);
-                break;
-            }
-        }
 
         for (int line = 0; line < maxLine; line++) 
         {

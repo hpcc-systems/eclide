@@ -636,6 +636,16 @@ void CBuilderDlg::HideAdvanced()
         m_advancedCtrl.SetWindowText(_T("More"));
 }
 
+void CBuilderDlg::OnFoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+{
+    m_view.FoldAll();
+}
+
+void CBuilderDlg::OnUnfoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+{
+    m_view.FoldAll(true);
+}
+
 void CBuilderDlg::OnFileSaveAs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 {
     DoFileSaveAs();
