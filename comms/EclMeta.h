@@ -49,34 +49,92 @@ public:
     }
 };
 
+class CEclParam : public CEclMetaData
+{
+protected:
+    std::_tstring m_name;
+    std::_tstring m_type;
+public:
+    BEGIN_CUNKNOWN
+    END_CUNKNOWN(CUnknown)
+
+    CEclParam() { }
+    const TCHAR * GetName() { return m_name.c_str(); }
+    const TCHAR * GetType() { return m_type.c_str(); }
+    void UpdateAttrs(const Element &e)
+    {
+        GetValue(e, _T("name"), m_name);
+        GetValue(e, _T("type"), m_type);
+    };
+    void AddType(const Element &e)
+    {
+        GetValue(e, _T("type"), m_type);
+    }
+    void AddName(const Element &e)
+    {
+        GetValue(e, _T("name"), m_name);
+    }
+};
+typedef StlLinked<CEclParam> CEclParamAdapt;
+typedef std::map<std::wstring, StlLinked<CEclParam> > EclParamMap;
+
 class CEclDefinition : public CEclMetaData
 {
 protected:
     int m_body, m_end, m_line, m_start;
+    std::_tstring m_fullname;
     std::_tstring m_name;
     std::_tstring m_type;
+    std::_tstring m_inheritType;
+    std::_tstring m_functionType;
+    std::_tstring m_content;
     std::map<std::wstring, StlLinked<CEclDefinition> > m_defs;
+    EclParamMap m_params;
+
 public:
     BEGIN_CUNKNOWN
-
     END_CUNKNOWN(CUnknown)
+
     std::map<std::wstring, std::wstring> m_fields;
 
     CEclDefinition() { m_body = m_end = m_line = m_start = 0; }
-    CEclDefinition(const CEclDefinition & def) { m_name = def.m_name; m_type = def.m_type; m_body = def.m_body; m_end = def.m_end;  m_line = def.m_line; m_start = def.m_start; m_fields = def.m_fields; m_defs = def.m_defs; }
-    std::_tstring GetName() { return m_name; }
-    std::_tstring GetType() { return m_type; }
-    void UpdateAttrs(Element &e)
+    CEclDefinition(const CEclDefinition & def) { m_fullname = def.m_fullname; m_name = def.m_name; m_type = def.m_type; m_inheritType = def.m_inheritType; m_body = def.m_body; m_end = def.m_end; m_line = def.m_line; m_start = def.m_start; m_fields = def.m_fields; m_defs = def.m_defs; m_params = def.m_params; m_content = def.m_content; m_functionType = def.m_functionType; }
+    const TCHAR * GetName() { return m_name.c_str(); }
+    const TCHAR * GetFullname() { return m_fullname.c_str(); }
+    const TCHAR * GetType() { return m_type.c_str(); }
+    const TCHAR * GetFunctionType() { return m_functionType.c_str(); }
+    const TCHAR * GetInheritType() { return m_inheritType.c_str(); }
+    const TCHAR * GetContent() { return m_content.c_str(); }
+    EclParamMap GetParams() { return m_params; }
+    void UpdateAttrs(const Element &e)
     {
         std::wstring name, type;
+        GetValue(e, _T("fullname"), m_fullname);
         GetValue(e, _T("name"), m_name);
         GetValue(e, _T("type"), m_type);
+        GetValue(e, _T("inherittype"), m_inheritType);
         GetIntValue(e, _T("body"), m_body);
         GetIntValue(e, _T("end"), m_end);
         GetIntValue(e, _T("line"), m_line);
         GetIntValue(e, _T("start"), m_start);
     }
-    void AddField(Element e)
+    bool HasDefinitions()
+    {
+        return m_defs.size() ? true : false;
+    }
+    void AddFunctionType(const Element &e)
+    {
+        GetValue(e, _T("type"), m_functionType);
+    }
+    void AddDocumentation(const Element &e)
+    {
+        m_content = e.GetContent();
+    }
+    void AddParam(CEclParam *param)
+    {
+        m_params[param->GetName()] = param;
+    }
+    void AddField(const Element &e)
     {
         std::wstring name, type;
         GetValue(e, _T("name"), name);
@@ -112,7 +170,7 @@ public:
 
         if (boost::algorithm::iequals(GetType(), "record"))
         {
-            set.push_back(GetName().c_str());
+            set.push_back(GetName());
             found = true;
         }
         else if (boost::algorithm::iequals(GetType(), "module"))
@@ -128,6 +186,28 @@ public:
             }
         }
 
+        return found;
+    }
+    bool GetFunctions(std::map<std::wstring, StlLinked<CEclDefinition> > & defs)
+    {
+        bool found = false;
+        CEclDefinition *def = NULL;
+
+        for (std::map<std::wstring, StlLinked<CEclDefinition>>::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
+        {
+            def = itr->second.get();
+            if (boost::algorithm::iequals(def->GetType(), _T("module")) && def->HasDefinitions())
+            {
+                def->GetFunctions(defs);
+            }
+            else if (boost::algorithm::iequals(def->GetType(), _T("function")))
+            {
+                def = itr->second.get();
+                CEclDefinition *defNew = new CEclDefinition(*def);
+                defs[def->GetName()] = defNew;
+                found = true;
+            }
+        }
         return found;
     }
 };
@@ -147,10 +227,10 @@ public:
     END_CUNKNOWN(CUnknown)
 
     CEclImport() { m_end = m_line = m_start = 0; }
-    std::_tstring GetName() { return m_name; }
-    std::_tstring GetType() { return m_type; }
-    std::_tstring GetRef() { return m_ref; }
-    void UpdateAttrs(Element &e)
+    const TCHAR * GetName() { return m_name.c_str(); }
+    const TCHAR * GetType() { return m_type.c_str(); }
+    const TCHAR * GetRef() { return m_ref.c_str(); }
+    void UpdateAttrs(const Element &e)
     {
         std::wstring name, type;
         GetIntValue(e, _T("end"), m_end);
@@ -253,6 +333,18 @@ public:
         }
         return NULL;
     }
+    bool GetFunctions(std::map<std::wstring, StlLinked<CEclDefinition> > & defs)
+    {
+        bool found = false;
+        CEclDefinition *def = NULL;
+
+        for (EclDefinitionMap::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
+        {
+            def = itr->second.get();
+            found = def->GetFunctions(defs);
+        }
+        return found;
+    }
 };
 
 typedef std::map<std::wstring, StlLinked<CEclMetaData> > EclMetaDataMap;
@@ -264,6 +356,7 @@ public:
     std::vector<std::_tstring> m_autoTokens;
     std::_tstring m_autoString;
     std::_tstring m_autoLast;
+    std::map<std::wstring, StlLinked<CEclDefinition> > m_funcs;
 
     bool CEclMeta::MetaExists(const std::_tstring & key);
     void PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath = _T(""), int level = 0);
@@ -271,7 +364,9 @@ public:
     void PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path);
     CEclFile * CreateMetaFile(const std::_tstring & dottedPath, const std::_tstring & path = _T(""));
     bool LoadImports(const std::_tstring & path, const WPathVector & folders);
-    bool GetPathFromModule(const std::_tstring & module, const WPathVector & folders, CString &retPath, bool &retIsFolder);
+    bool LoadFunctions(const std::_tstring & path);
+    const TCHAR * GetFunctionTooltip(const std::_tstring & key, std::_tstring & tooltip);
+    bool GetPathFromModule(const std::_tstring & module, const WPathVector & folders, std::_tstring & retPath, bool &retIsFolder);
     CEclFile *GetSourceFileFromPath(const std::wstring & path);
     CEclFile *GetSourceFromPath(const std::_tstring & path);
     bool GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, StdStringVector &set);
