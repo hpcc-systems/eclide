@@ -1,24 +1,20 @@
-project( EN_US )
+PROJECT( EN_US )
 
-set ( SRCS
-		en_us.rc
-		en_us.cpp
-		en_us.h
-		resource.h
-	)
+SET ( SRCS
+    en_us.cpp
+    en_us.h
+    resource.h
+)
 
-include_directories (
-	../clib
-	)
-
-if (Boost_FOUND)
-	include_directories ( ${Boost_INCLUDE_DIRS} )
-	link_directories ( ${Boost_LIBRARY_DIRS} )
-endif (Boost_FOUND)
+INCLUDE_DIRECTORIES (
+../clib
+)
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
-add_library ( EN_US SHARED
-		${SRCS}
-	)
 
-install ( TARGETS EN_US RUNTIME DESTINATION bin )
+ADD_LIBRARY ( EN_US SHARED
+    ${SRCS}
+    en_us.rc
+)
+
+INSTALL ( TARGETS EN_US RUNTIME DESTINATION bin )
