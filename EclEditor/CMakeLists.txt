@@ -1,134 +1,135 @@
-project( ECLEDITOR )
+PROJECT( ECLEDITOR )
 
-set ( SRCS
-		lexgeneral.cxx
-		lexecl.cxx
-		lexsalt.cxx
-		lexesdl.cxx
-		lexkel.cxx
-		lexdud.cxx
+SET ( SRCS
+    lexgeneral.cxx
+    lexecl.cxx
+    lexsalt.cxx
+    lexesdl.cxx
+    lexkel.cxx
+    lexdud.cxx
 
-		${SCINTILLA_INCLUDE_DIR}/include/SciLExer.h
+    ${SCINTILLA_INCLUDE_DIR}/SciLExer.h
 
-		${ECLEDITOR_SOURCE_DIR}/LexGENERAL.cxx
-		${ECLEDITOR_SOURCE_DIR}/LexSALT.cxx
-		${ECLEDITOR_SOURCE_DIR}/LexKEL.cxx
-		${ECLEDITOR_SOURCE_DIR}/LexESDL.cxx
-		${ECLEDITOR_SOURCE_DIR}/LexDUD.cxx
+    ${ECLEDITOR_SOURCE_DIR}/LexGENERAL.cxx
+    ${ECLEDITOR_SOURCE_DIR}/LexSALT.cxx
+    ${ECLEDITOR_SOURCE_DIR}/LexKEL.cxx
+    ${ECLEDITOR_SOURCE_DIR}/LexESDL.cxx
+    ${ECLEDITOR_SOURCE_DIR}/LexDUD.cxx
 
-		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/AutoComplete.h
-		${SCINTILLA_INCLUDE_DIR}/Src/CallTip.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/CallTip.h
-		./Catalogue.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Catalogue.h
-		${SCINTILLA_INCLUDE_DIR}/Src/CellBuffer.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/CellBuffer.h
-		${SCINTILLA_INCLUDE_DIR}/Src/CaseConvert.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/CaseConvert.h
-		${SCINTILLA_INCLUDE_DIR}/Src/CaseFolder.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/CaseFolder.h
-		${SCINTILLA_INCLUDE_DIR}/Src/CharClassify.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/CharClassify.h
-		${SCINTILLA_INCLUDE_DIR}/Src/ContractionState.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/ContractionState.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Decoration.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Decoration.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Document.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Document.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Editor.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Editor.h
-		${SCINTILLA_INCLUDE_DIR}/Src/EditModel.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/EditModel.h
-		${SCINTILLA_INCLUDE_DIR}/Src/EditView.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/EditView.h
-		${SCINTILLA_INCLUDE_DIR}/Src/ExternalLexer.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/ExternalLexer.h
-		${SCINTILLA_INCLUDE_DIR}/Src/FontQuality.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Indicator.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Indicator.h
-		${SCINTILLA_INCLUDE_DIR}/Src/KeyMap.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/KeyMap.h
-		#${SCINTILLA_INCLUDE_DIR}/Src/KeyWords.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/LineMarker.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/LineMarker.h
-		${SCINTILLA_INCLUDE_DIR}/Src/MarginView.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/MarginView.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Partitioning.h
-		${SCINTILLA_INCLUDE_DIR}/Src/PerLine.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/PerLine.h
-		${SCINTILLA_INCLUDE_DIR}/Src/PositionCache.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/PositionCache.h
-		#${SCINTILLA_INCLUDE_DIR}/Src/PropSet.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/RESearch.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/RESearch.h
-		${SCINTILLA_INCLUDE_DIR}/Src/RunStyles.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/RunStyles.h
-		${SCINTILLA_INCLUDE_DIR}/Src/ScintillaBase.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/ScintillaBase.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Selection.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Selection.h
-		${SCINTILLA_INCLUDE_DIR}/Src/SplitVector.h
-		${SCINTILLA_INCLUDE_DIR}/Src/Style.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/Style.h
-		#${SCINTILLA_INCLUDE_DIR}/Src/SVector.h
-		${SCINTILLA_INCLUDE_DIR}/Src/UniConversion.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/UniConversion.h
-		${SCINTILLA_INCLUDE_DIR}/Src/ViewStyle.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/ViewStyle.h
-		#${SCINTILLA_INCLUDE_DIR}/Src/WindowAccessor.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/XPM.cxx
-		${SCINTILLA_INCLUDE_DIR}/Src/XPM.h
+    ${SCINTILLA_SOURCE_DIR}/AutoComplete.cxx
+    ${SCINTILLA_SOURCE_DIR}/AutoComplete.h
+    ${SCINTILLA_SOURCE_DIR}/CallTip.cxx
+    ${SCINTILLA_SOURCE_DIR}/CallTip.h
+    ./Catalogue.cxx
+    ${SCINTILLA_SOURCE_DIR}/Catalogue.h
+    ${SCINTILLA_SOURCE_DIR}/CellBuffer.cxx
+    ${SCINTILLA_SOURCE_DIR}/CellBuffer.h
+    ${SCINTILLA_SOURCE_DIR}/CaseConvert.cxx
+    ${SCINTILLA_SOURCE_DIR}/CaseConvert.h
+    ${SCINTILLA_SOURCE_DIR}/CaseFolder.cxx
+    ${SCINTILLA_SOURCE_DIR}/CaseFolder.h
+    ${SCINTILLA_SOURCE_DIR}/CharClassify.cxx
+    ${SCINTILLA_SOURCE_DIR}/CharClassify.h
+    ${SCINTILLA_SOURCE_DIR}/ContractionState.cxx
+    ${SCINTILLA_SOURCE_DIR}/ContractionState.h
+    ${SCINTILLA_SOURCE_DIR}/Decoration.cxx
+    ${SCINTILLA_SOURCE_DIR}/Decoration.h
+    ${SCINTILLA_SOURCE_DIR}/Document.cxx
+    ${SCINTILLA_SOURCE_DIR}/Document.h
+    ${SCINTILLA_SOURCE_DIR}/Editor.cxx
+    ${SCINTILLA_SOURCE_DIR}/Editor.h
+    ${SCINTILLA_SOURCE_DIR}/EditModel.cxx
+    ${SCINTILLA_SOURCE_DIR}/EditModel.h
+    ${SCINTILLA_SOURCE_DIR}/EditView.cxx
+    ${SCINTILLA_SOURCE_DIR}/EditView.h
+    ${SCINTILLA_SOURCE_DIR}/ExternalLexer.cxx
+    ${SCINTILLA_SOURCE_DIR}/ExternalLexer.h
+    ${SCINTILLA_SOURCE_DIR}/FontQuality.h
+    ${SCINTILLA_SOURCE_DIR}/Indicator.cxx
+    ${SCINTILLA_SOURCE_DIR}/Indicator.h
+    ${SCINTILLA_SOURCE_DIR}/KeyMap.cxx
+    ${SCINTILLA_SOURCE_DIR}/KeyMap.h
+    #${SCINTILLA_SOURCE_DIR}/KeyWords.cxx
+    ${SCINTILLA_SOURCE_DIR}/LineMarker.cxx
+    ${SCINTILLA_SOURCE_DIR}/LineMarker.h
+    ${SCINTILLA_SOURCE_DIR}/MarginView.cxx
+    ${SCINTILLA_SOURCE_DIR}/MarginView.h
+    ${SCINTILLA_SOURCE_DIR}/Partitioning.h
+    ${SCINTILLA_SOURCE_DIR}/PerLine.cxx
+    ${SCINTILLA_SOURCE_DIR}/PerLine.h
+    ${SCINTILLA_SOURCE_DIR}/PositionCache.cxx
+    ${SCINTILLA_SOURCE_DIR}/PositionCache.h
+    #${SCINTILLA_SOURCE_DIR}/PropSet.cxx
+    ${SCINTILLA_SOURCE_DIR}/RESearch.cxx
+    ${SCINTILLA_SOURCE_DIR}/RESearch.h
+    ${SCINTILLA_SOURCE_DIR}/RunStyles.cxx
+    ${SCINTILLA_SOURCE_DIR}/RunStyles.h
+    ${SCINTILLA_SOURCE_DIR}/ScintillaBase.cxx
+    ${SCINTILLA_SOURCE_DIR}/ScintillaBase.h
+    ${SCINTILLA_SOURCE_DIR}/Selection.cxx
+    ${SCINTILLA_SOURCE_DIR}/Selection.h
+    ${SCINTILLA_SOURCE_DIR}/SplitVector.h
+    ${SCINTILLA_SOURCE_DIR}/Style.cxx
+    ${SCINTILLA_SOURCE_DIR}/Style.h
+    #${SCINTILLA_SOURCE_DIR}/SVector.h
+    ${SCINTILLA_SOURCE_DIR}/UniConversion.cxx
+    ${SCINTILLA_SOURCE_DIR}/UniConversion.h
+    ${SCINTILLA_SOURCE_DIR}/ViewStyle.cxx
+    ${SCINTILLA_SOURCE_DIR}/ViewStyle.h
+    #${SCINTILLA_SOURCE_DIR}/WindowAccessor.cxx
+    ${SCINTILLA_SOURCE_DIR}/XPM.cxx
+    ${SCINTILLA_SOURCE_DIR}/XPM.h
 
-		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/Accessor.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterCategory.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterCategory.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterSet.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/CharacterSet.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexAccessor.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerBase.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerBase.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerModule.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerModule.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerNoExceptions.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerNoExceptions.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerSimple.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/LexerSimple.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/OptionSet.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/PropSetSimple.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/PropSetSimple.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/StyleContext.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/StyleContext.h
-		${SCINTILLA_INCLUDE_DIR}/LexLib/WordList.cxx
-		${SCINTILLA_INCLUDE_DIR}/LexLib/WordList.h
-		
-#		${SCINTILLA_INCLUDE_DIR}/Win32/PlatformRes.h
-		${SCINTILLA_INCLUDE_DIR}/Win32/PlatWin.cxx
-		${SCINTILLA_INCLUDE_DIR}/Win32/ScintillaWin.cxx
-		${SCINTILLA_INCLUDE_DIR}/Win32/HanjaDic.cxx
-		${SCINTILLA_INCLUDE_DIR}/Win32/HanjaDic.h
-		
-		${SCINTILLA_INCLUDE_DIR}/Win32/ScintRes.rc
-	)
+    ${SCINTILLA_LEXLIB_DIR}/Accessor.cxx
+    ${SCINTILLA_LEXLIB_DIR}/Accessor.h
+    ${SCINTILLA_LEXLIB_DIR}/CharacterCategory.cxx
+    ${SCINTILLA_LEXLIB_DIR}/CharacterCategory.h
+    ${SCINTILLA_LEXLIB_DIR}/CharacterSet.cxx
+    ${SCINTILLA_LEXLIB_DIR}/CharacterSet.h
+    ${SCINTILLA_LEXLIB_DIR}/LexAccessor.h
+    ${SCINTILLA_LEXLIB_DIR}/LexerBase.cxx
+    ${SCINTILLA_LEXLIB_DIR}/LexerBase.h
+    ${SCINTILLA_LEXLIB_DIR}/LexerModule.cxx
+    ${SCINTILLA_LEXLIB_DIR}/LexerModule.h
+    ${SCINTILLA_LEXLIB_DIR}/LexerNoExceptions.cxx
+    ${SCINTILLA_LEXLIB_DIR}/LexerNoExceptions.h
+    ${SCINTILLA_LEXLIB_DIR}/LexerSimple.cxx
+    ${SCINTILLA_LEXLIB_DIR}/LexerSimple.h
+    ${SCINTILLA_LEXLIB_DIR}/OptionSet.h
+    ${SCINTILLA_LEXLIB_DIR}/PropSetSimple.cxx
+    ${SCINTILLA_LEXLIB_DIR}/PropSetSimple.h
+    ${SCINTILLA_LEXLIB_DIR}/StyleContext.cxx
+    ${SCINTILLA_LEXLIB_DIR}/StyleContext.h
+    ${SCINTILLA_LEXLIB_DIR}/WordList.cxx
+    ${SCINTILLA_LEXLIB_DIR}/WordList.h
+    
+#    ${SCINTILLA_INCLUDE_DIR}/Win32/PlatformRes.h
+    ${SCINTILLA_WIN32_DIR}/PlatWin.cxx
+    ${SCINTILLA_WIN32_DIR}/ScintillaWin.cxx
+    ${SCINTILLA_WIN32_DIR}/HanjaDic.cxx
+    ${SCINTILLA_WIN32_DIR}/HanjaDic.h
+)
 
-include_directories (
-	.
-	${SCINTILLA_INCLUDE_DIR}/Include
-	${SCINTILLA_INCLUDE_DIR}/LexLib
-	${SCINTILLA_INCLUDE_DIR}/Src
-		
-	${WTL_INCLUDE_DIR}/include
+INCLUDE_DIRECTORIES (
+    .
+    ${SCINTILLA_INCLUDE_DIR}
+    ${SCINTILLA_LEXLIB_DIR}
+    ${SCINTILLA_SOURCE_DIR}
+    ${SCINTILLA_WIN32_DIR}
+        
+    ${WTL_INCLUDE_DIR}
+)
 
-	)
-add_definitions( -DSCI_LEXER )
-add_library ( ECLEDITOR SHARED
-		${SRCS}
-	)
+ADD_DEFINITIONS( -DSCI_LEXER )
 
-target_link_libraries( ECLEDITOR
-	imm32
-	Msimg32
-	)
+ADD_LIBRARY ( ECLEDITOR SHARED
+    ${SRCS}
+    ${SCINTILLA_WIN32_DIR}/ScintRes.rc
+)
 
-install ( TARGETS ECLEDITOR RUNTIME DESTINATION bin )
+TARGET_LINK_LIBRARIES( ECLEDITOR
+    imm32
+    Msimg32
+    )
+
+INSTALL ( TARGETS ECLEDITOR RUNTIME DESTINATION bin )

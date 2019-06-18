@@ -29,7 +29,7 @@
 //  WTL  ---
 #define _WTL_NO_CSTRING
 #define _WTL_NO_WTYPES
-#include <atlapp.h>
+#include <wtl/atlapp.h>
 #define _Module (*_pModule)
 #include "stdwtl.h"
 
@@ -126,7 +126,14 @@ const TCHAR * const _COMMS_VER_STR = _T("build_3_08");
 #elif _COMMS_VER == 402682
 #  include "4_02-68200/WebService.h"
 #elif _COMMS_VER == 604000  //  Server 6.04.000 (aka 6.4.0)
-#  include "6_4_0/WebService.h"
+#  include "6_4_0/soapH.h"
+#  include "6_4_0/soapws_USCOREaccountServiceSoapProxy.h"
+#  include "6_4_0/soapWsAttributesServiceSoapProxy.h"
+#  include "6_4_0/soapWsDfuServiceSoapProxy.h"
+#  include "6_4_0/soapWsSMCServiceSoapProxy.h"
+#  include "6_4_0/soapWsTopologyServiceSoapProxy.h"
+#  include "6_4_0/soapWsWorkunitsServiceSoapProxy.h"
+#  include <gsoapWinInet.h>
 #else
 #  include "WebService.h"
 #endif

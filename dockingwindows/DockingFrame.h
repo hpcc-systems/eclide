@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <atlframe.h>
+#include <wtl/atlframe.h>
 #include "DockMisc.h"
 #include "PackageWindow.h"
 #include "DockingFocus.h"
