@@ -22,7 +22,7 @@
 
 //  WTL  ---
 #define _WTL_NO_CSTRING
-#include <wtl/atlapp.h>
+#include <atlapp.h>
 #define _Module (*_pModule)
 
 //  STL  ---

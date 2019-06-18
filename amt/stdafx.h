@@ -42,7 +42,7 @@
 #define _WTL_NO_WTYPES
 #define _WTL_NO_CSTRING
 #define _CSTRING_NS
-#include <wtl/atlapp.h>
+#include <atlapp.h>
 extern WTL::CAppModule _Module;
 #include "stdwtl.h"
 

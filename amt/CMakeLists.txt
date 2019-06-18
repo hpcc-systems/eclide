@@ -1,82 +1,84 @@
-PROJECT( AMT )
+project( AMT )
 
-SET ( SRCS
-    AMT.cpp
-    AMT.h
-    #AMTView.cpp
-    #AMTView.h
-    #CommandLine.cpp
-    #CommandLine.h
-    DependeesWnd.cpp
-    DependeesWnd.h
-    ../wlib/DiffView.cpp
-    ../EditLog/EditLog.cpp
-    Filter.h
-    LogView.cpp
-    LogView.h
-    MainFrm2.cpp
-    MainFrm2.h
-    ../wlib/MultiTree.cpp
-    #PlaceHolder.cpp
-    #PlaceHolder.h
-    RepositoryCompareDlg.cpp
-    RepositoryCompareDlg.h
-    RepositoryCompareView.cpp
-    RepositoryCompareView.h
-    #RepositorySynch.cpp
-    #RepositorySynch.h
-    Resource.h
-    Selection.cpp
-    Selection.h
-    ../wlib/SourceView.cpp
-    Status.h
-    targetver.h
-    TreePairNode.cpp
-    TreePairNode.h
-)
+set ( SRCS
+		AMT.cpp
+		AMT.h
+		AMT.rc
+		#AMTView.cpp
+		#AMTView.h
+		#CommandLine.cpp
+		#CommandLine.h
+		DependeesWnd.cpp
+		DependeesWnd.h
+		../wlib/DiffView.cpp
+		../EditLog/EditLog.cpp
+		Filter.h
+		LogView.cpp
+		LogView.h
+		MainFrm2.cpp
+		MainFrm2.h
+		../wlib/MultiTree.cpp
+		#PlaceHolder.cpp
+		#PlaceHolder.h
+		RepositoryCompareDlg.cpp
+		RepositoryCompareDlg.h
+		RepositoryCompareView.cpp
+		RepositoryCompareView.h
+		#RepositorySynch.cpp
+		#RepositorySynch.h
+		Resource.h
+		Selection.cpp
+		Selection.h
+		../wlib/SourceView.cpp
+		Status.h
+		targetver.h
+		TreePairNode.cpp
+		TreePairNode.h
+	)
 
-INCLUDE_DIRECTORIES (
-    ../clib
-    ../ecllib
-    ../comms
-    ../vdiff
-    ../wlib
+include_directories (
+		../clib
+		../ecllib
+		../comms
+		../vdiff
+		../wlib
 
-    ../wtlex
-    ../tabctrls
-    ../dockingwindows
-    ../EclEditor
+		../wtlex
+		../tabctrls
+		../dockingwindows
+		../EclEditor
 
-    ${Boost_INCLUDE_DIRS}
-    ${WTL_INCLUDE_DIR}
-    ${SCINTILLA_INCLUDE_DIR}
-    ${BUGTRAP_DIR}
-)
+		${WTL_INCLUDE_DIR}/include
+		${SCINTILLA_INCLUDE_DIR}/include
+		${BUGTRAP_INCLUDE_DIR}
+	)
+
+if (Boost_FOUND)
+	include_directories ( ${Boost_INCLUDE_DIRS} )
+	link_directories ( ${Boost_LIBRARY_DIRS} )
+endif (Boost_FOUND)
 
 ADD_DEFINITIONS( -D_AFXDLL -D_USRDLL )
-
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
+add_executable ( AMT WIN32
+		${SRCS}
+	)
 
-ADD_EXECUTABLE ( AMT WIN32
-    ${SRCS}
-    AMT.rc
-)
+add_dependencies ( AMT
+		CLIB
+		COMMS
+		WLIB
+		BUGTRAP
+	)
 
-ADD_DEPENDENCIES ( AMT
-    CLIB
-    COMMS
-    WLIB
-    BUGTRAP
-)
+target_link_libraries( AMT
+		CLIB
+		COMMS
+		WLIB
+		BUGTRAP
+	)
 
-TARGET_LINK_LIBRARIES( AMT
-    CLIB
-    COMMS
-    WLIB
-    BUGTRAP
-    ${Boost_LIBRARIES}
-)
+set_target_properties(AMT PROPERTIES
+    LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")
 
-SET_TARGET_PROPERTIES(AMT PROPERTIES LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")
-
-INSTALL ( TARGETS AMT RUNTIME DESTINATION bin )
+install ( TARGETS AMT RUNTIME DESTINATION bin )

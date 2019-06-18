@@ -65,10 +65,10 @@ void save(const T &s, const char * filename)
         }
     }
     // make an archive
-    std::ofstream ofs(filename);
+    std::_tofstream ofs(filename);
     if (ofs.good()) {
         try {
-            boost::archive::xml_oarchive oa(ofs);
+            boost::archive::xml__toarchive oa(ofs);
             oa << BOOST_SERIALIZATION_NVP(s);
         } catch (boost::archive::archive_exception & e) {
             _DBGLOG(LEVEL_WARNING, e.what());
@@ -88,10 +88,10 @@ template<typename T>
 void restore(T &s, const char * filename)
 {
     // open the archive
-    std::ifstream ifs(filename);
+    std::_tifstream ifs(filename);
     if (ifs.good()) {
         try {
-            boost::archive::xml_iarchive ia(ifs);
+            boost::archive::xml__tiarchive ia(ifs);
             // restore the schedule from the archive
             ia >> BOOST_SERIALIZATION_NVP(s);
             s.UpdateID();

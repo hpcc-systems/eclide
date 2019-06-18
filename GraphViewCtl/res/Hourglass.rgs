@@ -1,0 +1,27 @@
+HKCR
+{
+	SeisintGraphViewControl.Hourglass.1 = s 'Hourglass Object'
+	{
+		CLSID = s '{B067BDCD-B1A6-4790-82B1-D843B780BF15}'
+	}
+	SeisintGraphViewControl.Hourglass = s 'Hourglass Object'
+	{
+		CLSID = s '{B067BDCD-B1A6-4790-82B1-D843B780BF15}'
+		CurVer = s 'SeisintGraphViewControl.Hourglass.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B067BDCD-B1A6-4790-82B1-D843B780BF15} = s 'Hourglass Object'
+		{
+			ProgID = s 'SeisintGraphViewControl.Hourglass.1'
+			VersionIndependentProgID = s 'SeisintGraphViewControl.Hourglass'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{B7729748-C0E5-45B5-A29D-B89AD5C9FE81}'
+		}
+	}
+}

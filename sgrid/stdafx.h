@@ -53,12 +53,12 @@ typedef CAtlString CString;
 }
 
 //  WTL  ---
-#include <wtl/atlapp.h>
+#include <atlapp.h>
 #define _Module (*_pModule)
 
-#include "wtl/atlframe.h"
-#include "wtl/atlcrack.h"
-#include "wtl/atlgdi.h"
+#include "atlframe.h"
+#include "atlcrack.h"
+#include "atlgdi.h"
 #include "atlgdix.h"
 
 #include "shlwapi.h"

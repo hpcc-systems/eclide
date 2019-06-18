@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:util='http://schemas.microsoft.com/wix/UtilExtension'>
+
+  <?include defines.wxi ?>
+  <?define Name='HPCC Graph Control x64' ?>
+  <?define Description='HPCC Graph Control x64 Installer' ?>
+
+  <Product Id='$(var.ProductCode)' UpgradeCode='$(var.GraphControl64UpgradeCode)' Name='$(var.Name)' Language='1033' Version='$(var.ProductVersion)' Manufacturer='$(var.Manufacturer)'>
+    <Package Id='*' Description='$(var.Description)' Manufacturer='$(var.Manufacturer)' InstallerVersion='300' Compressed='yes' InstallScope='perMachine'/>
+    <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' />
+
+    <!-- Disable Downgrade Checking
+    <Upgrade Id='$(var.GraphControl64UpgradeCode)'>
+      <UpgradeVersion OnlyDetect='yes' Property='GC_SELFFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='GC_NEWERFOUND' Minimum='$(var.ProductVersion)' IncludeMinimum='no' />
+      <UpgradeVersion OnlyDetect='no' Property='GC_PREVIOUSFOUND' Minimum='1.0.0' IncludeMinimum='yes' Maximum='$(var.ProductVersion)' IncludeMaximum='no' />
+    </Upgrade>
+    
+    <CustomAction Id='AlreadyUpdated' Error='[ProductName] is already installed.' />
+    <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
+    <CustomAction Id="SetProgramFolder" Return="check" Property="ProgramMenuDir" Value="[ProgramMenuFolder][WIX_GROUP]"></CustomAction>
+    -->
+
+    <UIRef Id='MyWixUI_Minimal' />
+
+    <!-- Directory Structure -->
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
+        <Directory Id='PF_FOLDER' Name='HPCC Systems'/>
+      </Directory>
+
+      <Directory Id='WIX_DIR_COMMON_DOCUMENTS' Name='CommonDocs'>
+        <Directory Id='CD_FOLDER' Name='HPCC Systems'/>
+      </Directory>
+
+      <Directory Id='PDB_FOLDER' Name='Debug Symbols'/>
+
+    </Directory>
+
+    <!--  ActiveX  -->
+    <DirectoryRef Id='PFHPCCGraph_Control_x64_FOLDER'>
+      <Component Id='RegisterAX_Component' Guid='{0712D3A5-E8E7-4D3B-9E0E-D061E05C972A}'>
+        <File Id='npHPCCSystemsGraphViewControl' Name='npHPCCSystemsGraphViewControl.dll' DiskId='1' Source='$(var.StageFolder)\PF\HPCC\Graph Control x64\npHPCCSystemsGraphViewControl.dll' >
+          <TypeLib Id='{ADDF58CE-A46A-42CB-BCFC-F28C4D7F950F}' Description='LexisNexisGraphViewControl 1.0 Type Library' HelpDirectory='PFHPCCGraph_Control_FOLDER' Language='0' MajorVersion='1' MinorVersion='0'>
+          <AppId Description='FireBreathWin' Id='{B415CD14-B45D-4BCA-B552-B06175C38606}'>
+            <Class Id='{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}' Context='InprocServer32' Description='HPCCSystems Graph View Control' ThreadingModel='apartment' Version='1' Programmable='yes' Control='yes'>
+              <ProgId Id='HPCCSystems.HPCCSystemsGraphViewControl.1' Description='HPCCSystems Graph View Control'>
+                <ProgId Id='HPCCSystems.HPCCSystemsGraphViewControl' Description='HPCCSystems Graph View Control' />
+              </ProgId>
+            </Class>
+          </AppId>
+          <Interface Id='{19170988-05B7-4A75-B249-3F3F18533CDF}' Name='IFBComJavascriptObject' ProxyStubClassId32='{00020424-0000-0000-C000-000000000046}' />
+          <Interface Id='{457AFBF6-B5DF-41F6-8BC2-C9E8135150D2}' Name='IFBControl' ProxyStubClassId32='{00020424-0000-0000-C000-000000000046}' />
+          <Interface Id='{E0C8280C-4448-45DF-A750-F1C5A8ED7C40}' Name='IFBComEventSource' ProxyStubClassId32='{00020420-0000-0000-C000-000000000046}' />
+        </TypeLib>
+        </File>
+        <ProgId Id='MIME' />
+        <RegistryValue Root='HKCR' Key='AppID\npHPCCSystemsGraphViewControl.dll' Name='AppID' Value='{B415CD14-B45D-4BCA-B552-B06175C38606}' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='CLSID\{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}\MiscStatus\1' Value='131473' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='CLSID\{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}\MiscStatus' Value='0' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='MIME\Database\Content Type\application/x-hpccsystemsgraphviewcontrol' Value='HPCCSystems Graph View Control' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='MIME\Database\Content Type\application/x-hpccsystemsgraphviewcontrol' Name='Extension' Value='' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='MIME\Database\Content Type\application/x-hpccsystemsgraphviewcontrol' Name='CLSID' Value='{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='Software\Microsoft\Windows\CurrentVersion\Ext\PreApproved\{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}' Value='' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='Software\Microsoft\Windows\CurrentVersion\Ext\Stats\{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}\iexplore\AllowedDomains\*' Value='' Type='string' Action='write' />
+        <RegistryValue Root='HKCR' Key='Software\Microsoft\Windows\CurrentVersion\Ext\Stats\{2FF57548-1DE4-4F32-B133-2B3FBDDBF909}\iexplore' Name='Count' Value='0' Type='integer' Action='write' />
+      </Component>
+      <Component Id='RegisterPlugin_Component' Guid='{7140C23A-AB09-43F6-94E4-0E5A44ACCA92}'>
+        <RegistryValue Root='HKCU' Key='Software\MozillaPlugins\hpccsystems.com/HPCCSystemsGraphViewControl' Name='Path' Value='[#npHPCCSystemsGraphViewControl]' Type='string' Action='write' />
+      </Component>
+    </DirectoryRef>
+
+    <util:RestartResource Id="RestartIE" ProcessName="iexplore.exe" />
+    <util:RestartResource Id="RestartChrome" ProcessName="chrome.exe" />
+    <util:RestartResource Id="RestartFirefox" ProcessName="firefox.exe" />
+
+    <Feature Id='ProductFeature' AllowAdvertise='no' Title='SetupProject' Level='1'>
+      <ComponentRef Id='RegisterAX_Component' />
+      <ComponentRef Id='RegisterPlugin_Component' />
+
+      <ComponentGroupRef Id='Product.Generated' />
+    </Feature>
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before='InstallInitialize' />
+    </InstallExecuteSequence>
+
+    <!--<Icon Id="Foobar10.exe" SourceFile="FoobarAppl10.exe" />-->
+    <!--<Icon Id='ECLIDE.exe' SourceFile='eclide.exe' />-->
+
+</Product>
+</Wix>

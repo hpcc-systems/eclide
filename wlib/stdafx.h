@@ -23,7 +23,7 @@
 #define _WTL_NO_CSTRING
 #define _WTL_NO_WTYPES
 #define _WTL_NEW_PAGE_NOTIFY_HANDLERS
-#include <wtl/atlapp.h>
+#include <atlapp.h>
 #define _Module (*_pModule)
 #include "stdwtl.h"
 

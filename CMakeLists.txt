@@ -1,88 +1,76 @@
-# CMakeLists.txt  ---
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-PROJECT(ECLIDE)
+project ( ECLIDE )
+cmake_minimum_required (VERSION 2.8)
 
-# Build tag generation ---
-INCLUDE("${PROJECT_SOURCE_DIR}/version.cmake")
+set ( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 
-# Install Targets ---
-SET (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BIN files")
-SET (LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB files")
+##################################################################
 
-# Third Party Libraries ---
-FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options serialization signals thread)
-FIND_PATH(WTL_INCLUDE_DIR wtl/atlapp.h)
-FIND_PATH(VCPKG_ROOT_DIR include/wtl/atlapp.h)
-SET(GSOAP_DIR ${VCPKG_ROOT_DIR}/share/gsoap)
-FIND_PATH(SCINTILLA_INCLUDE_DIR Platform.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/include)
-FIND_PATH(SCINTILLA_SOURCE_DIR AutoComplete.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/src)
-FIND_PATH(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/LexLib)
-FIND_PATH(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/Win32)
-FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/Client)
-FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/zlib)
+# Build tag generation
 
-MESSAGE("includes")
-MESSAGE("  - boost:  ${Boost_INCLUDE_DIRS}")
-MESSAGE("  - wtl:  ${WTL_INCLUDE_DIR}")
-MESSAGE("  - Scintilla:  ${SCINTILLA_INCLUDE_DIR}")
+INCLUDE (  "${PROJECT_SOURCE_DIR}/version.cmake" )
 
-MESSAGE("sources")
-MESSAGE("  - Scintilla")
-MESSAGE("    - src:  ${SCINTILLA_SOURCE_DIR}")
-MESSAGE("    - LexLib:  ${SCINTILLA_LEXLIB_DIR}")
-MESSAGE("    - Win32:  ${SCINTILLA_WIN32_DIR}")
-MESSAGE("  - gsoap")
-MESSAGE("    - dir:  ${GSOAP_DIR}")
-MESSAGE("  - bugtrap")
-MESSAGE("    - src:  ${BUGTRAP_DIR}")
-MESSAGE("    - zlib:  ${BUGTRAP_ZLIB_DIR}")
+##################################################################
 
-# Compiler Flags  ---
-ADD_DEFINITIONS(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE)
+IF ( WIN32 )
+    SET ( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BIN files" )
+    SET ( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB files" )
+ELSE ( WIN32 )
+    SET ( EXECUTABLE_OUTPUT_PATH "/usr/lib/mozilla/plugins" )
+    SET ( LIBRARY_OUTPUT_PATH "/usr/lib/mozilla/plugins" )
+ENDIF ( WIN32 )
 
 MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar)
-    IF(MSVC)
-        GET_FILENAME_COMPONENT(PrecompiledBasename ${PrecompiledHeader} NAME_WE)
-        SET(PrecompiledBinary "$(IntDir)/${PrecompiledBasename}.pch")
-        SET(Sources ${${SourcesVar}})
+  IF(MSVC)
+    GET_FILENAME_COMPONENT(PrecompiledBasename ${PrecompiledHeader} NAME_WE)
+    SET(PrecompiledBinary "$(IntDir)/${PrecompiledBasename}.pch")
+    SET(Sources ${${SourcesVar}})
 
-        SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}
-            PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
-            OBJECT_OUTPUTS "${PrecompiledBinary}"
-        )
-        SET_SOURCE_FILES_PROPERTIES(${Sources}
-            PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
-            OBJECT_DEPENDS "${PrecompiledBinary}"
-        )
-        # Add precompiled header to SourcesVar
-        LIST(APPEND ${SourcesVar} ${PrecompiledSource})
-        LIST(APPEND ${SourcesVar} ${PrecompiledHeader})
-
-        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /FI\"${PrecompiledHeader}\"")
-    ENDIF(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}
+    				PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+    					OBJECT_OUTPUTS "${PrecompiledBinary}")
+    SET_SOURCE_FILES_PROPERTIES(${Sources}
+    				PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+    					OBJECT_DEPENDS "${PrecompiledBinary}") 
+    # Add precompiled header to SourcesVar
+    LIST(APPEND ${SourcesVar} ${PrecompiledSource})
+    LIST(APPEND ${SourcesVar} ${PrecompiledHeader})
+  ENDIF(MSVC)
 ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
-# Projects  ---
-ADD_SUBDIRECTORY (BugTrap)
-SET_PROPERTY(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
-ADD_SUBDIRECTORY (en_us)
-ADD_SUBDIRECTORY (clib)
-ADD_SUBDIRECTORY (EclLib)
-ADD_SUBDIRECTORY (sgrid)
-ADD_SUBDIRECTORY (EclEditor)
-ADD_SUBDIRECTORY (comms)
-ADD_SUBDIRECTORY (wlib)
-ADD_SUBDIRECTORY (eclide)
-ADD_SUBDIRECTORY (amt)
+include ( "${CMAKE_SOURCE_DIR}/cmake/Modules/Externals.cmake" )
 
-# Documents  ---
-IF(EXISTS "${PROJECT_SOURCE_DIR}/docs/ECLReference.chm")
-    INSTALL (PROGRAMS ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm DESTINATION bin)
-ELSE ()
-	MESSAGE("Skipping ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm (file does not exist)")
-ENDIF ()
+if (WIN32)
+	string(REGEX REPLACE "/Zm[0-9]+ *" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm500" CACHE STRING "" FORCE)
+	ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE )
 
-SET(DOC_FILES 
+	STRING(REPLACE "/Zi" "/ZI" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+	SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /SAFESEH:NO")
+	SET(CMAKE_MODULE_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS_DEBUG} /SAFESEH:NO")
+	SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /SAFESEH:NO")
+
+	SET(CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
+	SET(CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
+	SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO} /OPT:REF /OPT:ICF")
+ELSE (WIN32)
+
+ENDIF (WIN32)
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+
+ADD_SUBDIRECTORY ( BugTrap )
+set_property(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
+
+ADD_SUBDIRECTORY ( clib )
+ADD_SUBDIRECTORY ( comms )
+ADD_SUBDIRECTORY ( EclEditor )
+ADD_SUBDIRECTORY ( EclLib )
+ADD_SUBDIRECTORY ( en_us )
+ADD_SUBDIRECTORY ( sgrid )
+ADD_SUBDIRECTORY ( wlib )
+ADD_SUBDIRECTORY ( eclide )
+ADD_SUBDIRECTORY ( amt )
+set ( DOC_FILES 
+    ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm
     ${PROJECT_SOURCE_DIR}/docs/LangColorDUD.xml
     ${PROJECT_SOURCE_DIR}/docs/LangColorECL.xml
     ${PROJECT_SOURCE_DIR}/docs/LangColorESDL.xml
@@ -96,138 +84,142 @@ SET(DOC_FILES
     ${PROJECT_SOURCE_DIR}/docs/LanguageRefKEL.xml
     ${PROJECT_SOURCE_DIR}/docs/LanguageRefSalt.xml
     ${PROJECT_SOURCE_DIR}/docs/SyntaxColorSamples.xml
- )
-INSTALL (FILES ${DOC_FILES} DESTINATION bin)
-INSTALL (FILES ${PROJECT_SOURCE_DIR}/LICENSE.txt DESTINATION ".")
+  )
+install ( FILES ${DOC_FILES} DESTINATION bin )
+Install ( FILES ${PROJECT_SOURCE_DIR}/LICENSE.txt DESTINATION "." )
 
-# Build tag generation  ---
-IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    SET(ARCH64BIT 1)
-ELSE ()
-    SET(ARCH64BIT 0)
-ENDIF ()
-MESSAGE ("-- 64bit architecture is ${ARCH64BIT}")
+##############################################
+# Build tag generation
 
-SET(projname ${HPCC_PROJECT})
-SET(majorver ${HPCC_MAJOR})
-SET(minorver ${HPCC_MINOR})
-SET(point ${HPCC_POINT})
-IF("${HPCC_MATURITY}" STREQUAL "release")
-    SET(stagever "${HPCC_SEQUENCE}")
-ELSE()
-    SET(stagever "${HPCC_MATURITY}${HPCC_SEQUENCE}")
-ENDIF()
-SET(version ${majorver}.${minorver}.${point})
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set ( ARCH64BIT 1 )
+else ()
+    set ( ARCH64BIT 0 )
+endif ()
+message ("-- 64bit architecture is ${ARCH64BIT}")
 
-IF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    SET(stagever "${stagever}-Debug")
+set(projname ${HPCC_PROJECT})
+set(majorver ${HPCC_MAJOR})
+set(minorver ${HPCC_MINOR})
+set(point ${HPCC_POINT})
+if ( "${HPCC_MATURITY}" STREQUAL "release" )
+    set(stagever "${HPCC_SEQUENCE}")
+else()
+    set(stagever "${HPCC_MATURITY}${HPCC_SEQUENCE}")
+endif()
+set(version ${majorver}.${minorver}.${point})
+
+IF ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set( stagever "${stagever}-Debug" )
 ENDIF ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+##############################################
 
-# CPack  ---
-INCLUDE("InstallRequiredSystemLibraries")
-INSTALL(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/Debug/ CONFIGURATIONS Debug DESTINATION bin FILES_MATCHING PATTERN "*.dll")
-INSTALL(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/MinSizeRel/ CONFIGURATIONS MinSizeRel DESTINATION bin FILES_MATCHING PATTERN "*.dll")
-INSTALL(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/Release/ CONFIGURATIONS Release DESTINATION bin FILES_MATCHING PATTERN "*.dll")
-INSTALL(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/ CONFIGURATIONS RelWithDebInfo DESTINATION bin FILES_MATCHING PATTERN "*.dll")
+####  CPACK  ####
 
-SET(CPACK_PACKAGE_VENDOR "HPCC Systems")
-SET(CPACK_PACKAGE_NAME "hpccsystems-eclide")
-SET(CPACK_PACKAGE_VERSION_MAJOR ${majorver})
-SET(CPACK_PACKAGE_VERSION_MINOR ${minorver})
-SET(CPACK_PACKAGE_VERSION_PATCH ${point}${stagever})
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "HPCC Systems ECL IDE.")
+set ( CPACK_PACKAGE_VENDOR "HPCC Systems" )
+set ( CPACK_PACKAGE_NAME "hpccsystems-eclide" )
+set ( CPACK_PACKAGE_VERSION_MAJOR ${majorver})
+set ( CPACK_PACKAGE_VERSION_MINOR ${minorver})
+set ( CPACK_PACKAGE_VERSION_PATCH ${point}${stagever})
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "HPCC Systems ECL IDE." )
 
-SET(CPACK_PACKAGE_CONTACT "HPCCSystems <ossdevelopment@lexisnexis.com>")
+set ( CPACK_PACKAGE_CONTACT "HPCCSystems <ossdevelopment@lexisnexis.com>" )
 
-SET(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.txt")
-SET(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/CPackReadMe.txt")
+set ( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.txt" )
+set ( CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/CPackReadMe.txt" )
 
-SET(CPACK_RPM_PACKAGE_VERSION "${projname}")
-IF(${ARCH64BIT} EQUAL 1)
-    SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
-ELSE(${ARCH64BIT} EQUAL 1)
-    SET(CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
-ENDIF (${ARCH64BIT} EQUAL 1)
-SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CPACK_RPM_PACKAGE_ARCHITECTURE}")
-IF("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    SET(CPACK_STRIP_FILES TRUE)
-ENDIF()
-SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}${CPACK_SYSTEM_NAME}")
+set ( CPACK_RPM_PACKAGE_VERSION "${projname}" )
+if ( ${ARCH64BIT} EQUAL 1 )
+    set ( CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+else( ${ARCH64BIT} EQUAL 1 )
+    set ( CPACK_RPM_PACKAGE_ARCHITECTURE "i386")
+endif ( ${ARCH64BIT} EQUAL 1 )
+set ( CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CPACK_RPM_PACKAGE_ARCHITECTURE}")
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    set ( CPACK_STRIP_FILES TRUE)
+endif()
+set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}${CPACK_SYSTEM_NAME}" )
 MESSAGE ("-- Current release version is ${CPACK_PACKAGE_FILE_NAME}")
 
 find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}-${stagever}${CPACK_SYSTEM_NAME}.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform )
-if (CLIENTTOOLS_PACKAGE_FILE)
-    install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
-    get_filename_component(CLIENTTOOLS_PACKAGE_FILE_NAME ${CLIENTTOOLS_PACKAGE_FILE} NAME)
-    list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
-        ExecWait '$INSTDIR\\\\tmp\\\\${CLIENTTOOLS_PACKAGE_FILE_NAME} /S /D=$INSTDIR\\\\..\\\\clienttools'
+install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
+get_filename_component(CLIENTTOOLS_PACKAGE_FILE_NAME ${CLIENTTOOLS_PACKAGE_FILE} NAME)
+list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
+    ExecWait '$INSTDIR\\\\tmp\\\\${CLIENTTOOLS_PACKAGE_FILE_NAME} /S /D=$INSTDIR\\\\..\\\\clienttools'
 ")
-endif (CLIENTTOOLS_PACKAGE_FILE)
 
-# Calculate GIT Build Tag  ---
-SET(BUILD_TAG "${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}")
-IF(USE_GIT_DESCRIBE OR CHECK_GIT_TAG)
+###
+## Run file configuration to set build tag along with install lines for generated
+## config files.
+###
+set( BUILD_TAG "${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}")
+if (USE_GIT_DESCRIBE OR CHECK_GIT_TAG)
     FETCH_GIT_TAG (${CMAKE_SOURCE_DIR} ${CPACK_RPM_PACKAGE_VERSION}_${version} GIT_BUILD_TAG)
-    MESSAGE ("-- Git tag is '${GIT_BUILD_TAG}'")
-    IF(NOT "${GIT_BUILD_TAG}" STREQUAL "${BUILD_TAG}")
-        IF(CHECK_GIT_TAG)
-            MESSAGE(FATAL_ERROR "Git tag '${GIT_BUILD_TAG}' does not match source version '${BUILD_TAG}'")
-        ELSE()
-            IF(NOT "${GIT_BUILD_TAG}" STREQUAL "") # probably means being built from a tarball...
-                SET(BUILD_TAG "${BUILD_TAG}[${GIT_BUILD_TAG}]")
-            ENDIF()
-        ENDIF()
-    ENDIF()
-ENDIF()
-MESSAGE ("-- Build tag is '${BUILD_TAG}'")
+    message ("-- Git tag is '${GIT_BUILD_TAG}'")
+    if (NOT "${GIT_BUILD_TAG}" STREQUAL "${BUILD_TAG}")
+        if (CHECK_GIT_TAG)
+            message(FATAL_ERROR "Git tag '${GIT_BUILD_TAG}' does not match source version '${BUILD_TAG}'" )
+        else()
+            if(NOT "${GIT_BUILD_TAG}" STREQUAL "") # probably means being built from a tarball...
+                set( BUILD_TAG "${BUILD_TAG}[${GIT_BUILD_TAG}]")
+            endif()
+        endif()
+    endif()
+endif()
+message ("-- Build tag is '${BUILD_TAG}'")
 
-SET(DIR_NAME "HPCCSystems")
-SET(version ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT})
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "${DIR_NAME}\\\\${version}\\\\eclide")
-####  Change the following if you _don't_ want the installer to uninstall previous versions  ####
-SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "eclide_${HPCC_MAJOR}")
-SET(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
-SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\hpccsystems.com")
-SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\eclide.exe")
-SET(CPACK_NSIS_CONTACT ${CPACK_PACKAGE_CONTACT})
-IF("${FB_PLATFORM_ARCH_NAME}" EQUAL "x86_64")
-    SET (CPACK_NSIS_DISPLAY_NAME "ECL IDE x64")
-ELSE ()
-    SET (CPACK_NSIS_DISPLAY_NAME "ECL IDE")
-ENDIF ()
-LIST (APPEND CPACK_NSIS_CREATE_ICONS_EXTRA "
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL IDE.lnk\\\" \\\"$INSTDIR\\\\bin\\\\eclide.exe\\\"
-    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL Reference Help.lnk\\\" \\\"\$INSTDIR\\\\bin\\\\ECLReference.chm\\\"
-")
-LIST (APPEND CPACK_NSIS_DELETE_ICONS_EXTRA "
-    Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\ECL IDE.lnk\\\"
-    Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\ECL Reference Help.lnk\\\"
-")
-SET(CPACK_NSIS_DEFINES "
-    !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"${CPACK_PACKAGE_VENDOR}\\\\${version}\\\\${CPACK_NSIS_DISPLAY_NAME}\\\"
-    !define MUI_FINISHPAGE_NOAUTOCLOSE
-")
+if ( WIN32 )
+    set ( DIR_NAME "HPCCSystems" )
+    set ( version ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT} )
+    set ( CPACK_PACKAGE_INSTALL_DIRECTORY "${DIR_NAME}\\\\${version}\\\\eclide" )
+    ####  Change the following if you _don't_ want the installer to uninstall previous versions ####
+    set ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "eclide_${HPCC_MAJOR}" )
+    set ( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON" )
+    set ( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\hpccsystems.com" )
+    set ( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\eclide.exe" )
+    set ( CPACK_NSIS_CONTACT ${CPACK_PACKAGE_CONTACT} )
+    if ( "${FB_PLATFORM_ARCH_NAME}" EQUAL "x86_64" )
+        SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE x64" )
+    else ()
+        SET ( CPACK_NSIS_DISPLAY_NAME "ECL IDE" )
+    endif ()
+    list ( APPEND CPACK_NSIS_CREATE_ICONS_EXTRA "  
+        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL IDE.lnk\\\" \\\"$INSTDIR\\\\bin\\\\eclide.exe\\\"
+        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\ECL Reference Help.lnk\\\" \\\"\$INSTDIR\\\\bin\\\\ECLReference.chm\\\"
+    ")
+    list ( APPEND CPACK_NSIS_DELETE_ICONS_EXTRA "  
+        Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\ECL IDE.lnk\\\"
+        Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\ECL Reference Help.lnk\\\"
+    ")
+    set ( CPACK_NSIS_DEFINES "
+        !define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"${CPACK_PACKAGE_VENDOR}\\\\${version}\\\\${CPACK_NSIS_DISPLAY_NAME}\\\"
+        !define MUI_FINISHPAGE_NOAUTOCLOSE
+    ")
 
-IF (EXISTS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt")
-    FILE(STRINGS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt" PFX_PASSWORD LIMIT_COUNT 1)
+    file(STRINGS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt" PFX_PASSWORD LIMIT_COUNT 1)
 
-    ADD_CUSTOM_TARGET(SIGN 
+    add_custom_target(SIGN 
         COMMAND signtool sign /f "${PROJECT_SOURCE_DIR}/../sign/hpcc_code_signing.pfx" /p "${PFX_PASSWORD}" /t "http://timestamp.verisign.com/scripts/timstamp.dll" "${CMAKE_BINARY_DIR}/${CPACK_PACKAGE_NAME}*.exe"
         COMMENT "Digital Signature"
     )
-    ADD_DEPENDENCIES(SIGN PACKAGE)
-    SET_PROPERTY(TARGET SIGN PROPERTY FOLDER "CMakePredefinedTargets")
-ENDIF ()
+    add_dependencies(SIGN PACKAGE)
+    set_property(TARGET SIGN PROPERTY FOLDER "CMakePredefinedTargets")
+endif ( )
 
-INCLUDE (CPack)
+include ( CPack )
+####  #####  ####
+configure_file (
+  "${PROJECT_SOURCE_DIR}/config.h.in"
+  "${PROJECT_SOURCE_DIR}/config.h"
+  )
 
-# Configure Scripts  ---
-CONFIGURE_FILE (
-    "${PROJECT_SOURCE_DIR}/config.h.in"
-    "${PROJECT_SOURCE_DIR}/config.h"
- )
+configure_file (
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat.in"
+  "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat"
+  )
 
-CONFIGURE_FILE (
-    "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat.in"
-    "${PROJECT_SOURCE_DIR}/doStageECLIDE.bat"
- )
+configure_file (
+  "${PROJECT_SOURCE_DIR}/setup/defines.wxi.in"
+  "${PROJECT_SOURCE_DIR}/setup/defines.wxi"
+  )
+
