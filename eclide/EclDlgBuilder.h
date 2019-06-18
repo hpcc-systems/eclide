@@ -137,6 +137,8 @@ public:
 
         MESSAGE_HANDLER_EX(BUM_REFRESHQUEUECLUSTER, OnRefreshQueueCluster)
 
+        COMMAND_ID_HANDLER_EX(ID_EDIT_FOLDALL, OnFoldAll)
+        COMMAND_ID_HANDLER_EX(ID_EDIT_UNFOLDALL, OnUnfoldAll)
         COMMAND_ID_HANDLER_EX(ID_FILE_SAVE_AS, OnFileSaveAs)
         COMMAND_ID_HANDLER_EX(ID_ECL_GO, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_ECL_SEL_GO, OnEclGo)
@@ -192,6 +194,8 @@ public:
     void OnTimer(UINT_PTR nIDEvent);
     LRESULT OnRefreshQueueCluster(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+    void OnFoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
+    void OnUnfoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnFileSaveAs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 
     void OnEclGo(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);

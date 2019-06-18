@@ -1322,6 +1322,8 @@ BEGIN
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "&Delete\tDel",                ID_EDIT_DELETE
         MENUITEM SEPARATOR
+        MENUITEM "Fold All",                    ID_EDIT_FOLDALL
+        MENUITEM "Unfold All",                  ID_EDIT_UNFOLDALL
         MENUITEM "&Select All\tCtrl+A",         ID_EDIT_SELECT_ALL
         MENUITEM SEPARATOR
         MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
@@ -1728,6 +1730,7 @@ BEGIN
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
         MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
         MENUITEM "Delete File\tDel",            ID_REPOSITORY_DELETEATTRIBUTE
+        MENUITEM "Create Mod File",             ID_FILE_CREATEMODFILE
         MENUITEM SEPARATOR
         MENUITEM "Refresh",                     ID_REPOSITORY_REFRESH
         MENUITEM "Collapse All",                ID_REPOSITORY_COLLAPSEALL

@@ -819,6 +819,9 @@
 #define ID_GO_GENERATE                  33112
 #define ID_REPOSITORY_COLLAPSEALL       33113
 #define ID_ECL_HELP                     33114
+#define ID_FILE_CREATEMODFILE           33115
+#define ID_EDIT_FOLDALL                 33116
+#define ID_EDIT_UNFOLDALL               33117
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -847,7 +850,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33115
+#define _APS_NEXT_COMMAND_VALUE         33118
 #define _APS_NEXT_CONTROL_VALUE         543
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

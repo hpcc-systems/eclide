@@ -367,8 +367,6 @@ std::istream& safeGetline(std::istream& is, std::string& t)
 
 IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
 {
-#define IMPORT_MARKER _T("//Import:")
-#define COMMENT_MARKER _T("//Comment:")
 	std::ifstream ifs(path.c_str());
 	if (ifs) {
 		AttrVector attrs;

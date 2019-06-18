@@ -344,6 +344,14 @@ int CSourceCtrl::HandleNotify(SCNotification *notification)
                         std::_tstring tooltip = m_langRef->GetLangTooltip(static_cast<const TCHAR *>(_message));
                         if (tooltip.length())
                             CallTipShow(startPos, tooltip.c_str());
+                        else
+                        {
+                            if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+                            {
+                                if (eclcc->GetToolTip(_message.GetString(), tooltip))
+                                    CallTipShow(startPos, tooltip.c_str());
+                            }
+                        }
                     }
                 }
             }
