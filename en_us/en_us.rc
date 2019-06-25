@@ -309,18 +309,19 @@ BEGIN
     PUSHBUTTON      "Delete",IDC_CONFIG_DELETE,236,25,46,14,WS_DISABLED
 END
 
-IDD_PREF_RESULTS DIALOGEX 0, 0, 290, 58
+IDD_PREF_RESULTS DIALOGEX 0, 0, 290, 61
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "&Result Font:",IDC_STATIC_FONT,10,10,39,8
     COMBOBOX        IDC_COMBO_FONT,71,7,208,14,CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Si&ze:",IDC_STATIC_FONTSIZE,10,25,36,8
-    EDITTEXT        IDC_EDIT_RESULT_FONTSIZE,71,23,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Si&ze:",IDC_STATIC_FONTSIZE,10,26,36,8
+    EDITTEXT        IDC_EDIT_RESULT_FONTSIZE,71,24,40,14,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_SPIN_RESULT_FONTSIZE,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,110,23,11,14
-    LTEXT           "Limit Result (rows):",IDC_STATIC_LIMITRESULT,162,26,62,8
-    EDITTEXT        IDC_EDIT_LIMITRESULT,228,23,40,14,ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "",IDC_SPIN_LIMITRESULT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,268,23,11,14
+    LTEXT           "Limit Result (rows):",IDC_STATIC_LIMITRESULT,162,27,62,8
+    EDITTEXT        IDC_EDIT_LIMITRESULT,228,24,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_LIMITRESULT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,268,24,11,14
+    CONTROL         "Legacy IE Web Browser",IDC_CHECK_LEGACY_IE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,45,117,10
 END
 
 IDD_PREF_OTHER DIALOGEX 0, 0, 290, 157
@@ -1054,6 +1055,7 @@ BEGIN
     IDD_PREF_RESULTS, DIALOG
     BEGIN
         RIGHTMARGIN, 289
+        BOTTOMMARGIN, 58
     END
 
     IDD_PREF_OTHER, DIALOG
@@ -1490,8 +1492,8 @@ BEGIN
     POPUP "Browser"
     BEGIN
         MENUITEM "New",                         ID_BROWSER_NEW
-        MENUITEM "IE",                          ID_BROWSER_IE
-        MENUITEM "Stop",                        ID_BROWSER_STOP
+        MENUITEM "ECL Watch",                   ID_BROWSER_NEW_ECLWATCH
+        MENUITEM "Reset",                       ID_BROWSER_RESET
         MENUITEM "Refresh",                     ID_BROWSER_REFRESH
         MENUITEM "Back",                        ID_BROWSER_BACK
         MENUITEM "Forward",                     ID_BROWSER_FORWARD
@@ -2312,7 +2314,7 @@ BEGIN
     ID_ECL_CHECKCOMPLEXITY  "Display ECL complexity\nShow Complexity"
     ID_ECL_CHECKDEPENDENCY  "Display ECL dependencieshow Dependencies"
     ID_BROWSER_NEW          "Launch in external web browser\nLaunch in New Window"
-    ID_BROWSER_STOP         "Stops the current page from loading\nStop"
+    ID_BROWSER_RESET        "Navigate to default page\nReset"
     ID_BROWSER_REFRESH      "Refreshes the content of the current page\nRefresh"
     ID_BROWSER_BACK         "Goes to the previous page\nBack"
     ID_BROWSER_FORWARD      "Goes to the next page\nNext"
