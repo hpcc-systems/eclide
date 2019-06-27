@@ -19,7 +19,7 @@ git submodule update --init --recursive
 ```
 cd vcpkg
 bootstrap-vcpkg.bat
-vcpkg install --keep-going boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
+vcpkg install --keep-going boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap cef-project
 ```
 
 ### Create an out of source build folder

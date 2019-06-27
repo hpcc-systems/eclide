@@ -160,19 +160,23 @@ COMMS_API bool DNSLookup(std::_tstring & url) {
     std::_tstring port = url_new.substr(found1 + 1, found2 - found1 - 1);
     std::_tstring path = url_new.substr(found2);
 
-    boost::asio::io_service io_service;
-    tcp::resolver resolver(io_service);
-    try {
-        std::string hostname = CT2A(host.c_str());
-        tcp::resolver::query query(hostname, "");
-        tcp::resolver::iterator found = resolver.resolve(query);
-        if (found != tcp::resolver::iterator()) {
-            tcp::endpoint end = *found;
-            std::_tstring ipAddr = CA2T(end.address().to_string().c_str());
-            url = protocol + _T("://") + ipAddr + _T(":") + port + path;
-            return true;
+    //  localhost resolves in a strange way
+    if (!boost::algorithm::iequals(host, _T("localhost"))) {
+        boost::asio::io_service io_service;
+        tcp::resolver resolver(io_service);
+        try {
+            std::string hostname = CT2A(host.c_str());
+            tcp::resolver::query query(hostname, "");
+            tcp::resolver::iterator found = resolver.resolve(query);
+            if (found != tcp::resolver::iterator()) {
+                tcp::endpoint end = *found;
+                std::_tstring ipAddr = CA2T(end.address().to_string().c_str());
+                url = protocol + _T("://") + ipAddr + _T(":") + port + path;
+                return true;
+            }
         }
-    } catch (std::exception & e){
+        catch (std::exception& e) {
+        }
     }
     return false;
 }

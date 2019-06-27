@@ -1161,9 +1161,13 @@ void CMainFrame::InitializeRibbon()
         CMFCRibbonPanel* pPanelNavigation = m_CategoryBrowser->AddPanel(_T("Navigation"), m_PanelImages.ExtractIcon(7));
         CMFCRibbonButton * pButtLaunch = new CMFCRibbonButton(ID_BROWSER_NEW, _T("Launch\nl"), 44, 8);
         pPanelNavigation->Add(pButtLaunch);
-        pButtLaunch->AddSubItem(new CMFCRibbonButton(ID_BROWSER_IE, _T("Force Internet Explorer\ni"), 44));
+        pButtLaunch->AddSubItem(new CMFCRibbonLabel(_T("Launch in external browser")));
+        pButtLaunch->AddSubItem(new CMFCRibbonButton(ID_BROWSER_NEW, _T("Default browser\nD"), 44));
+        pButtLaunch->AddSubItem(new CMFCRibbonButton(ID_BROWSER_IE, _T("Internet Explorer\nI"), 44));
+        pButtLaunch->AddSubItem(new CMFCRibbonSeparator(true));
+        pButtLaunch->AddSubItem(new CMFCRibbonButton(ID_BROWSER_NEW_ECLWATCH, _T("ECL Watch homepage\nE"), 44));
         pPanelNavigation->Add(new CMFCRibbonSeparator());
-        pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_STOP, _T("Stop\ns"), 45));
+        pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_RESET, _T("Reset\ns"), 45));
         pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_REFRESH, _T("Refresh\nr"), 42));
         pPanelNavigation->Add(new CMFCRibbonSeparator());
         pPanelNavigation->Add(new CMFCRibbonButton(ID_BROWSER_BACK, _T("Back\nb"), 7));

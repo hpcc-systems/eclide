@@ -20,11 +20,20 @@ FIND_PATH(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vc
 FIND_PATH(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/Win32)
 FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/Client)
 FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/zlib)
+FIND_PATH(CEF_WRAPPER_ROOT_DIR include/cef-project/include/cef_client.h)
+
+FILE(GLOB CEF_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/cef-project/src/*/third_party/cef/*")
+FIND_PATH(CEF_ROOT_DIR 
+    NAMES Debug/libcef.lib
+    PATHS ${CEF_SEARCH_PATHS}
+)
 
 MESSAGE("includes")
 MESSAGE("  - boost:  ${Boost_INCLUDE_DIRS}")
 MESSAGE("  - wtl:  ${WTL_INCLUDE_DIR}")
 MESSAGE("  - Scintilla:  ${SCINTILLA_INCLUDE_DIR}")
+MESSAGE("  - CEF_WRAPPER:  ${CEF_WRAPPER_ROOT_DIR}")
+MESSAGE("  - CEF:  ${CEF_ROOT_DIR}")
 
 MESSAGE("sources")
 MESSAGE("  - Scintilla")

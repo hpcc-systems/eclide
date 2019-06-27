@@ -54,9 +54,12 @@ void Logger::operator()(LEVEL l, const boost::_tformat& fmt)
     msg.resize(512, _T(' '));
 #if _DEBUG
     std::_tclog << std::_tstring(LEVEL_TEXT[l]) << msg << std::_tstring(CA2T(m_file.c_str())) << _T("(") << m_line << _T(")") << std::endl;
+    if (l >= LEVEL_DEBUG) {
+#else
+    if (l >= LEVEL_INFO) {
 #endif
-    if (l >= LEVEL_INFO)
         std::_tcerr << std::_tstring(LEVEL_TEXT[l]) << msg << std::_tstring(CA2T(m_file.c_str())) << _T("(") << m_line << _T(")") << std::endl;
+    }
 }
 
 void Logger::operator()(LEVEL l, const CComBSTR& str)
