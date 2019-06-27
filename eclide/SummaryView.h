@@ -17,7 +17,8 @@ protected:
     IResultSlot *m_resultSlot;
     CString m_Url;
     CString m_FramedUrl;
-    CHtmlView m_view;
+    IHtmlView *m_view;
+    bool m_isIE;
 
 public:
     enum {IDD = IDD_SUMMARYVIEW};
@@ -37,13 +38,13 @@ public:
         MSG_WM_CONTEXTMENU(OnContextMenu)
         MSG_WM_SIZE(OnSize)
         MESSAGE_HANDLER(WM_FORWARDMSG, OnForwardMsg)
-        MESSAGE_HANDLER_EX(CWM_INITIALIZE, OnInitialize)
         MESSAGE_HANDLER_EX(CWM_REFRESH, OnRefresh)
         COMMAND_ID_HANDLER(ID_BROWSER_NEW, OnBrowserNew)
         COMMAND_ID_HANDLER(ID_BROWSER_IE, OnBrowserIE)
+        COMMAND_ID_HANDLER(ID_BROWSER_NEW_ECLWATCH, OnBrowserNewEclWatch)
         COMMAND_ID_HANDLER(ID_BROWSER_BACK, OnBrowserBack)
         COMMAND_ID_HANDLER(ID_BROWSER_FORWARD, OnBrowserForward)
-        COMMAND_ID_HANDLER(ID_BROWSER_STOP, OnBrowserStop)
+        COMMAND_ID_HANDLER(ID_BROWSER_RESET, OnBrowserReset)
         COMMAND_ID_HANDLER(ID_BROWSER_REFRESH, OnBrowserRefresh)
         COMMAND_ID_HANDLER_EX(ID_EDIT_COPY, OnEditCopy)
         COMMAND_ID_HANDLER_EX(ID_EDIT_SELECT_ALL, OnEditSelectAll)
@@ -60,13 +61,13 @@ public:
     LRESULT OnRefresh(UINT /*uMsg*/, WPARAM /*bCreated*/, LPARAM /*lParam*/);
     LRESULT OnBrowserNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserIE(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnBrowserNewEclWatch(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserBack(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserForward(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-    LRESULT OnBrowserStop(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnBrowserReset(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserRefresh(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     void OnEditCopy(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnEditSelectAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
-    LRESULT OnInitialize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
     void OnContextMenu(HWND /*hWnd*/, CPoint pt);
 
     //CTabPane

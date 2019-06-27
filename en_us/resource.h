@@ -540,6 +540,7 @@
 #define IDC_CHECK_SHOWWS                539
 #define IDD_GRAPHSUMMARYVIEW            541
 #define IDC_CHECK_METADATA              542
+#define IDC_CHECK_LEGACY_IE             543
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -572,7 +573,7 @@
 #define ID_ECL_CHECKCOMPLEXITY          32801
 #define ID_ECL_CHECKDEPENDENCY          32802
 #define ID_BROWSER_NEW                  32803
-#define ID_BROWSER_STOP                 32804
+#define ID_BROWSER_RESET                32804
 #define ID_BROWSER_REFRESH              32805
 #define ID_BROWSER_BACK                 32806
 #define ID_BROWSER_FORWARD              32807
@@ -822,6 +823,7 @@
 #define ID_FILE_CREATEMODFILE           33115
 #define ID_EDIT_FOLDALL                 33116
 #define ID_EDIT_UNFOLDALL               33117
+#define ID_BROWSER_NEW_ECLWATCH         33118
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -850,8 +852,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33118
-#define _APS_NEXT_CONTROL_VALUE         543
+#define _APS_NEXT_COMMAND_VALUE         33119
+#define _APS_NEXT_CONTROL_VALUE         544
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

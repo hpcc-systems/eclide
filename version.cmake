@@ -3,6 +3,7 @@
 ###
 set ( HPCC_NAME "ECL IDE" )
 set ( HPCC_PROJECT "eclide" )
+set ( HPCC_AUDIENCE "community" )
 set ( HPCC_MAJOR 7 )
 set ( HPCC_MINOR 5 )
 set ( HPCC_POINT 0 )

@@ -2,7 +2,6 @@
 
 #include "RepositoryCompareDlg.h"
 #include "LogView.h"
-#include "HtmlView.h"
 #include "DiffView.h"
 #include "DependeesWnd.h"
 
