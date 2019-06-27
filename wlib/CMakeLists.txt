@@ -11,6 +11,8 @@ SET ( SRCS
     AttributeDlg.h
     AttrListDlg.cpp
     AttrListDlg.h
+    CefClientHandler.h
+    CefClientHandler.cpp
     ChangePasswordDlg.cpp
     ChangePasswordDlg.h
     ColorPicker.cpp
@@ -36,8 +38,10 @@ SET ( SRCS
     FindReplace.h
     GotoDlg.cpp
     GotoDlg.h
-    HtmlView.h
     HListBox.h
+    HtmlView.h
+    HtmlIEView.cpp
+    HtmlChromiumView.cpp
     #ImportRecordAnalyze.cpp
     #ImportRecordAnalyze.h
     #ImportRecordInfo.cpp
@@ -108,6 +112,7 @@ INCLUDE_DIRECTORIES (
     
     ${WTL_INCLUDE_DIR}
     ${SCINTILLA_INCLUDE_DIR}
+    ${CEF_WRAPPER_ROOT_DIR}/include/cef-project
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -123,10 +128,51 @@ ADD_DEPENDENCIES ( WLIB
     SGRID
 )
 
+MESSAGE("CEF_LIBRARY_DIR:  ${CEF_LIBRARY_DIR}")
+
 TARGET_LINK_LIBRARIES( WLIB
     CLIB
     COMMS
     SGRID
 )
 
+TARGET_LINK_LIBRARIES( WLIB
+    debug ${CEF_WRAPPER_ROOT_DIR}/debug/lib/libcef_dll_wrapper.lib
+    optimized ${CEF_WRAPPER_ROOT_DIR}/lib/libcef_dll_wrapper.lib
+)
+
+TARGET_LINK_LIBRARIES( WLIB
+    debug ${CEF_ROOT_DIR}/Debug/libcef.lib
+    optimized ${CEF_ROOT_DIR}/Release/libcef.lib
+)
+
 INSTALL ( TARGETS WLIB RUNTIME DESTINATION bin )
+
+INSTALL ( FILES 
+    ${CEF_ROOT_DIR}/Release/chrome_elf.dll
+    ${CEF_ROOT_DIR}/Release/d3dcompiler_47.dll
+    ${CEF_ROOT_DIR}/Release/libcef.dll
+    ${CEF_ROOT_DIR}/Release/libEGL.dll
+    ${CEF_ROOT_DIR}/Release/libGLESv2.dll
+    ${CEF_ROOT_DIR}/Release/natives_blob.bin
+    ${CEF_ROOT_DIR}/Release/snapshot_blob.bin
+    ${CEF_ROOT_DIR}/Release/v8_context_snapshot.bin
+    ${CEF_ROOT_DIR}/Resources/icudtl.dat
+    ${CEF_ROOT_DIR}/Resources/cef.pak
+    ${CEF_ROOT_DIR}/Resources/cef_extensions.pak
+    ${CEF_ROOT_DIR}/Resources/cef_100_percent.pak
+    ${CEF_ROOT_DIR}/Resources/cef_200_percent.pak
+    ${CEF_ROOT_DIR}/Resources/devtools_resources.pak
+    DESTINATION bin 
+)
+
+INSTALL ( FILES 
+    ${CEF_ROOT_DIR}/Release/swiftshader/libEGL.dll
+    ${CEF_ROOT_DIR}/Release/swiftshader/libGLESv2.dll
+    DESTINATION bin/swiftshader
+)
+
+INSTALL ( FILES 
+    ${CEF_ROOT_DIR}/Resources/locales/en-US.pak
+    DESTINATION bin/locales
+)

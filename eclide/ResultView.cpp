@@ -12,7 +12,6 @@
 #include <shellHelper.h>
 #include <GotoDlg.h>
 #include "FindDlgMgr.h"
-#include <HtmlView.h>
 #include <UrlMon.h>
 #include <AtlTime.h>
 #include "thread.h"

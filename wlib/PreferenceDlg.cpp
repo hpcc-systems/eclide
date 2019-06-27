@@ -1769,6 +1769,7 @@ protected:
 	std::_tstring m_Font;
 	int m_FontSizeResult;
 	CFontComboBox m_comboFont;
+    bool m_LegacyIE;
 
 public:
 	CPrefResultDlg(IOwner *owner, IConfig * config) : m_config(config), m_owner(owner)
@@ -1796,6 +1797,7 @@ public:
 		m_Font = CString(m_config->Get(GLOBAL_FONT_RESULT));
 		m_FontSizeResult = m_config->Get(GLOBAL_FONTSIZE_RESULT);
 		SetComboText(m_comboFont, m_Font);
+        m_LegacyIE = m_config->Get(GLOBAL_LEGACY_IE);
 
 		DoDataExchange();
 
@@ -1822,8 +1824,9 @@ public:
 		CString font;
 		m_comboFont.GetWindowText(font);
 		m_config->Set(GLOBAL_FONT_RESULT, font);
-		m_config->Set(GLOBAL_FONTSIZE_RESULT, m_FontSizeResult);
-	}
+        m_config->Set(GLOBAL_FONTSIZE_RESULT, m_FontSizeResult);
+        m_config->Set(GLOBAL_LEGACY_IE, m_LegacyIE);
+    }
 
 	void DoApply(bool bMakeGlobal)
 	{
@@ -1853,8 +1856,9 @@ public:
 
 	BEGIN_DDX_MAP(thisClass)
 		DDX_INT(IDC_EDIT_LIMITRESULT, m_ResultLimit)
-		DDX_INT(IDC_EDIT_RESULT_FONTSIZE, m_FontSizeResult)
-	END_DDX_MAP()
+        DDX_INT(IDC_EDIT_RESULT_FONTSIZE, m_FontSizeResult)
+        DDX_CHECK(IDC_CHECK_LEGACY_IE, m_LegacyIE)
+    END_DDX_MAP()
 
 	void InitComboFont()
 	{
