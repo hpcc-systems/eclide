@@ -249,6 +249,16 @@ void CAttributeDlg::OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*h
         GetIMainFrame()->SyncTOC(message, CreateIAttributeECLType(), m_attribute->GetModuleQualifiedLabel());
 }
 
+void CAttributeDlg::OnFoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+{
+    m_view.FoldAll();
+}
+
+void CAttributeDlg::OnUnfoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
+{
+    m_view.FoldAll(true);
+}
+
     //  IAttribute Notifications  ---
 void CAttributeDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
 {

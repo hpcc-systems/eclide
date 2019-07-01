@@ -44,6 +44,8 @@ public:
         MESSAGE_HANDLER_EX(CWM_INITIALIZE, OnInitialize)
         MSG_WM_TIMER(OnTimer)
 
+        COMMAND_ID_HANDLER_EX(ID_EDIT_FOLDALL, OnFoldAll)
+        COMMAND_ID_HANDLER_EX(ID_EDIT_UNFOLDALL, OnUnfoldAll)
         COMMAND_ID_HANDLER_EX(ID_ECL_SYNCTOC, OnEclSyncToc)
         COMMAND_ID_HANDLER_EX(ID_ECL_GOTO, OnEclGoto)
         COMMAND_ID_HANDLER_EX(ID_ECL_GOTOSYNCTOC, OnEclGotoSyncToc)
@@ -66,6 +68,8 @@ public:
     void OnEclSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnEclGotoSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
+    void OnFoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
+    void OnUnfoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 
     //  IAttribute Notifications  ---
     void operator()(IAttribute * attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted);
