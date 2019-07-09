@@ -10,6 +10,7 @@ SET (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BI
 SET (LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB files")
 
 # Third Party Libraries ---
+SET(CMAKE_INSTALL_MFC_LIBRARIES TRUE)
 FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options serialization signals thread)
 FIND_PATH(WTL_INCLUDE_DIR wtl/atlapp.h)
 FIND_PATH(VCPKG_ROOT_DIR include/wtl/atlapp.h)
@@ -72,6 +73,7 @@ MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar
 ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 # Projects  ---
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 ADD_SUBDIRECTORY (BugTrap)
 SET_PROPERTY(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
 ADD_SUBDIRECTORY (en_us)
@@ -88,7 +90,7 @@ ADD_SUBDIRECTORY (amt)
 IF(EXISTS "${PROJECT_SOURCE_DIR}/docs/ECLReference.chm")
     INSTALL (PROGRAMS ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm DESTINATION bin)
 ELSE ()
-	MESSAGE("Skipping ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm (file does not exist)")
+    MESSAGE("Skipping ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm (file does not exist)")
 ENDIF ()
 
 SET(DOC_FILES 
