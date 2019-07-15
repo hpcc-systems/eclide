@@ -108,8 +108,13 @@ public:
             m_paramStack.pop();
         }
         else if (e.m_tag.compare(_T("content")) == 0) {
-            CEclDefinition *def = m_defStack.top();
-            def->AddDocumentation(e);
+            if (!m_defStack.empty())
+            {
+                CEclDefinition *def = m_defStack.top();
+                def->AddDocumentation(e);
+            }
+            else if (m_currSource)
+                m_currSource->AddDocumentation(e);
         }
         else if (e.m_tag.compare(_T("Import")) == 0) {
             CEclImport *import = m_importStack.top();

@@ -249,6 +249,7 @@ class CEclFile : public CEclMetaData
 protected:
     EclDefinitionMap m_defs;
     EclImportMap m_imports;
+    std::_tstring m_content;
 
 public:
 
@@ -260,6 +261,10 @@ public:
         m_path = path;
         m_defs.clear();
         m_imports.clear();
+    }
+    void AddDocumentation(const Element &e)
+    {
+        m_content = e.GetContent();
     }
     void UpdateDef(CEclDefinition *def)
     {
