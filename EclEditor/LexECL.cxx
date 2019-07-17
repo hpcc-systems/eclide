@@ -76,6 +76,7 @@ static void ColouriseEclDoc(unsigned int startPos, int length, int initStyle, Wo
     bool lastWordWasUUID = false;
     int styleBeforeDCKeyword = SCE_ECL_DEFAULT;
     bool continuationLine = false;
+    int prevkeystate = 0;
 
     if (initStyle == SCE_ECL_PREPROCESSOR) {
         // Set continuationLine if last character of previous line is '\'
@@ -157,7 +158,7 @@ static void ColouriseEclDoc(unsigned int startPos, int length, int initStyle, Wo
                         sc.ChangeState(SCE_ECL_WORD0);
                     } else if (keywords1.InList(s)) {
                         sc.ChangeState(SCE_ECL_WORD1);
-                    } else if (keywords2.InList(s)) {
+                    } else if (keywords2.InList(s) && prevkeystate != SCE_ECL_WORD3) { // Allow other keywords to be variable names
                         sc.ChangeState(SCE_ECL_WORD2);
                     } else if (keywords4.InList(s)) {
                         sc.ChangeState(SCE_ECL_WORD4);
@@ -177,6 +178,7 @@ static void ColouriseEclDoc(unsigned int startPos, int length, int initStyle, Wo
                             sc.ChangeState(SCE_ECL_WORD3);
                         } 
                     }
+                    prevkeystate = sc.state;
                     sc.SetState(SCE_ECL_DEFAULT);
                 }
                 break;
