@@ -124,6 +124,8 @@ BEGIN
     "C",            ID_BOOKMARKS_CLEAR,     VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     VK_RETURN,      ID_ECL_SEL_GO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_RWIN,        ID_ECL_SEL_GO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "0",            ID_EDIT_FOLDALL,        VIRTKEY, ALT, NOINVERT
+    "0",            ID_EDIT_UNFOLDALL,      VIRTKEY, CONTROL, ALT, NOINVERT
 END
 
 
@@ -1324,8 +1326,8 @@ BEGIN
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "&Delete\tDel",                ID_EDIT_DELETE
         MENUITEM SEPARATOR
-        MENUITEM "Fold All",                    ID_EDIT_FOLDALL
-        MENUITEM "Unfold All",                  ID_EDIT_UNFOLDALL
+        MENUITEM "Fold All\tAlt+0",             ID_EDIT_FOLDALL
+        MENUITEM "Unfold All\tCtrl+Alt+0",     ID_EDIT_UNFOLDALL
         MENUITEM "&Select All\tCtrl+A",         ID_EDIT_SELECT_ALL
         MENUITEM SEPARATOR
         MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
