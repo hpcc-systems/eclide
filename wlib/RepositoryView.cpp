@@ -49,7 +49,7 @@ BOOL CRepositoryView::PreTranslateMessage(MSG* pMsg)
         case _T('C'):
         case _T('c'):
             {
-                ctrl = ::GetKeyState(VK_CONTROL);
+                ctrl = ::GetKeyState(VK_CONTROL) & 0x8000000;
                 UINT alt = ::GetKeyState(VK_MENU);
                 if (ctrl != 0 && alt != 0)
                 {
@@ -67,7 +67,7 @@ BOOL CRepositoryView::PreTranslateMessage(MSG* pMsg)
             break;
         case _T('N'):
         case _T('n'):
-            ctrl = ::GetKeyState(VK_CONTROL);
+            ctrl = ::GetKeyState(VK_CONTROL) & 0x8000000;
             if (ctrl != 0)
             {
                 TVITEM item;
