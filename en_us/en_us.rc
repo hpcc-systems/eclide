@@ -2040,12 +2040,12 @@ IDR_POPUP_BOOKMARKS MENU
 BEGIN
     POPUP "Bookmarks"
     BEGIN
-        MENUITEM "&Open",                       ID_BOOKMARKS_OPEN
-        MENUITEM "&Save",                       ID_BOOKMARKS_SAVE
-        MENUITEM "&Load",                       ID_BOOKMARKS_LOAD
-        MENUITEM "Load &Merge",                 ID_BOOKMARKS_LOADMERGE
-        MENUITEM "&Delete from list",           ID_BOOKMARKS_DELETEFROMLIST
-        MENUITEM "&Clear",                      ID_BOOKMARKS_CLEAR
+        MENUITEM "&Open\tCtrl+O",               ID_BOOKMARKS_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_BOOKMARKS_SAVE
+        MENUITEM "&Load\tCtrl+L",               ID_BOOKMARKS_LOAD
+        MENUITEM "Load &Merge\tCtrl+M",         ID_BOOKMARKS_LOADMERGE
+        MENUITEM "&Delete\tCtrl+D",             ID_BOOKMARKS_DELETE
+        MENUITEM "&Clear\tCtrl+C",              ID_BOOKMARKS_CLEAR
     END
 END
 

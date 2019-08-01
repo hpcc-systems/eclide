@@ -6,6 +6,7 @@
 #include "MainFrm.h"
 
 #include "RepositoryFrame.h"
+#include "Attribute.h"
 #include "WorkunitFrame.h"
 #include "WorkspaceFrame.h"
 #include "SyntaxFrame.h"
@@ -179,6 +180,23 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_COMMAND(ID_WORKSPACE_ADD, OnWorkspaceNew)
     ON_COMMAND(ID_WORKSPACE_REMOVE, OnWorkspaceRemove)
     ON_COMMAND(ID_WORKSPACE_LIST, OnWorkspaceSelEndOk)
+
+    ON_COMMAND(ID_BOOKMARKS_VIEW, OnBookmarkView)
+    ON_COMMAND(ID_BOOKMARKS_NEXT, OnBookmarkNext)
+    ON_COMMAND(ID_BOOKMARKS_PREV, OnBookmarkPrev)
+    ON_COMMAND(ID_BOOKMARKS_OPEN, OnBookmarkOpen)
+    ON_COMMAND(ID_BOOKMARKS_SAVE, OnBookmarkSave)
+    ON_COMMAND(ID_BOOKMARKS_LOAD, OnBookmarkLoad)
+    ON_COMMAND(ID_BOOKMARKS_CLEAR, OnBookmarkClear)
+    ON_COMMAND(ID_BOOKMARKS_DELETE, OnBookmarkDelete)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_OPEN, OnUpdateBookmarkOpenItem)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_NEXT, OnUpdateBookmarkNextPrev)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_PREV, OnUpdateBookmarkNextPrev)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_SAVE, OnUpdateBookmarkSave)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_LOAD, OnUpdateBookmarkLoad)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_LOADMERGE, OnUpdateBookmarkLoadMerge)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_CLEAR, OnUpdateBookmarkClear)
+    ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_DELETE, OnUpdateBookmarkDelete)
 
     ON_COMMAND(ID_HELP_LANGUAGEREFERENCE, OnHelpLanguageReference)
 
@@ -1072,6 +1090,18 @@ void CMainFrame::InitializeRibbon()
         pPanelECL->Add(new CMFCRibbonButton(ID_ECL_GOTOSYNCTOC, _T("Locate Selected\nt")));
         pPanelECL->Add(new CMFCRibbonButton(ID_ECL_GOTO, _T("Open Selected\np")));
 
+        CMFCRibbonPanel* pPanelBookmark = m_CategoryHome->AddPanel(_T("Bookmarks"), m_PanelImages.ExtractIcon(27));
+        CMFCRibbonButton * pButtBook = new CMFCRibbonButton(ID_BOOKMARKS_VIEW, _T("View\nf"), 10, 9);
+        pPanelBookmark->Add(pButtBook);
+        pPanelBookmark->Add(new CMFCRibbonButton(ID_BOOKMARKS_NEXT, _T("Next\nn"), 6));
+        pPanelBookmark->Add(new CMFCRibbonButton(ID_BOOKMARKS_PREV, _T("Previous\np"), 7));
+        pPanelBookmark->Add(new CMFCRibbonButton(ID_BOOKMARKS_CLEAR, _T("Clear\nc")));
+        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_OPEN, _T("Open\no")));
+        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_SAVE, _T("Save\ns")));
+        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_LOAD, _T("Load\nl")));
+        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_LOADMERGE, _T("Load Merge\nm")));
+        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_DELETE, _T("Delete\nd")));
+
         // Create and add a "Windows" panel:
         strTemp.LoadString(IDS_RIBBON_WINDOW);
         CMFCRibbonPanel* pPanelWindow = m_CategoryHome->AddPanel(strTemp, m_PanelImages.ExtractIcon (7));
@@ -1538,6 +1568,137 @@ void CMainFrame::OnWindowCascade()
     MDICascade(); 
 }
 
+void CMainFrame::OnBookmarkView()
+{
+    CBasePane* pBar = GetPane(ID_VIEW_BOOKMARKS);
+    if (pBar != NULL)
+    {
+        if (pBar->IsPaneVisible())
+            pBar->ShowPane(false, FALSE, TRUE);
+        else
+            pBar->ShowPane(true, FALSE, TRUE);
+    }
+}
+
+void CMainFrame::OnBookmarkNext()
+{
+    m_Bookmarks->Next();
+}
+
+void CMainFrame::OnBookmarkPrev()
+{
+    m_Bookmarks->Prev();
+}
+
+void CMainFrame::OnBookmarkOpen()
+{
+    m_Bookmarks->Open();
+}
+
+void CMainFrame::OnUpdateBookmarkOpenItem(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->BookmarkSelected())
+    {
+        pCmdUI->Enable();
+    }
+    else
+        pCmdUI->Enable(false);
+}
+
+void CMainFrame::OnUpdateBookmarkNextPrev(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->BookmarkSelected() && m_Bookmarks->GetCount() > 1)
+    {
+        pCmdUI->Enable();
+    }
+    else
+        pCmdUI->Enable(false);
+}
+
+void CMainFrame::OnBookmarkSave()
+{
+    m_Bookmarks->Save();
+}
+
+void CMainFrame::OnUpdateBookmarkSave(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->HasBookmarks())
+    {
+        pCmdUI->Enable();
+    }
+    else
+        pCmdUI->Enable(false);
+}
+
+void CMainFrame::OnBookmarkLoad()
+{
+    m_Bookmarks->Load();
+}
+
+void CMainFrame::OnUpdateBookmarkLoad(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->HasLoad())
+    {
+        pCmdUI->Enable();
+    }
+    else
+    {
+        pCmdUI->Enable(false);
+    }
+}
+
+void CMainFrame::OnUpdateBookmarkLoadMerge(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->HasLoad())
+    {
+        pCmdUI->Enable();
+    }
+    else
+    {
+        pCmdUI->Enable(false);
+    }
+}
+
+void CMainFrame::OnBookmarkClear()
+{
+    if (MessageBox(CLEAR_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
+    {
+        m_Bookmarks->Send_Clear();
+    }
+}
+
+void CMainFrame::OnUpdateBookmarkClear(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->HasBookmarks())
+    {
+        pCmdUI->Enable();
+    }
+    else
+    {
+        pCmdUI->Enable(false);
+    }
+}
+
+void CMainFrame::OnBookmarkDelete()
+{
+    if (MessageBox(DELETE_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
+    {
+        m_Bookmarks->Delete();
+    }
+}
+
+void CMainFrame::OnUpdateBookmarkDelete(CCmdUI* pCmdUI)
+{
+    if (m_Bookmarks->BookmarkSelected())
+    {
+        pCmdUI->Enable();
+    }
+    else
+    {
+        pCmdUI->Enable(false);
+    }
+}
+
 void CMainFrame::OnUpdateWindowCascade(CCmdUI* pCmdUI)
 {
     HWND hWnd = GetActive();
@@ -1777,6 +1938,7 @@ void CMainFrame::DoLogout()
     UpdateFrameTitleForDocument(NULL);
 
     DoWorkspaceSave();
+    m_Bookmarks->Clear();
     EnumChildWindows(GetSafeHwnd(), ChildEnumProc, CWM_CLOSEALL);
 
 #ifdef WORKSPACE_WINDOW
@@ -1930,6 +2092,7 @@ void CMainFrame::RestoreState()
         }
     }
     std::sort(m_persistedWindows.begin(), m_persistedWindows.end(), CPersistedItemCompare());
+    m_Bookmarks->Load(true);
     SetTimer(TIMER_RESTORESTATE, 1, NULL);
 }
 
@@ -2188,16 +2351,6 @@ bool CMainFrame::UIUpdateMenuItems()
     return mdiActive; //
 }
 
-BOOL CMainFrame::DoFileOpen(const CString & sPathName, int row, int col, int len)
-{
-    boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
-    std::_tstring filename = pathToWString(path.leaf());
-    CComPtr<IRepository> rep = AttachRepository();
-    AttrInfo attrInfo;
-    attrInfo.AttributeType = ExtensionWithoutDot(filename);
-    return OpenFileBuilderMDI(this, attrInfo, sPathName, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, static_cast<const TCHAR *>(sPathName)), false, row, col, len);
-}
-
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 {
     boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
@@ -2279,6 +2432,7 @@ void CMainFrame::DoWorkspaceSave()
         ATLASSERT(workspace);
         workspace->SetWindows(wsItems);
         m_Workspace->Post_Refresh(true);
+        m_Bookmarks->Save(true);
     }
 }
 
@@ -2582,10 +2736,11 @@ void CMainFrame::OpenBuilder(Dali::IWorkunit *wu, BuilderStartup startWith)
 void CMainFrame::OpenBuilder(IAttribute * attribute)
 {
     CComPtr<IRepository> rep = AttachRepository();
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    ASSERT(attribute);
+    std::_tstring path  = attribute->GetPath();
+    if (boost::filesystem::exists(path))
     {
-        std::_tstring path;
-        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), path.c_str(), rep->CreateIWorkspaceItem(attribute, path), attribute->IsLocked());
     }
     else
         ::OpenBuilderMDI(this, attribute, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, attribute));
@@ -2706,10 +2861,10 @@ void CMainFrame::OpenSyntaxAttribute(const CString & modAttrLabel, IAttributeTyp
     if (attribute.get() != NULL)
     {
         CComPtr<IRepository> rep = AttachRepository();
-        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+        std::_tstring path = attribute->GetPath();
+       if (boost::filesystem::exists(path))
         {
-            std::_tstring path;
-            ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), errors);
+            ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), path.c_str(), rep->CreateIWorkspaceItem(attribute, path), attribute->IsLocked(), errors);
         }
         else
         {
@@ -2739,12 +2894,16 @@ void CMainFrame::OpenAttribute(const CString & modAttrLabel, IAttributeType * ty
         MessageBeep(MB_ICONEXCLAMATION);
 }
 
-void CMainFrame::OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len)
+void CMainFrame::OpenAttribute(const std::_tstring & path, const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len)
 {
     CComPtr<IRepository> rep = AttachRepository();
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    if (boost::filesystem::exists(path))
     {
-        ATLASSERT(_T("TODO"));
+        CComPtr<IRepository> rep = AttachRepository();
+        AttrInfo attrInfo;
+        attrInfo.AttributeType = type->GetFileExtension(true);
+        std::_tstring filename = attribute + _T(".") + attrInfo.AttributeType;
+        OpenFileBuilderMDI(this, attrInfo, path.c_str(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_BUILDER, filename, path.c_str()), false, row, col, len);
     }
     else
     {
@@ -2757,22 +2916,16 @@ void CMainFrame::OpenAttribute(const std::_tstring & module, const std::_tstring
 void CMainFrame::OpenAttribute(IAttribute * attribute, bool bHistoryView)
 {
     CComPtr<IRepository> rep = AttachRepository();
+    ASSERT(attribute);
     HWND hwnd = NULL;
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    std::_tstring path = attribute->GetPath();
+    if (boost::filesystem::exists(path))
     {
-        std::_tstring path;
-        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), path.c_str(), rep->CreateIWorkspaceItem(attribute, path), attribute->IsLocked());
     }
     else
     {
-        if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-        {
-            ATLASSERT(_T("TODO"));
-        }
-        else
-        {
-            hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL), bHistoryView);
-        }
+        hwnd = ::OpenAttributeMDI(this, attribute->GetModuleQualifiedLabel(), attribute->GetLabel(), attribute->GetType(), rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL), bHistoryView);
     }
     if (hwnd)
         PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
@@ -2784,15 +2937,7 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
     m_fr.m_mode = findmode;
     CComPtr<IRepository> rep = AttachRepository();
     HWND hwnd = NULL;
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-    {
-        std::_tstring path;
-        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked());
-    }
-    else
-    {
-        hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
-    }
+    hwnd = ::OpenAttributeMDI(this, attribute, searchTerm, findmode, rep->CreateIWorkspaceItem(WORKSPACE_ITEM_ATTRIBUTE, NULL));
     if (hwnd)
         PostMessage(UM_MDICHILDACTIVATE, (WPARAM)hwnd);
 }
@@ -2800,10 +2945,11 @@ void CMainFrame::OpenAttribute(IAttribute * attribute, const std::_tstring & sea
 void CMainFrame::OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu)
 {
     CComPtr<IRepository> rep = AttachRepository();
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    ASSERT(attribute);
+    std::_tstring path = attribute->GetPath();
+    if (boost::filesystem::exists(path))
     {
-        std::_tstring path;
-        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), eclcc->GetAttributeFilePath(attribute, path), rep->CreateIWorkspaceItem(attribute, eclcc->GetAttributeFilePath(attribute, path)), attribute->IsLocked(), wu);
+        ::OpenFileBuilderMDI(this, attribute->AttributeToInfo(), path.c_str(), rep->CreateIWorkspaceItem(attribute,  path), attribute->IsLocked(), wu);
     }
     else
     {

@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 
 #include "EclCC.h"
-#include "EclMeta.h"
 #include "comms.h"
 #include <cmdProcess.h>
 #include <Logger.h>
@@ -328,7 +327,10 @@ public:
         }
         else if (path.empty())
         {
-            GetAttributeFilePath(_module, _attribute, sourcePath);
+            CComPtr<IRepository> rep = AttachRepository();
+            CComPtr<IAttribute> attr = rep->GetAttributeFast(_module.c_str(), _attribute.c_str(), CreateIAttributeECLType());
+            if (attr != NULL)
+                sourcePath = attr->GetPath();
         }
         else
         {
@@ -550,21 +552,6 @@ public:
         CallEclCC(_T(""), _T(""), path, ecl, args, archive, err, hasErrors, errors);
 
         return hasErrors == false;
-    }
-
-    const TCHAR * GetAttributeFilePath(const std::_tstring & module, const std::_tstring & attribute, std::_tstring & path) const
-    {
-        clib::recursive_mutex::scoped_lock proc(m_mutex);
-        CComPtr<IRepository> rep = AttachRepository();
-        CComPtr<IAttribute> attr = rep->GetAttributeFast(module.c_str(), attribute.c_str(), CreateIAttributeECLType());
-        return GetAttributeFilePath(attr, path);
-    }
-
-    const TCHAR * GetAttributeFilePath(IAttribute * attr, std::_tstring & path) const
-    {
-        clib::recursive_mutex::scoped_lock proc(m_mutex);
-        path = attr->GetPath();
-        return path.c_str();
     }
 
     const TCHAR * GetAttributeLabel(IAttribute * attr, std::_tstring & label) const

@@ -2,6 +2,7 @@
 #include "..\en_us\resource.h"
 
 #include "ecldlgbuilder.h"
+#include "ModuleHelper.h"
 
 #include <utilDateTime.h> //clib
 #include <UtilFilesystem.h> //clib
@@ -40,7 +41,7 @@ void CBuilderDlg::GetTitle(CString & title)
     title = (m_view.IsDirty() ? _T("*") : _T("")) + name;
 }
 
-bool CBuilderDlg::DoFileOpen(const CString & sPathName) 
+bool CBuilderDlg::DoFileOpen(const CString & sPathName, bool parseFlag) 
 {
     ATLASSERT(!sPathName.IsEmpty());
     CString cleanPathName;
@@ -58,6 +59,12 @@ bool CBuilderDlg::DoFileOpen(const CString & sPathName)
         ShowLastError( sMessage, ::GetLastError () );
         
         return false;
+    }
+
+    if (parseFlag)
+    {
+        CBookmarksFrame * pFrame = GetBookmarksFrame();
+        pFrame->ParsePathBookmarksEcl(sPathName.GetString());
     }
 
     ResetSavePoint(true);
@@ -513,12 +520,15 @@ void CBuilderDlg::DoCheckSyntax()
     CString ecl;
     m_view.GetText(ecl);
     CString cluster(GetCluster());
-    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    if (boost::filesystem::exists(m_path.GetString()))
     {
         if (!m_path.IsEmpty() && IsDirty()) 
             DoFileSave(m_path);
-        if (m_attribute)
-            eclcc->PopulateMeta(m_attribute);
+        CBookmarksFrame * pFrame = GetBookmarksFrame();
+        std::_tstring label, module, attr, attrType;
+        CModuleHelper modHelper(_T(""));
+        modHelper.ModuleAttrFromPath(m_path.GetString(), label, module, attr, attrType);
+        pFrame->ParseBookmarksEcl(ecl.GetString(), _T(""),m_path.GetString(),module,attr,AttributeTypeFromExtension(attrType));
     }
 
     if (!m_attribute || m_attribute->GetType() == CreateIAttributeECLType())

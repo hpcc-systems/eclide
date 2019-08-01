@@ -75,7 +75,7 @@ public:
     void GetTitle(CString & title);
     //  ---  ---  ---
 
-    bool DoFileOpen(const CString & sPathName);
+    bool DoFileOpen(const CString & sPathName, bool parseFlag=true);
     bool DoFileSave(const CString & sPathName);
     bool DoFileSaveAs();
     bool SetNamePath(const CString & sPathName);
