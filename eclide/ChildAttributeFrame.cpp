@@ -46,11 +46,14 @@ public:
 
     BOOL PreTranslateMessage(MSG* pMsg)
     {
-        if ((pMsg->message == WM_KEYDOWN )&& (pMsg->wParam == VK_F4))
+        if (::GetAsyncKeyState(VK_MENU) & 0x8000 && pMsg->wParam == '0')
         {
-            int d = 0;
+            if (::GetAsyncKeyState(VK_CONTROL) & 0x8000)
+                m_dlgview.m_view.FoldAll(true);
+            else
+                m_dlgview.m_view.FoldAll();
         }
-        if (pMsg->message == WM_KEYDOWN && (::GetAsyncKeyState(VK_CONTROL) & 0x8000))  // Let frame handle some messages.
+        else if (pMsg->message == WM_KEYDOWN && (::GetAsyncKeyState(VK_CONTROL) & 0x8000))  // Let frame handle some messages.
         {
             switch (pMsg->wParam)
             {
