@@ -6,7 +6,7 @@ set ( HPCC_PROJECT "eclide" )
 set ( HPCC_MAJOR 7 )
 set ( HPCC_MINOR 2 )
 set ( HPCC_POINT 36 )
-set ( HPCC_MATURITY "rc" )
+set ( HPCC_MATURITY "release" )
 set ( HPCC_SEQUENCE 1 )
 ###
 IF ( ${HPCC_POINT} GREATER 65 )
