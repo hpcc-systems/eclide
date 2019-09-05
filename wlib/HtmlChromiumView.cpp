@@ -68,12 +68,16 @@ public:
     {
         m_url = pszUrl;
         DNSLookup(m_url);
-        auto frame = m_clientHandler->GetBrowser()->GetMainFrame();
-        if (frame != nullptr) {
-            frame->LoadURL(CefString(m_url));
-            return S_OK;
+        auto browser = m_clientHandler->GetBrowser();
+        if (browser == nullptr) {
+            return E_FAIL;
         }
-        return E_FAIL;
+        auto frame = browser->GetMainFrame();
+        if (frame == nullptr) {
+            return E_FAIL;
+        }
+        frame->LoadURL(CefString(m_url));
+        return S_OK;
     }
 
     virtual void CreateHTMLControl(const TCHAR * pszUrl, const TCHAR* pszUserID, const TCHAR* pszPassword)
