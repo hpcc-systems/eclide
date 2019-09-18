@@ -262,7 +262,9 @@ public:
 		m_listAttrs = GetDlgItem(IDC_LIST_ATTRIBUTES);
 		for(AttrVector::const_iterator itr = m_attrs.begin(); itr != m_attrs.end(); ++itr)
 		{
-			m_listAttrs.AddString(itr->get()->QualifiedLabel().c_str());
+			std::wstring str = itr->get()->QualifiedLabel().c_str();
+			str += itr->get()->AttributeType()->GetFileExtension();
+			m_listAttrs.AddString(str.c_str());
 		}
 
 		*m_comboModuleCtrl = GetDlgItem(IDC_COMBO_MODULE);
@@ -367,21 +369,31 @@ std::istream& safeGetline(std::istream& is, std::string& t)
 
 IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & path)
 {
-	std::ifstream ifs(path.c_str());
-	if (ifs) {
+	CUnicodeFile file;
+	if (file.Open(path.c_str()))
+	{
+		std::_tstring content;
+		file.Read(content);
+		typedef std::vector<std::_tstring> split_vector_type;
+		split_vector_type SplitVec;
+		boost::algorithm::replace_all(content, _T("\r\n"), _T("\n"));
+		boost::algorithm::replace_all(content, _T("\r"), _T("\n"));
+		boost::algorithm::split(SplitVec, content, boost::algorithm::is_any_of("\n"), boost::algorithm::token_compress_on);
+
 		AttrVector attrs;
 		std::_tstring attributeLabel;
 		std::_tstring attributeExt;
-		std::string attributeComment;
-		std::string attributeEcl;
+		std::_tstring attributeComment;
+		std::_tstring attributeEcl;
+		std::_tstring line;
 
-		std::string line;
-		while (!safeGetline(ifs, line).eof())
+		for (split_vector_type::iterator itr = SplitVec.begin(); itr != SplitVec.end(); ++itr)
 		{
+			line = *itr;
 			if (boost::algorithm::istarts_with(line, IMPORT_MARKER))
 			{
 				if (attributeLabel.length() && attributeEcl.length())
-					attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), attributeComment, attributeEcl));
+					attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), std::string(CT2A(attributeComment.c_str(), CP_UTF8)), std::string(CT2A(attributeEcl.c_str(), CP_UTF8))));
 
 				boost::algorithm::ireplace_first(line, IMPORT_MARKER, _T(""));
 
@@ -397,7 +409,7 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 					attributeExt = parts[0];
 				}
 				else {
-					attributeLabel = CA2T(line.c_str());
+					attributeLabel = line;
 					attributeExt = _T("ECL");
 				}
 				attributeComment.clear();
@@ -407,19 +419,16 @@ IModule * DoConfirmImportDlg(HWND hwndParent, const boost::filesystem::path & pa
 			{
 				boost::algorithm::ireplace_first(line, COMMENT_MARKER, _T(""));
 				boost::algorithm::trim(line);
-				attributeComment += line + "\r\n";
+				attributeComment += line + _T("\r\n");
 			}
 			else
 			{
-				attributeEcl += line + "\r\n";
+				attributeEcl += line + _T("\r\n");
 			}
 		}
-		if (attributeLabel.length() && attributeEcl.length())
-			attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), attributeComment, attributeEcl));
 
-		line.clear();
-		attributeComment.clear();
-		attributeEcl.clear();
+		if (attributeLabel.length() && attributeEcl.length())
+			attrs.push_back(CreateIMigrationItem(attributeLabel, CreateIAttributeType(attributeExt), std::string(CT2A(attributeComment.c_str(), CP_UTF8)), std::string(CT2A(attributeEcl.c_str(), CP_UTF8))));
 
 		CAttrImportDlg dlg(AttachRepository(), attrs, true);
 		if (dlg.DoModal(hwndParent) == IDOK)
