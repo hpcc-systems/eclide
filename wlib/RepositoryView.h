@@ -467,9 +467,12 @@ public:
                 for (IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
                 {
                     file.Write(IMPORT_MARKER);
+                    file.Write(itr->get()->GetType()->GetFileExtension(true));
+                    file.Write(_T(":"));
                     file.Write(itr->get()->GetQualifiedLabel(true));
-                    file.Write(_T("\n"));
+                    file.Write(_T("\r\n"));
                     file.Write(itr->get()->GetText());
+                    file.Write(_T("\r\n"));
                 }
                 file.Close();
             }

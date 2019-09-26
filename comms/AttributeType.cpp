@@ -165,13 +165,17 @@ public:
     {
         return m_repositoryCode.c_str();
     }
-    const TCHAR * GetFileExtension()
+    const TCHAR * GetFileExtension(bool noDotFlag)
     {
         if (m_fileExtension.empty())
         {
             m_fileExtension = GetRepositoryCode();
         }
-        if (!boost::istarts_with(m_fileExtension, _T(".")))
+        if (noDotFlag && boost::istarts_with(m_fileExtension, _T(".")))
+        {
+            m_fileExtension = m_fileExtension.substr(1);
+        }
+        else if (!noDotFlag && !boost::istarts_with(m_fileExtension, _T(".")))
         {
             m_fileExtension = _T(".") + m_fileExtension;
         }
