@@ -1130,21 +1130,37 @@ END_MESSAGE_MAP()
 //  ===========================================================================
 bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
 {
+    std::_tstring passedID = workspaceItem->GetID();
+    bool fileFlag = boost::filesystem::exists(passedID) ? true : false;
     for (WorkspaceFramePairMap::iterator itr = g_builder_window.begin(); itr != g_builder_window.end(); ++itr)
     {
         if (CComQIPtr<IWorkspaceItem> wi = itr->first) {
+            FramePair win = itr->second;
+            bool found = false;
+
             if (wi->GetAttributePointer() && wi->GetAttributePointer() == workspaceItem->GetAttributePointer())
             {
-                FramePair win = itr->second;
                 if (win.first && win.second && win.second->IsWindow())
                 {
-                    if (win.first->IsIconic())
-                        win.first->ShowWindow(SW_RESTORE);
-                    win.first->BringWindowToTop();
-
-                    *pChild = win.first;
-                    return true;
+                    found = true;
                 }
+            }
+            else if (fileFlag)
+            {
+                std::_tstring existingID = wi->GetID();
+                if (boost::algorithm::iequals(existingID, passedID))
+                {
+                    found = true;
+                }
+            }
+            if (found && win.first)
+            {
+                if (win.first->IsIconic())
+                    win.first->ShowWindow(SW_RESTORE);
+                win.first->BringWindowToTop();
+
+                *pChild = win.first;
+                return true;
             }
         }
     }
