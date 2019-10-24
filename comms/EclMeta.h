@@ -164,11 +164,11 @@ public:
 
         return NULL;
     }
-    bool GetRecordStrings(const std::_tstring & token, StdStringVector &set)
+    bool GetStrings(const std::_tstring & token, const std::_tstring & str, StdStringVector &set)
     {
         bool found = false;
 
-        if (boost::algorithm::iequals(GetType(), "record"))
+        if (boost::algorithm::iequals(GetType(), str))
         {
             set.push_back(GetName());
             found = true;
@@ -179,7 +179,7 @@ public:
             for (std::map<std::wstring, StlLinked<CEclDefinition> >::iterator itr = m_defs.begin(); itr != m_defs.end(); ++itr)
             {
                 def = itr->second.get();
-                if (def->GetRecordStrings(token, set))
+                if (def->GetStrings(token, str, set))
                 {
                     found = true;
                 }
@@ -292,7 +292,7 @@ public:
         IMPORT $ AS MyMod;
         (Where MyModule could be a folder an attr file or a library (like std))
         */
-    bool GetRecordStrings(const std::_tstring & token, const std::_tstring & last, StdStringVector &set)
+    bool GetStrings(const std::_tstring & token, const std::_tstring & last, const std::_tstring & str, StdStringVector &set)
     {
         bool found = false;
         CEclDefinition *def = NULL;
@@ -305,7 +305,7 @@ public:
             {
                 return false;
             }
-            if (def->GetRecordStrings(token, set))
+            if (def->GetStrings(token, str, set))
             {
                 found = true;
             }

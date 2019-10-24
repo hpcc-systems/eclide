@@ -530,7 +530,8 @@ bool CEclMeta::GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, 
     // Check for records
     if (CEclFile *file = dynamic_cast<CEclFile*>(meta.get()))
     {
-        file->GetRecordStrings(token, m_autoLast, set);
+        file->GetStrings(token, m_autoLast, _T("function"), set);
+        file->GetStrings(token, m_autoLast, _T("record"), set);
     }
 
     return (int)set.size() > startSize;
