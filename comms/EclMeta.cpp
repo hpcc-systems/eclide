@@ -435,7 +435,7 @@ int CEclMeta::NormalizeAutoC(IAttribute *attr)
     for (tokenizer::iterator tok_iter = tokens.begin(); tok_iter != tokens.end(); ++tok_iter)
     {
         tok = tok_iter->c_str();
-        if (boost::algorithm::equals(tok, _T("$")))
+        if (boost::algorithm::equals(tok, _T("$")) && attr)
         {
             tok = attr->GetModuleQualifiedLabel(true);
         }
@@ -502,9 +502,6 @@ bool CEclMeta::FindImportAs()
 
 bool CEclMeta::GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, StdStringVector &set)
 {
-    if (!attr)
-        return false;
-
     m_autoString = token;
     int startSize = set.size();
     NormalizeAutoC(attr);
