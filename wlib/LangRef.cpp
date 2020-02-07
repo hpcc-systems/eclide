@@ -937,6 +937,10 @@ ILangRef * CreateLangRef(std::_tstring elementType, IAttributeType * type)
 {
 	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
 	g_langRef.empty();
+	if (type != NULL && type->IsTypeOf(ATTRIBUTE_TYPE_ECLLIB))
+	{
+		elementType = ATTRIBUTE_TYPE_ECL;
+	}
 	if (!g_langRef[elementType])
 	{
 		g_langRef[elementType] = new CLangRef();
