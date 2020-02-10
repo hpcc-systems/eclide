@@ -105,6 +105,7 @@ public:
         DLGRESIZE_CONTROL(IDC_BUTTON_SEARCH, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_BUTTON_CLEAR, DLSZ_MOVE_X)
         DLGRESIZE_CONTROL(IDC_TREE_REPOSITORY, DLSZ_SIZE_X | DLSZ_SIZE_Y)
+        DLGRESIZE_CONTROL(IDC_STATIC_RESULTS, DLSZ_MOVE_X)
     END_DLGRESIZE_MAP()
 
     BEGIN_DDX_MAP(thisClass)
@@ -143,6 +144,7 @@ public:
     void DoSaveState();
     void DoRestoreState();
     void DoRefreshState();
+    void SetResultsCount(int count=-1);
 
     virtual void OnItemSelectionChanged(CTreeNode *, bool bSelected );
     virtual void OnItemExpanding(CTreeNode *, bool bExpanding);
