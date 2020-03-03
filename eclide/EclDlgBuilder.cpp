@@ -806,7 +806,7 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
     {
         CString ecl;
         m_view.GetText(ecl);
-        if (m_view.IsDirty()) {
+        if (m_view.IsDirty() && !attr->GetUserConfirmedDelete()) {
             if (ecl.Compare(attr->GetText(false)) != 0)
             {
                 CString message = _T("This file has been modified outside of the source editor.\r\nDo you want to reload it and lose the changes made in the source editor?");
@@ -829,7 +829,7 @@ void CBuilderDlg::operator()(IAttribute * attr, bool eclChanged, IAttribute * ne
     }
     else if (deleted) {
         int doSaveAs = IDNO;
-        if (m_view.IsDirty()) {
+        if (m_view.IsDirty() && !attr->GetUserConfirmedDelete()) {
             CString message = _T("This file has been deleted outside of the source editor.\r\nDo you want to save your local changes?");
             doSaveAs = MessageBox(message, m_name, MB_YESNO | MB_DEFBUTTON2 | MB_ICONQUESTION);
         }
