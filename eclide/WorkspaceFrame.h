@@ -36,6 +36,19 @@ public:
         ProjectContextState state;
         CalculateContextMenuState(s,state);
 
+        CTreeNodeVector::const_iterator itr = s.begin();
+        if (itr != s.end())
+        {
+            CTreeNode * node = itr->get();
+            if (CComQIPtr<CWorkspaceNode> ws_node = node)
+            {
+                if (ws_node->GetWorkspace() == pT->m_view.GetCurrentWorkspace())
+                {
+                    state.CanSwitch = false;
+                }
+            }
+        }
+
         WTL::CMenu m;
         m.LoadMenu(IDR_POPUP_PROJECT);
         m.SetMenuDefaultItem(ID_PROJECT_SWITCH);
@@ -53,7 +66,6 @@ public:
             break;
         case ID_PROJECT_SWITCH:
             {
-                CTreeNodeVector::const_iterator itr = s.begin(); 
                 if (itr != s.end())
                 {
                     CTreeNode * node = itr->get();
@@ -68,7 +80,6 @@ public:
         case ID_PROJECT_REMOVE:
             {
                 IWorkspaceVector workspacesToRemove;
-                CTreeNodeVector::const_iterator itr = s.begin(); 
                 if (itr != s.end())
                 {
                     CTreeNode * node = itr->get();
