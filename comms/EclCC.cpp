@@ -31,10 +31,11 @@ class CEclCC : public IEclCC, public clib::CLockableUnknown
 {
 protected:
     CComPtr<IConfig> m_config;
+    CComPtr<IConfig> m_pluginConfig;
     std::_tstring m_compilerFile;
     boost::filesystem::wpath m_compilerFilePath;
     boost::filesystem::wpath m_compilerFolderPath;
-    boost::filesystem::wpath m_pluginsFolderPath;
+    boost::filesystem::wpath m_IDEPluginsFolderPath;
 
     std::_tstring m_arguments;
 
@@ -107,7 +108,7 @@ public:
             m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
         }
         m_compilerFolderPath = m_compilerFilePath.parent_path();
-        m_pluginsFolderPath = m_compilerFolderPath.parent_path() / _T("IDEPlugins");
+        m_IDEPluginsFolderPath = m_compilerFolderPath.parent_path() / _T("IDEPlugins");
 
         m_arguments = CString(m_config->Get(GLOBAL_COMPILER_ARGUMENTS));
 
@@ -244,10 +245,10 @@ public:
         return m_eclFolders[i].first.c_str();
     }
 
-    bool LocatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
+    bool LocateIDEPlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
     {
         boost::filesystem::directory_iterator end_itr;
-        for (boost::filesystem::directory_iterator itr(m_pluginsFolderPath); itr != end_itr; ++itr)
+        for (boost::filesystem::directory_iterator itr(m_IDEPluginsFolderPath); itr != end_itr; ++itr)
         {
             if (clib::filesystem::is_directory(*itr) && clib::filesystem::exists(*itr / batchFile))
             {
@@ -585,20 +586,87 @@ public:
         std::_tstring in, out, err;
         runProcess(command, pathToWString(tempPath), _T(""), in, out, err);
         typedef std::vector<std::_tstring> split_vector_type;
-        split_vector_type lines; 
-        boost::algorithm::split(lines, out, boost::algorithm::is_any_of(_T("\r\n")), boost::algorithm::token_compress_on); 
-        for(split_vector_type::const_iterator itr = lines.begin(); itr != lines.end(); ++itr)
+        split_vector_type lines;
+        boost::algorithm::split(lines, out, boost::algorithm::is_any_of(_T("\r\n")), boost::algorithm::token_compress_on);
+        for (split_vector_type::const_iterator itr = lines.begin(); itr != lines.end(); ++itr)
         {
-            split_vector_type assignment; 
-            boost::algorithm::split(assignment, *itr, boost::algorithm::is_any_of(_T("=")), boost::algorithm::token_compress_on); 
+            split_vector_type assignment;
+            boost::algorithm::split(assignment, *itr, boost::algorithm::is_any_of(_T("=")), boost::algorithm::token_compress_on);
             if (assignment.size() == 2)
             {
                 boost::algorithm::replace_all(assignment[1], _T("/"), _T("\\"));	//  Workaround for HPCC-10111
-                boost::algorithm::trim_right_if(assignment[1], boost::algorithm::is_any_of("\\")); 
+                boost::algorithm::trim_right_if(assignment[1], boost::algorithm::is_any_of("\\"));
                 paths[assignment[0]] = assignment[1];
             }
         }
         return paths.size();
+    }
+
+    bool PluginFolderExists(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const
+    {
+        boost::filesystem::path folder, path;
+        GetProgramFolder(folder);
+
+        for (int i = 0; i < level; i++)
+        {
+            if (folder.has_parent_path())
+            {
+                folder = folder.parent_path();
+            }
+        }
+        if (pluginFolder)
+        {
+            folder /= "plugin";
+        }
+        else
+        {
+            folder /= stringToPath(attrTypeStr);
+        }
+        path = folder / batchFile;
+        if (clib::filesystem::exists(path))
+        {
+            foundFolder = folder;
+            return true;
+        }
+        return false;
+    }
+
+    bool LocatePlugin(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder) const
+    {
+        if (PluginFolderExists(attrTypeStr, batchFile, foundFolder, 0, true))
+        {
+            return true;
+        }
+        else if (PluginFolderExists(attrTypeStr, batchFile, foundFolder, 2, false))
+        {
+            return true;
+        }
+        else if (PluginFolderExists(attrTypeStr, batchFile, foundFolder, 3, false))
+        {
+            return true;
+        }
+        else if (LocateIDEPlugin(batchFile, foundFolder)) {
+            return true;
+        }
+        if (!boost::algorithm::iequals(batchFile, "ecl.bat")) {
+            _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
+        }
+        return false;
+    }
+
+    PREPROCESS_TYPE StringToProcessType(std::_tstring processTypeStr) const
+    {
+        PREPROCESS_TYPE processType = PREPROCESS_UNKNOWN;
+        if (::boost::iequals(processTypeStr, "SyntaxCheck"))
+        {
+            processType = PREPROCESS_SYNTAXCHECK;
+        }
+        return processType;
+    }
+
+    boost::filesystem::wpath GetIDEPluginFolder() const
+    {
+        return m_IDEPluginsFolderPath;
     }
 };
 typedef StlLinked<CEclCC> CEclCCAdapt;

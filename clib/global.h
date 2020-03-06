@@ -79,7 +79,7 @@ const TCHAR * const AMT_INI = _T("amt_ini");
 const TCHAR * const AMT_CFG_LHS = _T("default_cfg");
 const TCHAR * const AMT_CFG_RHS = _T("default_rhs_cfg");
 
-CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesystem::path & path);
+CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesystem::path & path, bool forcePathFlag=false);
 CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const std::_tstring & env);
 CLIB_API IConfig * CreateIConfig(const std::_tstring & id);
 CLIB_API IConfig * GetIConfig(const std::_tstring & id);
