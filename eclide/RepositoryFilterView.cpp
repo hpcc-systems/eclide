@@ -70,6 +70,8 @@ LRESULT CRepositoryFilterView::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
     m_Tree = GetDlgItem(IDC_TREE_REPOSITORY);
     m_Tree.SetImageLists(img, state);
 
+    SetResultsCount();
+
     return 0;
 }
 
@@ -226,6 +228,7 @@ LRESULT CRepositoryFilterView::OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     WTL::CLockWindowUpdate lock(m_hWnd);
     m_Tree.DeleteAllItems();
     m_modeCtrl.ResetContent();
+    SetResultsCount();
     return 0;
 }
 
@@ -273,6 +276,7 @@ LRESULT CRepositoryFilterView::OnSubmitDone(UINT /*uMsg*/, WPARAM wParam, LPARAM
     m_Tree.DeleteAllItems();
     if (results->size())
     {
+        SetResultsCount(results->size());
         m_Root = new CRepositoryFilterNode(m_Owner, _T("Results"), results.get()); //  No attach as it is "in" the tree control also.
         m_Root->InsertBelow(m_Tree, TVI_ROOT);
         m_Root->Expand();
@@ -357,6 +361,7 @@ LRESULT CRepositoryFilterView::OnBnClickedButtonSearch(WORD /*wNotifyCode*/, WOR
     DoSaveState();
     WTL::CLockWindowUpdate lock(m_hWnd);
     m_Tree.DeleteAllItems();
+    SetResultsCount();
     CLoadingNode * loading = new CLoadingNode(NULL, _T("...Searching..."));
     loading->InsertBelow(m_Tree, TVI_ROOT);
     DoSearchOptions options;
@@ -457,6 +462,18 @@ void CRepositoryFilterView::DoRefreshState()
     else if (!m_search.IsWindowEnabled() && (!m_searchText.IsEmpty() || !m_searchUser.IsEmpty() || m_sandboxed || m_checkedout || m_locked || m_orphaned || m_modifiedSince))
     {
         m_search.EnableWindow(true);
+    }
+}
+
+void CRepositoryFilterView::SetResultsCount(int count)
+{
+    if (count >= 0)
+    {
+        ::SetWindowText(GetDlgItem(IDC_STATIC_RESULTS), (boost::_tformat(_T("Results: %1%")) % count).str().c_str());
+    }
+    else
+    {
+        ::SetWindowText(GetDlgItem(IDC_STATIC_RESULTS), _T(""));
     }
 }
 

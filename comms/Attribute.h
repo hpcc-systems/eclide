@@ -94,7 +94,9 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
     const TCHAR *GetChecksumLocal() const;
     const TCHAR *GetChecksumLocalTidied() const;
     int GetVersion() const;
+    bool GetUserConfirmedDelete() const;
     bool SetText(const TCHAR* ecl, bool noBroadcast = false);
+    void SetUserConfirmedDelete(bool deleteFlag);
     void UnloadText();
     bool IsCheckedOut() const;
     bool IsSandboxed() const;

@@ -49,6 +49,7 @@ protected:
     bool m_sandboxed;
     bool m_locked;
     bool m_orphaned;
+    bool m_userConfirmedDelete;
     unsigned m_version;
     CString m_lockedby;
     CString m_modifiedDate;
@@ -208,6 +209,12 @@ public:
         return m_version;
     }
 
+    bool GetUserConfirmedDelete() const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        return m_userConfirmedDelete;
+    }
+
     bool SetText(const TCHAR* ecl, bool noBroadcast = false) 
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -220,6 +227,12 @@ public:
         IAttributeVector attrs;
         attrs.push_back(IAttributeAdapt((IAttribute*)this));
         return m_repository->Save(attrs, noBroadcast);
+    }
+
+    void SetUserConfirmedDelete(bool deleteFlag)
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        m_userConfirmedDelete = deleteFlag;
     }
 
     void UnloadText()
