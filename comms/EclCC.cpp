@@ -655,6 +655,11 @@ CEclCC * CreateEclCCRaw(IConfig * config, const std::_tstring & compilerFile)
     return EclCCCache.Get(new CEclCC(config, compilerFile));
 }
 
+boost::filesystem::path EclCCSubPath(const boost::filesystem::path & directory)
+{
+    return directory / "clienttools" / "bin" / "eclcc.exe";
+}
+
 unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVector & results)
 {
     if (boost::filesystem::exists(progFiles)) {
@@ -668,9 +673,9 @@ unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVect
                 for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
                 {
 #if (BOOST_FILESYSTEM_VERSION == 3)
-                    path eclccPath = *itr / "clienttools" / "bin" / "eclcc.exe";
+                    path eclccPath = EclCCSubPath(wpathToPath(*itr));
 #else
-                    path eclccPath = itr->path() / "clienttools" / "bin" / "eclcc.exe";
+                    path eclccPath = EclCCSubPath(itr->path());
 #endif
                     if (exists(eclccPath))
                         results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
@@ -699,6 +704,25 @@ unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVect
     return results.size();
 }
 
+unsigned int FindRelative(const boost::filesystem::path & progFiles, CEclCCVector & results)
+{
+    using namespace boost::filesystem;
+    boost::filesystem::path current = boost::filesystem::current_path();
+    path eclccPath = current / "eclcc.exe";
+    CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+
+    for (int i = 0; i < 3; i++)
+    {
+        current = current.parent_path();
+        path eclccPath = EclCCSubPath(current);
+        if (exists(eclccPath)) {
+            _DBGLOG(LEVEL_INFO, (boost::_tformat(_T("eclcc.exe relative path:  %1%")) % eclccPath.c_str()).str().c_str());
+            results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+        }
+    }
+    return results.size();
+}
+
 unsigned int FindAllCEclCC(CEclCCVector & results)
 {
     boost::filesystem::path progFiles;
@@ -706,6 +730,7 @@ unsigned int FindAllCEclCC(CEclCCVector & results)
     FindAllCEclCC(progFiles, results);
     GetProgramFilesFolder(progFiles);
     FindAllCEclCC(progFiles, results);
+    FindRelative(progFiles, results);
     return results.size();
 }
 

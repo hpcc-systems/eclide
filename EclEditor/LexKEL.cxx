@@ -49,7 +49,7 @@ static bool IsSpaceEquiv(int state) {
         (state == SCE_C_COMMENTDOCKEYWORDERROR);
 }
 
-static bool IsStreamCommentStyleEsdl(int style) {
+static bool IsStreamCommentStyleKel(int style) {
     return style == SCE_KEL_COMMENT ||
         style == SCE_KEL_COMMENTLINE ||
         style == SCE_KEL_COMMENTDOC;
@@ -263,11 +263,11 @@ static void FoldKELDoc(unsigned int startPos, int length, int initStyle,
         style = styleNext;
         styleNext = styler.StyleAt(i + 1);
         bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-        if (foldComment && IsStreamCommentStyleEsdl(style)) {
-            if (!IsStreamCommentStyleEsdl(stylePrev)) {
+        if (foldComment && IsStreamCommentStyleKel(style)) {
+            if (!IsStreamCommentStyleKel(stylePrev)) {
                 levelNext++;
             }
-            else if (!IsStreamCommentStyleEsdl(styleNext) && !atEOL) {
+            else if (!IsStreamCommentStyleKel(styleNext) && !atEOL) {
                 // Comments don't end at end of line and the next character may be unstyled.
                 levelNext--;
             }

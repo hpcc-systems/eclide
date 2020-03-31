@@ -672,6 +672,7 @@ public:
     {
         for(IAttributeVector::const_iterator itr = pAttributes.begin(); itr != pAttributes.end(); ++itr)
         {
+            itr->get()->SetUserConfirmedDelete(true);
             itr->get()->Delete();
             itr->get()->Refresh(false, NULL, true);
         }
