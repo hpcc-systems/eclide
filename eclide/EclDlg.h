@@ -38,7 +38,8 @@ public:
 
     bool DoQuerySave()
     {
-        if (m_view.IsDirty())
+        IAttribute *attr = m_view.GetAttribute();
+        if (m_view.IsDirty() && (attr == NULL || !attr->GetUserConfirmedDelete()))
         {
             BringWindowToTop();
             CString msg, title;
