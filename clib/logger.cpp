@@ -10,6 +10,7 @@ const TCHAR * const LEVEL_TEXT[] =
     _T("FINER:    "),
     _T("FINE:     "),
     _T("CONFIG:   "),
+    _T("DEBUG:     "),
     _T("INFO:     "),
     _T("WARNING:  "),
     _T("SEVERE:   ")
