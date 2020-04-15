@@ -863,7 +863,7 @@
     <item>
       <categoryid>1</categoryid>
       <name>ROW</name>
-      <tooltip>ROW( { values }, recstruct )</tooltip>
+      <tooltip>ROW( { values }, recstruct )\\nMOOSE</tooltip>
       <insertbeforecursor>ROW( {</insertbeforecursor>
       <insertaftercursor>},  )</insertaftercursor>
       <canbefollowedby></canbefollowedby>

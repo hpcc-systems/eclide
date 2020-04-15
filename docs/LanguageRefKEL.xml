@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
   <s class_id="0" tracking_level="0" version="0">
-    <count>120</count>
+    <count>121</count>
     <item_version>0</item_version>
     <item class_id="1" tracking_level="0" version="0">
       <categoryid>1</categoryid>
@@ -111,7 +111,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>SUM</name>
-      <tooltip>SUM(entityset, value)</tooltip>
+      <tooltip>SUM(entityset, value)&#x0a;SUM(singlecolumnset)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -127,7 +127,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>MIN</name>
-      <tooltip>MIN(entityset, value)</tooltip>
+      <tooltip>MIN(entityset, value)&#x0a;MIN(singlecolumnset)&#x0a;MIN(valuelist)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -135,7 +135,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>MAX</name>
-      <tooltip>MAX(entityset, value)</tooltip>
+      <tooltip>MAX(entityset, value)&#x0a;MAX(singlecolumnset)&#x0a;MAX(valuelist)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -143,7 +143,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>RANGE</name>
-      <tooltip>RANGE(entityset, value)</tooltip>
+      <tooltip>RANGE(entityset, value)&#x0a;RANGE(singlecolumnset)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -191,7 +191,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>WEIGHTEDSTDDEV</name>
-      <tooltip>WEIGHTEDSTDDEV(entityset,value)</tooltip>
+      <tooltip>WEIGHTEDSTDDEV(entityset,value)&#x0a;WEIGHTEDSTDDEV(singlecolumnset)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -223,7 +223,15 @@
     <item>
       <categoryid>2</categoryid>
       <name>WEIGHTEDRANK</name>
-      <tooltip>WEIGHTEDRANK(entityset,value, n)</tooltip>
+      <tooltip>WEIGHTEDRANK(entityset, value, n)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WEIGHTEDRANKDOWN</name>
+      <tooltip>WEIGHTEDRANKDOWN(entityset, value, n)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -231,7 +239,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>PERCENTILE</name>
-      <tooltip>PERCENTILE(entityset, value, n)</tooltip>
+      <tooltip>PERCENTILE(entityset, value, n)&#x0a;PERCENTILE(singlecolumnset,n)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -247,7 +255,7 @@
     <item>
       <categoryid>2</categoryid>
       <name>QUARTILE</name>
-      <tooltip>QUARTILE(entityset, value, n)</tooltip>
+      <tooltip>QUARTILE(entityset, value, n)&#x0a;QUARTILE(singlecolumnset,n)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
