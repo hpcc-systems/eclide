@@ -824,9 +824,10 @@
 #define ID_EDIT_FOLDALL                 33116
 #define ID_EDIT_UNFOLDALL               33117
 #define ID_BROWSER_NEW_ECLWATCH         33118
-#define ID_BOOKMARKS_NEXT               33119
-#define ID_BOOKMARKS_PREV               33120
-#define ID_BOOKMARKS_VIEW               33121
+#define ID_GO_NOTHING                   33119
+#define ID_BOOKMARKS_NEXT               33120
+#define ID_BOOKMARKS_PREV               33121
+#define ID_BOOKMARKS_VIEW               33122
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01

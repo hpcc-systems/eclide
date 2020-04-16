@@ -39,7 +39,6 @@ class CBookmarksView:
 protected:
     IBookmarksSlot *m_Owner;
     CSortMFCListCtrl m_list;
-    CSortMFCListCtrl m_listMaster;
     bool m_checkMine;
     bool m_checkTodos;
     bool m_checkHacks;
@@ -94,8 +93,8 @@ public:
     std::_tstring FindTag(std::_tstring line, std::_tstring tag, int &index, bool zeroIndex = false);
     void SetMarks(bool val);
     void DeleteMarkedBookmarks(bool val);
-    void SetMarks(std::_tstring inPath, std::_tstring inModule, std::_tstring inAttributeName, bool val);
-    void DeleteMarkedBookmarks(std::_tstring inPath, std::_tstring inModule, std::_tstring inAttributeName, bool val);
+    void SetMarks(const std::_tstring inPath, const std::_tstring inModule, const std::_tstring inAttributeName, bool val);
+    void DeleteMarkedBookmarks(const std::_tstring inPath, const std::_tstring inModule, const std::_tstring inAttributeName, bool val);
     void ParseBookmarks(IAttribute *attribute);
     void ParseBookmarksEcl(const std::_tstring & ecl, const std::_tstring & user=_T(""), const std::_tstring & id=_T(""), const std::_tstring & inModule=_T(""), const std::_tstring & inAttributeName=_T(""), IAttributeType *attrType=NULL);
     boost::filesystem::path BookmarksFilePath(bool saveState=false);

@@ -194,9 +194,5 @@ const CComPtr<IAttribute> CModuleHelper::GetAttribute(const std::_tstring & modu
 {
     CComPtr<IRepository> rep = AttachRepository();
     CComPtr<IAttribute> attr = rep->GetAttributeFast(module.c_str(), attribute.c_str(), AttributeTypeFromExtension(attrExt));
-    if (attr == NULL)
-    {
-        //IAttribute * attribute = CreateDiskAttribute(rep, module, attribute, attrExt, path);
-    }
     return attr;
 }
