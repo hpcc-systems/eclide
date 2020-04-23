@@ -21,60 +21,6 @@ public:
     virtual const TCHAR *GetText(bool refresh, bool noBroadcast = false) const = 0;
     virtual const TCHAR *GetLabel() const = 0;
 
-    bool pluginFolderExists(const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const
-    {
-        boost::filesystem::path folder, path;
-        GetProgramFolder(folder);
-
-        for (int i = 0; i < level; i++)
-        {
-            if (folder.has_parent_path())
-            {
-                folder = folder.parent_path();
-            }
-        }
-        if (pluginFolder)
-        {
-            folder /= "plugin";
-        }
-        else
-        {
-            folder /= stringToPath(GetType()->GetRepositoryCode());
-        }
-        path = folder / batchFile;
-        if (clib::filesystem::exists(path))
-        {
-            foundFolder = folder;
-            return true;
-        }
-        return false;
-    }
-
-    bool locatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
-    {
-        if (pluginFolderExists(batchFile, foundFolder, 0, true))
-        {
-            return true;
-        }
-        else if (pluginFolderExists(batchFile, foundFolder, 2, false))
-        {
-            return true;
-        }
-        else if (pluginFolderExists(batchFile, foundFolder, 3, false))
-        {
-            return true;
-        }
-        else if (CComPtr<IEclCC> eclcc = CreateIEclCC()) {
-            if (eclcc->LocatePlugin(batchFile, foundFolder)) {
-                return true;
-            }
-        }
-        if (!boost::algorithm::iequals(batchFile, "ecl.bat")) {
-            _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
-        }
-        return false;
-    }
-
     EsdlPair ParseEsdlId(std::_tstring filename) const
     {
         EsdlPair esdlPair;
@@ -101,7 +47,7 @@ public:
         }
 
         return esdlPair;
-     }
+    }
 
     virtual int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs, MetaInfo & metaInfo) const
     {
@@ -130,10 +76,11 @@ public:
                 eclFolders += eclcc->GetEclFolder(i);
             }
         }
-        std::string batchFile = CT2A(attrTypeStr.c_str());
+        std::string attrStr = CT2A(attrTypeStr.c_str());
+        std::string batchFile = attrStr;
         batchFile += ".bat";
         boost::filesystem::path folder;
-        if (locatePlugin(batchFile, folder)) 
+        if (eclcc->LocatePlugin(attrStr, batchFile, folder))
         {
             switch (action)
             {

@@ -29,6 +29,9 @@ CBuilderDlg::CBuilderDlg(const AttrInfo & attrInfo, IEclBuilderSlot * owner) : m
     m_schedule = false;
     m_archive= false;
     m_noCommonPrivateAttributes = false;
+    m_pluginCompile = true;
+    m_pluginGenerate = true;
+    m_pluginSubmit = true;
 }
 
 void CBuilderDlg::GetTitle(CString & title)
@@ -62,7 +65,7 @@ bool CBuilderDlg::DoFileOpen(const CString & sPathName)
     return true;
 }
 
-bool CBuilderDlg::DoSave(bool attrOnly) 
+bool CBuilderDlg::DoSave(bool saveFileAs, PREPROCESS_TYPE action)
 {
     CWaitCursor wait;
     CString ecl;
@@ -80,7 +83,7 @@ bool CBuilderDlg::DoSave(bool attrOnly)
         Dali::CEclExceptionVector errors;
         IAttributeBookkeep attrProcessed;
         MetaInfo metaInfo;
-        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors, metaInfo);
+        m_attribute->PreProcess(action, NULL, attrs, attrProcessed, errors, metaInfo);
         if (!m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL) || m_attribute->GetType()->IsTypeOf(ATTRIBUTE_TYPE_ECL) && !errors.empty())
         {
             SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
@@ -92,7 +95,7 @@ bool CBuilderDlg::DoSave(bool attrOnly)
             m_migrator->Stop();
 
             for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
-                m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
+                m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[action] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
             m_migrator->Start();
             SetTimer(0, 200);
         }
@@ -100,15 +103,9 @@ bool CBuilderDlg::DoSave(bool attrOnly)
     }
     else if (!m_path.IsEmpty()) 
         return DoFileSave(m_path);
-    if (!attrOnly)
+    if (saveFileAs)
         return DoFileSaveAs();
     return false;
-}
-
-bool CBuilderDlg::DoGenerate()
-{
-    m_view.SetDirty(true);
-    return DoSave(false);
 }
 
 CBookmarksFrame *CBuilderDlg::GetBookmarksFrame() {
@@ -272,11 +269,58 @@ LRESULT CBuilderDlg::OnInitDialog(HWND /*hWnd*/, LPARAM /*lParam*/)
             m_comboQueueClusterCtrl->EnableWindow(FALSE);
             m_advancedCtrl.EnableWindow(FALSE);
         }
+        IDEPluginMenuDisables();
     }
 
     DoDataExchange();
 
     return 0;
+}
+
+bool CBuilderDlg::IDEPluginMenuDisables()
+{
+    bool found = false;
+    if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+    {
+        boost::filesystem::path pluginConfigPath;
+        std::_tstring pluginName;
+        std::string attrStr = CT2A(m_attribute->GetType()->GetRepositoryCode());
+        std::string batchFile = attrStr;
+        batchFile += ".bat";
+        boost::filesystem::path folder;
+        if (eclcc->LocatePlugin(attrStr,batchFile,folder))
+        {
+            std::string configFile = attrStr;
+            configFile += ".cfg";
+            boost::filesystem::path configFilePath = folder / stringToPath(configFile);
+            if (clib::filesystem::exists(configFilePath))
+            {
+                m_pluginConfig = true;
+                std::_tstring cfgName = (boost::_tformat(_T("%1%_cfg")) % attrStr.c_str()).str();
+                CComPtr<IConfig> configFile = CreateIConfig(cfgName, configFilePath, true);
+                CString submit = configFile->Get(GLOBAL_DISABLE_SUBMIT);
+                if (boost::algorithm::iequals(submit.GetString(), "true"))
+                {
+                    m_pluginSubmit = false;
+                    found = true;
+                }
+                CString generate = configFile->Get(GLOBAL_DISABLE_GENERATE);
+                if (boost::algorithm::iequals(generate.GetString(), "true"))
+                {
+                    m_pluginGenerate = false;
+                    found = true;
+                }
+                CString compile = configFile->Get(GLOBAL_DISABLE_COMPILE);
+                if (boost::algorithm::iequals(compile.GetString(), "true"))
+                {
+                    m_pluginCompile = false;
+                    found = true;
+                }
+            }
+        }
+    }
+
+    return found;
 }
 
 void CBuilderDlg::CustomMenu(const AttrInfo & attrInfo) {
@@ -681,10 +725,20 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
     case ID_GO_CUSTOM4:
         m_owner->OnButtonGo(Dali::WUActionCustom4);
         break;
+    case ID_GO_NOTHING:
+        break;
     default:
         ATLASSERT(false);
         break;
     }
+}
+
+void CBuilderDlg::OnEclGenerate(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
+{
+    PostStatus(_T("Saving..."));
+    DoSave(true);
+    PostStatus(_T("Generating..."));
+    DoSave(true, PREPROCESS_GENERATE);
 }
 
 void CBuilderDlg::OnEclSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)

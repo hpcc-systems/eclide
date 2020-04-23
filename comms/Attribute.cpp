@@ -554,6 +554,35 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return false;
     }
+
+    bool PluginFolderExists(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const
+    {
+        boost::filesystem::path folder, path;
+        GetProgramFolder(folder);
+
+        for (int i = 0; i < level; i++)
+        {
+            if (folder.has_parent_path())
+            {
+                folder = folder.parent_path();
+            }
+        }
+        if (pluginFolder)
+        {
+            folder /= "plugin";
+        }
+        else
+        {
+            folder /= stringToPath(attrTypeStr);
+        }
+        path = folder / batchFile;
+        if (clib::filesystem::exists(path))
+        {
+            foundFolder = folder;
+            return true;
+        }
+        return false;
+    }
 };
 std::_tstring CAttribute::attrEmptyString;
 //  ===========================================================================

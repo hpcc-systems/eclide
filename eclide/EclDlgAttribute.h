@@ -28,7 +28,7 @@ public:
 
     CAttributeDlg(const AttrInfo & attrInfo, ISourceSlot *owner);
 
-    bool DoSave(bool attrOnly);
+    bool DoSave(bool saveFileAs, PREPROCESS_TYPE action=PREPROCESS_SAVE);
     void GetTitle(CString & title);
     void DoCheckSyntax();
     void DoCheckComplexity();

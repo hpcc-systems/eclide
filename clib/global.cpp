@@ -227,7 +227,7 @@ public:
     {
         return m_id.c_str();
     }
-    void InitConfigPath(const std::_tstring & cfgName, const std::_tstring & ext)
+    void InitConfigPath(const std::_tstring & cfgName, const std::_tstring & ext, const boost::filesystem::path & forcedPath=_T(""))
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         m_CfgName = cfgName;
@@ -237,7 +237,14 @@ public:
         cfgNameExt += _T(".");
         cfgNameExt += ext;
         boost::filesystem::path appFolder;
-        m_CfgPath = GetApplicationFolder(appFolder) / stringToPath(cfgNameExt);
+        if (forcedPath.size())
+        {
+            m_CfgPath = forcedPath;
+        }
+        else
+        {
+            m_CfgPath = GetApplicationFolder(appFolder) / stringToPath(cfgNameExt);
+        }
         m_Cfg.SetFilename(pathToWString(m_CfgPath).c_str());
     }
     /*
@@ -584,16 +591,17 @@ CLIB_API IAuthenticate * GetIAuthenticate()
 }
 */
 
-CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesystem::path & path)
+CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesystem::path & path, bool forcePathFlag)
 {
     CConfig * retVal = ConfigCache.Get(new CConfig(id, path));
     TCHAR szFileName[_MAX_FNAME];
     TCHAR szExt[_MAX_FNAME];
-    _tsplitpath(pathToWString(path.leaf()).c_str(), NULL, NULL, szFileName, szExt);		
+    _tsplitpath(pathToWString(path.leaf()).c_str(), NULL, NULL, szFileName, szExt);
+    boost::filesystem::path pathForced = forcePathFlag ? path : _T("");
     if (szExt[0] == '.')
-        retVal->InitConfigPath(szFileName, &szExt[1]);
+        retVal->InitConfigPath(szFileName, &szExt[1], pathForced);
     else
-        retVal->InitConfigPath(szFileName, &szExt[0]);
+        retVal->InitConfigPath(szFileName, &szExt[0], pathForced);
     retVal->Clear();
     return retVal;
 }

@@ -23,6 +23,10 @@ static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER07(SectionLabel(Compil
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER08(SectionLabel(CompilerSection, _T("EclFolder08")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER09(SectionLabel(CompilerSection, _T("EclFolder09")), _T(""));
 
+static const SectionLabelDefault GLOBAL_DISABLE_SUBMIT(SectionLabel(_T("Disables"), _T("Submit")), _T(""));
+static const SectionLabelDefault GLOBAL_DISABLE_GENERATE(SectionLabel(_T("Disables"), _T("Generate")), _T(""));
+static const SectionLabelDefault GLOBAL_DISABLE_COMPILE(SectionLabel(_T("Disables"), _T("Compile")), _T(""));
+
 __interface IEclCC : public IUnknown
 {
     const TCHAR * GetVersion() const;
@@ -34,7 +38,6 @@ __interface IEclCC : public IUnknown
     const TCHAR * GetWorkingFolder() const;
     int GetEclFolderCount() const;
     const TCHAR * GetEclFolder(int i) const;
-    bool LocatePlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const;
     bool GetAutoC(IAttribute *attr, const std::_tstring & partialLabel, StdStringVector &set);
     const TCHAR * GetToolTip(const std::_tstring & key, std::_tstring & tooltip);
 
@@ -48,6 +51,10 @@ __interface IEclCC : public IUnknown
     const TCHAR * GetAttributeFilePath(const std::_tstring & module, const std::_tstring & attribute, std::_tstring & path) const;
     const TCHAR * GetAttributeFilePath(IAttribute * attribute, std::_tstring & path) const;
     const TCHAR * GetAttributeLabel(IAttribute * attribute, std::_tstring & label) const;
+
+    bool PluginFolderExists(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const;
+    bool LocatePlugin(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder) const;
+    boost::filesystem::wpath GetIDEPluginFolder() const;
 };
 
 enum TRI_BOOL
