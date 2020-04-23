@@ -41,6 +41,10 @@ protected:
     bool m_archive;
     bool m_noCommonPrivateAttributes;
     bool m_targetColors;
+    bool m_pluginConfig;
+    bool m_pluginGenerate;
+    bool m_pluginCompile;
+    bool m_pluginSubmit;
     IEclBuilderSlot * m_owner;
     WTL::CUpDownCtrl m_maxRuntime;
 
@@ -67,8 +71,7 @@ public:
     CBookmarksFrame *GetBookmarksFrame();
 
     //  ---  CEclDlgQBImpl Virtuals  ---
-    bool DoSave(bool attrOnly);
-    bool DoGenerate();
+    bool DoSave(bool saveFileAs, PREPROCESS_TYPE action=PREPROCESS_SAVE);
     void GetTitle(CString & title);
     //  ---  ---  ---
 
@@ -122,6 +125,25 @@ public:
     void ShowAdvanced();
     void HideAdvanced();
 
+    bool HasPluginConfig()
+    {
+        return m_pluginConfig;
+    }
+
+    bool CanSubmit() {
+        return m_pluginSubmit;
+    }
+
+    bool CanGenerate()	{
+        return m_pluginGenerate;
+    }
+
+    bool CanCompile() {
+        return m_pluginCompile;
+    }
+
+    bool CBuilderDlg::IDEPluginMenuDisables();
+
     LRESULT OnForwardMsg(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
     {
         LPMSG pMsg = (LPMSG)lParam;
@@ -145,7 +167,7 @@ public:
         COMMAND_ID_HANDLER_EX(ID_GO_SUBMIT, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_SUBMITSELECTED, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_COMPILE, OnEclGo)
-        COMMAND_ID_HANDLER_EX(ID_GO_GENERATE, OnEclGo)
+        COMMAND_ID_HANDLER_EX(ID_GO_GENERATE, OnEclGenerate)
         COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM1, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM2, OnEclGo)
         COMMAND_ID_HANDLER_EX(ID_GO_CUSTOM3, OnEclGo)
@@ -199,6 +221,7 @@ public:
     void OnFileSaveAs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
 
     void OnEclGo(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
+    void OnEclGenerate(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnLocateFileInExplorer(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnEclSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
     void OnEclGoto(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);

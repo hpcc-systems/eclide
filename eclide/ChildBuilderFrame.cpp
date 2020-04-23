@@ -38,6 +38,9 @@ class CBuilderFrame :
     typedef CChildFrame baseClass;
     friend void SlowRefresh(CBuilderFrame * bf);
 
+protected:
+    CComPtr<IMigration> m_migrator;
+
 public:
     CTabbedChildWindowEx< CColDotNetButtonTabCtrl<CTabViewTabItem> > m_tabbedChildWindow;
     CBuilderDlg m_dlgview;
@@ -418,7 +421,7 @@ public:
             switch (action) {
             case Dali::WUActionGenerate:
                 if (!isSaved)
-                    m_dlgview.DoGenerate();
+                    m_dlgview.DoSave(true);
                 processType = PREPROCESS_GENERATE;
                 break;
             case Dali::WUActionRun:
@@ -450,7 +453,7 @@ public:
             if (!errors.empty())
                 m_dlgview.SendMessage(CWM_SUBMITDONE, (WPARAM)Dali::WUActionCheck, (LPARAM)&errors);
         }
-        else
+        else if (action != Dali::WUActionGenerate)
         {
             result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, supressPath ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
             GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
@@ -860,11 +863,8 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 
         bool eclType = true;
 
-        CString name;
-        m_dlgview.GetName(name);
-        std::_tstring ext = ExtensionWithoutDot(name.GetString());
-
-        if (ext.length()) {
+        if (m_dlgview.GetAttribute()) {
+            std::_tstring ext = m_dlgview.GetAttribute()->GetType()->GetFileExtension(false);
             if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECM))
             {
                 UPDATEUI(cui, ID_GO_GENERATE, true);
@@ -875,34 +875,49 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
                 UPDATEUI(cui, ID_GO_CUSTOM4, true);
                 eclType = false;
             }
-            else if (!boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECL))
+            else if (!boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECL) && !m_dlgview.HasPluginConfig())
             {
                 if (m_dlgview.m_goButton.IsWindowEnabled())
                     m_dlgview.m_goButton.EnableWindow(false);
             }
         }
 
-        if (eclType) {
+        if (eclType)
+        {
+            UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
             UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
             UPDATEUI(cui, ID_HELP, TRUE);
-            UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
-            UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
-            UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
-            UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
 
-            if (m_dlgview.CanExecute())
+            if (m_dlgview.HasPluginConfig())
             {
-                if (!m_dlgview.m_goButton.IsWindowEnabled())
-                    m_dlgview.m_goButton.EnableWindow(true);
-                if (!m_dlgview.m_archiveButton.IsWindowEnabled())
-                    m_dlgview.m_archiveButton.EnableWindow(true);
+                if (!m_dlgview.CanSubmit())
+                {
+                    m_dlgview.m_goButton.SetDlgCtrlID(ID_GO_NOTHING);
+                }
+                UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanSubmit() ? true : false);
+                UPDATEUI(cui, ID_GO_GENERATE, m_dlgview.CanGenerate() ? true : false);
+                UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanCompile() ? true : false);
             }
             else
             {
-                if (m_dlgview.m_goButton.IsWindowEnabled())
-                    m_dlgview.m_goButton.EnableWindow(false);
-                if (m_dlgview.m_archiveButton.IsWindowEnabled())
-                    m_dlgview.m_archiveButton.EnableWindow(false);
+                UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
+                UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
+                UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
+
+                if (m_dlgview.CanExecute())
+                {
+                    if (!m_dlgview.m_goButton.IsWindowEnabled())
+                        m_dlgview.m_goButton.EnableWindow(true);
+                    if (!m_dlgview.m_archiveButton.IsWindowEnabled())
+                        m_dlgview.m_archiveButton.EnableWindow(true);
+                }
+                else
+                {
+                    if (m_dlgview.m_goButton.IsWindowEnabled())
+                        m_dlgview.m_goButton.EnableWindow(false);
+                    if (m_dlgview.m_archiveButton.IsWindowEnabled())
+                        m_dlgview.m_archiveButton.EnableWindow(false);
+                }
             }
         }
 

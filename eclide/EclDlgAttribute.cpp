@@ -41,7 +41,7 @@ void CAttributeDlg::GetTitle(CString & title)
 //{
 //  Help Alligning with BuilderDlg COmpare
 //}
-bool CAttributeDlg::DoSave(bool attrOnly)
+bool CAttributeDlg::DoSave(bool saveFileAs, PREPROCESS_TYPE action)
 {
     CWaitCursor wait;
     CString ecl;
@@ -84,7 +84,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
         Dali::CEclExceptionVector errors;
         IAttributeBookkeep attrProcessed;
         MetaInfo metaInfo;
-        m_attribute->PreProcess(PREPROCESS_SAVE, NULL, attrs, attrProcessed, errors, metaInfo);
+        m_attribute->PreProcess(action, NULL, attrs, attrProcessed, errors, metaInfo);
         SendMessage(CWM_SUBMITDONE, Dali::WUActionCheck, (LPARAM)&errors);
         if (attrs.size())
         {
@@ -92,7 +92,7 @@ bool CAttributeDlg::DoSave(bool attrOnly)
                 m_migrator = CreateIMigration(::AttachRepository(), false);
             m_migrator->Stop();
             for(IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
-                m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[PREPROCESS_SAVE] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
+                m_migrator->AddToRep(m_attribute->GetModule()->GetRootModule(), itr->get()->GetAsHistory(), (boost::_tformat(_T("Preprocessed (%1%) from %2%.")) % PREPROCESS_LABEL[action] % m_attribute->GetQualifiedLabel()).str().c_str(), true);
             m_migrator->Start();
             SetTimer(0, 200);
         }
@@ -126,7 +126,7 @@ void CAttributeDlg::DoCheckSyntax()
 
     if (CComPtr<IEclCC> eclcc = CreateIEclCC())
     {
-        if (!DoSave(false))
+        if (!DoSave(true))
             return;
     }
     if (m_attribute->GetType() == CreateIAttributeECLType())

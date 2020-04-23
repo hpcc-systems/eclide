@@ -1997,6 +1997,7 @@ BEGIN
     BEGIN
         MENUITEM "&Submit",                     ID_GO_SUBMIT
         MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
+        MENUITEM "&Generate",                   ID_GO_GENERATE
         MENUITEM "&Compile",                    ID_GO_COMPILE
     END
 END

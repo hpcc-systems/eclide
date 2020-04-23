@@ -29,7 +29,7 @@ public:
 
     //  ---  ---  ---
     virtual void GetTitle(CString & title) = 0;
-    virtual bool DoSave(bool attrOnly) = 0;
+    virtual bool DoSave(bool saveFileAs, PREPROCESS_TYPE action=PREPROCESS_SAVE) = 0;
 
     void DoInit()
     {
@@ -50,7 +50,7 @@ public:
             switch(MessageBox(msg, prog_title, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1))
             {
             case IDYES:
-                if (!DoSave(false))
+                if (!DoSave(true))
                     return false;
                 break;
             case IDCANCEL:
@@ -138,7 +138,7 @@ public:
     void OnFileSave(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
     {
         if (m_view.IsDirty())
-            DoSave(false);
+            DoSave(true);
     }
 
     void OnEclCheckSyntax(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
@@ -245,14 +245,14 @@ public:
     LRESULT OnFileSaveAll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
     {
         if (m_view.IsDirty())
-            DoSave(false);
+            DoSave(true);
         return 0;
     }
 
     LRESULT OnFileSaveAttrOnlyAll(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
     {
         if (m_view.IsDirty())
-            DoSave(true);
+            DoSave(false);
         return 0;
     }
 
