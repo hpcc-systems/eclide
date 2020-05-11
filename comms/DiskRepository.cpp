@@ -83,6 +83,8 @@ protected:
     PathVector m_pathOrder;
     mutable clib::recursive_mutex m_mutex;
 
+    CAttrMsg m_attrMsg;
+
 public:
     IMPLEMENT_CUNKNOWN;
 
@@ -698,6 +700,9 @@ public:
     
     virtual bool Move(IAttributeVector & attributes, const TCHAR* module)
     {
+        bool noErrors = true;
+        m_attrMsg.clear();
+
         for(IAttributeVector::const_iterator itr = attributes.begin(); itr != attributes.end(); ++itr)
         {
             boost::filesystem::wpath fromPath;
@@ -708,18 +713,30 @@ public:
                 boost::filesystem::wpath toPath;
                 std::_tstring toModule = module;
                 GetPath(toModule, itr->get()->GetLabel(), itr->get()->GetType(), toPath);
+                CString whatStr = _T("");
                 try
                 {
                     boost::filesystem::rename(fromPath, toPath);
                 } catch (const boost::filesystem::filesystem_error & ex) {
-                    _DBGLOG(LEVEL_WARNING, ex.what());
+                    whatStr = ex.what();
+                    noErrors = false;
                 }
                 CComPtr<IAttribute> attribute = CreateDiskAttribute(this, toModule, itr->get()->GetLabel(), itr->get()->GetType()->GetRepositoryCode(), toPath, itr->get()->GetText(), false);
                 attribute->Refresh(false, attribute);
-                return true;
+                m_attrMsg[itr->get()] = whatStr;
+            }
+            else {
+                noErrors = false;
+                std::_tstring msg = (boost::_tformat(_T("Could not find file: %1%")) % fromPath).str();
+                m_attrMsg[itr->get()] = msg.c_str();
             }
         }
-        return false;
+        return noErrors;
+    }
+
+    virtual CAttrMsg AttrMessages()
+    {
+        return m_attrMsg;
     }
 
     virtual bool Rollback(IAttributeVector & attributes)

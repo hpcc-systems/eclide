@@ -5,6 +5,7 @@
 #include "global.h"
 #include "StringSet.h"
 #include "workspace.h"
+#include "Logger.h"
 
 class CRepLabel : public CUnknown
 {
@@ -27,6 +28,7 @@ public:
 };
 typedef StlLinked<CRepLabel> CRepLabelAdapt;
 typedef std::vector<CRepLabelAdapt> CRepLabelVector;
+typedef std::map<IAttribute *, CString> CAttrMsg;
 
 enum SEARCHMODE
 {
@@ -89,6 +91,7 @@ __interface IRepository : public IUnknown
     bool Move(IAttributeVector & attributes, const TCHAR* module);
 //	bool GetEcl(const TCHAR* module, const TCHAR* attr);
     bool Rollback(IAttributeVector & attributes);
+    CAttrMsg AttrMessages();
 
     //  Attribute History short cuts ----
     IAttributeHistory * GetAttributeHistory(const TCHAR* module, const TCHAR* attribute, IAttributeType * type, int version = 0, bool text = false) const;
