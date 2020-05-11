@@ -3669,6 +3669,10 @@ HWND CMainFrame::GetHwnd()
     return GetSafeHwnd();
 }
 
+void CMainFrame::PathToClipboard()
+{
+}
+
 //  ===========================================================================
 BOOL CALLBACK ChildEnumProcForSaveWorkspace(HWND hwnd, LPARAM lParam)
 {

@@ -1168,6 +1168,10 @@ public:
 	{
 	}
 
+	void PathToClipboard()
+	{
+	}
+
 	IAttribute * GetAttribute() 
 	{
 		return NULL;

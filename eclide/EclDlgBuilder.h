@@ -73,6 +73,7 @@ public:
     //  ---  CEclDlgQBImpl Virtuals  ---
     bool DoSave(bool saveFileAs, PREPROCESS_TYPE action=PREPROCESS_SAVE);
     void GetTitle(CString & title);
+    void PathToClipboard();
     //  ---  ---  ---
 
     bool DoFileOpen(const CString & sPathName, bool parseFlag=true);

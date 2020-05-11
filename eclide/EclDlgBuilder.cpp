@@ -41,6 +41,10 @@ void CBuilderDlg::GetTitle(CString & title)
     title = (m_view.IsDirty() ? _T("*") : _T("")) + name;
 }
 
+void CBuilderDlg::PathToClipboard() {
+    SetClipboard(m_attribute->GetQualifiedRelativePath());
+}
+
 bool CBuilderDlg::DoFileOpen(const CString & sPathName, bool parseFlag) 
 {
     ATLASSERT(!sPathName.IsEmpty());

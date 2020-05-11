@@ -173,6 +173,14 @@ public:
         return m_qualifiedLabel + (includeExtension ? m_type->GetFileExtension() : _T(""));
     }
 
+    const TCHAR *GetQualifiedRelativePath() const
+    {
+        std::_tstring path = GetQualifiedLabel(false, true);
+        boost::algorithm::replace_all(path, _T("."), _T("\\"));
+        boost::algorithm::replace_last(path, _T("\\"), _T("."));
+        return path.c_str();
+    }
+
     const TCHAR *GetPath() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);

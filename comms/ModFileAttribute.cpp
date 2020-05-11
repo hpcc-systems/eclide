@@ -30,6 +30,7 @@ protected:
     CString m_label;
     CString m_qualifiedLabel;
     CString m_qualifiedLabelWithExt;
+    CString m_qualifiedRelativePath;;
     CComPtr<IAttributeType> m_type;
     CString m_ecl;
     CString m_description;
@@ -65,6 +66,11 @@ public:
         m_eclSet = true;
         m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
         m_qualifiedLabelWithExt = m_qualifiedLabel + m_type->GetFileExtension();
+        std::wstring tmp = m_moduleQualifiedLabel;
+        boost::algorithm::replace_all(tmp, _T("."), _T("\\"));
+        boost::algorithm::replace_all(tmp, _T("/"), _T("\\"));
+        m_qualifiedRelativePath = tmp.c_str();
+        m_qualifiedRelativePath += _T("\\") + m_label + m_type->GetFileExtension();
         UpdateChecksumLocal();
         UpdateID();
     }
@@ -157,6 +163,12 @@ public:
         if (includeExtension)
             return m_qualifiedLabelWithExt;
         return m_qualifiedLabel;
+    }
+
+    const TCHAR *GetQualifiedRelativePath() const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        return m_qualifiedRelativePath;
     }
 
     const TCHAR *GetPath() const

@@ -37,6 +37,10 @@ void CAttributeDlg::GetTitle(CString & title)
     title += CString(m_attribute->GetModuleQualifiedLabel()) + _T(".") + CString(m_attribute->GetLabel());
 }
 
+void CAttributeDlg::PathToClipboard()
+{
+}
+
 //bool CBuilderDlg::DoFileOpen(const CString & sPathName) 
 //{
 //  Help Alligning with BuilderDlg COmpare

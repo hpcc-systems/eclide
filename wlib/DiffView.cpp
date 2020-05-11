@@ -312,3 +312,7 @@ void CDiffView::OnSize(UINT nType, CSize size)
         m_splitter.SetWindowPos(NULL, rcClient, flags);
     }
 }
+
+void CDiffView::PathToClipboard()
+{
+}

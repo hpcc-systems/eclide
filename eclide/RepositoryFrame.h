@@ -40,6 +40,9 @@ template<typename T>
 class CRepositoryFrameT :	public CRepositorySlotImpl, 
                             public boost::signals::trackable
 {
+
+    std::_tstring m_copyPathStr;
+
     typedef CRepositoryFrameT<T> thisClass;
 public:
     IRepository * GetRepository()
@@ -87,6 +90,7 @@ public:
         m.EnableMenuItem(ID_REPOSITORY_OPENBUILDER, state.CanOpenBuilder ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_EDIT_LOCATEFILEINEXPLORER, state.CanOpenInExplorer ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_COPY, state.CanCopy ? MF_ENABLED : MF_GRAYED);
+        m.EnableMenuItem(ID_REPOSITORY_COPYPATH, state.CanCopy ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_PASTE, state.CanPaste ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_CHECKOUT, state.CanCheckout ? MF_ENABLED : MF_GRAYED);
         m.EnableMenuItem(ID_REPOSITORY_CHECKIN, state.CanCheckin ? MF_ENABLED : MF_GRAYED);
@@ -126,6 +130,12 @@ public:
             CString copyStr;
             copyStr.Format(_T("&Copy \"%s\""), s.attrs.begin()->get()->GetQualifiedLabel(true));
             m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr); 
+
+            m_copyPathStr = s.attrs.begin()->get()->GetQualifiedLabel(true, true);
+            boost::algorithm::replace_all(m_copyPathStr, _T("."), _T("\\"));
+            boost::algorithm::replace_last(m_copyPathStr, _T("\\"), _T("."));
+            copyStr.Format(_T("&Copy \"%s\""), m_copyPathStr.c_str());
+            m.ModifyMenu(ID_REPOSITORY_COPYPATH, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPYPATH, copyStr);
 
             CString attrType = s.attrs.begin()->get()->GetType()->GetRepositoryCode();
             if (boost::algorithm::iequals(attrType.GetString(), ATTRIBUTE_TYPE_DUD)) {
@@ -286,6 +296,12 @@ public:
                     CWaitCursor wait;
                     pT->m_view.DoCopyAttribute(s.attrs, label);
                 }
+            }
+            break;
+        case ID_REPOSITORY_COPYPATH:
+            ATLASSERT(s.attrs.size() > 0);
+            {
+                ::SetClipboard(m_copyPathStr);
             }
             break;
         case ID_REPOSITORY_DELETEATTRIBUTE:

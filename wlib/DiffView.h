@@ -19,6 +19,7 @@ public:
     void SetText(const std::_tstring &lhs, const std::_tstring &rhs, IAttributeType *lhsType, IAttributeType *rhsType);
     void SetViewEOL(bool showCRLF);
     void SetViewWS(bool showWhitespace);
+    void PathToClipboard();
 
     int GetDiffPrevious();
     int GetDiffNext();
