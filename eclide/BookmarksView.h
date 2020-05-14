@@ -39,7 +39,6 @@ class CBookmarksView:
 protected:
     IBookmarksSlot *m_Owner;
     CSortMFCListCtrl m_list;
-    CSortMFCListCtrl m_listMaster;
     bool m_checkMine;
     bool m_checkTodos;
     bool m_checkHacks;
@@ -94,12 +93,19 @@ public:
     std::_tstring FindTag(std::_tstring line, std::_tstring tag, int &index, bool zeroIndex = false);
     void SetMarks(bool val);
     void DeleteMarkedBookmarks(bool val);
-    void SetMarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
-    void DeleteMarkedBookmarks(std::_tstring inModule, std::_tstring inAttributeName, bool val);
+    void SetMarks(const std::_tstring inPath, const std::_tstring inModule, const std::_tstring inAttributeName, bool val);
+    void DeleteMarkedBookmarks(const std::_tstring inPath, const std::_tstring inModule, const std::_tstring inAttributeName, bool val);
     void ParseBookmarks(IAttribute *attribute);
-    void ParseBookmarksEcl(const std::_tstring & ecl, const std::_tstring & user, const std::_tstring & id, const std::_tstring & inModule, const std::_tstring & inAttributeName, IAttributeType *attrType);
-    void OpenAttribute(std::_tstring line, int column, int len, std::_tstring module, std::_tstring attribute, std::_tstring attributeType);
-    boost::filesystem::path BookmarksFilePath();
+    void ParseBookmarksEcl(const std::_tstring & ecl, const std::_tstring & user=_T(""), const std::_tstring & id=_T(""), const std::_tstring & inModule=_T(""), const std::_tstring & inAttributeName=_T(""), IAttributeType *attrType=NULL);
+    boost::filesystem::path BookmarksFilePath(bool saveState=false);
+    std::_tstring ModuleFromPath(const std::_tstring & pathStr, const std::_tstring & attrName);
+    int GetCount();
+    int GetSelectedCount();
+    void Open();
+    void Save(bool saveState=false);
+    void Load(bool loadState=false);
+    void Clear();
+    void OpenAttribute(int listRow);
 
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -121,9 +127,9 @@ protected:
     afx_msg void OnOpen();
     afx_msg void OpenMarkedBookmarks(bool val);
     afx_msg void OnUpdateOpen(CCmdUI* pCmdUI);
-    afx_msg void OnSaveFile();
+    afx_msg void OnSaveFile(bool saveState = false);
     afx_msg void OnUpdateSaveFile(CCmdUI* pCmdUI);
-    afx_msg void OnLoadFile(bool mergeFlag=false);
+    afx_msg void OnLoadFile(bool mergeFlag=false , bool loadState=false);
     afx_msg void OnDeleteLines();
     afx_msg void OnUpdateLoadFile(CCmdUI* pCmdUI);
 

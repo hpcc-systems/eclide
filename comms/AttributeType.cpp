@@ -165,6 +165,7 @@ public:
     {
         return m_repositoryCode.c_str();
     }
+ 
     const TCHAR * GetFileExtension(bool noDotFlag)
     {
         if (m_fileExtension.empty())
@@ -257,15 +258,17 @@ static CacheT<std::_tstring, CAttributeType> AttributeTypeCache;
 
 IAttributeType *AttributeTypeFromExtension(const std::_tstring & extension) {
     IAttributeType *attrType = NULL;
-    if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ESDL))
+    std::_tstring ext = extension;
+    boost::algorithm::replace_all(ext, _T("."), _T(""));
+    if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL))
         attrType = CreateIAttributeESDLType();
-    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_ECM))
+    else if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECM))
         attrType = CreateIAttributeECMType();
-    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_SALT))
+    else if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_SALT))
         attrType = CreateIAttributeSALTType();
-    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_KEL))
+    else if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_KEL))
         attrType = CreateIAttributeKELType();
-    else if (boost::algorithm::iequals(extension, ATTRIBUTE_TYPE_DUD))
+    else if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_DUD))
         attrType = CreateIAttributeDUDType();
     else
         attrType = CreateIAttributeECLType();

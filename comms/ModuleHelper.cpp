@@ -1,5 +1,10 @@
 #include "StdAfx.h"
 #include "ModuleHelper.h"
+#include "Repository.h"
+#include "RepositoryImpl.h"
+#include "DiskRepository.h"
+#include "DiskAttribute.h"
+#include "EclCC.h"
 
 //#define DELIMTER _T(".")
 
@@ -46,11 +51,13 @@ void CModuleHelper::ParseQualifiedLabel(const std::_tstring & _modAttrLabel, boo
 
 CModuleHelper::CModuleHelper(const TCHAR * modAttrLabel, bool hasExtension)
 {
+    m_config = GetIConfig(QUERYBUILDER_CFG);
     ParseQualifiedLabel(modAttrLabel, hasExtension);
 }
 
 CModuleHelper::CModuleHelper(const std::_tstring & modAttrLabel, bool hasExtension)
 {
+    m_config = GetIConfig(QUERYBUILDER_CFG);
     ParseQualifiedLabel(modAttrLabel, hasExtension);
 }
 
@@ -107,4 +114,85 @@ unsigned int CModuleHelper::GetQualifiedLabel(StdStringVector & results) const
 {
     results = m_labels;
     return results.size();
+}
+
+void CModuleHelper::LoadFolders() const
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        CString text;
+        switch (i)
+        {
+        case 0:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER00);
+            break;
+        case 1:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER01);
+            break;
+        case 2:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER02);
+            break;
+        case 3:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER03);
+            break;
+        case 4:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER04);
+            break;
+        case 5:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER05);
+            break;
+        case 6:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER06);
+            break;
+        case 7:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER07);
+            break;
+        case 8:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER08);
+            break;
+        case 9:
+            text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER09);
+            break;
+        }
+        if (text.GetLength() > 0 && clib::filesystem::exists(static_cast<const TCHAR *>(text)) && clib::filesystem::is_directory(static_cast<const TCHAR *>(text)))
+            m_folders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
+    }
+}
+
+const TCHAR * CModuleHelper::ModuleAttrFromPath(const std::_tstring & pathStr, std::_tstring & retLabel, std::_tstring & retModuleName, std::_tstring & retAttrName, std::_tstring & retAttrType) const
+{
+    LoadFolders();
+    boost::filesystem::path p = wpathToPath(pathStr);
+    retAttrType = ExtensionWithoutDot(p.extension().c_str());
+    retAttrName = pathToWString(p.stem());
+    retLabel = retAttrName;
+    std::_tstring attr = retAttrName;
+    if (attr.size() == 0)
+    {
+        attr = pathToWString(p.leaf());
+    }
+
+    for (WPathVector::const_iterator itr = m_folders.begin(); itr != m_folders.end(); ++itr)
+    {
+        std::wstring folderPath = itr->first;
+        boost::filesystem::path p2 = wpathToPath(folderPath);
+        if (boost::algorithm::istarts_with(p.c_str(), folderPath))
+        {
+            folderPath = p2.parent_path().c_str();
+            retModuleName = pathStr.substr(folderPath.size() + 1, pathStr.size() - folderPath.size() - p.filename().size() - 2);
+            retLabel = pathStr.substr(p2.size() + 1);
+            boost::algorithm::replace_all(retModuleName, _T("\\"), _T("."));
+            boost::algorithm::replace_all(retLabel, _T("\\"), _T("."));
+            break;
+        }
+    };
+    // Return the label
+    return retLabel.c_str();
+}
+
+const CComPtr<IAttribute> CModuleHelper::GetAttribute(const std::_tstring & module, const std::_tstring & attribute, const std::_tstring & attrExt, std::_tstring & path) const
+{
+    CComPtr<IRepository> rep = AttachRepository();
+    CComPtr<IAttribute> attr = rep->GetAttributeFast(module.c_str(), attribute.c_str(), AttributeTypeFromExtension(attrExt));
+    return attr;
 }

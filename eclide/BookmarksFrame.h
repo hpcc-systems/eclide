@@ -25,7 +25,20 @@ public:
     void Post_Refresh();
     bool OnDoubleClick();
     bool OnContext(CMenu &/*menu*/, CPoint &/*pt*/);
-    void ParseBookmarksEcl(std::_tstring ecl, std::_tstring user, std::_tstring id, std::_tstring inModule, std::_tstring inAttributeName, IAttributeType *attrType);
+    void ParseBookmarksEcl(std::_tstring ecl, std::_tstring user=_T(""), std::_tstring id=_T(""), std::_tstring inModule=_T(""), std::_tstring inAttributeName=_T(""), IAttributeType *attrType=NULL);
     void ParseBookmarksEcl(IAttribute *attribute);
+    void ParsePathBookmarksEcl(std::_tstring pathStr);
+    bool HasBookmarks();
+    bool BookmarkSelected();
+    int GetCount();
+    bool HasLoad();
+    void View();
+    void Open();
+    void Next();
+    void Prev();
+    void Save(bool saveState=false);
+    void Load(bool saveState=false);
+    void Delete();
+    void Clear();
 };
 

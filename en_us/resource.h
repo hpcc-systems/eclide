@@ -803,7 +803,6 @@
 #define ID_VIEW_BOOKMARKS               33094
 #define ID_BOOKMARKS_CLEAR              33095
 #define ID_BOOKMARKS_LOADMERGE          33096
-#define ID_BOOKMARKS_DELETEFROMLIST     33097
 #define ID_GO_SUBMITSELECTED            33098
 #define ID_MDI_CLOSEALLOTHERS           33099
 #define ID_MDI_CLOSEALLRIGHT            33100
@@ -826,6 +825,9 @@
 #define ID_EDIT_UNFOLDALL               33117
 #define ID_BROWSER_NEW_ECLWATCH         33118
 #define ID_GO_NOTHING                   33119
+#define ID_BOOKMARKS_NEXT               33120
+#define ID_BOOKMARKS_PREV               33121
+#define ID_BOOKMARKS_VIEW               33122
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01

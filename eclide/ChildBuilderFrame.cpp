@@ -14,6 +14,7 @@
 #include "EclDlgBuilder.h"
 #include <EclCC.h>
 #include "DiskAttribute.h"
+#include "ModuleHelper.h"
 
 enum UM2
 {
@@ -313,7 +314,7 @@ public:
     virtual void Close();
 
     //  File Access  ---
-    bool DoFileOpen(const CString & sPathName);	
+    bool DoFileOpen(const CString & sPathName, bool parseFlag=true);
     void operator()(IAttribute * attribute, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted);
 
     virtual void SavePersistInfo(CPersistMap & persistInfo);
@@ -931,9 +932,9 @@ void CBuilderFrame::Close()
     GetParent().SendMessage(WM_CLOSE);
 }
 
-bool CBuilderFrame::DoFileOpen(const CString & sPathNameX)
+bool CBuilderFrame::DoFileOpen(const CString & sPathNameX, bool parseFlag)
 {
-    return m_dlgview.DoFileOpen(sPathNameX);
+    return m_dlgview.DoFileOpen(sPathNameX, parseFlag);
 }
 
 void CBuilderFrame::operator()(IAttribute *attr, bool eclChanged, IAttribute * newAttrAsOldOneMoved, bool deleted)
@@ -1211,13 +1212,22 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, Dali::IWorkunit * src, IWorkspaceItem * 
 HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
 {
     CChildBuilderFrm* pChild = NULL;
+    std::_tstring path = workspaceItem->GetID();
+
+    if (boost::filesystem::exists(path))
+    {
+        std::_tstring label, module, attribute, attrType;
+        CModuleHelper modHelper(_T(""));
+        modHelper.ModuleAttrFromPath(path, label, module, attribute, attrType);
+        workspaceItem->SetAttribute(modHelper.GetAttribute(module, attribute, attrType, path));
+    }
+
     if (!RestoreExisting(workspaceItem, &pChild))
     {
-        std::_tstring attributeType = workspaceItem->GetAttributeType();
         IAttribute *attr = workspaceItem->GetAttribute();
         AttrInfo attrInfo;
         attrInfo.Attribute = attr;
-        if (!attr && !boost::algorithm::iequals(attributeType, ATTRIBUTE_TYPE_ECL))
+        if (!attr && !boost::algorithm::iequals(attrInfo.AttributeType, ATTRIBUTE_TYPE_ECL))
         {
             attrInfo.AttributeType = workspaceItem->GetAttributeType();
         }
@@ -1230,7 +1240,7 @@ HWND OpenBuilderMDI(CMainFrame* pFrame, IWorkspaceItem * workspaceItem)
             attrInfo.AttributeType = _T("ecl");
         }
         pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
-        CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, _T("builder.ecl"));
+        CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
         if (attr)
             pChild->m_view->SetReadOnly(attr->IsLocked());
     }
@@ -1277,7 +1287,7 @@ bool OpenFileBuilderMDI(CMainFrame* pFrame, AttrInfo & attrInfo, const CString &
         ATLASSERT(!filePath.IsEmpty());
         pChild = new CChildBuilderFrm(attrInfo, workspaceItem);
         CreateNewChild(pFrame, pChild, IDR_BUILDERWINDOW, workspaceItem->GetLabel());
-        if (!pChild->m_view->DoFileOpen(filePath))
+        if (!pChild->m_view->DoFileOpen(filePath,false))
         {
             pChild->DestroyWindow();
             return false;

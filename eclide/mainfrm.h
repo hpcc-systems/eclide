@@ -344,6 +344,7 @@ public:
     CMFCRibbonButton* m_graphRefresh;
     CMFCRibbonButton * m_buttMacroRecord;
     CMFCRibbonComboBox * m_workspaceCombo;
+    CMFCRibbonComboBox * m_bookmarkCombo;
     CMFCRibbonButton* m_openRibbonButton;
 
     RIBBON m_prevRibbon;
@@ -418,6 +419,22 @@ protected:
     afx_msg void OnUpdateWindowCascade(CCmdUI* pCmdUI);
     afx_msg void OnWindowTile();
     afx_msg void OnWindowArrange();
+
+    afx_msg void OnBookmarkView();
+    afx_msg void OnBookmarkNext();
+    afx_msg void OnBookmarkPrev();
+    afx_msg void OnBookmarkOpen();
+    afx_msg void OnBookmarkSave();
+    afx_msg void OnBookmarkLoad();
+    afx_msg void OnBookmarkClear();
+    afx_msg void OnBookmarkDelete();
+    afx_msg void OnUpdateBookmarkOpenItem(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateBookmarkNextPrev(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateBookmarkSave(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateBookmarkLoad(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateBookmarkLoadMerge(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateBookmarkClear(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateBookmarkDelete(CCmdUI* pCmdUI);
 
     afx_msg void OnWorkspaceNew();
     afx_msg void OnWorkspaceRemove();
@@ -512,7 +529,6 @@ public:
     void operator()(SectionLabel * label);
     int MDIGetCount(int direction = 0);
     BOOL DoFileOpen(const CString & sPathName);
-    BOOL DoFileOpen(const CString & sPathName, int row, int col, int len);
     BOOL DoFileSaveAll(bool attrsOnly);
 
     void DoWorkspaceRefresh();
@@ -536,7 +552,7 @@ public:
     void OpenSyntaxAttribute(IAttribute * attribute, Dali::CEclExceptionVector * errors);
 
     void OpenAttribute(const CString & modAttrLabel, IAttributeType * type, const CString & currModule = _T(""));
-    void OpenAttribute(const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len);
+    void OpenAttribute(const std::_tstring & path, const std::_tstring & module, const std::_tstring & attribute, IAttributeType * type, unsigned int row, unsigned int col, unsigned int len);
     void OpenAttribute(IAttribute * attribute, bool bHistoryView=false);
     void OpenAttribute(IAttribute * attribute, const std::_tstring & searchTerm, FINDMODE findmode);
     void OpenAttribute(IAttribute * attribute, Dali::IWorkunit * wu);

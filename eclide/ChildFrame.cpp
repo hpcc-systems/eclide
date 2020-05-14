@@ -61,7 +61,10 @@ LRESULT CChildFrame::OnSavePersistInfo(UINT uMsg, WPARAM wParam, LPARAM lParam)
         pmap.Set(PERSIST_ATTRIBUTETYPE, m_attrInfo.AttributeType);
     }
     SavePersistInfo(pmap);
-    m_workspaceItem->SetContent(pmap);
+    if (!boost::filesystem::exists(m_workspaceItem->GetID()))
+    {
+        m_workspaceItem->SetContent(pmap);
+    }
     wsItems->push_back(m_workspaceItem.p);
     return 0;
 }

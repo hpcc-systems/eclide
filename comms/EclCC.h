@@ -4,6 +4,7 @@
 #include "workunit.h"
 #include "Attribute.h"
 #include "SMCVersion.h"
+#include "EclMeta.h"
 
 static const TCHAR CompilerSection[](_T("Compiler"));
 static const SectionLabelDefault GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION(SectionLabel(CompilerSection, _T("OverrideDefaultSelection")), false);
@@ -48,8 +49,6 @@ __interface IEclCC : public IUnknown
     const TCHAR * SaveWorkunitXML(const std::_tstring & wuid, std::_tstring & filePath) const;
     const TCHAR * GetWorkunitResults(const std::_tstring & wuid, bool compileOnly, std::_tstring & results, bool & hasErrors, Dali::CEclExceptionVector & errors) const;
 
-    const TCHAR * GetAttributeFilePath(const std::_tstring & module, const std::_tstring & attribute, std::_tstring & path) const;
-    const TCHAR * GetAttributeFilePath(IAttribute * attribute, std::_tstring & path) const;
     const TCHAR * GetAttributeLabel(IAttribute * attribute, std::_tstring & label) const;
 
     bool PluginFolderExists(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const;
