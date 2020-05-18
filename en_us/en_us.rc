@@ -118,6 +118,7 @@ BEGIN
     VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
     "C",            ID_REPOSITORY_COPY,     VIRTKEY, CONTROL, ALT, NOINVERT
+    "C",            ID_REPOSITORY_COPYPATH, VIRTKEY, SHIFT, ALT, NOINVERT
     "O",            ID_BOOKMARKS_OPEN,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "S",            ID_BOOKMARKS_SAVE,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "L",            ID_BOOKMARKS_LOAD,      VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -1324,6 +1325,7 @@ BEGIN
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "Copy Label\tCtrl+Alt+C",      ID_REPOSITORY_COPY
+        MENUITEM "Copy Path\tShift+Alt+C",      ID_REPOSITORY_COPYPATH
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "&Delete\tDel",                ID_EDIT_DELETE
         MENUITEM SEPARATOR
@@ -1575,6 +1577,8 @@ BEGIN
         MENUITEM "Word Wrap\tCtrl+W",           ID_EDIT_WORDWRAP, CHECKED
         MENUITEM "Set Tab Size",                ID_ADVANCED_SETTABSIZE
         MENUITEM "Toggle Whitespace Chars",     ID_ADVANCED_SHOWWS
+        MENUITEM SEPARATOR
+        MENUITEM "Copy Path",                   ID_REPOSITORY_COPYPATH
     END
 END
 

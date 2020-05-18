@@ -1,10 +1,10 @@
 #pragma once
 
-#include "GotoDlg.h" //wlib
+#include "GotoDlg.h"    //wlib
 #include "FindDlgMgr.h" //wlib
 #include <PersistMap.h> //clib
-#include <Dali.h> //comms
-#include <Attribute.h> //comms
+#include <Dali.h>       //comms
+#include <Attribute.h>  //comms
 #include "AttrDependecy.h"
 #include "thread.h"
 #include "SourceView.h"
@@ -13,70 +13,71 @@
 
 class CCmdUI;
 
-template<class T>
+template <class T>
 class CEclCommandMixin : public CMessageMap
 {
 private:
     WTL::CUpdateUIBase *m_UpdateUI;
-    CSourceCtrl	  *m_ecl;
-    IFindReplace * m_findReplace;
+    CSourceCtrl *m_ecl;
+    IFindReplace *m_findReplace;
 
 public:
-    ISourceSlot	  *m_eclSlot;
-    #define CEclCommandMixinMAP_ID 10
+    ISourceSlot *m_eclSlot;
+#define CEclCommandMixinMAP_ID 10
 
-    BEGIN_MSG_MAP(CEclCommandMixin< T >)
+    BEGIN_MSG_MAP(CEclCommandMixin<T>)
     ALT_MSG_MAP(CEclCommandMixinMAP_ID)
-        MESSAGE_HANDLER(CWM_SUBMITDONE, OnSubmitDone)
-        MESSAGE_HANDLER(CWM_INSERTTEXT, OnInsertText)
-        MESSAGE_HANDLER(CWM_SYNTAXCLEAR, OnClearSyntax)
-        MESSAGE_HANDLER(CWM_SYNTAXSYNC, OnSyncSyntax)
+    MESSAGE_HANDLER(CWM_SUBMITDONE, OnSubmitDone)
+    MESSAGE_HANDLER(CWM_INSERTTEXT, OnInsertText)
+    MESSAGE_HANDLER(CWM_SYNTAXCLEAR, OnClearSyntax)
+    MESSAGE_HANDLER(CWM_SYNTAXSYNC, OnSyncSyntax)
 
-        //These need to be handled at a higher level
-        //COMMAND_ID_HANDLER(ID_ECL_CHECKSYNTAX, OnEclCheckSyntax)
+    //These need to be handled at a higher level
+    //COMMAND_ID_HANDLER(ID_ECL_CHECKSYNTAX, OnEclCheckSyntax)
 
 #ifdef ID_EDIT_UNDO
-        COMMAND_ID_HANDLER(ID_EDIT_UNDO, OnEditUndo)
-        COMMAND_ID_HANDLER(ID_EDIT_REDO, OnEditRedo)
-        COMMAND_ID_HANDLER(ID_EDIT_CUT, OnEditCut)
-        COMMAND_ID_HANDLER(ID_EDIT_COPY, OnEditCopy)
-        COMMAND_ID_HANDLER(ID_REPOSITORY_COPY, OnRepositoryCopy)
-        COMMAND_ID_HANDLER(ID_EDIT_PASTE, OnEditPaste)
-        COMMAND_ID_HANDLER(ID_EDIT_DELETE, OnEditDelete)
-        COMMAND_ID_HANDLER(ID_EDIT_SELECT_ALL, OnEditSelectAll)
+    COMMAND_ID_HANDLER(ID_EDIT_UNDO, OnEditUndo)
+    COMMAND_ID_HANDLER(ID_EDIT_REDO, OnEditRedo)
+    COMMAND_ID_HANDLER(ID_EDIT_CUT, OnEditCut)
+    COMMAND_ID_HANDLER(ID_EDIT_COPY, OnEditCopy)
+    COMMAND_ID_HANDLER(ID_REPOSITORY_COPY, OnRepositoryCopy)
+    COMMAND_ID_HANDLER(ID_REPOSITORY_COPYPATH, OnRepositoryCopyPath)
+    COMMAND_ID_HANDLER(ID_EDIT_PASTE, OnEditPaste)
+    COMMAND_ID_HANDLER(ID_EDIT_DELETE, OnEditDelete)
+    COMMAND_ID_HANDLER(ID_EDIT_SELECT_ALL, OnEditSelectAll)
 #ifdef ID_EDIT_MATCHBRACE
-        COMMAND_ID_HANDLER(ID_EDIT_MATCHBRACE, OnEditMatchBrace)
-        COMMAND_ID_HANDLER(ID_EDIT_SELECTTOBRACE, OnEditSelectToBrace)
-        COMMAND_ID_HANDLER(ID_EDIT_COMPLETEWORD, OnEditCompleteWord)
-        COMMAND_ID_HANDLER(ID_EDIT_BLOCKCOMMENT, OnEditBlockComment)
-        COMMAND_ID_HANDLER(ID_EDIT_BOXCOMMENT, OnEditBoxComment)
-        COMMAND_ID_HANDLER(ID_EDIT_UPPERCASE, OnEditUppercase)
-        COMMAND_ID_HANDLER(ID_EDIT_LOWERCASE, OnEditLowercase)
-        COMMAND_ID_HANDLER(ID_EDIT_TOGGLELINENUMBERS, OnEditToggleLineNumbers)
-        COMMAND_ID_HANDLER(ID_ADVANCED_SETTABSIZE, OnEditSetTabSize)
-        COMMAND_ID_HANDLER(ID_ADVANCED_SHOWWS, OnEditShowWS)
-        COMMAND_ID_HANDLER(ID_EDIT_REFORMAT, OnEditReformat)
-        COMMAND_ID_HANDLER(ID_EDIT_WORDWRAP, OnEditWordWrap)
-        COMMAND_ID_HANDLER(ID_EDIT_FIND, OnEditFind)
-        COMMAND_ID_HANDLER(ID_EDIT_REPLACE, OnEditReplace)
-        COMMAND_ID_HANDLER(ID_EDIT_FINDNEXT, OnEditFindNext)
-        COMMAND_ID_HANDLER(ID_EDIT_FINDPREV, OnEditFindPrev)
-        COMMAND_ID_HANDLER(ID_EDIT_GOTO, OnEditGoto)
+    COMMAND_ID_HANDLER(ID_EDIT_MATCHBRACE, OnEditMatchBrace)
+    COMMAND_ID_HANDLER(ID_EDIT_SELECTTOBRACE, OnEditSelectToBrace)
+    COMMAND_ID_HANDLER(ID_EDIT_COMPLETEWORD, OnEditCompleteWord)
+    COMMAND_ID_HANDLER(ID_EDIT_BLOCKCOMMENT, OnEditBlockComment)
+    COMMAND_ID_HANDLER(ID_EDIT_BOXCOMMENT, OnEditBoxComment)
+    COMMAND_ID_HANDLER(ID_EDIT_UPPERCASE, OnEditUppercase)
+    COMMAND_ID_HANDLER(ID_EDIT_LOWERCASE, OnEditLowercase)
+    COMMAND_ID_HANDLER(ID_EDIT_TOGGLELINENUMBERS, OnEditToggleLineNumbers)
+    COMMAND_ID_HANDLER(ID_ADVANCED_SETTABSIZE, OnEditSetTabSize)
+    COMMAND_ID_HANDLER(ID_ADVANCED_SHOWWS, OnEditShowWS)
+    COMMAND_ID_HANDLER(ID_EDIT_REFORMAT, OnEditReformat)
+    COMMAND_ID_HANDLER(ID_EDIT_WORDWRAP, OnEditWordWrap)
+    COMMAND_ID_HANDLER(ID_EDIT_FIND, OnEditFind)
+    COMMAND_ID_HANDLER(ID_EDIT_REPLACE, OnEditReplace)
+    COMMAND_ID_HANDLER(ID_EDIT_FINDNEXT, OnEditFindNext)
+    COMMAND_ID_HANDLER(ID_EDIT_FINDPREV, OnEditFindPrev)
+    COMMAND_ID_HANDLER(ID_EDIT_GOTO, OnEditGoto)
 #endif
 #endif
 
 #ifdef ID_ECL_NEXTERROR
-        COMMAND_ID_HANDLER(ID_ECL_NEXTERROR, OnEclNextError)
-        COMMAND_ID_HANDLER(ID_ECL_PREVIOUSERROR, OnEclPreviousError)
-        COMMAND_ID_HANDLER(ID_ECL_CLEARERRORS, OnEclClearErrors)
+    COMMAND_ID_HANDLER(ID_ECL_NEXTERROR, OnEclNextError)
+    COMMAND_ID_HANDLER(ID_ECL_PREVIOUSERROR, OnEclPreviousError)
+    COMMAND_ID_HANDLER(ID_ECL_CLEARERRORS, OnEclClearErrors)
 #endif
-        COMMAND_ID_HANDLER(ID_MACRO_RECORD, OnMacroRecord)
-        COMMAND_ID_HANDLER(ID_MACRO_PLAY, OnMacroPlay)
+    COMMAND_ID_HANDLER(ID_MACRO_RECORD, OnMacroRecord)
+    COMMAND_ID_HANDLER(ID_MACRO_PLAY, OnMacroPlay)
 
-        MESSAGE_HANDLER(WM_COMMAND, OnFindReplaceCmd)
+    MESSAGE_HANDLER(WM_COMMAND, OnFindReplaceCmd)
 
-        if(m_ecl && m_ecl->ProcessWindowMessage(hWnd, uMsg, wParam, lParam, lResult))
-            return TRUE;
+    if (m_ecl && m_ecl->ProcessWindowMessage(hWnd, uMsg, wParam, lParam, lResult))
+        return TRUE;
 
     END_MSG_MAP()
 
@@ -87,7 +88,7 @@ public:
         m_eclSlot = NULL;
     }
 
-    void InitEclCommandMixin(WTL::CUpdateUIBase *UIBase, IFindReplace * findReplace, CSourceCtrl *ecl, ISourceSlot* eclSlot) 
+    void InitEclCommandMixin(WTL::CUpdateUIBase *UIBase, IFindReplace *findReplace, CSourceCtrl *ecl, ISourceSlot *eclSlot)
     {
         m_UpdateUI = UIBase;
         m_findReplace = findReplace;
@@ -101,9 +102,9 @@ public:
         UIUpdateMenuItems();
     }
 
-    bool UIUpdateMenuItems(CCmdUI * cui)
+    bool UIUpdateMenuItems(CCmdUI *cui)
     {
-        T * pT = static_cast<T*>(this);
+        T *pT = static_cast<T *>(this);
         bool bCanSubmit = pT->CanExecute();
         bool bHasContents = (m_ecl->GetLength() > 0);
         bool bReadOnly = m_ecl->IsReadOnly() == TRUE;
@@ -113,7 +114,7 @@ public:
         UPDATEUI(cui, ID_EDIT_UNDO, m_ecl->CanUndo());
         UPDATEUI(cui, ID_EDIT_REDO, m_ecl->CanRedo());
         UPDATEUI(cui, ID_EDIT_COPY, bHasSelection);
-        UPDATEUI(cui, ID_EDIT_CUT, bCanCut );
+        UPDATEUI(cui, ID_EDIT_CUT, bCanCut);
         UPDATEUI(cui, ID_EDIT_DELETE, true);
         UPDATEUI(cui, ID_EDIT_PASTE, m_ecl->CanPaste());
         UPDATEUI(cui, ID_EDIT_SELECT_ALL, bHasContents);
@@ -161,7 +162,7 @@ public:
         UPDATEUI(cui, ID_ECL_CHECKDEPENDENCY, bCanSubmit);
 
         //we really shouldn't be setting these since we don't handle them
-        UPDATEUI(cui, ID_FILE_SAVE, m_ecl->GetModify());	
+        UPDATEUI(cui, ID_FILE_SAVE, m_ecl->GetModify());
         UPDATEUI(cui, ID_FILE_PRINT, TRUE);
         UPDATEUI(cui, ID_ECL_CHECKSYNTAX, bHasContents);
         UPDATEUI(cui, ID_ECL_GOTOSYNCTOC, bHasContents);
@@ -221,10 +222,10 @@ public:
 
     void DoCheckSyntax()
     {
-        T * pT = static_cast<T*>(this);
+        T *pT = static_cast<T *>(this);
         SyntaxClearAll();
-        IAttribute* attr = pT->GetAttribute();
-        if ( attr )
+        IAttribute *attr = pT->GetAttribute();
+        if (attr)
         {
             CString ecl;
             m_ecl->GetText(ecl);
@@ -235,7 +236,7 @@ public:
         }
     }
 
-    static void EclCheckSyntax(T * self, CString ecl, CString cluster, CString module, CString attr, CString path, CString debugString, bool archive, bool noCommonPrivateAttributes)
+    static void EclCheckSyntax(T *self, CString ecl, CString cluster, CString module, CString attr, CString path, CString debugString, bool archive, bool noCommonPrivateAttributes)
     {
         Dali::CEclExceptionVector errors;
         StlLinked<Dali::IDali> dali = Dali::AttachDali(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT), _T("Dali"));
@@ -251,7 +252,7 @@ public:
         m_ecl->AnnotationClearAll();
     }
 
-    void SavePersistInfo(CPersistMap & persistInfo)
+    void SavePersistInfo(CPersistMap &persistInfo)
     {
         CString ecl;
         m_ecl->GetText(ecl);
@@ -259,7 +260,7 @@ public:
         persistInfo.Set(PERSIST_DIRTY, boost::lexical_cast<std::_tstring>(m_ecl->IsDirty()));
     }
 
-    void RestorePersistInfo(const CPersistMap & persistInfo)
+    void RestorePersistInfo(const CPersistMap &persistInfo)
     {
         CString persistEcl = persistInfo.Get(PERSIST_ECL);
         CString currentEcl;
@@ -273,10 +274,10 @@ public:
         }
     }
 
-    LRESULT OnFindReplaceCmd(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+    LRESULT OnFindReplaceCmd(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL &bHandled)
     {
 #ifdef ID_EDIT_FINDREPLACECMD
-        if ( wParam != ID_EDIT_FINDREPLACECMD )
+        if (wParam != ID_EDIT_FINDREPLACECMD)
         {
             bHandled = FALSE;
             return 1;
@@ -284,54 +285,58 @@ public:
 #endif
 
         //ATLASSERT(lParam == (LPARAM)&GetFindReplace);
-        if(m_findReplace->GetFindReplace().FindNext())
+        if (m_findReplace->GetFindReplace().FindNext())
         {
-            if(!m_ecl->DoFind(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_dwFlags, m_findReplace->GetFindReplace().m_mode, false, m_findReplace->GetFindReplace().SearchDown(), m_findReplace->GetFindReplace().IsFindWrap())) {
-                //m_eclSlot->PostStatus(_T("Error. Can't found '%s'"), m_findReplace->GetFindReplace().m_szFindWhat); 
+            if (!m_ecl->DoFind(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_dwFlags, m_findReplace->GetFindReplace().m_mode, false, m_findReplace->GetFindReplace().SearchDown(), m_findReplace->GetFindReplace().IsFindWrap()))
+            {
+                //m_eclSlot->PostStatus(_T("Error. Can't found '%s'"), m_findReplace->GetFindReplace().m_szFindWhat);
                 ::MessageBeep(MB_ICONEXCLAMATION);
             }
-            else {		
-                int nRow = 0; int nCol = 0;				
+            else
+            {
+                int nRow = 0;
+                int nCol = 0;
                 nRow = m_ecl->LineFromPosition(m_ecl->GetCurrentPos());
                 nCol = m_ecl->GetColumn(m_ecl->GetCurrentPos());
 
-                //m_eclSlot->PostStatus(_T("Ok. Found '%s' in {%d, %d}"), m_findReplace->GetFindReplace().m_szFindWhat, nRow, nCol); 
+                //m_eclSlot->PostStatus(_T("Ok. Found '%s' in {%d, %d}"), m_findReplace->GetFindReplace().m_szFindWhat, nRow, nCol);
             }
         }
-        else if(m_findReplace->GetFindReplace().ReplaceCurrent())
+        else if (m_findReplace->GetFindReplace().ReplaceCurrent())
         {
-            if(!m_ecl->DoReplaceCurrent(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_szReplaceWith, m_findReplace->GetFindReplace().m_dwFlags, m_findReplace->GetFindReplace().MatchCase()))
+            if (!m_ecl->DoReplaceCurrent(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_szReplaceWith, m_findReplace->GetFindReplace().m_dwFlags, m_findReplace->GetFindReplace().MatchCase()))
                 ::MessageBeep(MB_ICONEXCLAMATION);
         }
-        else if(m_findReplace->GetFindReplace().ReplaceAll())
+        else if (m_findReplace->GetFindReplace().ReplaceAll())
         {
-            if(!m_ecl->DoReplaceAll(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_szReplaceWith, m_findReplace->GetFindReplace().m_dwFlags))
+            if (!m_ecl->DoReplaceAll(m_findReplace->GetFindReplace().m_szFindWhat, m_findReplace->GetFindReplace().m_szReplaceWith, m_findReplace->GetFindReplace().m_dwFlags))
                 ::MessageBeep(MB_ICONEXCLAMATION);
         }
 
-        if(m_findReplace->GetFindReplace().IsTerminating()) {				
+        if (m_findReplace->GetFindReplace().IsTerminating())
+        {
             // nothing
         }
 
         return 0;
     }
 
-    LRESULT OnInsertText(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
+    LRESULT OnInsertText(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL &bHandled)
     {
         bHandled = true;
-        CString * label = (CString *)lParam;
+        CString *label = (CString *)lParam;
         m_ecl->InsertText(m_ecl->GetCurrentPos(), *label);
         return 0;
     }
 
-    LRESULT OnClearSyntax(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+    LRESULT OnClearSyntax(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL &bHandled)
     {
         bHandled = true;
         m_ecl->SyntaxClearAll();
         return 0;
     }
 
-    LRESULT OnSyncSyntax(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+    LRESULT OnSyncSyntax(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL &bHandled)
     {
         bHandled = true;
         if (m_ecl->SyntaxGoto(wParam))
@@ -365,12 +370,19 @@ public:
     }
     LRESULT OnRepositoryCopy(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
     {
-        T * pT = static_cast<T*>(this);
+        T *pT = static_cast<T *>(this);
         bHandled = true;
         CString titleStr;
         pT->GetTitle(titleStr);
         titleStr.TrimLeft(_T("*"));
         SetClipboard((const TCHAR *)titleStr);
+        return 0;
+    }
+    LRESULT OnRepositoryCopyPath(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
+    {
+        T *pT = static_cast<T *>(this);
+        bHandled = true;
+        ATLASSERT(FALSE);
         return 0;
     }
     LRESULT OnEditPaste(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
@@ -488,7 +500,7 @@ public:
     LRESULT OnEditFindNext(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
     {
         bHandled = true;
-        if(m_findReplace->GetFindReplace().m_szFindWhat[0] == 0)
+        if (m_findReplace->GetFindReplace().m_szFindWhat[0] == 0)
         {
             DoEditFind();
             return 0;
@@ -504,9 +516,9 @@ public:
         return 0;
     }
 
-    LRESULT OnEditFindPrev(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &/*bHandled*/)
+    LRESULT OnEditFindPrev(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL & /*bHandled*/)
     {
-        if(m_findReplace->GetFindReplace().m_szFindWhat[0] == 0)
+        if (m_findReplace->GetFindReplace().m_szFindWhat[0] == 0)
         {
             DoEditFind();
             return 0;
@@ -555,10 +567,10 @@ public:
     //	return 0;
     //}
 
-    LRESULT	OnSubmitDone(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+    LRESULT OnSubmitDone(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
     {
         m_ecl->SyntaxClearAll();
-        T * pT = static_cast<T*>(this);
+        T *pT = static_cast<T *>(this);
         Dali::WUAction action = static_cast<Dali::WUAction>(wParam);
         if (action != Dali::WUActionCheck)
         {
@@ -567,7 +579,7 @@ public:
         }
         bHandled = true;
 
-        Dali::CEclExceptionVector * errors = reinterpret_cast<Dali::CEclExceptionVector *>(lParam);
+        Dali::CEclExceptionVector *errors = reinterpret_cast<Dali::CEclExceptionVector *>(lParam);
         if (errors == NULL)
         {
             CString title;
@@ -591,7 +603,7 @@ public:
         for (Dali::CEclExceptionVector::iterator itr = errors->begin(); itr != errors->end(); ++itr)
         {
             StlLinked<Dali::CEclException> e = itr->get();
-            if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code != 1033)	//  Push sandboxed warnings to the end.
+            if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code != 1033) //  Push sandboxed warnings to the end.
             {
                 m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_fileType, e->m_message, e->m_lineNo - 1, e->m_column - 1);
                 warn++;
@@ -600,7 +612,7 @@ public:
         for (Dali::CEclExceptionVector::iterator itr = errors->begin(); itr != errors->end(); ++itr)
         {
             StlLinked<Dali::CEclException> e = itr->get();
-            if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code == 1033)	//  Push sandboxed warnings to the end.
+            if (e->m_severity == Dali::CEclException::ECL_EXCEPTION_WARNING && e->m_code == 1033) //  Push sandboxed warnings to the end.
             {
                 m_ecl->SyntaxAdd(SYNTAX_WARNING, e->m_code, e->m_fileName, e->m_fileType, e->m_message, e->m_lineNo - 1, e->m_column - 1);
                 warn++;
@@ -615,7 +627,7 @@ public:
             }
         }
 
-        if ( m_eclSlot )
+        if (m_eclSlot)
         {
             _variant_t errCount(err), warnCount(warn);
             CString syntaxStatus = errCount;
@@ -647,9 +659,9 @@ public:
     LRESULT OnEclClearErrors(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
     {
         m_ecl->SyntaxClearAll();
-        if ( m_eclSlot )
+        if (m_eclSlot)
         {
-            m_eclSlot->PostStatus(0); 
+            m_eclSlot->PostStatus(0);
         }
         bHandled = true;
         return 0;
