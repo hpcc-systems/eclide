@@ -367,7 +367,11 @@ public:
         std::_tstring in = _T("");
 
         std::_tstring folder = m_workingFolder;
-        if (folder.empty())
+        bool exists = boost::filesystem::exists(folder);
+        if (!exists) {
+            _DBGLOG(LEVEL_SEVERE, (boost::_tformat(_T("Working folder not found:  %1%")) % folder.c_str()).str().c_str());
+        }
+        if (folder.empty() || !exists)
         {
             _TCHAR buf[MAX_PATH];
              if(GetTempPath(MAX_PATH, buf))
