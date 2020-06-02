@@ -53,7 +53,7 @@ BOOL CAMTApp::InitInstance()
 	BT_SetAppName(_T("Attribute Migration Tool"));
 	BT_SetSupportEMail(_T("gsmith@seisint.com"));
 	BT_SetFlags(BTF_DETAILEDMODE | BTF_EDITMAIL | BTF_ATTACHREPORT | BTF_SHOWADVANCEDUI);
-    BT_SetSupportURL(_T("http://hpccsystems.com/support"));
+	BT_SetSupportURL(_T("https://hpccsystems.com/community"));
 
 
 	// = BugTrapServer ===========================================
