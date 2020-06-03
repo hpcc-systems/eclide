@@ -31,6 +31,7 @@ protected:
     CString m_label;
     boost::filesystem::path m_path;
     std::_tstring m_modFile;
+    CAttrMsg m_attrMsg;
 
 public:
     BEGIN_CLOCKABLEUNKNOWN
@@ -594,6 +595,10 @@ public:
     }
     void ClearShortTermCache()
     {
+    }
+    virtual CAttrMsg AttrMessages()
+    {
+        return m_attrMsg;
     }
 };
 
