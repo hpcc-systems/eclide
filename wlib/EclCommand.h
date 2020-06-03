@@ -41,6 +41,7 @@ public:
         COMMAND_ID_HANDLER(ID_EDIT_CUT, OnEditCut)
         COMMAND_ID_HANDLER(ID_EDIT_COPY, OnEditCopy)
         COMMAND_ID_HANDLER(ID_REPOSITORY_COPY, OnRepositoryCopy)
+        COMMAND_ID_HANDLER(ID_REPOSITORY_COPYPATH, OnRepositoryCopyPath)
         COMMAND_ID_HANDLER(ID_EDIT_PASTE, OnEditPaste)
         COMMAND_ID_HANDLER(ID_EDIT_DELETE, OnEditDelete)
         COMMAND_ID_HANDLER(ID_EDIT_SELECT_ALL, OnEditSelectAll)
@@ -371,6 +372,13 @@ public:
         pT->GetTitle(titleStr);
         titleStr.TrimLeft(_T("*"));
         SetClipboard((const TCHAR *)titleStr);
+        return 0;
+    }
+    LRESULT OnRepositoryCopyPath(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
+    {
+        T * pT = static_cast<T*>(this);
+        bHandled = true;
+        pT->PathToClipboard();
         return 0;
     }
     LRESULT OnEditPaste(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)

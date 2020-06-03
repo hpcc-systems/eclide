@@ -563,6 +563,10 @@ void CHistoryView::GetTitle(CString & title)
     title = m_Attribute->GetQualifiedLabel();
 }
 
+void CHistoryView::PathToClipboard()
+{
+}
+
 bool CHistoryView::IsDirty()
 {
     return false;

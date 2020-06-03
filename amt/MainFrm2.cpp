@@ -276,6 +276,9 @@ void CMainFrame::GetTitle(CString & title)
     title = CMDIFrameWndEx::GetTitle();
 }
 
+void CMainFrame::PathToClipboard()
+{
+}
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {

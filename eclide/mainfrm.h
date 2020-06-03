@@ -525,6 +525,7 @@ public:
     HWND GetMDINext();
     void MDINext();
     void MDIPrev();
+    void PathToClipboard();
 
     void operator()(SectionLabel * label);
     int MDIGetCount(int direction = 0);

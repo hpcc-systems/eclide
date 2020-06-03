@@ -239,6 +239,7 @@ protected:
 
 public:
     void GetTitle(CString & title);
+    void PathToClipboard();
     IAttribute* GetAttribute() { return 0; }; //for CEclCommandMixin (OnSubmitDone)
     FindReplace	m_fr;
 

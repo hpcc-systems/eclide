@@ -30,6 +30,7 @@ public:
 
     bool DoSave(bool saveFileAs, PREPROCESS_TYPE action=PREPROCESS_SAVE);
     void GetTitle(CString & title);
+    void PathToClipboard();
     void DoCheckSyntax();
     void DoCheckComplexity();
     void DoCheckDependency();

@@ -21,6 +21,8 @@ class CEclDlgQBImpl:
     typedef CSourceDlgImpl<T> baseClass;
     typedef CEclCommandMixin<T> baseClassEclCmd;
 
+    std::_tstring m_copyPathStr;
+
 public:
     CEclDlgQBImpl(const AttrInfo & attrInfo, ISourceSlot * owner) : baseClass(attrInfo, owner)
     {
@@ -118,9 +120,23 @@ public:
         CString copyStr, titleStr;
         GetTitle(titleStr);
         titleStr.TrimLeft(_T("*"));
+
         copyStr.Format(_T("&Copy \"%s\"\tCtrl+Alt+C"), titleStr);
         m.ModifyMenu(ID_REPOSITORY_COPY, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPY, copyStr);
+
+        IAttribute *attr = m_view.GetAttribute();
+        if (attr) {
+            std::_tstring path = attr->GetQualifiedRelativePath();
+            copyStr.Format(_T("Co&py \"%s\"\tCtrl+Alt+K"), path.c_str());
+            m.ModifyMenu(ID_REPOSITORY_COPYPATH, MF_BYCOMMAND | MF_STRING, ID_REPOSITORY_COPYPATH, copyStr);
+        }
+        else
+        {
+            edit.EnableMenuItem(ID_REPOSITORY_COPYPATH, MF_BYCOMMAND | MF_GRAYED);
+        }
+
         edit.EnableMenuItem(ID_ECL_SEL_GO, MF_BYCOMMAND | (m_view.IsTextSelected() ? MF_ENABLED : MF_DISABLED | MF_GRAYED));
+
         BOOL id = edit.TrackPopupMenuEx(TPM_RETURNCMD, pt.x, pt.y, phWnd, NULL);
         m.DestroyMenu();
         if (id)

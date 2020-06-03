@@ -828,6 +828,7 @@
 #define ID_BOOKMARKS_NEXT               33120
 #define ID_BOOKMARKS_PREV               33121
 #define ID_BOOKMARKS_VIEW               33122
+#define ID_REPOSITORY_COPYPATH          33123
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -856,7 +857,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33120
+#define _APS_NEXT_COMMAND_VALUE         33124
 #define _APS_NEXT_CONTROL_VALUE         545
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

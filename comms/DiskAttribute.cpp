@@ -33,6 +33,7 @@ protected:
     CString m_label;
     CString m_qualifiedLabel;
     CString m_qualifiedLabelWithExt;
+    CString m_qualifiedRelativePath;
     CString m_qualifiedLabelNoRoot;
     CString m_qualifiedLabelNoRootWithExt;
     CComPtr<IAttributeType> m_type;
@@ -173,6 +174,12 @@ public:
         if (includeExtension)
             return m_qualifiedLabelWithExt;
         return m_qualifiedLabel;
+    }
+
+    const TCHAR *GetQualifiedRelativePath() const
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        return m_qualifiedRelativePath;
     }
 
     const TCHAR *GetPath() const
@@ -415,6 +422,13 @@ public:
         m_label = label.c_str();
         m_qualifiedLabel = m_moduleQualifiedLabel + _T(".") + m_label;
         m_qualifiedLabelWithExt = m_qualifiedLabel + m_type->GetFileExtension();
+
+        std::wstring tmp = moduleName;
+        boost::algorithm::replace_all(tmp, _T("."), _T("\\"));
+        boost::algorithm::replace_all(tmp, _T("/"), _T("\\"));
+        m_qualifiedRelativePath = tmp.c_str();
+        m_qualifiedRelativePath += _T("\\") + m_label + m_type->GetFileExtension();
+
         CModuleHelper modHelper(m_qualifiedLabel);
         m_moduleQualifiedLabelNoRoot = modHelper.GetModuleLabelNoRoot();
         m_qualifiedLabelNoRoot = modHelper.GetQualifiedLabelNoRoot();

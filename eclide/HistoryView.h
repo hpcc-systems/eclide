@@ -69,6 +69,7 @@ public:
     bool CanExecute();
     int GetDiffPrevious();
     int GetDiffNext();
+    void PathToClipboard();
 
     enum { IDD = IDD_DIALOG_DIFF };
 

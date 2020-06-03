@@ -118,6 +118,7 @@ BEGIN
     VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
     "C",            ID_REPOSITORY_COPY,     VIRTKEY, CONTROL, ALT, NOINVERT
+    "K",            ID_REPOSITORY_COPYPATH, VIRTKEY, CONTROL, ALT, NOINVERT
     "O",            ID_BOOKMARKS_OPEN,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "S",            ID_BOOKMARKS_SAVE,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "L",            ID_BOOKMARKS_LOAD,      VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -1324,6 +1325,7 @@ BEGIN
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "Copy Label\tCtrl+Alt+C",      ID_REPOSITORY_COPY
+        MENUITEM "Copy Path\tCtrl+Alt+K",       ID_REPOSITORY_COPYPATH
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "&Delete\tDel",                ID_EDIT_DELETE
         MENUITEM SEPARATOR
@@ -1354,6 +1356,9 @@ BEGIN
             MENUITEM "Word Wrap\tCtrl+W",           ID_EDIT_WORDWRAP
             MENUITEM "Set Tab Size",                ID_ADVANCED_SETTABSIZE
             MENUITEM "Toggle Whitespace Chars",     ID_ADVANCED_SHOWWS
+            MENUITEM SEPARATOR
+            MENUITEM "Copy Label\tCtrl+Alt+C",      ID_REPOSITORY_COPY
+            MENUITEM "Copy Path\tCtrl+Alt+K",       ID_REPOSITORY_COPYPATH
         END
         MENUITEM SEPARATOR
         MENUITEM "&Submit ECL\tCtrl+Enter",     ID_ECL_GO
@@ -1575,6 +1580,9 @@ BEGIN
         MENUITEM "Word Wrap\tCtrl+W",           ID_EDIT_WORDWRAP, CHECKED
         MENUITEM "Set Tab Size",                ID_ADVANCED_SETTABSIZE
         MENUITEM "Toggle Whitespace Chars",     ID_ADVANCED_SHOWWS
+        MENUITEM SEPARATOR
+        MENUITEM "Copy Label\tCtrl+Alt+C",      ID_REPOSITORY_COPY
+        MENUITEM "Copy Path\tCtrl+Alt+K",       ID_REPOSITORY_COPYPATH
     END
 END
 
@@ -1672,6 +1680,7 @@ BEGIN
         MENUITEM "Open in &Editor",             ID_REPOSITORY_OPEN
         MENUITEM "Open in &Builder Window",     ID_REPOSITORY_OPENBUILDER
         MENUITEM "&Copy Selection",             ID_REPOSITORY_COPY
+        MENUITEM "Copy Pa&th",                  ID_REPOSITORY_COPYPATH
         MENUITEM "&Paste Selection",            ID_REPOSITORY_PASTE
         MENUITEM SEPARATOR
         MENUITEM "Check-&out",                  ID_REPOSITORY_CHECKOUT
@@ -1709,6 +1718,7 @@ BEGIN
         MENUITEM "Open in &Builder Window",     ID_REPOSITORY_OPENBUILDER
         MENUITEM "Locate File in Explorer",     ID_EDIT_LOCATEFILEINEXPLORER
         MENUITEM "&Copy Selection",             ID_REPOSITORY_COPY
+        MENUITEM "Copy Pa&th",                  ID_REPOSITORY_COPYPATH
         MENUITEM "&Paste Selection",            ID_REPOSITORY_PASTE
         MENUITEM SEPARATOR
         MENUITEM "Check Synta&x",               ID_REPOSITORY_CHECKSYNTAX
