@@ -118,6 +118,7 @@ public:
     void DoCheckComplexity();
     void DoCheckDependency();
     void DoUpdateScheduleInfo();
+    void SetScheduleDateNow(bool blockit = false);
     void SetAttribute(IAttribute *attribute);
     IAttribute * GetAttribute();
 
@@ -156,6 +157,7 @@ public:
         MSG_WM_DESTROY(OnDestroy)
         MSG_WM_SIZE(OnSize)
         MSG_WM_TIMER(OnTimer)
+        MSG_WM_SETFOCUS(OnSetFocus)
 
         MESSAGE_HANDLER_EX(BUM_REFRESHQUEUECLUSTER, OnRefreshQueueCluster)
 
@@ -214,6 +216,7 @@ public:
     void OnDestroy();
     void OnSize(UINT nType, CSize size);
     void OnTimer(UINT_PTR nIDEvent);
+    void OnSetFocus(HWND hWndOther);
     LRESULT OnRefreshQueueCluster(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     void OnFoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/);
