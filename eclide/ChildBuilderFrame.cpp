@@ -884,9 +884,10 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 
         if (eclType)
         {
-            UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
             UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
             UPDATEUI(cui, ID_HELP, TRUE);
+            UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
 
             if (m_dlgview.HasPluginConfig())
             {
@@ -894,30 +895,24 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
                 {
                     m_dlgview.m_goButton.SetDlgCtrlID(ID_GO_NOTHING);
                 }
-                UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanSubmit() ? true : false);
-                UPDATEUI(cui, ID_GO_GENERATE, m_dlgview.CanGenerate() ? true : false);
-                UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanCompile() ? true : false);
+                UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
+                UPDATEUI(cui, ID_GO_GENERATE, m_dlgview.CanGenerate());
+                UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanCompile());
+            }
+
+            if (m_dlgview.CanExecute())
+            {
+                if (!m_dlgview.m_goButton.IsWindowEnabled())
+                    m_dlgview.m_goButton.EnableWindow(true);
+                if (!m_dlgview.m_archiveButton.IsWindowEnabled())
+                    m_dlgview.m_archiveButton.EnableWindow(true);
             }
             else
             {
-                UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
-                UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
-                UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanExecute());
-
-                if (m_dlgview.CanExecute())
-                {
-                    if (!m_dlgview.m_goButton.IsWindowEnabled())
-                        m_dlgview.m_goButton.EnableWindow(true);
-                    if (!m_dlgview.m_archiveButton.IsWindowEnabled())
-                        m_dlgview.m_archiveButton.EnableWindow(true);
-                }
-                else
-                {
-                    if (m_dlgview.m_goButton.IsWindowEnabled())
-                        m_dlgview.m_goButton.EnableWindow(false);
-                    if (m_dlgview.m_archiveButton.IsWindowEnabled())
-                        m_dlgview.m_archiveButton.EnableWindow(false);
-                }
+                if (m_dlgview.m_goButton.IsWindowEnabled())
+                    m_dlgview.m_goButton.EnableWindow(false);
+                if (m_dlgview.m_archiveButton.IsWindowEnabled())
+                    m_dlgview.m_archiveButton.EnableWindow(false);
             }
         }
 
