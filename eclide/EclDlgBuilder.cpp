@@ -362,6 +362,11 @@ void CBuilderDlg::OnSize(UINT nType, CSize size)
     SetMsgHandled(false);
 }
 
+void CBuilderDlg::OnSetFocus(HWND /*hWndOther*/)
+{
+    SetScheduleDateNow(m_schedule);
+}
+
 LRESULT CBuilderDlg::OnRefreshQueueCluster(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     std::_tstring queueStr = _T("");
@@ -613,12 +618,29 @@ void CBuilderDlg::DoUpdateScheduleInfo()
         m_dateCtrl.EnableWindow(true);
         m_timeCtrl.EnableWindow(true);
         m_goButton.SetWindowText(_T("Schedule"));
+        SetScheduleDateNow(false);
     }
     else
     {
         m_dateCtrl.EnableWindow(false);
         m_timeCtrl.EnableWindow(false);
         m_goButton.SetWindowText(_T("Submit"));
+    }
+}
+
+void CBuilderDlg::SetScheduleDateNow(bool blockit) {
+    if (!blockit) {
+        boost::posix_time::ptime timeLocal = boost::posix_time::second_clock::local_time();
+        SYSTEMTIME d;
+        d.wYear = (short)timeLocal.date().year();
+        d.wMonth = (short)timeLocal.date().month();
+        d.wDay = (short)timeLocal.date().day();
+        d.wHour = (short)timeLocal.time_of_day().hours();
+        d.wMinute = (short)timeLocal.time_of_day().minutes();
+        d.wSecond = (short)timeLocal.time_of_day().seconds();
+        d.wMilliseconds = 0;
+        m_dateCtrl.SetSystemTime(GDT_VALID, &d);
+        m_timeCtrl.SetSystemTime(GDT_VALID, &d);
     }
 }
 
@@ -692,6 +714,7 @@ void CBuilderDlg::HideAdvanced()
         m_advancedCtrl.SetWindowText(_T("More *"));
     else
         m_advancedCtrl.SetWindowText(_T("More"));
+    SetScheduleDateNow(m_schedule);
 }
 
 void CBuilderDlg::OnFoldAll(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)

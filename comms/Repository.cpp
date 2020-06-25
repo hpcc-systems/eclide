@@ -34,6 +34,7 @@ IAttributeHistory * CreateAttributeHistory(const IRepository *rep, IAttributeTyp
 class CRepository : public CRepositoryBase
 {
     std::_tstring m_url;
+    CAttrMsg m_attrMsg;
 
 public:
     IMPLEMENT_CUNKNOWN;
@@ -902,6 +903,11 @@ public:
                 _DBGLOG(m_url, LEVEL_WARNING, server.GetClientErrorMsg());
         }
         return false;
+    }
+
+    virtual CAttrMsg AttrMessages()
+    {
+        return m_attrMsg;
     }
 };
 

@@ -1702,7 +1702,7 @@ BEGIN
         MENUITEM "I&nsert File\tCtrl+N",        ID_REPOSITORY_INSERTATTRIBUTE
         MENUITEM "Rename File",                 ID_REPOSITORY_RENAMEATTRIBUTE
         MENUITEM "Copy File",                   ID_REPOSITORY_COPYATTRIBUTE
-        MENUITEM "Move File",                   ID_REPOSITORY_MOVEATTRIBUTE
+        MENUITEM "Move File(s)",                ID_REPOSITORY_MOVEATTRIBUTE
         MENUITEM "Delete File\tDel",            ID_REPOSITORY_DELETEATTRIBUTE
         MENUITEM SEPARATOR
         MENUITEM "&Label",                      ID_REPOSITORY_LABEL

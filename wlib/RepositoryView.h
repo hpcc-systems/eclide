@@ -11,6 +11,7 @@
 #include <ModuleHelper.h>
 #include "AttrListDlg.h"
 #include "ModFileRepository.h"
+#include "UtilFilesystem.h"
 
 template<typename T>
 class CRepositoryViewT
@@ -346,33 +347,64 @@ public:
     {
         bool retVal = false;
         CComPtr<IRepository> rep = m_Owner->GetRepository();
-        if (rep->Move(attrs, target.c_str()))
+        bool noErrors = rep->Move(attrs, target.c_str());
+        CAttrMsg attrMsgs = rep->AttrMessages();
+        CString prog_title, errorMsg;
+        int maxLines = 3;
+        int line = 0;
+
+        for (CAttrMsg::iterator itr = attrMsgs.begin(); itr != attrMsgs.end(); ++itr)
         {
+            IAttribute *attr = itr->first;
             std::map<std::_tstring, bool> modDedup;
-            for(IAttributeVector::iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
-            {
-                modDedup[itr->get()->GetModuleQualifiedLabel()] = true;
-                CComPtr<IAttribute> newAttr = rep->GetAttribute(target.c_str(), itr->get()->GetLabel(), itr->get()->GetType());
-                m_Owner->UpdateAttribute(itr->get(), newAttr);
+            if (itr->second.GetLength() == 0) {
+                modDedup[attr->GetModuleQualifiedLabel()] = true;
+                CComPtr<IAttribute> newAttr = rep->GetAttribute(target.c_str(), attr->GetLabel(), attr->GetType());
+                m_Owner->UpdateAttribute(attr, newAttr);
             }
-            //  No longer needed as attribute nodes now self delete on a  move.
-            //for(std::map<std::_tstring, bool>::iterator itr = modDedup.begin(); itr != modDedup.end(); ++itr)
-            //	RefreshModule(itr->first);
-            retVal = true;
+            else {
+                _DBGLOG(LEVEL_SEVERE, itr->second.GetString());
+                if (line++ < maxLines) {
+                    if (errorMsg.GetLength())
+                    {
+                        errorMsg += _T("\n");
+                    }
+                    else
+                    {
+                        errorMsg = "(See \"Error Log\" panel for full error descriptions)\n";
+                    }
+                    errorMsg += _T("Move Failed: ");
+                    std::_tstring pathStr = attr->GetQualifiedLabel(false, true);
+                    boost::algorithm::ireplace_all(pathStr, _T("."), _T("\\"));
+                    boost::algorithm::ireplace_last(pathStr, _T("\\"), _T("."));
+                    errorMsg += pathStr.c_str();
+                }
+                else if (line == maxLines) {
+                    errorMsg += _T("...");
+                }
+            }
         }
-        else
-        {
+
+        if (!noErrors) {
             T* pT = static_cast<T*>(this);
-            CString prog_title;
             prog_title.LoadString(IDR_MAINFRAME);
-            pT->MessageBox(_T("WARNING:  Move File failed, see error window for further details."), prog_title, MB_ICONEXCLAMATION);
+            pT->MessageBox(errorMsg, prog_title, MB_ICONEXCLAMATION);
         }
-        return retVal;
+
+        return noErrors;
     }
     void DoMoveAttribute(IAttributeVector & attrs, const std::_tstring & target)
     {
         DoMoveAttributeNoRefreshTarget(attrs, target);
         TreeNode::RefreshChildren(target, m_Root);
+        std::map<std::wstring, bool> modLabels;
+        for (IAttributeVector::const_iterator itr = attrs.begin(); itr != attrs.end(); ++itr)
+        {
+            std::_tstring from = itr->get()->GetModuleQualifiedLabel();
+            if (modLabels.find(from) == modLabels.end())
+                TreeNode::RefreshChildren(from, m_Root);
+            modLabels[from] = true;
+        }
     }
     void DoCopyAttribute(IAttributeVector & attrs, const std::_tstring & target)
     {
