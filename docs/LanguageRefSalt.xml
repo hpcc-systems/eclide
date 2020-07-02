@@ -2,16 +2,20 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="5">
   <s class_id="0" tracking_level="0" version="0">
-    <count>125</count>
+    <count>312</count>
     <item_version>0</item_version>
-    <item class_id="1" tracking_level="0" version="0">
+    <item>
+      <categoryid>1</categoryid>
+      <name>ASOFFIELD</name>
+      <tooltip>ASOFFIELD:name:[SEEN]DATES(dt_first,dt_last)&#x0a;[:EFFECTIVEDATES(dt_my_first_usable,dt_my_last_usable)]</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
       <categoryid>1</categoryid>
       <name>ATTRIBUTEFILE</name>
-      <tooltip>ATTRIBUTEFILE:name[:NAMED(modulename.filename)]:IDFIELD(id_field_na
-  me):VALUES(field_in_file[:field_in_file]*[,LIST])[:KEEP(n|ALL)]
-  [:WEIGHT(value)][SEARCH(list_of_fields)][:SUPPORTS(fieldname|top_level_
-  conceptname)] [:FORCE([,ALL])][:specificity,switch_value100
-      </tooltip>
+      <tooltip>ATTRIBUTEFILE:name [:NAMED(modulename.filename)] :IDFIELD(id_field_name) :VALUES(field_in_file&#x0a;[:field_in_file]*[,LIST]) [:KEEP(n|ALL)] [:WEIGHT(value)] [:SEARCH(list_of_fields)]&#x0a;[:SUPPORTS(fieldname|top_level_conceptname)] [:FORCE[((+|--)[n][,ALL])]]&#x0a;[:INCREMENTAL(first_dt,last_dt)] [:specificity,switch_value1000]</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -19,9 +23,7 @@
     <item>
       <categoryid>1</categoryid>
       <name>BESTTYPE</name>
-      <tooltip>BESTTYPE:name:BASIS(fixed_fields:[?|!]:optional_fields):construction_me
-  thod:construction_modifiers:propagation_method
-      </tooltip>
+      <tooltip>BESTTYPE:name :BASIS(fixed_fields:[?]:optional_fields) :construction_method&#x0a;:construction_modifiers :propagation_method</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -37,7 +39,7 @@
     <item>
       <categoryid>1</categoryid>
       <name>BLOCKTHRESHOLD</name>
-      <tooltip>BLOCKTHRESHOLD:threshold_value</tooltip>
+      <tooltip>BLOCKTHRESHOLD:threshold_value&#x0a;BLOCKTHRESHOLD(n) BLOCKTHRESHOLD can be used to override the&#x0a;default block threshold used to&#x0a;compute relationships (which is five less than the overall&#x0a;default threshold). Lo... - (RELATIONSHIP)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -45,16 +47,27 @@
     <item>
       <categoryid>1</categoryid>
       <name>CLEAVE</name>
-      <tooltip>CLEAVE: name:
-  BASIS(fixed_fields_concepts:[?]:optional_fields_concepts)
-  [:EXPLODE][:MATCH(ALL|ANY|NONE)][:FUZZY][:EXTEND][:MININUM(n)]
-  [:HYBRID(n)][:THRESHOLD(n)][:PENALTY(n)]
-      </tooltip>
+      <tooltip>CLEAVE: name :BASIS(fixed_fields_concepts:[?]:optional_fields_concepts) |BASIS(attrfile_value)&#x0a;[:EXPLODE] [:MATCH(ALL|ANY|NNEQ|NONE)] [:FUZZY|EXTEND] [:MININUM(n)] [:HYBRID(n)] [:THRESHOLD(n)]&#x0a;[:PENALTY(n)]</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
-
+    <item>
+      <categoryid>1</categoryid>
+      <name>CLUSTERHEALTH</name>
+      <tooltip>CLUSTERHEALTH:name:BASIS(field1(weight1,besttype1) [:field2(weight2,besttype2)...])</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>CONCEPT</name>
+      <tooltip>CONCEPT:fieldname[:+]:[?]child1[+]:[?]child2[+]:[?]childn[+]&#133; [:SEGMENT(segment_name)]&#x0a;[:SEGTYPE(segtype)] [:LIKE(fieldtype)] [:FORCE[(+|--|+-)[n][,OR(fieldname1[n][:fieldname2[n]])]]]&#x0a;[:FIELD(n[,m])] [:WEIGHT(value)] [:SCALE(NEVER|ALWAYS|MATCH)] [:BAGOFWORDS] [:fuzzyname]* [:WHEEL]&#x0a;[:SUPPORTS(field[,ADD|REPLACE])] [:PROP(CROSS)] [:ROLLUP(WHOLE|PARTS)]&#x0a;:specificity,switch_value1000&#x0a;CONCEPT Asserts FunctionName takes parameters passed in as an&#x0a;Interface, IConceptCustomFuzzy[2-5],&#x0a;defined in the SALTnn.Interfaces attribute depending on&#x0a;whether name is applied to... - (FUZZY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
     <item>
       <categoryid>1</categoryid>
       <name>CONFIG</name>
@@ -65,8 +78,56 @@
     </item>
     <item>
       <categoryid>1</categoryid>
+      <name>DATASET</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>DATASETTYPE</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>DATEFIELD</name>
+      <tooltip>DATEFIELD:fieldname [:LIKE(fieldtype)] [:PROP] [:SOFT1[(scale)]] [:YEARSHIFTnm[(scale)]]&#x0a;[:MDDM[(scale)]] [:EDIT1] [:WITHIN(n)] [:ROLLUP(WHOLE|PARTS)]&#x0a;[:CONTEXT(context_fieldname[,SCALED|UNSCALED])] [:FORCE&#x0a;[(+|--|+-)[n][,GENERATION[(n)]][,OR(fieldname1[:fieldname2])]] [:WEIGHT(value)]&#x0a;[:SWITCH0|SWITCHN(penalty)] :specificity,switch_value1000</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>DISTRIBUTION</name>
+      <tooltip>&#x0a;DISTRIBUTION - (DATEFIELD)&#x0a;DISTRIBUTION - (FIELD)&#x0a;DISTRIBUTION - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>DOCFIELD</name>
+      <tooltip>DOCFIELD:fieldname</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
       <name>EFFICACY</name>
-      <tooltip>EFFICACY:NAMED(myfile.txt)[:THRESHOLD(n)][:RECALL(n)][:INCLUDE] [:EXCLUDE]</tooltip>
+      <tooltip>EFFICACY:NAMED(myfile.txt) [:THRESHOLD(n)] [:RECALL(n)] [:INCLUDE] [:EXCLUDE]</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>ERRINFO</name>
+      <tooltip></tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -74,13 +135,31 @@
     <item>
       <categoryid>1</categoryid>
       <name>EXTERNALFILE</name>
-      <tooltip>EXTERNALFILE:name:NAMED(module.filename):[MAPPING[([Prefix_*]|header
-  name=localname)]][CHILD(childname,filelocation,linkingfield:linkingfield,(SLOW|
-  MEDIUM|FAST))][:IGNORE(fieldlist)][:PRIORITY(field_expression)][:SEARCH[(
-  fieldlist)]][:DIVE(ALSO:ONLY:FIRST:REQUIRED:NEVER:FED)]
-  [:THRESHOLD(n)][:DISTANCE(n)][:MAPPING(entity_idname$results_field_n
-  ame=localfieldname,...)][:IDDONE]
-      </tooltip>
+      <tooltip>EXTERNALFILE:name:NAMED(module.filename) [:MAPPING[([Prefix_*]|headername=localname)]]&#x0a;[:CHILD(childname,filelocation,linkingfield:linkingfield,(SLOW|MEDIUM|FAST))] [:IGNORE(fieldlist)]&#x0a;[:IGNORELP(lplist)] [:PRIORITY(field_expression)] [:THRESHOLD(n)]&#x0a;[:SEARCH[(fieldname:spec[,fieldname:spec]*)]] [:DIVE(ALSO|ONLY|FIRST|REQUIRED|NEVER|FED|SOMETIMES)]&#x0a;[:MAPPING(entity_idname$results_field_name=localfieldname,&#133;)] [:DISTANCE(n)] [:IDDONE]&#x0a;[:PERMIT(field or constant)] [:CLEAN] [:MULTI[(LIKE(LP_name),SEARCHON(fieldlist))]]</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>FIELD</name>
+      <tooltip>FIELD:fieldname[:PROP] [:CONTEXT(context_fieldname[SCALED|UNSCALED])]&#x0a;[:BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)]] [:CARRY] [:TYPE(datatype)] [:LIKE(fieldtype):]&#x0a;[:SEGMENT(segment_name)] [:SEGTYPE(segtype)] [:EDIT1[(n)]] [:EDIT2[(n)]] [:EDITX(n)]&#x0a;[:ABBR([ACRONYM[,FIRST[,INITIAL[,MAXSPC(n)]]]])] [:PHONETIC] [:INITIAL] [:HYPHEN1[(n)]]&#x0a;[:HYPHEN2[(n)]] [:STEM[(n)]] [:RANGE[:AGE(agename)]] [:MULTIPLE(LIST(child)[,ANY|MANY|MOST|ALL])]&#x0a;[:MULTIPLE[:WEIGHTED]] [:KEEP(n)] [:WEIGHT(value)] [:WHEEL]&#x0a;[:RECORDDATE(FIRST|LAST[,YYYYMM|YYYYMMDD|YYYYMMDDHHMMSS])] [:besttype]* [:FLAG] [:OWNED]&#x0a;[:DERIVED[(NEW|OLD)]] [:WILD[(EXCLUSIVE)]] [:FORCE&#x0a;[(+|--|+-)[n][,OR(fieldname1[[n]][:fieldname2[[n]]])]] [:SWITCH0|SWITCHN(penalty)]&#x0a;[:SUPPORTS(field[,ADD|REPLACE])] [:FORCELINK|FORCES] [:APPOSITION]&#x0a;[:NULLS([REPLACE,]value1[|value2]*)] [:PREVENTS] [:FALLBACK(n)] [:PERMITTED(attr[,number][,BLANK])]&#x0a;:specificity,switch_value1000&#x0a;FIELD(n[,m]) The FIELD parameter makes it possible to enforce&#x0a;minimum (n) and optionally maximum&#x0a;(m) number of non-blank fields in a CONCEPT. - (CONCEPT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>FIELDTYPE</name>
+      <tooltip>FIELDTYPE:typename [:ALLOW(chars)] [:SPACES(chars)] [:IGNORE(chars)] [:LEFTTRIM] [:CAPS]&#x0a;[:LENGTHS(length_list)] [:NOQUOTES()] [:LIKE(fieldtype1[,fieldtype2]*)]&#x0a;[:PARSE(ParseAttr[,MatchAttr]|*[C|P|L|I])] [:WORDS(numberlist)] [:ENUM(value1[|value2]*)]&#x0a;[:ONFAIL(IGNORE|CLEAN|BLANK|REJECT|CLEAN,BLANK|CLEAN,REJECT)]&#x0a;[:CUSTOM(functionname[&lt;|&gt;n][,funcparam1,funcparam2,&#133;funcparamn])] [:INRANGE(numvalue1,numvalue2)]&#x0a;[:WITHIN(filename,fieldname)]</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>FIELDTYPEDETECT</name>
+      <tooltip></tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -95,22 +174,8 @@
     </item>
     <item>
       <categoryid>1</categoryid>
-      <name>FIELDTYPE</name>
-      <tooltip>FIELDTYPE:typename:[:ALLOW(chars)] [:SPACES(chars)]
-  [:IGNORE(chars)][:LEFTTRIM][:CAPS][:LENGTHS(length_list)][:NOQUOTES()]
-  [:LIKE(fieldtype)][:PARSE(ParseAttr[,MatchAttr])][:WORDS(numberlist)]
-  [:ENUM(value1[|value2]*)][:ONFAIL(IGNORE|CLEAN|BLANK|REJECT)]
-  [:CUSTOM(functionname[&lt;|&gt;n][,funcparam1,funcparam2,...funcparamn]:]
-  [INRANGE(numvalue1,numvalue2)][WITHIN(filename,fieldname)]
-      </tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>1</categoryid>
       <name>FORMAT</name>
-      <tooltip>FORMAT:HEADERSEARCH[:FIELD*]</tooltip>
+      <tooltip>FORMAT:HEADERSEARCH|EFILESEARCH[:FIELD*] FORMAT:HEADERSEARCH (or EFILESEARCH) is used to reduce&#x0a;the list of fields returning from a header (or EXTERNALFILE) search. This could be done for&#x0a;performance reasons or to restrict certain fields from end user view. Examples:</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -118,7 +183,7 @@
     <item>
       <categoryid>1</categoryid>
       <name>FUZZY</name>
-      <tooltip>FUZZY: name:RST|RS:TYPE(ECLResultType):CUSTOM(FunctionName[,parameters] )[:WEIGHT(n[,MIN|MAX])]</tooltip>
+      <tooltip>FUZZY:name :RST|RS|CONCEPT :TYPE(ECLResultType) :CUSTOM(FunctionName[,parameters])&#x0a;[:WEIGHT(n[,MIN|MAX])|COUNTS(CountsFunctionName)]&#x0a;FUZZY This modifier specifies that the&#x0a;fuzzy criteria of the target field are used to allow less&#x0a;common values to support candidates&#x0a;for best value. For example for a first name ... - (BESTTYPE)&#x0a;FUZZY|EXTEND By default, BASIS&#x0a;field values must match exactly to identify cleave points. The&#x0a;FUZZY option allows the fuzzy&#x0a;editing options associated with the FIELD to be applied ... - (CLEAVE)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -133,6 +198,38 @@
     </item>
     <item>
       <categoryid>1</categoryid>
+      <name>IDCHILDREN</name>
+      <tooltip>IDCHILDREN:fieldname(,fieldname)*</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>IDFIELD</name>
+      <tooltip>IDFIELD: IDFIELD:EXISTS:fieldname&#x0a;IDFIELD Field name of the IDFIELD corresponding to each&#x0a;attribute value in the external attribute&#x0a;file or child dataset. If the LIST option is&#x0a;present and the child dataset ... - (ATTRIBUTEFILE)&#x0a;IDFIELD - (BESTTYPE)&#x0a;IDFIELD - (BLOCKLINK)&#x0a;IDFIELD - (CLEAVE)&#x0a;IDFIELD - (LINKPATH)&#x0a;IDFIELD - (MATCHSTRATEGY)&#x0a;IDFIELD - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>IDNAME</name>
+      <tooltip>IDNAME:fieldname&#x0a;IDNAME RIDFIELD:RID - (BESTTYPE)&#x0a;IDNAME - (BLOCKLINK)&#x0a;IDNAME -&#x0a;(CLEAVE)&#x0a;IDNAME - (LINKPATH)&#x0a;IDNAME - (MATCHSTRATEGY)&#x0a;IDNAME - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>IDPARENTS</name>
+      <tooltip>IDPARENTS:fieldname(,fieldname)*</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
       <name>IDSPACE</name>
       <tooltip>IDSPACE:keyword</tooltip>
       <insertbeforecursor></insertbeforecursor>
@@ -141,10 +238,40 @@
     </item>
     <item>
       <categoryid>1</categoryid>
+      <name>IDUNCLE</name>
+      <tooltip>IDUNCLE: fieldname</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>INCREMENTAL</name>
+      <tooltip>&#x0a;INCREMENTAL(first_dt,last_dt) INCREMENTAL enables incrementalism for an ATTRIBUTEFILE for&#x0a;external&#x0a;linking key builds. Specifically, differences between new and previous ver... -&#x0a;(ATTRIBUTEFILE)&#x0a;INCREMENTAL - (INGESTMODE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
       <name>INGESTFILE</name>
-      <tooltip>INGESTFILE:name:NAMED(module.attribute_name):SPRAY(from_where):
-  CSV:FIXED(size):TERM(terminators):SEP(separators):QUOTE(quote_chars)
-      </tooltip>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>INGESTMODE</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>INGESTSTATUS</name>
+      <tooltip>INGESTSTATUS:fieldname</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -152,7 +279,23 @@
     <item>
       <categoryid>1</categoryid>
       <name>LATLONG</name>
-      <tooltip>LATLONG:name:LAT(latitude_field):LONG(longitude_field)[:DISTANCE(n)] [:DIVISIONS(n)] [:SUPPORTS(field[,ADD|REPLACE])]</tooltip>
+      <tooltip>LATLONG :name :LAT(latitude_field) :LONG(longitude_field) [:LIKE(fieldtype)] [:DISTANCE(n)]&#x0a;[:DIVISIONS(n)] [:SUPPORTS(field[,ADD|REPLACE])] [:RADIUS(x)]&#x0a;[:FORCE[(+|--|+-)[n][,OR(fieldname1[[n]][:fieldname2[[n]]])]]] [:SWITCH0|SWITCHN(penalty)]&#x0a;[:WEIGHT(value)] :specificity,switch_value1000</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>LINKPATH</name>
+      <tooltip>LINKPATH:pathname:fieldname[([+/-n,]qualifier)] [:fieldname[([+/-n,]qualifier)]|?|+] [:&#133;]&#x0a;[:MAXBLOCKSIZE(X[,Y])] [:REQUIRED(other_linkpath)] [:SEARCH(label)] [:NOFAIL]</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>MATCHSTRATEGY</name>
+      <tooltip></tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -160,7 +303,7 @@
     <item>
       <categoryid>1</categoryid>
       <name>MODULE</name>
-      <tooltip>MODULE:modulename[.submodule]</tooltip>
+      <tooltip>MODULE[:REMOTE]:modulename[.submodule]</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -183,8 +326,24 @@
     </item>
     <item>
       <categoryid>1</categoryid>
+      <name>NUMBERFIELD</name>
+      <tooltip>FIELD:fieldname[:PROP] [:CONTEXT(context_fieldname[SCALED|UNSCALED])]&#x0a;[:BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)]] [:CARRY] [:TYPE(datatype)] [:LIKE(fieldtype):]&#x0a;[:SEGMENT(segment_name)] [:SEGTYPE(segtype)] [:EDIT1[(n)]] [:EDIT2[(n)]] [:EDITX(n)]&#x0a;[:ABBR([ACRONYM[,FIRST[,INITIAL[,MAXSPC(n)]]]])] [:PHONETIC] [:INITIAL] [:HYPHEN1[(n)]]&#x0a;[:HYPHEN2[(n)]] [:STEM[(n)]] [:RANGE[:AGE(agename)]] [:MULTIPLE(LIST(child)[,ANY|MANY|MOST|ALL])]&#x0a;[:MULTIPLE[:WEIGHTED]] [:KEEP(n)] [:WEIGHT(value)] [:WHEEL]&#x0a;[:RECORDDATE(FIRST|LAST[,YYYYMM|YYYYMMDD|YYYYMMDDHHMMSS])] [:besttype]* [:FLAG] [:OWNED]&#x0a;[:DERIVED[(NEW|OLD)]] [:WILD[(EXCLUSIVE)]] [:FORCE&#x0a;[(+|--|+-)[n][,OR(fieldname1[[n]][:fieldname2[[n]]])]] [:SWITCH0|SWITCHN(penalty)]&#x0a;[:SUPPORTS(field[,ADD|REPLACE])] [:FORCELINK|FORCES] [:APPOSITION]&#x0a;[:NULLS([REPLACE,]value1[|value2]*)] [:PREVENTS] [:FALLBACK(n)] [:PERMITTED(attr[,number][,BLANK])]&#x0a;:specificity,switch_value1000</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
       <name>OPTIONS</name>
       <tooltip>OPTIONS:option_switches</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>1</categoryid>
+      <name>PENALTY</name>
+      <tooltip>PENALTY:fieldname&#x0a;PENALTY(n) Defines the penalty value that will be added to the penalty&#x0a;score field (defined by the&#x0a;PENALTY:fieldname statement) if a record is cleaved. Default is&#x0a;n=100 if not spec... - (CLEAVE)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -208,15 +367,7 @@
     <item>
       <categoryid>1</categoryid>
       <name>RANGEFIELD</name>
-      <tooltip>RANGEFIELD:name:RANGE(lowfield,highfield)[:NULL(n)][:SWITCH0]]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>1</categoryid>
-      <name>RECORDTYPE</name>
-      <tooltip>RECORDTYPE:typename:[TAG(field,value):][NOTAG:][FAIL:]</tooltip>
+      <tooltip>RANGEFIELD:name:RANGE(lowfield,highfield) [:EVENT(field1:field2&#133;)] [:NULL(n)] [:SWITCH0]]&#x0a;[:SWITCH0|SWITCHN(penalty)] [:WEIGHT(value)] [:FORCE&#x0a;[(+|--|+-)[n][,OR(fieldname1[[n]][:fieldname2[[n]]])]] :specificity,switch_value1000</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
@@ -231,709 +382,22 @@
     </item>
     <item>
       <categoryid>1</categoryid>
-      <name>RELATIONSHIP</name>
-      <tooltip>RELATIONSHIP:relationshipname:BASIS(FieldList):DEDUP(FieldList)
-  [:SCORE(FieldList)][:TRACK(FieldList)][:MULTIPLE(n)][:SPLIT(n)]
-  [:THRESHOLD(n)][:BLOCKTHRESHOLD(n)]
-  
-RELATIONSHIP:relationshipname:RelationshipList
-  [:MULTIPLE(n)] [:THRESHOLD(n)] [:BLOCKTHRESHOLD(n)]
-  [:LINK(NONE|ALL|DIRECT|CROSS)]
-      </tooltip>
+      <name>RECORDTYPE</name>
+      <tooltip>RECORDTYPE:typename:[TAG(field,value):][NOTAG:][FAIL:]&#x0a;[CONDITION(field1,operator,field2)*:][VALID(fieldlist):][ONFAIL(IGNORE|REJECT)]</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
       <categoryid>1</categoryid>
-      <name>THRESHOLD</name>
-      <tooltip>THRESHOLD:threshold_value</tooltip>
+      <name>RELATIONSHIP</name>
+      <tooltip>RELATIONSHIP:relationshipname:BASIS(FieldList):DEDUP(FieldList)&#x0a;[:SCORE(FieldList)][:TRACK(FieldList)][:MULTIPLE(n)][:SPLIT(n)] [:THRESHOLD(n)][:BLOCKTHRESHOLD(n)]</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>2</categoryid>
-      <name>NAMED</name>
-      <tooltip>NAMED(modulename.filename)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>KEEP</name>
-      <tooltip>KEEP(n|ALL)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>WEIGHT</name>
-      <tooltip>WEIGHT(value)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SUPPORTS</name>
-      <tooltip>SUPPORTS(fieldname|top_level_ conceptname)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>FORCE</name>
-      <tooltip>FORCE([,ALL])</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>EXPLODE</name>
-      <tooltip>EXPLODE</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>MATCH</name>
-      <tooltip>MATCH(ALL|ANY|NONE)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>FUZZY</name>
-      <tooltip>FUZZY</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>EXTEND</name>
-      <tooltip>EXTEND</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>MININUM</name>
-      <tooltip>MININUM(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>HYBRID</name>
-      <tooltip>HYBRID(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>THRESHOLD</name>
-      <tooltip>THRESHOLD(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SEGMENT</name>
-      <tooltip>SEGMENT(segment_name)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SEGTYPE</name>
-      <tooltip>SEGTYPE(segtype)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>LIKE</name>
-      <tooltip>LIKE(fieldtype)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SCALE</name>
-      <tooltip>SCALE(NEVER|ALWAYS|MATCH)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>BAGOFWORDS</name>
-      <tooltip>BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>WHEEL</name>
-      <tooltip>WHEEL</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>PROP</name>
-      <tooltip>PROP</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SOFT1</name>
-      <tooltip>SOFT1</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>MDDM</name>
-      <tooltip>MDDM</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>EDIT1</name>
-      <tooltip>EDIT1</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>WITHIN</name>
-      <tooltip>WITHIN(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SWITCH0</name>
-      <tooltip>SWITCH0|SWITCHN(penalty)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>RECALL</name>
-      <tooltip>RECALL(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>INCLUDE</name>
-      <tooltip>INCLUDE</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>EXCLUDE</name>
-      <tooltip>EXCLUDE</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>PRIORITY</name>
-      <tooltip>PRIORITY(field_expression)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>DIVE</name>
-      <tooltip>DIVE(ALSO:ONLY:FIRST:REQUIRED:NEVER:FED)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>DISTANCE</name>
-      <tooltip>DISTANCE(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>MAPPING</name>
-      <tooltip>MAPPING(entity_idname$results_field_n ame=localfieldname,...)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>IDDONE</name>
-      <tooltip>IDDONE</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>CARRY</name>
-      <tooltip>CARRY</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>TYPE</name>
-      <tooltip>TYPE(datatype)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>EDIT2</name>
-      <tooltip>EDIT2[(n)]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>EDITX</name>
-      <tooltip>EDITX(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>ABBR</name>
-      <tooltip>ABBR([ACRONYM[,FIRST[,INITIAL[,MAXSPC(n)]]]])</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>PHONETIC</name>
-      <tooltip>PHONETIC</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>INITIAL</name>
-      <tooltip>INITIAL</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>HYPHEN1</name>
-      <tooltip>HYPHEN1[(n)]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>HYPHEN2</name>
-      <tooltip>HYPHEN2[(n)]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>STEM</name>
-      <tooltip>STEM[(n)]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>MULTIPLE</name>
-      <tooltip>MULTIPLE[:WEIGHTED]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>RECORDDATE</name>
-      <tooltip>RECORDDATE(FIRST|LAST[,YYYYMM])</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>FLAG</name>
-      <tooltip>FLAG</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>OWNED</name>
-      <tooltip>OWNED</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>DERIVED</name>
-      <tooltip>DERIVED</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>WILD</name>
-      <tooltip>WILD</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>FORCES</name>
-      <tooltip>FORCES</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>APPOSITION</name>
-      <tooltip>APPOSITION</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>NULLS</name>
-      <tooltip>NULLS(value1[|value2]*)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>ALLOW</name>
-      <tooltip>ALLOW(chars)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SPACES</name>
-      <tooltip>SPACES(chars)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>LEFTTRIM</name>
-      <tooltip>LEFTTRIM</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>CAPS</name>
-      <tooltip>CAPS</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>LENGTHS</name>
-      <tooltip>LENGTHS(length_list)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>NOQUOTES</name>
-      <tooltip>NOQUOTES()</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>PARSE</name>
-      <tooltip>PARSE(ParseAttr[,MatchAttr])</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>WORDS</name>
-      <tooltip>WORDS(numberlist)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>ENUM</name>
-      <tooltip>ENUM(value1[|value2]*)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>ONFAIL</name>
-      <tooltip>ONFAIL(IGNORE|CLEAN|BLANK|REJECT)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>DIVISIONS</name>
-      <tooltip>DIVISIONS(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>BAGOFWO</name>
-      <tooltip>BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)]</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>UBER</name>
-      <tooltip>UBER(ALWAYS|REQUIRED|NEVER)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>NULL</name>
-      <tooltip>NULL(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>SPLIT</name>
-      <tooltip>SPLIT(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>BLOCKTHRESHOLD</name>
-      <tooltip>BLOCKTHRESHOLD(n)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>GENERATE</name>
-      <tooltip>GENERATE</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>HASH5</name>
-      <tooltip>HASH5</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>HASH6</name>
-      <tooltip>HASH6</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>PERMITS</name>
-      <tooltip>PERMITS(attr[,number])</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>PARTITION</name>
-      <tooltip>PARTITION(attr)</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>2</categoryid>
-      <name>CUSTOM</name>
-      <tooltip>CUSTOM(functionname[&lt;|&gt;n][,funcparam1,funcparam2,...funcparamn])</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>IDUNCLE</name>
-      <tooltip>IDUNCLE:fieldname</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>PENALTY</name>
-      <tooltip>PENALTY:fieldname</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>IDNAME</name>
-      <tooltip>IDNAME:fieldname</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>DATEFIELD</name>
-      <tooltip>DATEFIELD:fieldname[:PROP][:SOFT1][:YEARSHIFTnm][:MDDM]
-  [:EDIT1][:WITHIN(n)][:CONTEXT(context_fieldname)] FORCE [(+|--|+-)[n]
-  [,GENERATION[(n)]][,OR(fieldname1[:fieldname2])]][:WEIGHT(value)]
-  [:SWITCH0|SWITCHN(penalty)]:specificity,switch_value1000
-      </tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>DOCFIELD</name>
-      <tooltip>DOCFIELD:fieldname</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>FIELD</name>
-      <tooltip>FIELD:fieldname[:PROP] [:CONTEXT(context_fieldname)]
-  [:BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)]] [:CARRY]
-  [:TYPE(datatype)] [:LIKE(fieldtype):] [:SEGMENT(segment_name)]
-  [:SEGTYPE(segtype)] [:EDIT1[(n)]][:EDIT2[(n)]] [:EDITX(n)]
-  [:ABBR([ACRONYM[,FIRST[,INITIAL[,MAXSPC(n)]]]])] [:PHONETIC]
-  [:INITIAL] [:HYPHEN1[(n)]] [:HYPHEN2[(n)]] [:STEM[(n)]]
-  [:MULTIPLE[:WEIGHTED]] [:KEEP(n)] [:WEIGHT(value)] [:WHEEL]
-  [:RECORDDATE(FIRST|LAST[,YYYYMM])][:besttype...[:besttype]] [:FLAG]
-  [:OWNED] [:FORCE [(+|--|+-)[n][,OR(fieldname1[[n]][:fieldname2[[n]]])]]
-  [:DERIVED] [:WILD] [:SWITCH0|SWITCHN(penalty)]
-  [:SUPPORTS(field[,ADD|REPLACE])] [:FORCES] [:APPOSITION]
-  [:NULLS(value1[|value2]*)]:specificity,switch_value1000
-      </tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>IDNAME</name>
-      <tooltip>IDNAME:fieldname</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>NUMBERFIELD</name>
-      <tooltip>NUMBERFIELD:fieldname[:PROP][:CONTEXT(context_fieldname)][:BAGOFWORDS
-  [(MANY|ALL|ANY|MOST|TRIGRAM)]][:CARRY][:TYPE(datatype)][:LIKE(fieldtype):]
-  [:SEGMENT(segment_name)] [:SEGTYPE(segtype)][:EDIT1[(n)]][:EDIT2[(n)]]
-  [:PHONETIC][:INITIAL][:ABBR][:HYPHEN1[(n)]][:HYPHEN2[(n)]][:WHEEL]
-  [:MULTIPLE][:RECORDDATE(FIRST|LAST[,YYYYMM])] [:WEIGHT(value)]
-  [:besttype...[:besttype]] [:FLAG][:OWNED]
-  FORCE [(+|--|+-)[n][,OR(fieldname1[:fieldname2])]] [:SWITCH0]
-  :specificity,switch_value1000
-      </tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
-      <name>PENALTY</name>
-      <tooltip>PENALTY:fieldname</tooltip>
-      <insertbeforecursor></insertbeforecursor>
-      <insertaftercursor></insertaftercursor>
-      <canbefollowedby></canbefollowedby>
-    </item>
-    <item>
-      <categoryid>3</categoryid>
+      <categoryid>1</categoryid>
       <name>RIDFIELD</name>
       <tooltip>RIDFIELD:fieldname[:GENERATE] [:HASH5] [:HASH6]</tooltip>
       <insertbeforecursor></insertbeforecursor>
@@ -941,16 +405,15 @@ RELATIONSHIP:relationshipname:RelationshipList
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>3</categoryid>
+      <categoryid>1</categoryid>
       <name>SOURCEFIELD</name>
-      <tooltip>SOURCEFIELD:fieldname[:CONSISTENT[(checkfieldname,checkfieldname, ...)]]
-  [:PERMITS(attr[,number])][:PARTITION(attr)]</tooltip>
+      <tooltip>&#x0a;SOURCEFIELD:fieldname[:CONSISTENT[(checkfieldname,checkfieldname,&#133;)]][:PERMITS(attr[,number])][:PARTITION(attr)]</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>3</categoryid>
+      <categoryid>1</categoryid>
       <name>SOURCERIDFIELD</name>
       <tooltip>SOURCERIDFIELD:fieldname</tooltip>
       <insertbeforecursor></insertbeforecursor>
@@ -958,115 +421,2081 @@ RELATIONSHIP:relationshipname:RelationshipList
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>CONSISTENT</name>
-      <tooltip>CONSISTENT[(checkfieldname,checkfieldname, ...)]</tooltip>
+      <categoryid>1</categoryid>
+      <name>THRESHOLD</name>
+      <tooltip>THRESHOLD:threshold_value&#x0a;THRESHOLD(n) Defines the threshold in specificity required to&#x0a;identify a cleave point using the&#x0a;scaled specificities for the BASIS fields (specificities&#x0a;are automatically scaled ac... - (CLEAVE)&#x0a;THRESHOLD(n) Specifies a threshold n as the minimum&#x0a;number of matches that are required for a&#x0a;matching rule to be included. -&#x0a;(EFFICACY)&#x0a;THRESHOLD(n) Specifies the minimum score field threshold for the lead result (top&#x0a;match) to be&#x0a;accepted. n is specified in the range 0-100. Default value is 75. Note the&#x0a;&#145;wei... - (EXTERNALFILE)&#x0a;THRESHOLD(n) In SALT relationships are scored the same as internal&#x0a;linking, the same internal&#x0a;linking match threshold must be exceeded for a relationship to be&#x0a;declared (coun... - (RELATIONSHIP)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>OR</name>
-      <tooltip>OR(fieldname1[n][:fieldname2[n]])]]</tooltip>
+      <categoryid>1</categoryid>
+      <name>VIRTUALFIELD</name>
+      <tooltip></tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>SCORE</name>
-      <tooltip>SCORE(FieldList)</tooltip>
+      <categoryid>2</categoryid>
+      <name>ABBR</name>
+      <tooltip>ABBR - (DATEFIELD)&#x0a;ABBR([ACRONYM[,FIRST[,INITIAL[,MAXSPC(n)]]]]) Specifies that an abbreviation (combination of first&#x0a;characters of the tokens in a string field) is allowed to match the full string va... - (FIELD)&#x0a;ABBR([ACRONYM[,FIRST[,INITIAL[,MAXSPC(n)]]]]) - (NUMBERFIELD)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>TRACK</name>
-      <tooltip>TRACK(FieldList)</tooltip>
+      <categoryid>2</categoryid>
+      <name>ACRONYM</name>
+      <tooltip>ACRONYM - (DATEFIELD)&#x0a;ACRONYM - (FIELD)&#x0a;ACRONYM - (NUMBERFIELD)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>SEARCH</name>
-      <tooltip>SEARCH[(fieldlist)]</tooltip>
+      <categoryid>2</categoryid>
+      <name>ADD</name>
+      <tooltip>ADD - (ATTRIBUTEFILE)&#x0a;ADD - (CONCEPT)&#x0a;ADD - (DATEFIELD)&#x0a;ADD - (FIELD)&#x0a;ADD - (LATLONG)&#x0a;ADD - (NUMBERFIELD)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>IGNORE</name>
-      <tooltip>IGNORE(fieldlist)</tooltip>
+      <categoryid>2</categoryid>
+      <name>ADJUST_CONCEPT_WEIGHT</name>
+      <tooltip>ADJUST_CONCEPT_WEIGHT - (HACK)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>3</categoryid>
+      <categoryid>2</categoryid>
+      <name>AGE</name>
+      <tooltip>AGE - (DATEFIELD)&#x0a;AGE - (FIELD)&#x0a;AGE - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>AGGRESSIVESLICE</name>
+      <tooltip>AGGRESSIVESLICE - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALL</name>
+      <tooltip>ALL - (ATTRIBUTEFILE)&#x0a;ALL - (CLEAVE)&#x0a;ALL - (CONCEPT)&#x0a;ALL - (DATEFIELD)&#x0a;ALL ANY adds matching tokens and truncates the results into 0 - maximum field specificity. This&#x0a;entirely ignores no-matches and gives full credit for matches. - (FIELD)&#x0a;ALL - (LATLONG)&#x0a;ALL - (NUMBERFIELD)&#x0a;ALL - (RANGEFIELD)&#x0a;ALL - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALLIFALPHAS</name>
+      <tooltip>ALLIFALPHAS - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALLIFCUSTOM</name>
+      <tooltip>ALLIFCUSTOM - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALLIFNUMERICS</name>
+      <tooltip>ALLIFNUMERICS - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALLOW</name>
+      <tooltip>ALLOW(chars) Specifies the set of characters chars which are allowed in the field. If a&#x0a;parentheses character is included, it must be escaped with a preceding &#147;\&#148;. - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALSO</name>
+      <tooltip>ALSO FIRST - A entity ID search is attempted first; the local keys are only accessed if the entity&#x0a;ID search fails. - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ALWAYS</name>
+      <tooltip>ALWAYS - (CONCEPT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>APPOSITION</name>
+      <tooltip>APPOSITION - (DATEFIELD)&#x0a;APPOSITION Activates appositions for the field and creates an appositions module with code to&#x0a;create apposition tables and to be used with the FUZZY statement. - (FIELD)&#x0a;APPOSITION - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ATTRIBUTESONLY</name>
+      <tooltip>ATTRIBUTESONLY Required when there are no linkable standard fields in the specification file and&#x0a;linking is based on ATTRIBUTEFILE definitions only. The CARRY option can be specified... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>BAG_SCALE</name>
+      <tooltip>BAG_SCALE - (CONCEPT)&#x0a;BAG_SCALE - (DATEFIELD)&#x0a;BAG_SCALE - (FIELD)&#x0a;BAG_SCALE - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>BAGOFWORDS</name>
+      <tooltip>BAGOFWORDS If the BAGOFWORDS parameter is specified, then the matching logic will attempt to&#x0a;re-order the fields of one or either concept (but not both) to effect a match. If a CO... - (CONCEPT)&#x0a;BAGOFWORDS - (DATEFIELD)&#x0a;BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)] The field value is processed as a bag of words, a series&#x0a;of space delimited tokens. The order of the tokens is not considered significant to ... - (FIELD)&#x0a;BAGOFWORDS - (MATCHSTRATEGY)&#x0a;BAGOFWORDS[(MANY|ALL|ANY|MOST|TRIGRAM)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
       <name>BASIS</name>
-      <tooltip>BASIS(fieldlist)</tooltip>
+      <tooltip>BASIS Specifies the basis for the best value computation using the list of fields specified in the&#x0a;fixed_fields and optional_fields parameters. Typically the basis will be the en... - (BESTTYPE)&#x0a;BASIS(fieldlist) The BASIS parameter is optional. If specified, the fieldlist must define one or&#x0a;more fields. - (BLOCKLINK)&#x0a;BASIS Specifies the basis for the cleave computation using the list of fields and/or concepts&#x0a;specified in the fixed_fields_concepts and optional_fields_concepts parameters. Each f... - (CLEAVE)&#x0a;BASIS - (CLUSTERHEALTH)&#x0a;BASIS Specifies the basis for the relationship using the list of fields specified in the fieldlist&#x0a;parameter. The fieldlist contains a list of field names separated by a colo... - (RELATIONSHIP)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
-      <name>CONCEPT</name>
-      <tooltip>CONCEPT:fieldname[:+]:child1[+]:child2[+]:childn[+]...
-  [:SEGMENT(segment_name)] [:SEGTYPE(segtype)] [:LIKE(fieldtype)]
-  [:FORCE[(+|--|+-)[n][,OR(fieldname1[n][:fieldname2[n]])]] [:FIELD(n[,m])]
-  [:WEIGHT(value)] [:SCALE(NEVER|ALWAYS|MATCH)] [:BAGOFWORDS]
-  [:WHEEL] [:SUPPORTS(field[,ADD|REPLACE])]
-  :specificity,switch_value1000
-      </tooltip>
+      <categoryid>2</categoryid>
+      <name>BLANK</name>
+      <tooltip>BLANK - (DATEFIELD)&#x0a;BLANK - (FIELD)&#x0a;BLANK - (FIELDTYPE)&#x0a;BLANK - (NUMBERFIELD)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>4</categoryid>
+      <categoryid>2</categoryid>
+      <name>BLOCKLINK_PARENTS</name>
+      <tooltip>BLOCKLINK_PARENTS - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>BUCKET</name>
+      <tooltip>BUCKET - (DISTRIBUTION)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>BUCKETS</name>
+      <tooltip>BUCKETS - (DISTRIBUTION)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CAPS</name>
+      <tooltip>CAPS Specifies that all characters should be upper case (lower case characters will be converted&#x0a;to upper case if required) - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CARRY</name>
+      <tooltip>CARRY - (DATEFIELD)&#x0a;CARRY The field will be carried through the process and will appear in the output, but is not&#x0a;evaluated and is ignored during the matching process. (Note: The CARRY parameter is not... - (FIELD)&#x0a;CARRY - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CHANGETYPE</name>
+      <tooltip>CHANGETYPE - (INGESTMODE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CHARS</name>
+      <tooltip>CHARS - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CHILD</name>
+      <tooltip>CHILD(childname,filelocation,linkingfield:linkingfield,(SLOW|MEDIUM|FAST)) External files which&#x0a;have been normalized, and include parent and child file(s) can bed addressed u... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CLEAN</name>
+      <tooltip>CLEAN When this option is specified, an External File is cleaned using&#x0a;Process_xxx_Layouts.CleanInput, and the cleaned file is used to create population statistics and&#x0a;... - (EXTERNALFILE)&#x0a;CLEAN - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CODE</name>
+      <tooltip>CODE - (ERRINFO)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>COMMONEST</name>
+      <tooltip>COMMONEST This method simply picks the commonest value; if a threshold is specified then unless&#x0a;the commonest has at least threshold more entries than the next then the construct... - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>COMPLETEFULLMATCH</name>
+      <tooltip>COMPLETEFULLMATCH - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CONCAT</name>
+      <tooltip>CONCAT - (VIRTUALFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CONDITION</name>
+      <tooltip>ONDITION(field1,operator,field2)*: Condition is of the form CONDITION(field1,&gt;=,field2) - field1&#x0a;and field2 have to be present in the spc file. The record is invalid if the con... - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CONFIGPARAM</name>
+      <tooltip>CONFIGPARAM - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CONSISTENT</name>
+      <tooltip>CONSISTENT[(checkfieldname,checkfieldname,&#133;)] The CONSISTENT parameter specifies an optional list&#x0a;of checkfieldnames to be checked for consistency within the source types repr... - (SOURCEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
       <name>CONTEXT</name>
-      <tooltip>CONTEXT(context_fieldname)</tooltip>
+      <tooltip>CONTEXT(context_fieldname[,SCALED|UNSCALED]) A match for the DateField occurs only if a match on&#x0a;the field specified by context_fieldname also occurs between records. Only a sin... - (DATEFIELD)&#x0a;CONTEXT(context_fieldname[SCALED|UNSCALED]) A match for the Field occurs only if an exact match on&#x0a;the field specified by context_fieldname also occurs between records. Only a singl... - (FIELD)&#x0a;CONTEXT(context_fieldname[SCALED|UNSCALED]) - (NUMBERFIELD)&#x0a;CONTEXT - (RANGEFIELD)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>5</categoryid>
-      <name>IDCHILDREN</name>
-      <tooltip>IDCHILDREN:fieldname(,fieldname)*</tooltip>
+      <categoryid>2</categoryid>
+      <name>COUNTS</name>
+      <tooltip>WEIGHT(n[,MIN|MAX])|COUNTS(CountsFunctionName) An alternative to the WEIGHT option, specifies the&#x0a;name of a function which calculates how many instances match every field value when... - (FUZZY)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>5</categoryid>
-      <name>IDPARENTS</name>
-      <tooltip>IDPARENTS:fieldname(,fieldname)*</tooltip>
+      <categoryid>2</categoryid>
+      <name>CROSS</name>
+      <tooltip>CROSS - (CONCEPT)&#x0a;CROSS - (RELATIONSHIP)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>6</categoryid>
-      <name>IDFIELD</name>
-      <tooltip>IDFIELD:EXISTS:fieldname</tooltip>
+      <categoryid>2</categoryid>
+      <name>CSV</name>
+      <tooltip>CSV - (INGESTFILE)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
     </item>
     <item>
-      <categoryid>6</categoryid>
-      <name>LINKPATH</name>
-      <tooltip>LINKPATH:pathname[:fieldname:fieldname:
-  ...:fieldname(FUZZY|NOFUZZY|HASBASE)]
-  [:MAXBLOCKSIZE(nnnn)][:REQUIRED(other_linkpath)]
-  [:SEARCH(label)]
-      </tooltip>
+      <categoryid>2</categoryid>
+      <name>CUSTINFO</name>
+      <tooltip>CUSTINFO - (DATASETTYPE)&#x0a;CUSTINFO - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CUSTOM</name>
+      <tooltip>CUSTOM - (DATASETTYPE)&#x0a;CUSTOM(functionname[&lt;|&gt;n][,funcparam1,funcparam2,&#133;funcparamn]) Specifies a user validity checking&#x0a;function named functionname. The &lt;|&gt; refers to a comparison operator which can ... - (FIELDTYPE)&#x0a;CUSTOM Specifies the name of a custom user-supplied ECL attribute function which can operate on&#x0a;the data for a field and which returns a result of type FuzzyType. This function shou... - (FUZZY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CUSTOMCLEAN</name>
+      <tooltip>CUSTOMCLEAN - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>CUSTOMINTERNALJOIN</name>
+      <tooltip>CUSTOMINTERNALJOIN Allows the user to specify a hand-written functionmacro that will provide one&#x0a;or most 'custom' versions of the internal linking joins. These joins do not change th... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DATE</name>
+      <tooltip>DATE - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DATES</name>
+      <tooltip>DATES - (ASOFFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DD</name>
+      <tooltip>DD - (BESTTYPE)&#x0a;DD - (BLOCKLINK)&#x0a;DD - (CLEAVE)&#x0a;DD - (LINKPATH)&#x0a;DD - (MATCHSTRATEGY)&#x0a;DD - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DEDUP</name>
+      <tooltip>DEDUP Specifies a list of field names separated by the colon &#145;:&#146; character for deduping when&#x0a;matching record pairs between clusters to compute the relationship count. The DED... - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DEFAULTVALUE</name>
+      <tooltip>DEFAULTVALUE - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DELIMITER</name>
+      <tooltip>DELIMITER - (VIRTUALFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DERIVED</name>
+      <tooltip>DERIVED - (DATEFIELD)&#x0a;DERIVED[(NEW|OLD)] If DERIVED is specified, then when executing a data ingest process a change in&#x0a;that field will not create a new record. When DERIVED(NEW) or DERIVED with no furth... - (FIELD)&#x0a;DERIVED[(NEW|OLD)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DIRECT</name>
+      <tooltip>DIRECT - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DISKRELATIONS</name>
+      <tooltip>DISKRELATIONS - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DISTANCE</name>
+      <tooltip>DISTANCE(n) Specifies the minimum score difference between the two top results required for the&#x0a;lead result satisfying the score threshold to be accepted. n is specified in t... - (EXTERNALFILE)&#x0a;DISTANCE(n) The DISTANCE parameter defines a cut-off point n (in degrees) for what distance two&#x0a;geo-points have to be within for their score to make a positive contribution to mat... - (LATLONG)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DIVE</name>
+      <tooltip>DIVE(ALSO|ONLY|FIRST|REQUIRED|NEVER|FED|SOMETIMES) There are two logical ways to search for&#x0a;records in an external file: 1) search the fields directly using dedicated keys 2)... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DIVISIONS</name>
+      <tooltip>DIVISIONS(n) The DIVISIONS parameter defines a granularity n for resolution of measurement. A&#x0a;number of 10 (the default) designates that each degree is divided into a 10x10 grid f... - (LATLONG)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>DROP_AMBIGUOUS</name>
+      <tooltip>DROP_AMBIGUOUS - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EARLIEST</name>
+      <tooltip>EARLIEST This method is opposite to RECENT as it will pick the value that is related to the&#x0a;earliest date as specified by a RECCORDATE field. - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EDIT1</name>
+      <tooltip>EDIT1 - (DATEFIELD)&#x0a;EDIT1[(n)] - (FIELD)&#x0a;EDIT1[(n)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EDIT2</name>
+      <tooltip>EDIT2 - (DATEFIELD)&#x0a;EDIT2[(n)] - (FIELD)&#x0a;EDIT2[(n)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EDITX</name>
+      <tooltip>EDITX - (DATEFIELD)&#x0a;EDITX(n) - (FIELD)&#x0a;EDITX(n) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EFFECTIVEDATES</name>
+      <tooltip>EFFECTIVEDATES(dt_my_first_usable,dt_my_last_usable) - (ASOFFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EFILESEARCH</name>
+      <tooltip>r EFILESEARCH - (FORMAT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ENFORCE</name>
+      <tooltip>ENFORCE This method will write the best value into the field regardless of the original data&#x0a;content - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ENUM</name>
+      <tooltip>ENUM(value1[|value2]*) ENUM allows you to define a set of valid string values for a field. Two or&#x0a;more values may be specified directly, separated by vertical bars. Alternately,... - (FIELDTYPE)&#x0a;ENUM - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EOF</name>
+      <tooltip></tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EVENT</name>
+      <tooltip>EVENT(field1:field2&#133;) Optionally specifies a list of fields that, along with the IDFIELD, form the&#x0a;BASIS against which delays are computed. - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EXCLUDE</name>
+      <tooltip>EXCLUDE The EXCLUDE option specifies that the EFFICACY statement is only used to exclude matching&#x0a;rules and is the default if neither EXCLUDE or INCLUDE is specified. - (EFFICACY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EXCLUSIVE</name>
+      <tooltip>EXCLUSIVE - (DATEFIELD)&#x0a;EXCLUSIVE - (FIELD)&#x0a;EXCLUSIVE - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EXISTS</name>
+      <tooltip>EXISTS - (DATASETTYPE)&#x0a;EXISTS - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EXPLODE</name>
+      <tooltip>EXPLODE By default the EXPLODE option is off. If specified, EXPLODE causes all records not&#x0a;belonging to any of the parts identified by cleaving the cluster, to become individual si... - (CLEAVE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>EXTEND</name>
+      <tooltip>EXTEND This method will copy the best value into null fields and those that are part way there.&#x0a;Thus Alan would get copied onto A for an INITIAL field. For date fields blanks wil... - (BESTTYPE)&#x0a;FUZZY|EXTEND By default, BASIS field values must match exactly to identify cleave points. The&#x0a;EXTEND option takes the &#147;fullest&#148; field value for the field and allows field values wh... - (CLEAVE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FAIL</name>
+      <tooltip>AIL: FAIL specifies a condition which always fails. This is not quite as useless as it appears, it&#x0a;allows particular tag values (or a lack of a tag value) to be automatically r... - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FALLBACK</name>
+      <tooltip>FALLBACK - (DATEFIELD)&#x0a;FALLBACK(n) Declares fieldname is a numeric field, coded to aid a search in returning only the&#x0a;most interesting records when one might otherwise violate a LIMIT. For details, see th... - (FIELD)&#x0a;FALLBACK(n) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FAST</name>
+      <tooltip>FAST - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FED</name>
+      <tooltip>FED - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FIRST</name>
+      <tooltip>FIRST - (BESTTYPE)&#x0a;FIRST - (DATEFIELD)&#x0a;FIRST - (EXTERNALFILE)&#x0a;FIRST - (FIELD)&#x0a;FIRST - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FIX</name>
+      <tooltip>FIX This method will copy the best value onto null fields and overwrite those fields which are&#x0a;fuzzy matches to the best value. In the previous example &#145;Daivd&#146; would be overwritt... - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FIXED</name>
+      <tooltip>FIXED - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FLAG</name>
+      <tooltip>FLAG - (CONCEPT)&#x0a;FLAG - (DATEFIELD)&#x0a;FLAG The FLAG parameter is used in conjunction with BESTTYPE definitions for the field to provide&#x0a;a quality indicator for the field. If FLAG is specified on a field, there must also... - (FIELD)&#x0a;FLAG - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FLAT</name>
+      <tooltip>FLAT - (DATASET)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FORCE</name>
+      <tooltip>FORCE[((+|--)[n][,ALL])] The FORCE syntax for ATTRIBUTEFILE is specific to the ATTRIBUTEFILE&#x0a;statement. See below for a detailed description on the valid parameters and thei... - (ATTRIBUTEFILE)&#x0a;FORCE[(+|--|+-)[n][,OR(fieldname1[n][:fieldname2[n]])]] Forces some form of match for this concept&#x0a;between records for an overall match to occur for internal and external linking.... - (CONCEPT)&#x0a;FORCE Forces some form of match for this field between records for an overall match to occur for&#x0a;internal and external linking. No sub-option implies a total match. A &#145;+&#146; means ... - (DATEFIELD)&#x0a;FORCE Forces some form of match for this field between records for an overall match to occur for&#x0a;internal and external linking. No sub-option implies a total match. A &#145;+&#146; means a po... - (FIELD)&#x0a;FORCE[(+|--|+-)[n][,OR(fieldname1[[n]][:fieldname2[[n]]])]] - (LATLONG)&#x0a;FORCE - (NUMBERFIELD)&#x0a;FORCE Forces some form of match for this field between records for an overall match to occur for&#x0a;internal and external linking. No sub-option implies a total match. A &#145;+&#146; means... - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FORCES</name>
+      <tooltip>FORCES - (DATEFIELD)&#x0a;FORCELINK|FORCES - (FIELD)&#x0a;FORCELINK|FORCES - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FROM</name>
+      <tooltip>FROM - (MATCHSTRATEGY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FUZZYOPTIONAL</name>
+      <tooltip>FUZZYOPTIONAL - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>FUZZYWEIGHT</name>
+      <tooltip>FUZZYWEIGHT By default set to 10 (meaning 10%) an indication of the amount of lift you expect to&#x0a;get from fuzzy matching for external matching processes. Generally raising this value... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>GENERATION</name>
+      <tooltip>GENERATION - (ATTRIBUTEFILE)&#x0a;GENERATION - (CONCEPT)&#x0a;GENERATION - (DATEFIELD)&#x0a;GENERATION - (FIELD)&#x0a;GENERATION - (LATLONG)&#x0a;GENERATION - (NUMBERFIELD)&#x0a;GENERATION - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>GLOBAL_SCALE</name>
+      <tooltip>GLOBAL_SCALE - (CONCEPT)&#x0a;GLOBAL_SCALE - (DATEFIELD)&#x0a;GLOBAL_SCALE - (FIELD)&#x0a;GLOBAL_SCALE - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>HASBASE</name>
+      <tooltip>HASBASE - (BESTTYPE)&#x0a;HASBASE - (BLOCKLINK)&#x0a;HASBASE - (CLEAVE)&#x0a;HASBASE - (LINKPATH)&#x0a;HASBASE - (MATCHSTRATEGY)&#x0a;HASBASE - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>HEADERSEARCH</name>
+      <tooltip>HEADERSEARCH - (FORMAT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>HYBRID</name>
+      <tooltip>HYBRID(n) Allows you to specify that a cleave will not happen if records &#145;bridge&#146; the two sides of&#x0a;a cleave point. If n or fewer records form the bridge, then the bridge is not val... - (CLEAVE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>HYPHEN1</name>
+      <tooltip>HYPHEN1 - (DATEFIELD)&#x0a;HYPHEN1[(n)] - (FIELD)&#x0a;HYPHEN1[(n)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>HYPHEN2</name>
+      <tooltip>HYPHEN2 - (DATEFIELD)&#x0a;HYPHEN2[(n)] - (FIELD)&#x0a;HYPHEN2[(n)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>IDDONE</name>
+      <tooltip>IDDONE Specifies that the underlying base file already has the entity IDs in place; SALT does not&#x0a;bother to perform the external linkage again. Any mappings required to let S... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>IGNORE</name>
+      <tooltip>IGNORE(fieldlist) IGNORE has no real semantic; if a field does not exist in the external file then&#x0a;it will be treated as blank. Notwithstanding - if there are base fields tha... - (EXTERNALFILE)&#x0a;IGNORE(chars) Specifies a set of characters chars which will be ignored and treated as they do not&#x0a;exist. If a parentheses character is included, it must be escaped with a prece... - (FIELDTYPE)&#x0a;IGNORE - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>IGNORELP</name>
+      <tooltip>IGNORELP(lplist) IGNORELP allows you to specify a comma-separated list of LINKPATHs that are&#x0a;irrelevant to the processing of an EXTERNALFILE, causing the specified LINKPATH k... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>IMPROVE_EF_WEIGHTS</name>
+      <tooltip>IMPROVE_EF_WEIGHTS - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>INC_LP_EXACT</name>
+      <tooltip>INC_LP_EXACT - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>INCLUDE</name>
+      <tooltip>INCLUDE If the INCLUDE option is specified, only those rules in myfile.txt file are used for&#x0a;matching. - (EFFICACY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>INITIAL</name>
+      <tooltip>INITIAL - (DATEFIELD)&#x0a;INITIAL Specifies partial matching of string field values such as an initial to a full name during&#x0a;a record matching process. If the first n characters of the string field value in ... - (FIELD)&#x0a;INITIAL - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>INRANGE</name>
+      <tooltip>INRANGE(numvalue1,numvalue2) Specifies a numeric range check for the associated FIELD. Field value&#x0a;must be &gt;= numvalue1 and &lt;= numvalue2. - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>JOINS/PERSIST</name>
+      <tooltip>JOINS/PERSIST - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>KEEP</name>
+      <tooltip>KEEP(n|ALL) Specifies the number of different attributes from an attribute file or child dataset&#x0a;that are allowed to contribute to the overall score for a record match. ALL ... - (ATTRIBUTEFILE)&#x0a;KEEP - (DATEFIELD)&#x0a;KEEP(n) Used in conjunction with MULTIPLE in either external or internal linking. Specifies that&#x0a;at most the best n matches will be counted toward the final score. - (FIELD)&#x0a;KEEP(n) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>KEYINFIX</name>
+      <tooltip>KEYINFIX KEYINFIX specifies that an attribute exists that will provide a &#145;version&#146; string to be&#x0a;used as a variable part or an infix on all logical file keys generated by external lin... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>KEYPREFIX</name>
+      <tooltip>KEYPREFIX KEYPREFIX specifies that an attribute exists that will provide a prefix string to be&#x0a;used as a prefix on all keys generated by external linking. It enforces the following n... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>KEYSUPERFILE</name>
+      <tooltip>KEYSUPERFILE specifies that an attribute exists that will provide a &#145;version&#146; string to be used as&#x0a;a variable part on all super file keys generated by external linking. It enforces t... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LAST</name>
+      <tooltip>LAST - (BESTTYPE)&#x0a;LAST - (DATEFIELD)&#x0a;LAST - (FIELD)&#x0a;LAST - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LAT</name>
+      <tooltip>LAT - (LATLONG)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LEFT</name>
+      <tooltip>LEFT - (MATCHSTRATEGY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LEFTTRIM</name>
+      <tooltip>LEFTTRIM Specifies field is required to be left trimmed (no leading blanks) - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LENGTHS</name>
+      <tooltip>LENGTHS(length_list) Specifies a comma-separated list of length values which are valid for a&#x0a;field. Each length value must be a number, number range (x..y), or an open-ended ran... - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LIKE</name>
+      <tooltip>LIKE(fieldtype) The LIKE parameter specifies additional characteristics of the concept defined by&#x0a;the named FIELDTYPE statement. FIELDTYPE statements allow field editing and valid... - (CONCEPT)&#x0a;LIKE - (DATASET)&#x0a;LIKE(fieldtype) Allows for data validation and cleaning - (DATEFIELD)&#x0a;LIKE - (EXTERNALFILE)&#x0a;LIKE(fieldtype): The LIKE parameter specifies additional characteristics of the field defined by&#x0a;the named FIELDTYPE statement. FIELDTYPE statements allow field editing and validity... - (FIELD)&#x0a;LIKE(fieldtype1[,fieldtype2]*) The LIKE parameter specifies the base characteristics for the&#x0a;current FieldType defined by the additional named FIELDTYPE statement. See below for... - (FIELDTYPE)&#x0a;LIKE(fieldtype) The LIKE parameter specifies a FIELDTYPE to be applied to both latitude_field and&#x0a;longitude_field. - (LATLONG)&#x0a;LIKE(fieldtype): - (NUMBERFIELD)&#x0a;LIKE - (VIRTUALFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LINK</name>
+      <tooltip>LINK The LINK parameter is used to define how a given relationship is used to create link&#x0a;candidates for internal linking. The default is LINK(ALL). If LINK(NONE) is specifie... - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LINKBLOCKBREAKERSCANSPLIT</name>
+      <tooltip>LINKBLOCKBREAKERSCANSPLIT - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LIST</name>
+      <tooltip>LIST - (ATTRIBUTEFILE)&#x0a;LIST - (DATEFIELD)&#x0a;LIST - (FIELD)&#x0a;LIST - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LONG</name>
+      <tooltip>LONG - (LATLONG)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>LONGEST</name>
+      <tooltip>LONGEST This method picks the longest value for a given field (for a date it picks the &#145;least&#x0a;null). - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MANY</name>
+      <tooltip>MANY - (CONCEPT)&#x0a;MANY - (DATEFIELD)&#x0a;MANY MOST computes the same score as MANY but scales the result to the range : -( maximum field&#x0a;specificity) to maximum field specificity. This gives full credit to matches which re... - (FIELD)&#x0a;MANY - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MAPPING</name>
+      <tooltip>MAPPING[([Prefix_*]|headername=localname)] The MAPPING parameter allows you to define mappings&#x0a;between names in the external file and the internal base file when the field na... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MATCH</name>
+      <tooltip>MATCH(ALL|ANY|NNEQ|NONE) The default MATCH option if not specified is MATCH(ANY). This specifies&#x0a;that for a record to be included in a cleaved cluster part it can match any of the ... - (CLEAVE)&#x0a;MATCH - (CONCEPT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MAX</name>
+      <tooltip>MAX - (FUZZY)&#x0a;MAX - (MATCHSTRATEGY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MAXBLOCKSIZE</name>
+      <tooltip>MAXBLOCKSIZE For internal linking, X is used in an ATMOST in mj (match) joins to control whether&#x0a;possible match records are produced- if too many records result from joining on a par... - (HACK)&#x0a;MAXBLOCKSIZE(X[,Y]) Allows you to tune the performance of a key. If you are getting too many&#x0a;occasions when the key is not tried; raise the MAXBLOCKSIZE. If the key is too slow (... - (LINKPATH)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MAXRECS</name>
+      <tooltip>MAXRECS - (DATASETTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MAXSPC</name>
+      <tooltip>MAXSPC - (DATEFIELD)&#x0a;MAXSPC - (FIELD)&#x0a;MAXSPC - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MAXUNIQ</name>
+      <tooltip>MAXUNIQ - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MDDM</name>
+      <tooltip>MDDM[(scale)] The MDDM parameter allows for dates with month and day reversed to be compared. Thus&#x0a;19670923 matches 19672309. See below for scale info. - (DATEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MEAN</name>
+      <tooltip>MEAN - (DISTRIBUTION)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MEDIUM</name>
+      <tooltip>MEDIUM - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MESSAGE</name>
+      <tooltip>MESSAGE - (ERRINFO)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MIN</name>
+      <tooltip>MIN - (FUZZY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MINIMUM</name>
+      <tooltip>MINIMUM This modifier specifies that a candidate for best value has to have at least number&#x0a;supporting records. - (BESTTYPE)&#x0a;MINIMUM MINIMUM allows you to specify that at least n records must exist for a given cleave point&#x0a;for the cleave to occur. Avoids one outlying record to causing a cleave. (Default ... - (CLEAVE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MINPOP</name>
+      <tooltip>MINPOP - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MINRECS</name>
+      <tooltip>MINRECS - (DATASETTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MM</name>
+      <tooltip>MM - (BESTTYPE)&#x0a;MM - (BLOCKLINK)&#x0a;MM - (CLEAVE)&#x0a;MM - (LINKPATH)&#x0a;MM - (MATCHSTRATEGY)&#x0a;MM - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MOST</name>
+      <tooltip>MOST - (CONCEPT)&#x0a;MOST - (DATEFIELD)&#x0a;MOST - (FIELD)&#x0a;MOST - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MOVE_HEADER_KEYS</name>
+      <tooltip>MOVE_HEADER_KEYS - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MULTI</name>
+      <tooltip>MULTI[(LIKE(LP_name),SEARCHON(fieldlist))] When external file records define multiple entities,&#x0a;and multiple MAPPINGs are used to identify and map those entities, then the MU... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MULTIPARENT</name>
+      <tooltip>MULTIPARENT Triggers a more aggressive method for restoring the relationships between the IDFIELD&#x0a;and IDPARENTS at the end of an internal linking iteration. Requires HACK:NOSLICE and... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>MULTIPLE</name>
+      <tooltip>MULTIPLE - (DATEFIELD)&#x0a;MULTIPLE(LIST(child)[,ANY|MANY|MOST|ALL]) Specifies that the external linking file field contains&#x0a;multiple values. MULTIPLE is valid only within specification files used for externa... - (FIELD)&#x0a;MULTIPLE(LIST(child)[,ANY|MANY|MOST|ALL]) - (NUMBERFIELD)&#x0a;MULTIPLE(n) Specifies the minimum number of entity links n which must occur before a relationship&#x0a;is declared. - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NAMED</name>
+      <tooltip>NAMED(modulename.filename) Optional. Specifies an attribute name in the ECL repository containing&#x0a;the file definition for the dataset or recordset containing the attribute f... - (ATTRIBUTEFILE)&#x0a;NAMED Specifies an attribute name in the ECL repository containing the file definition for the&#x0a;dataset or recordset containing search record pairs which define groups of records... - (BLOCKLINK)&#x0a;NAMED - (EFFICACY)&#x0a;NAMED Specifies an attribute name in the ECL repository containing the file definition for the&#x0a;dataset or recordset defining the external file. - (EXTERNALFILE)&#x0a;NAMED - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NEVER</name>
+      <tooltip>NEVER - (CONCEPT)&#x0a;NEVER - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NEW</name>
+      <tooltip>NEW - (DATEFIELD)&#x0a;NEW - (FIELD)&#x0a;NEW - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NNEQ</name>
+      <tooltip>NNEQ - (CLEAVE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NO_EDITDISTANCE_STRINGLENGTHS</name>
+      <tooltip>NO_EDITDISTANCE_STRINGLENGTHS - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NO_PARALLEL_MATCH</name>
+      <tooltip>NO_PARALLEL_MATCH - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NO_SCALE</name>
+      <tooltip>NO_SCALE - (CONCEPT)&#x0a;NO_SCALE - (DATEFIELD)&#x0a;NO_SCALE - (FIELD)&#x0a;NO_SCALE - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NO_UNORDERED</name>
+      <tooltip>NO_UNORDERED - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOCASE</name>
+      <tooltip>NOCASE - (DATASETTYPE)&#x0a;NOCASE - (FIELDTYPE)&#x0a;NOCASE - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOFAIL</name>
+      <tooltip>NOFAIL Prevents a bit from being set in keys_failed in the event that this linkpath produces too&#x0a;many results. This could be used if a linkpath commonly generates too many result... - (LINKPATH)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOFUZZY</name>
+      <tooltip>NOFUZZY - (BESTTYPE)&#x0a;NOFUZZY - (BLOCKLINK)&#x0a;NOFUZZY - (CLEAVE)&#x0a;NOFUZZY - (LINKPATH)&#x0a;NOFUZZY - (MATCHSTRATEGY)&#x0a;NOFUZZY - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOINCREMENTAL</name>
+      <tooltip>NOINCREMENTAL - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOINITIAL</name>
+      <tooltip>NOINITIAL - (BESTTYPE)&#x0a;NOINITIAL - (BLOCKLINK)&#x0a;NOINITIAL - (CLEAVE)&#x0a;NOINITIAL - (LINKPATH)&#x0a;NOINITIAL - (MATCHSTRATEGY)&#x0a;NOINITIAL - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOMATCHCODE</name>
+      <tooltip>NOMATCHCODE Disables feature to return match codes for every input field which is enabled by&#x0a;default. The match codes are defined by the SALTnn.MatchCode attribute. Match codes are a... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NONCONTIGUOUS</name>
+      <tooltip>NONCONTIGUOUS - (INGESTMODE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NONE</name>
+      <tooltip>NONE - (CLEAVE)&#x0a;NONE - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOQUOTES</name>
+      <tooltip>NOQUOTES() Specifies that the first and last characters of a string cannot be a quote character.&#x0a;The disallowed quoted characters are defined in chars. - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NORMAL</name>
+      <tooltip>NORMAL - (DISTRIBUTION)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOSLICE</name>
+      <tooltip>NOSLICE Disables sliceouts altogether - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NOTAG</name>
+      <tooltip>OTAG: If the NOTAG parameter is present, then only records that have not been measured using a&#x0a;TAGed record type are processed. - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NULL</name>
+      <tooltip>NULL(n) The optional NULL(n) parameter can be used to specify a different null value. By default,&#x0a;SALT uses 0 as the null value. - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NULLABLE</name>
+      <tooltip>NULLABLE - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NULLS</name>
+      <tooltip>NULLS - (DATEFIELD)&#x0a;NULLS([REPLACE,]value1[|value2]*) The optional parameter NULLS is used to manually augment or&#x0a;override SALT&#146;s automated null-spotting feature, part of the specificity build that tre... - (FIELD)&#x0a;NULLS - (FIELDTYPE)&#x0a;NULLS([REPLACE,]value1[|value2]*) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>NUMERICS</name>
+      <tooltip>NUMERICS - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>OLD</name>
+      <tooltip>OLD - (DATEFIELD)&#x0a;OLD - (FIELD)&#x0a;OLD - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ON_CHILD_ADJUSTMENT</name>
+      <tooltip>ON_CHILD_ADJUSTMENT - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ONFAIL</name>
+      <tooltip>ONFAIL(IGNORE|CLEAN|BLANK|REJECT|CLEAN,BLANK|CLEAN,REJECT) ONFAIL specifies the action to take&#x0a;during a SALT process if the editing contraints are not met: IGNORE (data is accep... - (FIELDTYPE)&#x0a;NFAIL(IGNORE|REJECT) When ONFAIL(REJECT) is used, invalid records are rejected and do not&#x0a;participate in the linking process - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ONLY</name>
+      <tooltip>ONLY NEVER - The only method used is searching of keys generated upon this particular external&#x0a;file. - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>OPTIONAL</name>
+      <tooltip>OPTIONAL - (DATASET)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>OR</name>
+      <tooltip>OR - (ATTRIBUTEFILE)&#x0a;OR - (CONCEPT)&#x0a;OR - (DATEFIELD)&#x0a;OR - (FIELD)&#x0a;OR - (LATLONG)&#x0a;OR - (NUMBERFIELD)&#x0a;OR - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>OWNED</name>
+      <tooltip>OWNED - (DATEFIELD)&#x0a;OWNED If OWNED is specified and FLAG is specified, it indicates that an entity cluster &#147;owns&#148; the&#x0a;value for the field, implying that only one entity cluster should have the value. - (FIELD)&#x0a;OWNED - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PAD</name>
+      <tooltip>PAD - (VIRTUALFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PARSE</name>
+      <tooltip>PARSE(ParseAttr[,MatchAttr]|*[C|P|L|I]) Specifies a parse pattern ParseAttr that can be used to&#x0a;extract matching data from a text source. The second parameter MatchAttr is optio... - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PARTITION</name>
+      <tooltip>PARTITION(attr) SALT supports the implementation of a partitioning system for internal linking&#x0a;using the PARTITION parameter. This separates the source records into N+1 partit... - (SOURCEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PARTS</name>
+      <tooltip>PARTS - (CONCEPT)&#x0a;PARTS - (DATEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PCNT</name>
+      <tooltip>PCNT - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PERMIT</name>
+      <tooltip>PERMIT(field or constant) - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PERMITS</name>
+      <tooltip>PERMITS(attr[,number]) PERMITS allows an attribute to be provided which will return a bitset for&#x0a;the PERMITS attached to a particular data record (see section on Using BESTTYP... - (SOURCEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PERMITTED</name>
+      <tooltip>PERMITTED - (DATEFIELD)&#x0a;PERMITTED(attr[,number][,BLANK]) When PERMITTED is specified, external linking header search&#x0a;result provided by the Data_ attribute will have a field value masked for for all record... - (FIELD)&#x0a;PERMITTED(attr[,number][,BLANK]) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PHONETIC</name>
+      <tooltip>PHONETIC - (DATEFIELD)&#x0a;PHONETIC Specifies phonetic matching of string field values using a metaphone algorithm. If the&#x0a;metaphone value between fields matches, it will provide a positive contribution to ma... - (FIELD)&#x0a;PHONETIC - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>POSTPROCESS</name>
+      <tooltip>POSTPROCESS Allows a post-process attribute to be specified which will be called from within&#x0a;COMINEALLSCOREs in the external linking process. It must take a dataset of records of typ... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PRECISION</name>
+      <tooltip>PRECISION - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PREFIX</name>
+      <tooltip>PREFIX - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PREVENTS</name>
+      <tooltip>PREVENTS - (DATEFIELD)&#x0a;PREVENTS Insist that no two records in the same cluster can have the same value for this field.&#x0a;This is a way to keep differing parties in the same transaction apart. - (FIELD)&#x0a;PREVENTS - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PRIORITY</name>
+      <tooltip>PRIORITY(field_expression) By default if a record-fetch limit is specified then the records later&#x0a;in the base file will be returned. If some other field provides better prior... - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>PROP</name>
+      <tooltip>PROP This method will copy the best value into null fields with a matching basis. - (BESTTYPE)&#x0a;PROP(CROSS) When this option is defined, the specificities of fully defined concepts will&#x0a;propagate to the concepts with some child components undefined. This option is useful whe... - (CONCEPT)&#x0a;PROP Allows field value to be propagated to other records in a record cluster for matching&#x0a;purposes. Refer to the description of the FIELD statement for more information on the ... - (DATEFIELD)&#x0a;PROP Allows field value to be propagated to other records in a record cluster for matching&#x0a;purposes. BESTTYPE should be used in preeference to PROP for specifying propagation on a F... - (FIELD)&#x0a;PROP - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>QUOTE</name>
+      <tooltip>QUOTE - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RADIUS</name>
+      <tooltip>RADIUS(x) Defines the maximum lat/long search radius in miles. It must be defined if the LATLONG&#x0a;field is to be used in a LINKPATH. - (LATLONG)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RANGE</name>
+      <tooltip>RANGE - (DATEFIELD)&#x0a;RANGE[:AGE(agename)] When used in a LINKPATH, the batch or query input will accept fieldname_lo&#x0a;and fieldname_hi values for this FIELD. When matching, SALT looks for fieldname_lo &lt;=... - (FIELD)&#x0a;RANGE[:AGE(agename)] - (NUMBERFIELD)&#x0a;RANGE The RANGE parameter specifies the field names from the source input file which provide the&#x0a;low value and high value for a range. - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RANGEFIELD_UPGRADE</name>
+      <tooltip>RANGEFIELD_UPGRADE - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RE</name>
+      <tooltip>RE - (DATASETTYPE)&#x0a;RE - (FIELDTYPE)&#x0a;RE - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RECALL</name>
+      <tooltip>RECALL(n) Specifies a recall level as a percentage to automatically determine an appropriate&#x0a;threshold such that n% of matches are included. - (EFFICACY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RECENT</name>
+      <tooltip>RECENT This method will pick the value that is related to the most recent date as specified by&#x0a;datefield. There are two methods of defining this. LAST (or nothing specified) will... - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RECORDDATE</name>
+      <tooltip>RECORDDATE - (DATEFIELD)&#x0a;RECORDDATE(FIRST|LAST[,YYYYMM|YYYYMMDD|YYYYMMDDHHMMSS]) Specifies that the fieldname contains a&#x0a;date value which is the date first seen (FIRST) or date last seen (LAST) for the reco... - (FIELD)&#x0a;RECORDDATE(FIRST|LAST[,YYYYMM|YYYYMMDD|YYYYMMDDHHMMSS]) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>REGEX</name>
+      <tooltip>REGEX - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>REJECT</name>
+      <tooltip>REJECT - (FIELDTYPE)&#x0a;REJECT - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>REPLACE</name>
+      <tooltip>REPLACE - (ATTRIBUTEFILE)&#x0a;REPLACE - (CONCEPT)&#x0a;REPLACE - (DATEFIELD)&#x0a;REPLACE - (FIELD)&#x0a;REPLACE - (FIELDTYPE)&#x0a;REPLACE - (LATLONG)&#x0a;REPLACE - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>REQUIRED</name>
+      <tooltip>REQUIRED FED - All keys (for all external files) are searched and then data for all entity IDs and&#x0a;local keys (for the matching record type) are returned. Note: DIVE(FED) is ... - (EXTERNALFILE)&#x0a;REQUIRED(other_linkpath) If REQUIRED is used it must name an existing linkpath; the current&#x0a;linkpath will only be used if the other_linkpath cannot be used. This can be used to h... - (LINKPATH)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RIGHT</name>
+      <tooltip>RIGHT - (MATCHSTRATEGY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>ROLLUP</name>
+      <tooltip>ROLLUP(WHOLE|PARTS) If ROLLUP(PARTS) is specified (or inferred by default) then the combine_score&#x0a;process rolls up concept child fields individually the same way this process work... - (CONCEPT)&#x0a;ROLLUP(WHOLE|PARTS) If ROLLUP is specified as PARTS (default) then the combine_score process can&#x0a;create a score from the best-matching year/month/day from different records for ... - (DATEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RS</name>
+      <tooltip>RS RS stands for Reflexive and Symmetric, but not transitive. - (FUZZY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>RST</name>
+      <tooltip>RST Fuzzy processing mode: RST stands for Reflexive, Symmetric, and Transitive. These are&#x0a;mathematical properties of relations and when all properties are present define an equivale... - (FUZZY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SALTMODULE</name>
+      <tooltip>SALTMODULE Using HACK:SALTMODULE:SALT_module_name can be used to force SALT to use a particular&#x0a;module for the shared SALT attributes. For example HACK:SALTMODULE:SALT20 would force ... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SALTTOOLSMODULE</name>
+      <tooltip>SALTTOOLSMODULE Using HACK:SALTTOOLSMODULE:SALT_module_name can be used to force SALT to use a&#x0a;particular module for the shared SALTTOOL service functions. For example&#x0a;HACK:SAL... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SAMPLESIZE</name>
+      <tooltip>SAMPLESIZE By default three samples each of 1000 records are produced and stored as&#x0a;MatchSampleRecords in the work unit of an internal linking process. This hack allows the number of... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SCALE</name>
+      <tooltip>SCALE(NEVER|ALWAYS|MATCH) Controls scaling of the specificity for the child fields of a concept.&#x0a;SCALE(ALWAYS) is the default behavior and child fields are scaled to a fraction of... - (CONCEPT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SCALED</name>
+      <tooltip>SCALED - (DATEFIELD)&#x0a;SCALED - (FIELD)&#x0a;SCALED - (NUMBERFIELD)&#x0a;SCALED - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SCORE</name>
+      <tooltip>SCORE(FieldList) Specifies an optional list of fields separated by the colon &#145;:&#146; character which&#x0a;will be independently scored once per relationship. Fields following a :-: wi... - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SEARCH</name>
+      <tooltip>SEARCH(list_of_fields) Comma separated list of additional fields in the attribute file which are&#x0a;to be available at search time for the UBER key. - (ATTRIBUTEFILE)&#x0a;SEARCH[(fieldname:spec[,fieldname:spec]*)] By default an external file is used to create a key by&#x0a;the entity ID in order to retrieve the data - in other words it produces att... - (EXTERNALFILE)&#x0a;SEARCH(label) If the SEARCH option is specified, the LINKPATH is only used for search and not for&#x0a;normal external linking. The base file search service has flags defined for ever... - (LINKPATH)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SEARCHON</name>
+      <tooltip>SEARCHON - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SEENDATES</name>
+      <tooltip>SEENDATES - (ASOFFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SEGMENT</name>
+      <tooltip>SEGMENT(segment_name) Defines alternate segment names to be associated with a given field value&#x0a;(used with the Boolean Search capability). Up to 10 additional segment names can be... - (CONCEPT)&#x0a;SEGMENT - (DATEFIELD)&#x0a;SEGMENT(segment_name) Defines additional segment names to be associated with a given field value&#x0a;(used with the Boolean Search capability). Up to 10 additional segment names can be ... - (FIELD)&#x0a;SEGMENT(segment_name) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SEGTYPE</name>
+      <tooltip>SEGTYPE(segtype) Used with Boolean Search. The segment_type option specifies the type of segment&#x0a;to be generated, i.e. SEGTYPE(ConcatSeg). The default is the GroupSeg value. The c... - (CONCEPT)&#x0a;SEGTYPE - (DATEFIELD)&#x0a;SEGTYPE(segtype) Used with Boolean Search. The segment_type option specifies the type of segment&#x0a;to be generated. The default is the TextType value. - (FIELD)&#x0a;SEGTYPE(segtype) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SEP</name>
+      <tooltip>SEP - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SLICEDISTANCE</name>
+      <tooltip>SLICEDISTANCE Sets the threshold value for a sliceout to occur during internal linking. The&#x0a;threshold is the margin in confidence score between linking the record to the existing clu... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SLICETHRESHOLD</name>
+      <tooltip>SLICETHRESHOLD Allows changing the upper limit (number of records) for a cluster to be considered&#x0a;in sliceout processing. Default is 1000 records. - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SLOW</name>
+      <tooltip>SLOW - (EXTERNALFILE)&#x0a;SLOW - (MATCHSTRATEGY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SOFT1</name>
+      <tooltip>SOFT1[(scale)] - (DATEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SOMETIMES</name>
+      <tooltip>SOMETIMES NOTE: The SEARCH and DIVE options go hand-in-hand. One should not be specified without&#x0a;the other. - (EXTERNALFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SPACES</name>
+      <tooltip>SPACES(chars) Specifies a set of characters chars which will all be treated as equivalent to a&#x0a;space. If a parentheses character is included, it must be escaped with a preceding... - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SPLIT</name>
+      <tooltip>SPLIT(n) Specifies the number of different persists that the main relationship join is split into&#x0a;(default if not specified is 1). Can improve performance and reduce disk spa... - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SPLIT_COMBINEALLSCORES</name>
+      <tooltip>SPLIT_COMBINEALLSCORES - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SPRAY</name>
+      <tooltip>SPRAY - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>STDDEV</name>
+      <tooltip>STDDEV - (DISTRIBUTION)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>STEM</name>
+      <tooltip>STEM - (DATEFIELD)&#x0a;STEM[(n)] The STEM option allows the word tokens to be fuzzy matched using the stem of the word&#x0a;utilizing the Porter stemming algorithm. The optional parameter n defaults to 1 when ... - (FIELD)&#x0a;STEM[(n)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>STRICT</name>
+      <tooltip>STRICT - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SUPPORTS</name>
+      <tooltip>SUPPORTS(fieldname|top_level_conceptname) SUPPORTS( - (ATTRIBUTEFILE)&#x0a;SUPPORTS(field[,ADD|REPLACE]) A match of this field will be used to bolster the score for the&#x0a;named FIELD (or CONCEPT). - (CONCEPT)&#x0a;SUPPORTS - (DATEFIELD)&#x0a;SUPPORTS(field[,ADD|REPLACE]) A match of this field will be used to bolster the score for the&#x0a;named FIELD (or CONCEPT). - (FIELD)&#x0a;SUPPORTS(field[,ADD|REPLACE]) - (LATLONG)&#x0a;SUPPORTS(field[,ADD|REPLACE]) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SWITCH0</name>
+      <tooltip>SWITCH0|SWITCHN(penalty) - (DATEFIELD)&#x0a;SWITCH0|SWITCHN(penalty) - (FIELD)&#x0a;SWITCH0|SWITCHN(penalty) - (LATLONG)&#x0a;SWITCH0|SWITCHN(penalty) - (NUMBERFIELD)&#x0a;SWITCH0 - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SWITCHN</name>
+      <tooltip>SWITCH0|SWITCHN(penalty) The penalty score for a mismatch is set to the specified value instead of&#x0a;a negative specificity value. SWITCHN(0) is equivalent to SWITCH0. - (DATEFIELD)&#x0a;SWITCH0|SWITCHN(penalty) - (FIELD)&#x0a;SWITCH0|SWITCHN(penalty) - (LATLONG)&#x0a;SWITCH0|SWITCHN(penalty) - (NUMBERFIELD)&#x0a;SWITCH0|SWITCHN(penalty) The penalty score for a mismatch is set to the specified value instead of&#x0a;a negative specificity value. SWITCHN(0) is equivalent to SWITCH0. - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>SYMMETRIC</name>
+      <tooltip>SYMMETRIC - (MATCHSTRATEGY)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>TAG</name>
+      <tooltip>AG(field,value): If a TAG parameter is present, then the record type only applies to records for&#x0a;which field=value. - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>TERM</name>
+      <tooltip>TERM - (INGESTFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>TIMESTAMP</name>
+      <tooltip>TIMESTAMP - (INGESTMODE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>TRACK</name>
+      <tooltip>TRACK(FieldList) Specifies an optional list of RECORDDATE fields, to be used for tracking the&#x0a;dates over which relationship information is gathered. - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>TRIGRAM</name>
+      <tooltip>TRIGRAM - (CONCEPT)&#x0a;TRIGRAM - (DATEFIELD)&#x0a;TRIGRAM - (FIELD)&#x0a;TRIGRAM - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>TYPE</name>
+      <tooltip>TYPE - (DATEFIELD)&#x0a;TYPE(datatype) TYPE is currently used only to specify the size of the field for the BAGOFWORDS&#x0a;parameter. All input file fields currently use the ECL datatype of the input file reco... - (FIELD)&#x0a;TYPE Specifies the field type of the result of the fuzzy matching. Defines the ECL datatype&#x0a;(INTEGER4, STRING100, BOOLEAN, etc.) to be used for the field following fuzzy processing. - (FUZZY)&#x0a;TYPE(datatype) - (NUMBERFIELD)&#x0a;TYPE - (VIRTUALFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>UNIQUE</name>
+      <tooltip>UNIQUE This method will only produce a value if there is only one value (other than null)&#x0a;specified for that field. - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>UNSCALED</name>
+      <tooltip>UNSCALED - (DATEFIELD)&#x0a;UNSCALED - (FIELD)&#x0a;UNSCALED - (NUMBERFIELD)&#x0a;UNSCALED - (RANGEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>USE_COMBINED_MATCHCODES</name>
+      <tooltip>USE_COMBINED_MATCHCODES - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>USE_MATCH_CANDIDATES_OPTIMIZATION</name>
+      <tooltip>USE_MATCH_CANDIDATES_OPTIMIZATION - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>USEHIPIE</name>
+      <tooltip>USEHIPIE Enable generation of HIPIE visualization code in BWR_Delta, BWR_hygiene, BWR_Ingest,&#x0a;BWR_Iterate, BWR_Scrubs, and BWR_Specificities - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>USEON</name>
+      <tooltip>USEON - (DATASETTYPE)&#x0a;USEON - (FIELDTYPE)&#x0a;USEON - (FIELDTYPEDETECT)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>USESUPERFILES</name>
+      <tooltip>USESUPERFILES Integrates with and utilized service functions in the SALTTOOLS library to support&#x0a;production ready application processe which incorporate spraying of raw files and use... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>VALID</name>
+      <tooltip>VALID This modifier specifies that only those values considered valid will be considered available&#x0a;for BEST computation. If no attribute is specified then standard Hygiene rules ... - (BESTTYPE)&#x0a;ALID(fieldlist): Valid(fieldlist) specifies that every field in the list of fields has to be&#x0a;valid. Any field with a leading '+' also has to be non-blank. - (RECORDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>VALUES</name>
+      <tooltip>VALUES Names of the fields in the attribute file separated by the colon &#145;:&#146; character containing&#x0a;the attribute values to be matched during the matching process. Each set of ... - (ATTRIBUTEFILE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>VOTED</name>
+      <tooltip>VOTED This method requires a SOURCEFIELD to have been specified and it also requires the user to&#x0a;write at attribute of the form: - (BESTTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WEIGHT</name>
+      <tooltip>WEIGHT(value) The WEIGHT value allows the normal scoring value for matches for the attribute field&#x0a;to be weighted. The value is expressed as a floating point number above 0.... - (ATTRIBUTEFILE)&#x0a;WEIGHT(value) The WEIGHT value allows the normal scoring value for matches for the concept to be&#x0a;weighted. The value is expressed as a floating point number above 0. The default i... - (CONCEPT)&#x0a;WEIGHT(value) The WEIGHT value allows the normal scoring value for matches for the date field to&#x0a;be weighted. The value is expressed as a floating point number above 0. The defa... - (DATEFIELD)&#x0a;WEIGHT(value) The WEIGHT value allows the normal scoring value for matches for the field to be&#x0a;weighted. The value is expressed as a floating point number above 0. The default is a ... - (FIELD)&#x0a;WEIGHT(n[,MIN|MAX])|COUNTS(CountsFunctionName) Multiplier influencing the fuzzy match score,&#x0a;applicable only when operating in RS mode - (FUZZY)&#x0a;WEIGHT(value) The WEIGHT value allows the normal scoring value for matches for the field to be&#x0a;weighted. The value is expressed as a floating point number above 0. The default is ... - (LATLONG)&#x0a;WEIGHT(value) - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WEIGHTED</name>
+      <tooltip>WEIGHTED - (DATEFIELD)&#x0a;WEIGHTED - (FIELD)&#x0a;WEIGHTED - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WHEEL</name>
+      <tooltip>WHEEL When specified, field value suggestions are available through a generated service for the&#x0a;CONCEPT for each field referenced in the CONCEPT which can be incorporated into use... - (CONCEPT)&#x0a;WHEEL - (DATEFIELD)&#x0a;WHEEL When specified, field value suggestions are available through a generated service for the&#x0a;field which can be incorporated into user interfaces (UI). For each field with the WH... - (FIELD)&#x0a;WHEEL - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WHOLE</name>
+      <tooltip>WHOLE - (CONCEPT)&#x0a;WHOLE - (DATEFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WILD</name>
+      <tooltip>WILD - (DATEFIELD)&#x0a;WILD[(EXCLUSIVE)] Supported for external linking (or really searching), WILD allows BA?L?SS to&#x0a;match BAYLISS (or BAILASS). Some of the finer details (such as which wildcard routine ... - (FIELD)&#x0a;WILD[(EXCLUSIVE)] - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WITH_SORT_ON_WEIGHT</name>
+      <tooltip>WITH_SORT_ON_WEIGHT - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WITHIN</name>
+      <tooltip>WITHIN(n) Specifies the dates will match if they are within n days from each other. - (DATEFIELD)&#x0a;WITHIN(filename,fieldname) Defines a set of valid values contained in the filename.fieldname&#x0a;column. This option is valid only for the Scrubs module; it is ignored by the Hygien... - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WORDS</name>
+      <tooltip>WORDS(numberlist) Specifies the number of words that a non-null field can contain. Note that&#x0a;SPACES must have been specified if WORDS is used. Each numberlist value must be a nu... - (FIELDTYPE)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>WORKMAN</name>
+      <tooltip>WORKMAN - (HACK)</tooltip
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>XLINKUSING</name>
+      <tooltip>XLINKUSING Enables using a different macro other than the default SALT generated batch macro for&#x0a;the external linking performed on external files. The default macro is named&#x0a;My... - (HACK)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>YYYY</name>
+      <tooltip>YYYY - (BESTTYPE)&#x0a;YYYY - (BLOCKLINK)&#x0a;YYYY - (CLEAVE)&#x0a;YYYY - (LINKPATH)&#x0a;YYYY - (MATCHSTRATEGY)&#x0a;YYYY - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>YYYYMM</name>
+      <tooltip>YYYYMM - (BESTTYPE)&#x0a;YYYYMM - (BLOCKLINK)&#x0a;YYYYMM - (CLEAVE)&#x0a;YYYYMM - (DATEFIELD)&#x0a;YYYYMM - (FIELD)&#x0a;YYYYMM - (LINKPATH)&#x0a;YYYYMM - (MATCHSTRATEGY)&#x0a;YYYYMM - (NUMBERFIELD)&#x0a;YYYYMM - (RELATIONSHIP)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>YYYYMMDD</name>
+      <tooltip>YYYYMMDD - (DATEFIELD)&#x0a;YYYYMMDD - (FIELD)&#x0a;YYYYMMDD - (NUMBERFIELD)</tooltip>
+      <insertbeforecursor></insertbeforecursor>
+      <insertaftercursor></insertaftercursor>
+      <canbefollowedby></canbefollowedby>
+    </item>
+    <item>
+      <categoryid>2</categoryid>
+      <name>YYYYMMDDHHMMSS</name>
+      <tooltip>YYYYMMDDHHMMSS - (DATEFIELD)&#x0a;YYYYMMDDHHMMSS - (FIELD)&#x0a;YYYYMMDDHHMMSS - (NUMBERFIELD)</tooltip>
       <insertbeforecursor></insertbeforecursor>
       <insertaftercursor></insertaftercursor>
       <canbefollowedby></canbefollowedby>
