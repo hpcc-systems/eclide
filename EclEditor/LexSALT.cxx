@@ -49,30 +49,22 @@ static bool IsSpaceEquiv(int state) {
 
 enum SALT_LINETYPE {
     LINETYPE_NONE = 0,
-    LINETYPE_NORMAL,
-    LINETYPE_FIELDNAME,
-    LINETYPE_FIELDLIST,
-    LINETYPE_FIELDLIST_COMMAS,
-    LINETYPE_FIELDNAME_SKIP_ONE,
+    LINETYPE_LINE,
+    LINETYPE_ARGUMENT
 };
 
 static void ColouriseSaltDoc(unsigned int startPos, int length, int initStyle, WordList *keywordlists[],
     Accessor &styler) {
 
-    WordList &keywords0 = *keywordlists[0];  // Most first parameters
-    WordList &keywords1 = *keywordlists[1];  // Common Parameters
-    WordList &keywords2 = *keywordlists[2];  // Parameters with a field
-    WordList &keywords3 = *keywordlists[3];  // Parameters with fieldlist
-    WordList &keywords4 = *keywordlists[4];  // Fieldname lists with commas
-    WordList &keywords5 = *keywordlists[5];  // Fieldnames skip one first
+    WordList &keywords0 = *keywordlists[0];  // Functions that start a line
+    WordList &keywords1 = *keywordlists[1];  // All the other arguments and keywords
+
+    CharacterSet setWord(CharacterSet::setAlphaNum, "._", 0x80, true);
 
     SALT_LINETYPE lineType = LINETYPE_NONE;
 
     bool continuationLine = false;
-    bool collectingFieldName = false;
-    int parens = 0;
-    int skip = 0;
-    int colonCount = 0;
+    bool lineStart = false;
     char s[1000];
 
     // look back to set chPrevNonWhite properly for better regex colouring
@@ -102,57 +94,26 @@ static void ColouriseSaltDoc(unsigned int startPos, int length, int initStyle, W
 
         // Determine if the current state should terminate.
         switch (sc.state) {
-        case SCE_SALT_ARGUMENTS:
-            if (sc.Match(')')) {
-                collectingFieldName = false;
-                parens--;
-                if (parens == 0) {
-                    sc.SetState(SCE_SALT_DEFAULT);
+        case SCE_SALT_DEFAULT:
+            if (!setWord.Contains(sc.ch) || (sc.ch == '.')) {
+                char s[1000];
+                sc.GetCurrentLowered(s, sizeof(s));
+                if (keywords0.InList(s) && lineStart) {
+                    sc.ChangeState(SCE_SALT_LINE);
                 }
-            }
-            else if (parens && sc.Match('(')) {
-                sc.ChangeState(SCE_SALT_COMMAND);
-                sc.SetState(SCE_SALT_SEPARATOR);
-                if (keywords3.InList(s)) {
-                    sc.ForwardSetState(SCE_SALT_FIELDNAME);
-                    collectingFieldName = true;
+                else if (keywords1.InList(s)) {
+                    sc.ChangeState(SCE_SALT_ARGUMENT);
                 }
-                else {
-                    sc.ForwardSetState(SCE_SALT_ARGUMENTS);
-                }
-                parens++;
-            }
-            else if (parens && sc.Match(',')) {
-                sc.SetState(SCE_SALT_SEPARATOR);
-                sc.ForwardSetState(SCE_SALT_ARGUMENTS);
+                sc.SetState(SCE_ECL_DEFAULT);
             }
             break;
         case SCE_SALT_OPERATOR:
             sc.SetState(SCE_SALT_DEFAULT);
             break;
-        case SCE_SALT_COMMAND:
+        case SCE_SALT_LINE:
             if (sc.Match(':')) {
                 sc.SetState(SCE_SALT_OPERATOR);
                 sc.ForwardSetState(SCE_SALT_DEFAULT);
-                sc.ForwardSetState(SCE_SALT_FIELDNAME);
-            }
-            break;
-        case SCE_SALT_FIELDNAME:
-            if (sc.Match(':')) {
-                sc.SetState(SCE_SALT_OPERATOR);
-                sc.ForwardSetState(SCE_SALT_DEFAULT);
-                collectingFieldName = false;
-            }
-            else if (sc.Match(')')) {
-                sc.SetState(SCE_SALT_OPERATOR);
-                collectingFieldName = false;
-                parens--;
-                if (parens == 0) {
-                    sc.SetState(SCE_SALT_DEFAULT);
-                }
-                else {
-                    sc.SetState(SCE_SALT_ARGUMENTS);
-                }
             }
             break;
         case SCE_SALT_COMMENT:
@@ -179,69 +140,14 @@ static void ColouriseSaltDoc(unsigned int startPos, int length, int initStyle, W
         int lineState = styler.GetLineState(lineCurrent);
 
         if (sc.atLineStart) {
-            if (lineType == LINETYPE_FIELDNAME || lineType == LINETYPE_FIELDLIST_COMMAS || lineType == LINETYPE_FIELDLIST_COMMAS)
-            {
-                sc.ChangeState(SCE_SALT_FIELDNAME);
-            }
             sc.SetState(SCE_SALT_DEFAULT);
-            lineType = LINETYPE_NONE;
-            collectingFieldName = false;
-            colonCount = 0;
-            skip = 0;
+            lineStart = true;
             line++;
         }
 
         if (sc.state == SCE_SALT_DEFAULT) {
             if (lineState) {
                 sc.SetState(lineState);
-            }
-            else if (lineType == LINETYPE_FIELDLIST_COMMAS && sc.Match(',') && collectingFieldName) {
-                sc.ChangeState(SCE_SALT_FIELDNAME);
-                sc.SetState(SCE_SALT_OPERATOR);
-            }
-            else if (sc.Match(':')) {
-                colonCount++;
-                if (keywords0.InList(s)) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                    lineType = LINETYPE_NORMAL;
-                }
-                else if (keywords1.InList(s)) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                }
-                else if (keywords2.InList(s)) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                    collectingFieldName = true;
-                    lineType = LINETYPE_FIELDNAME;
-                }
-                else if (keywords3.InList(s)) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                    collectingFieldName = true;
-                    lineType = LINETYPE_FIELDLIST;
-                }
-                else if (keywords4.InList(s)) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                    collectingFieldName = true;
-                    lineType = LINETYPE_FIELDLIST_COMMAS;
-                }
-                else if (keywords5.InList(s)) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                    lineType = LINETYPE_FIELDNAME_SKIP_ONE;
-                    collectingFieldName = true;
-                    skip = 1;
-                }
-                else if (lineType == LINETYPE_FIELDNAME_SKIP_ONE && (skip + 1) >= colonCount) {
-                    sc.ChangeState(SCE_SALT_ARGUMENTS);
-                    collectingFieldName = true;
-                }
-                else if (collectingFieldName && (lineType == LINETYPE_FIELDNAME || lineType == LINETYPE_FIELDLIST || lineType == LINETYPE_FIELDNAME_SKIP_ONE))
-                {
-                    sc.ChangeState(SCE_SALT_FIELDNAME);
-                    if (lineType == LINETYPE_FIELDNAME)
-                    {
-                        collectingFieldName = false;
-                    }
-                }
-                sc.SetState(SCE_SALT_OPERATOR);
             }
             else if (sc.Match('/', '*')) {
                 if (sc.Match("/**") || sc.Match("/*!")) {	// Support of Qt/Doxygen doc. style
@@ -255,20 +161,8 @@ static void ColouriseSaltDoc(unsigned int startPos, int length, int initStyle, W
             else if (sc.Match('/', '/')) {
                 sc.SetState(SCE_SALT_COMMENTLINE);
             }
-            else if (!collectingFieldName || lineType == LINETYPE_FIELDNAME || lineType == LINETYPE_FIELDLIST) {
-                bool digit = false;
-                if (sc.Match('(') && !digit) {
-                    sc.ChangeState(SCE_SALT_COMMAND);
-                    sc.SetState(SCE_SALT_SEPARATOR);
-                    if (keywords3.InList(s)) {
-                        sc.ForwardSetState(SCE_SALT_FIELDNAME);
-                        collectingFieldName = true;
-                    }
-                    else {
-                        sc.ForwardSetState(SCE_SALT_ARGUMENTS);
-                    }
-                    parens++;
-                }
+            else if (isoperator(static_cast<char>(sc.ch))) {
+                sc.SetState(SCE_ECL_OPERATOR);
             }
         }
 
@@ -364,12 +258,8 @@ static void FoldSaltDoc(unsigned int startPos, int length, int initStyle,
 }
 
 static const char * const SaltWordListDesc[] = {
-    "Commands",
-    "ParameterWithFields",
-    "Parameters",
-    "ParamsWithFieldlists",
-    "ParamsWithFieldCommas",
-    "SkipOneFieldlists",
+    "LineFunctions",
+    "ArgumentsAndKeywords",
     0
 };
 
