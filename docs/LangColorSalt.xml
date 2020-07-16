@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive"
-                     version="5">
-  <s class_id="0"
-     tracking_level="0"
-     version="0">
-    <count>10</count>
+<boost_serialization signature="serialization::archive" version="5">
+  <s class_id="0" tracking_level="0" version="0">
+    <count>8</count>
     <item_version>0</item_version>
-    <item class_id="1"
-      tracking_level="0"
-      version="0">
+    <item class_id="1" tracking_level="0" version="0">
       <first>0</first>
-      <second class_id="2"
-              tracking_level="0"
-              version="0">
+      <second class_id="2" tracking_level="0" version="0">
         <categoryid>0</categoryid>
         <name>Default</name>
         <fore>0</fore>
@@ -63,8 +56,8 @@
       <first>4</first>
       <second>
         <categoryid>4</categoryid>
-        <name>Number</name>
-        <fore></fore>
+        <name>Line</name>
+        <fore>16711680</fore>
         <back></back>
         <font></font>
         <size></size>
@@ -75,8 +68,8 @@
       <first>5</first>
       <second>
         <categoryid>5</categoryid>
-        <name>Command</name>
-        <fore>16711680</fore>
+        <name>Argument</name>
+        <fore>255</fore>
         <back></back>
         <font></font>
         <size></size>
@@ -87,8 +80,8 @@
       <first>6</first>
       <second>
         <categoryid>6</categoryid>
-        <name>Fieldname</name>
-        <fore>139</fore>
+        <name>Operator</name>
+        <fore>8421504</fore>
         <back></back>
         <font></font>
         <size></size>
@@ -99,30 +92,6 @@
       <first>7</first>
       <second>
         <categoryid>7</categoryid>
-        <name>Arguments</name>
-        <fore></fore>
-        <back></back>
-        <font></font>
-        <size></size>
-        <bold></bold>
-      </second>
-    </item>
-    <item>
-      <first>8</first>
-      <second>
-        <categoryid>8</categoryid>
-        <name>Operator</name>
-        <fore>8421504</fore>
-        <back></back>
-        <font></font>
-        <size></size>
-        <bold></bold>
-      </second>
-    </item>
-    <item>
-      <first>9</first>
-      <second>
-        <categoryid>9</categoryid>
         <name>Separator</name>
         <fore></fore>
         <back></back>
