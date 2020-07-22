@@ -69,7 +69,7 @@ int CBookmarksFrame::GetCount()
 }
 bool CBookmarksFrame::HasLoad()
 {
-    return boost::filesystem::exists(m_view.BookmarksFilePath());
+    return boost::filesystem::exists(m_view.BookmarksFilePath(true));
 }
 void CBookmarksFrame::View()
 {

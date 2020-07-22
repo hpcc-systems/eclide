@@ -8,7 +8,6 @@
 #include "mainfrm.h"
 
 const TCHAR * const BOOKMARKS_FILE = _T("bookmarks.xml");
-const TCHAR * const BOOKMARKS_FILE_LOCAL = _T("bookmarks_local.xml");
 const TCHAR * const BOOKMARKS_FILE_STATE = _T("bookmarks_state.xml");
 static const SectionLabelDefault GLOBAL_BOOKMARKS_SHOWMINE(SectionLabel(_T("Bookmarks"), _T("Mine")), true);
 static const SectionLabelDefault GLOBAL_BOOKMARKS_SHOWTODOS(SectionLabel(_T("Bookmarks"), _T("Todos")), true);
@@ -59,7 +58,7 @@ BOOL CBookmarksView::PreTranslateMessage(MSG* pMsg)
             }
             case 'M':
             {
-                OnLoadFile(true);
+                OnLoadFile(true,true);
                 break;
             }
             case 'D':
@@ -168,10 +167,12 @@ void CBookmarksView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
     m.LoadMenu(IDR_POPUP_BOOKMARKS);
     bool noCount = m_list.GetItemCount() == 0;
     bool noSelection = m_list.GetSelectedCount() == 0;
+    bool existsBookmarkFile = GetIMainFrame()->m_Bookmarks->HasLoad();
     m.EnableMenuItem(ID_BOOKMARKS_OPEN, noCount || noSelection ? MF_DISABLED : MF_ENABLED);
     m.EnableMenuItem(ID_BOOKMARKS_SAVE, noCount ? MF_DISABLED : MF_ENABLED);
     m.EnableMenuItem(ID_BOOKMARKS_CLEAR, noCount ? MF_DISABLED : MF_ENABLED);
-    m.EnableMenuItem(ID_BOOKMARKS_LOADMERGE, noCount ? MF_DISABLED : MF_ENABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_LOAD, existsBookmarkFile ? MF_ENABLED : MF_DISABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_LOADMERGE, !noCount && existsBookmarkFile ? MF_ENABLED : MF_DISABLED);
     m.EnableMenuItem(ID_BOOKMARKS_DELETE, noCount || noSelection ? MF_DISABLED : MF_ENABLED);
 
     unsigned int id = m.GetSubMenu(0).TrackPopupMenuEx(TPM_RETURNCMD, pPoint.x, pPoint.y, m_hWnd, NULL);
@@ -194,7 +195,7 @@ void CBookmarksView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
     break;
     case ID_BOOKMARKS_LOADMERGE:
     {
-        OnLoadFile(true);
+        OnLoadFile(true,true);
     }
     break;
     case ID_BOOKMARKS_DELETE:
@@ -261,6 +262,7 @@ void CBookmarksView::OnDeleteLines()
         m_list.SetMark(sel, true);
     }
     DeleteMarkedBookmarks(true);
+    Save(true);
 }
 
 void CBookmarksView::Open()
@@ -600,10 +602,6 @@ boost::filesystem::path CBookmarksView::BookmarksFilePath(bool saveState)
     {
         return fullpath / BOOKMARKS_FILE_STATE;
     }
-    else if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
-    {
-        return fullpath / BOOKMARKS_FILE_LOCAL;
-    }
     return fullpath / BOOKMARKS_FILE;
 }
 
@@ -722,7 +720,7 @@ std::_tstring CBookmarksView::FindTag(std::_tstring str, std::_tstring tag, int 
 
 void CBookmarksView::Load(bool loadState)
 {
-    OnLoadFile(false, loadState);
+    OnLoadFile(false, false, loadState);
 }
 
 void CBookmarksView::Clear()
@@ -730,7 +728,7 @@ void CBookmarksView::Clear()
     m_list.DeleteAllItems();
 }
 
-void CBookmarksView::OnLoadFile(bool mergeFlag, bool loadState)
+void CBookmarksView::OnLoadFile(bool userFlag, bool mergeFlag, bool loadState)
 {
     if (m_list.GetItemCount() > 0)
     {
@@ -749,6 +747,7 @@ void CBookmarksView::OnLoadFile(bool mergeFlag, bool loadState)
     CUnicodeFile file;
     std::_tstring xmlStr;
     file.Open(BookmarksFilePath(loadState));
+    if (!loadState) boost::filesystem::remove(BookmarksFilePath(true));
     if (file.IsOpen())
     {
         file.Read(xmlStr);
@@ -855,7 +854,7 @@ void CBookmarksView::OnLoadFile(bool mergeFlag, bool loadState)
             }
         }
     }
-    else
+    else if (userFlag)
     {
         MessageBox(LOAD_UNFOUND_BOOKMARKS_MSG, _T("Warning"));
     }
@@ -919,7 +918,7 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
         int col = 0;
 
         m_list.DeleteAllItems();
-        OnLoadFile(false, true);
+        OnLoadFile(false, false, true);
 
         for (int i = 0; i < col; ++i) {
             m_list.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
