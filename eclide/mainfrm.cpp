@@ -1649,7 +1649,7 @@ void CMainFrame::OnUpdateBookmarkLoad(CCmdUI* pCmdUI)
 
 void CMainFrame::OnUpdateBookmarkLoadMerge(CCmdUI* pCmdUI)
 {
-    if (m_Bookmarks->HasLoad())
+    if (m_Bookmarks->HasLoad() && m_Bookmarks->HasBookmarks())
     {
         pCmdUI->Enable();
     }

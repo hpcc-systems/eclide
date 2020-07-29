@@ -129,7 +129,7 @@ protected:
     afx_msg void OnUpdateOpen(CCmdUI* pCmdUI);
     afx_msg void OnSaveFile(bool saveState = false);
     afx_msg void OnUpdateSaveFile(CCmdUI* pCmdUI);
-    afx_msg void OnLoadFile(bool mergeFlag=false , bool loadState=false);
+    afx_msg void OnLoadFile(bool userFlag=true, bool mergeFlag=false , bool loadState=false);
     afx_msg void OnDeleteLines();
     afx_msg void OnUpdateLoadFile(CCmdUI* pCmdUI);
 
