@@ -865,7 +865,7 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
         bool eclType = true;
 
         if (m_dlgview.GetAttribute()) {
-            std::_tstring ext = m_dlgview.GetAttribute()->GetType()->GetFileExtension(false);
+            std::_tstring ext = m_dlgview.GetAttribute()->GetType()->GetFileExtension(true);
             if (boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ESDL) || boost::algorithm::iequals(ext, ATTRIBUTE_TYPE_ECM))
             {
                 UPDATEUI(cui, ID_GO_GENERATE, true);
