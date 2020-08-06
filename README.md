@@ -5,7 +5,9 @@
 ### Prerequisits 
 * git (optional - needed to clone sources)
 * cmake
-* Visual Studio 2015 / 2017 / 2019
+* Visual Studio:
+    * 2015
+    * 2017 ver <= 15.8
 * Python 2.7 (used to build chromium)
 * NSIS (optional - needed to create install package)
 
