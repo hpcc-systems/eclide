@@ -398,6 +398,7 @@ protected:
     afx_msg LRESULT OnRestoreState(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnSelectRibbon(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMDIChildActivate(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnWorkSpaceLabels(WPARAM wParam, LPARAM lParam);
 
     afx_msg void OnFileNew();
     afx_msg void OnFileNewSpray();
@@ -532,7 +533,8 @@ public:
     BOOL DoFileOpen(const CString & sPathName);
     BOOL DoFileSaveAll(bool attrsOnly);
 
-    void DoWorkspaceRefresh();
+    void StartWorkspaceRefresh();
+    static void DoWorkspaceRefresh(CMainFrame * self);
     void DoWorkspaceNew();
     void DoWorkspaceSave();
     void DoWorkspaceLoad(IWorkspace * newWorkspace);

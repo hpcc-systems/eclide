@@ -29,6 +29,7 @@ enum UM
     UM_MDICHILDACTIVATE,
     UM_RESTORESTATE,
     UM_SELECTRIBBON,
+    UM_WORKSPACELABELS,
     UM_LAST
 };
 
@@ -97,6 +98,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_MESSAGE(UM_RESTORESTATE, OnRestoreState)
     ON_MESSAGE(UM_SELECTRIBBON, OnSelectRibbon)
     ON_MESSAGE(UM_MDICHILDACTIVATE, OnMDIChildActivate)
+    ON_MESSAGE(UM_WORKSPACELABELS, OnWorkSpaceLabels)
 
     ON_COMMAND(ID_FILE_NEW, OnFileNew)
     ON_COMMAND(ID_FILE_NEWBUILDER, OnFileNew)
@@ -2049,9 +2051,15 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
     {
 #ifdef WORKSPACE_WINDOW
         CComPtr<IRepository> rep = AttachRepository();
+        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && !CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ATTRIBUTE)).IsEmpty()) {
+            if (MessageBox(_T("Connection to Remote Repository failed (WsAttributes).  Remove entry from \"Prefrences->Server\"?\r\n\r\n(improves startup performance)"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION) == IDYES) {
+                GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_SERVER_ATTRIBUTE, _T("")); 
+                GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_SERVER_ADVANCED, true); 
+            }
+        }
         CString workspaceLabel = GetIConfig(QUERYBUILDER_CFG)->Get(WORKSPACE_CURRENT);
         m_Workspace->Send_Reset(rep->CreateIWorkspace(static_cast<const TCHAR *>(workspaceLabel)));  //Has to be send for the default workspace to make it to the correct place.
-        DoWorkspaceRefresh();
+        StartWorkspaceRefresh();
 #endif
         m_Repository->Post_Reset();
         m_RepositoryFilter->Post_Reset();
@@ -2070,6 +2078,8 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
     SetTimer(TIMER_AUTOSAVE, static_cast<UINT>(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_AUTOSAVEFREQ)) * 1000, NULL);
 
     RestoreState();
+
+    m_Bookmarks->Load(true);
     m_supressSyncTOC = false;
 }
 
@@ -2092,7 +2102,6 @@ void CMainFrame::RestoreState()
         }
     }
     std::sort(m_persistedWindows.begin(), m_persistedWindows.end(), CPersistedItemCompare());
-    m_Bookmarks->Load(true);
     SetTimer(TIMER_RESTORESTATE, 1, NULL);
 }
 
@@ -2388,11 +2397,36 @@ BOOL CMainFrame::DoFileSaveAll(bool attrsOnly)
     return retVal;
 }
 
-void CMainFrame::DoWorkspaceRefresh()
+void CMainFrame::StartWorkspaceRefresh()
 {
-    IWorkspaceVector workspaces;
+    CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> ar;
+    m_wndRibbonBar.GetElementsByID (ID_WORKSPACE_LIST, ar);
+    for (int i = 0; i < ar.GetSize (); i++)
+    {
+        CMFCRibbonComboBox * pWorkspace = DYNAMIC_DOWNCAST(CMFCRibbonComboBox, ar[i]);
+        if (pWorkspace)
+        {
+            pWorkspace->RemoveAllItems();
+            pWorkspace->AddItem(_T("...Loading..."));
+            pWorkspace->SelectItem(_T("...Loading..."));
+        }
+    }
+
+    clib::thread run(__FUNCTION__, boost::bind(DoWorkspaceRefresh, this));
+}
+
+void CMainFrame::DoWorkspaceRefresh(CMainFrame * self)
+{
+    IWorkspaceVector * workspaces = new IWorkspaceVector();
     CComPtr<IRepository> rep = AttachRepository();
-    rep->GetWorkspaces(&workspaces, false);
+    rep->GetWorkspaces(workspaces, false);
+
+    ::PostMessage(self->GetSafeHwnd(), UM_WORKSPACELABELS, 0, (LPARAM)workspaces);
+}
+
+LRESULT CMainFrame::OnWorkSpaceLabels(WPARAM wParam, LPARAM lParam)
+{
+    IWorkspaceVector * workspaces = (IWorkspaceVector *)lParam;
 
     CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> ar;
     m_wndRibbonBar.GetElementsByID (ID_WORKSPACE_LIST, ar);
@@ -2402,11 +2436,14 @@ void CMainFrame::DoWorkspaceRefresh()
         if (pWorkspace)
         {
             pWorkspace->RemoveAllItems();
-            for(IWorkspaceVector::const_iterator itr =  workspaces.begin(); itr != workspaces.end(); ++itr)
+            for(IWorkspaceVector::const_iterator itr =  workspaces->begin(); itr != workspaces->end(); ++itr)
                 pWorkspace->AddItem(itr->get()->GetLabel(), (DWORD_PTR)itr->get());
             pWorkspace->SelectItem(m_Workspace->GetCurrentWorkspace()->GetLabel());
         }
     }
+
+    delete workspaces;
+    return 0;
 }
 
 void CMainFrame::DoWorkspaceNew()
@@ -2527,7 +2564,7 @@ void CMainFrame::DoWorkspaceRemove(const IWorkspaceVector & workspaces)
     }
 
     if (removed)
-        DoWorkspaceRefresh();
+        StartWorkspaceRefresh();
 }
 
 void CMainFrame::DoWorkspaceSwitch(IWorkspace * newWorkspace, bool saveCurrent)
@@ -2538,7 +2575,7 @@ void CMainFrame::DoWorkspaceSwitch(IWorkspace * newWorkspace, bool saveCurrent)
     EnumChildWindows(GetSafeHwnd(), ChildEnumProc, CWM_CLOSEALL);
     m_Workspace->SetCurrentWorkspace(newWorkspace);
     DoWorkspaceLoad(newWorkspace);
-    DoWorkspaceRefresh();
+    StartWorkspaceRefresh();
 
     CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> ar;
     m_wndRibbonBar.GetElementsByID (ID_WORKSPACE_LIST, ar);
@@ -2755,7 +2792,7 @@ void threadSaveAs(CMainFrame * self, StlLinked<Dali::IWorkunit> wu, CString file
     e.New(sheetCount);
     Dali::IResultVector::const_iterator itr, end;
     //  Check for largest result set...
-    int rowCount = 0;
+    __int64 rowCount = 0;
     for(boost::tie(itr, end) = wu->GetResultIterator(); itr != end; ++itr)
     {
         CComPtr<Dali::IResult> result = itr->get();

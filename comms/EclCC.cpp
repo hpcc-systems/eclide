@@ -704,9 +704,11 @@ TRI_BOOL IsRemoteQueueEnabled()
 }
 
 CacheT<std::_tstring, CEclCC> EclCCCache;
+CComPtr<IEclCC> g_eclcc;
 void ClearEclCCSingletons()
 {
     EclCCCache.Clear();
+    g_eclcc = NULL;
 }
 
 CEclCC * CreateEclCCRaw(IConfig * config, const std::_tstring & compilerFile)
@@ -799,9 +801,11 @@ IEclCC * CreateIEclCC()
     if (g_EnableCompiler != TRI_BOOL_TRUE)
         return NULL;
 
+    if (g_eclcc)
+        return g_eclcc;
+
     CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
-    if (!config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION))
-    {
+    if (!config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION)) {
         CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
         CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
         CEclCCVector foundCompilers;
@@ -825,8 +829,10 @@ IEclCC * CreateIEclCC()
                 }
                 bestMatchEclCC_before = itr->get();
             }
-            if (matchedEclCC)
+            if (matchedEclCC) {
+                g_eclcc = matchedEclCC;
                 return matchedEclCC;
+            }
             
             if (bestMatchEclCC_after && versionCompare.distance(serverVersion, bestMatchEclCC_after->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
                 matchedEclCC = bestMatchEclCC_after;
@@ -838,6 +844,7 @@ IEclCC * CreateIEclCC()
             {
                 std::_tstring eclccBuildStr, serverVersionStr;
                 matchedEclCC->m_warnings = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
+                g_eclcc = matchedEclCC;
                 return matchedEclCC;
             }
 
@@ -847,8 +854,11 @@ IEclCC * CreateIEclCC()
             const std::_tstring errors = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
             matchedEclCC->m_errors = errors;
             matchedEclCC->m_errors += _T("\r\n(To prevent this message from showing, either download and install the matching client tools package or override the default compiler settings in the preferences window)\r\n");
+            g_eclcc = matchedEclCC;
             return matchedEclCC;
         }
     }
-    return CreateEclCCRaw(config, (const TCHAR *)CString(config->Get(GLOBAL_COMPILER_LOCATION)));
+
+    g_eclcc = CreateEclCCRaw(config, (const TCHAR *)CString(config->Get(GLOBAL_COMPILER_LOCATION)));
+    return g_eclcc;
 }
