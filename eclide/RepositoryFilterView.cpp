@@ -463,6 +463,18 @@ void CRepositoryFilterView::DoRefreshState()
     {
         m_search.EnableWindow(true);
     }
+    if (IsLocalRepositoryEnabled()) {
+        CWindow wnd = (CWindow)GetDlgItem(IDC_EDIT_USER);
+        wnd.EnableWindow(false);
+        wnd = (CWindow)GetDlgItem(IDC_CHECK_SANDBOXED);
+        wnd.EnableWindow(false);
+        wnd = (CWindow)GetDlgItem(IDC_CHECK_LOCKED);
+        wnd.EnableWindow(false);
+        wnd = (CWindow)GetDlgItem(IDC_CHECK_CHECKEDOUT);
+        wnd.EnableWindow(false);
+        wnd = (CWindow)GetDlgItem(IDC_CHECK_ORPHANED);
+        wnd.EnableWindow(false);
+    }
 }
 
 void CRepositoryFilterView::SetResultsCount(int count)
