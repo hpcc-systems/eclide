@@ -80,7 +80,7 @@ public:
         std::string batchFile = attrStr;
         batchFile += ".bat";
         boost::filesystem::path folder;
-        if (eclcc->LocatePlugin(attrStr, batchFile, folder))
+        if (eclcc && eclcc->LocatePlugin(attrStr, batchFile, folder))
         {
             switch (action)
             {
