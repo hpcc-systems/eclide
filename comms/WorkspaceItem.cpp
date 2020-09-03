@@ -87,6 +87,7 @@ public:
         m_repository = repository;
         m_type = type;
         m_id = path;
+        boost::algorithm::to_lower(m_id);
         m_label = label;
         m_props.Set(PERSIST_LABEL, label);
         m_attributeLoaded = false;
@@ -201,6 +202,7 @@ public:
         catch (boost::bad_lexical_cast &)
         {
         }
+        boost::algorithm::to_lower(m_id);
     }
     bool HasWorkunit(const CString & wuid)
     {
@@ -359,7 +361,7 @@ public:
         }
         else
         {
-            attrInfo.AttributeType = m_attributeType;
+            attrInfo.AttributeType = ExtensionWithoutDot(m_id);
         }
 
         return attrInfo;

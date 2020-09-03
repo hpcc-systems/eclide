@@ -313,6 +313,27 @@ public:
         return false;
     }
 
+    virtual bool Ping() const
+    {
+        if (m_url.empty()) {
+            return false;
+        }
+
+        CSoapInitialize<WsAttributesServiceSoapProxy> server(m_url.c_str(), g_passwordCache[m_url].first.c_str(), g_passwordCache[m_url].second.c_str() , false, 5);
+
+        _ns2__GetLabels request;
+        _ns2__GetLabelsResponse response;
+        ESP_EXCEPTION_LOG3(response.Exceptions);
+        if (server.GetLabels(&request, &response) == SOAP_OK)
+        {
+            return true;
+        }
+        else 
+            _DBGLOG(m_url, LEVEL_WARNING, server.GetClientErrorMsg());
+        
+        return false;
+    }
+
     virtual bool GetLabels(CRepLabelVector & results) const
     {
         //clib::recursive_mutex::scoped_lock proc(m_mutex);
@@ -972,8 +993,7 @@ IRepository * AttachRepository(const TCHAR* url, const TCHAR* userId, const TCHA
     if (IsLocalRepositoryEnabled() == TRI_BOOL_UNKNOWN)
     {
         CComPtr<CRepository> rep = new CRepository(url, userId, password, label, instance);
-        CRepLabelVector labels;
-        if (RepositoryCache.Get(rep)->GetLabels(labels))
+        if (RepositoryCache.Get(rep)->Ping())
             EnableLocalRepository(TRI_BOOL_FALSE);
         else
             EnableLocalRepository(TRI_BOOL_TRUE);
@@ -984,5 +1004,3 @@ IRepository * AttachRepository(const TCHAR* url, const TCHAR* userId, const TCHA
 
     return RepositoryCache.Get(new CRepository(url, userId, password, label, instance));
 }
-
-
