@@ -10,9 +10,6 @@ set ( HPCC_POINT 45 )
 set ( HPCC_MATURITY "closedown" )
 set ( HPCC_SEQUENCE 0 )
 ###
-IF ( ${HPCC_POINT} GREATER 65 )
-  error ( "HPCC_POINT must be less than 66." )
-ENDIF ( )
 IF ( ${HPCC_SEQUENCE} GREATER 99 )
   error ( "HPCC_SEQUENCE must be less than 100." )
 ENDIF ( )
@@ -35,13 +32,3 @@ ELSE ( )
 ENDIF ( )
 SET ( HPCC_VERSION ${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}.${HPCC_BUILD} )
 MESSAGE ( "HPCC_VERSION:  ${HPCC_VERSION}" )
-
-#     MSI_VERSION must be of the format 255.255.65535  ---
-#     Samples:  6.10.2001 (6.10.2-1rc)
-#               6.10.2101 (6.10.2-1)
-#               6.10.2102 (6.10.2-2)
-#               6.10.23045 (6.10.23-45rc)
-#               6.10.67189 (6.10.67-89)
-SET ( MSI_VERSION "${HPCC_MAJOR}.${HPCC_MINOR}.${HPCC_POINT}${HPCC_BUILD}" )
-MESSAGE ( "MSI_VERSION:  ${MSI_VERSION}" )
-###
