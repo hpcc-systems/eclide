@@ -2052,7 +2052,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 #ifdef WORKSPACE_WINDOW
         CComPtr<IRepository> rep = AttachRepository();
         if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE && !CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ATTRIBUTE)).IsEmpty()) {
-            if (MessageBox(_T("Connection to Remote Repository failed (WsAttributes).  Remove entry from \"Prefrences->Server\"?\r\n\r\n(improves startup performance)"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION) == IDYES) {
+            if (MessageBox(_T("Connection to Remote Repository failed (WsAttributes).  Remove entry from \"Preferences->Server\"?\r\n\r\n(improves startup performance)"), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_YESNO | MB_ICONQUESTION) == IDYES) {
                 GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_SERVER_ATTRIBUTE, _T("")); 
                 GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_SERVER_ADVANCED, true); 
             }
