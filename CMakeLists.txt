@@ -93,6 +93,12 @@ ELSE ()
     MESSAGE("Skipping ${PROJECT_SOURCE_DIR}/docs/ECLReference.chm (file does not exist)")
 ENDIF ()
 
+IF(EXISTS "${PROJECT_SOURCE_DIR}/docs/ECLReference_PT_BR.chm")
+    INSTALL (PROGRAMS ${PROJECT_SOURCE_DIR}/docs/ECLReference_PT_BR.chm DESTINATION bin)
+ELSE ()
+    MESSAGE("Skipping ${PROJECT_SOURCE_DIR}/docs/ECLReference_PT_BR.chm (file does not exist)")
+ENDIF ()
+
 SET(DOC_FILES 
     ${PROJECT_SOURCE_DIR}/docs/LangColorDUD.xml
     ${PROJECT_SOURCE_DIR}/docs/LangColorECL.xml

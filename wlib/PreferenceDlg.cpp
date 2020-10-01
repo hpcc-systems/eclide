@@ -24,6 +24,16 @@
 //  ===========================================================================
 #define GLYPH_WIDTH 15
 
+void SetComboText(CComboBox & combo, const std::_tstring & text)
+{
+	int nItem = combo.FindStringExact(-1, text.c_str());
+	if (nItem >= 0) {
+		combo.SetCurSel(nItem);
+	} else {
+		combo.SetWindowText(text.c_str());
+	}
+}
+
 class CFontComboBox : public CWindowImpl<CFontComboBox, CComboBox>, public COwnerDraw<CFontComboBox>
 {
 	typedef CWindowImpl<CFontComboBox, CComboBox> thisClass;
@@ -1120,19 +1130,6 @@ public:
 		SetComboText(m_comboFontSize, m_FontSize);
 	}
 
-	void SetComboText(CComboBox & combo, const std::_tstring & text)
-	{
-		int nItem = combo.FindStringExact(-1,text.c_str());
-		if ( nItem >= 0 )
-		{
-			combo.SetCurSel(nItem);
-		}
-		else
-		{
-			combo.SetWindowText(text.c_str());
-		}
-	}
-
 	void SaveToConfig()
 	{
 		//DoDataExchange(true);
@@ -1808,19 +1805,6 @@ public:
 		DoChanged(false);
 	}
 
-	void SetComboText(CComboBox & combo, const std::_tstring & text)
-	{
-		int nItem = combo.FindStringExact(-1,text.c_str());
-		if ( nItem >= 0 )
-		{
-			combo.SetCurSel(nItem);
-		}
-		else
-		{
-			combo.SetWindowText(text.c_str());
-		}
-	}
-
 	void UpdateConfig()
 	{
 		m_config->Set(GLOBAL_WORKUNIT_RESULTLIMIT, m_ResultLimit);
@@ -1944,6 +1928,9 @@ protected:
 	int m_WorkUnitPollFreq;
 	int m_WorkUnitFetchLimit;
 	int m_WorkUnitPersistLimit;
+	std::_tstring m_comboHelpLocaleStr;
+
+	CComboBox m_comboHelpLocale;
 
 public:
 	CPrefOtherDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner)
@@ -1964,6 +1951,15 @@ public:
 		DoChanged(false);
 	}
 
+	void InitComboHelpLocale()
+	{
+		m_comboHelpLocale = GetDlgItem(IDC_COMBO_HELP);
+		m_comboHelpLocale.AddString(_T(""));
+		m_comboHelpLocale.AddString(_T("en"));
+		m_comboHelpLocale.AddString(_T("pt-BR"));
+	}
+
+
 	void PopulateControls()
 	{
 		SetDefaultConfig(m_ini, static_cast<const TCHAR *>(m_ConfigLabel));
@@ -1976,6 +1972,8 @@ public:
 		m_WorkUnitPollFreq = m_config->Get(GLOBAL_ACTIVEWORKUNIT_REFRESH);
 		m_WorkUnitFetchLimit = m_config->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
 		m_WorkUnitPersistLimit = m_config->Get(GLOBAL_WORKUNIT_PERSISTLIMIT);
+		m_comboHelpLocaleStr = CString(m_config->Get(GLOBAL_HELP_LOCALE));
+		SetComboText(m_comboHelpLocale, m_comboHelpLocaleStr);
 
 		DoDataExchange();
 
@@ -1992,6 +1990,9 @@ public:
 		m_config->Set(GLOBAL_ACTIVEWORKUNIT_REFRESH, m_WorkUnitPollFreq);
 		m_config->Set(GLOBAL_WORKUNIT_FETCHLIMIT, m_WorkUnitFetchLimit);
 		m_config->Set(GLOBAL_WORKUNIT_PERSISTLIMIT, m_WorkUnitPersistLimit);
+		CString comboHelpLocaleStr;
+		m_comboHelpLocale.GetWindowText(comboHelpLocaleStr);
+		m_config->Set(GLOBAL_HELP_LOCALE, comboHelpLocaleStr);
 	}
 
 	void DoApply(bool bMakeGlobal)
@@ -2016,6 +2017,8 @@ public:
 		COMMAND_HANDLER(IDC_CHECK_IGNORESERVERVERSION, BN_CLICKED, OnCheckClicked)
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 		COMMAND_HANDLER(IDC_CHECK_DISABLEAUTOUPDATE, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_COMBO_HELP, CBN_SELCHANGE, OnCbnSelendokComboHelp)
+		COMMAND_HANDLER(IDC_COMBO_HELP, CBN_SELENDOK, OnCbnSelendokComboHelp)
 		NOTIFY_CODE_HANDLER(UDN_DELTAPOS, OnSpinChange)
 		COMMAND_HANDLER(IDC_BUTTON_GPF, BN_CLICKED, OnBnClickedButtonGpf)
 		REFLECT_NOTIFICATIONS()
@@ -2042,6 +2045,7 @@ public:
 		SetLimit(IDC_SPIN_WORKUNITPOLL, 5, 999);
 		SetLimit(IDC_SPIN_WORKUNITFETCHLIMIT, 100, 999999);
 		SetLimit(IDC_SPIN_WORKUNITPERSISTLIMIT, 0, 10);
+		InitComboHelpLocale();
 
 		LoadFromConfig(m_config); //this calls PopulateControls
 
@@ -2062,6 +2066,13 @@ public:
 	LRESULT OnCheckClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		DoChanged();
+		return 0;
+	}
+	LRESULT OnCbnSelendokComboHelp(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoChanged();
+		CString comboHelpLocaleStr;
+		m_comboHelpLocaleStr = m_comboHelpLocale.GetLBText(m_comboHelpLocale.GetCurSel(), comboHelpLocaleStr);
 		return 0;
 	}
 	void SetLimit(int nId, int lower, int upper)
