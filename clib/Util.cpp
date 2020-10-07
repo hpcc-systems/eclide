@@ -4,6 +4,7 @@
 #include "global.h"
 #include <HtmlHelp.h>
 #include "UtilFilesystem.h"
+#include "Global.h"
 
 static ULONG COMCTL_VERSION=0; 
 
@@ -487,11 +488,27 @@ void ShowHelp(const std::_tstring word)
 
     boost::filesystem::path appFolder;
     GetProgramFolder(appFolder);
-#ifdef _DEBUG
-    appFolder /= "ECLReference_debug.chm";
-#else
-    appFolder /= "ECLReference.chm";
-#endif
+    std::string helpFile = "ECLReference";
+
+    std::string locale = CT2A(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_HELP_LOCALE)));
+    if (locale.empty()) {
+        char buf[100];
+        LCID lcid = GetUserDefaultLCID();
+        if (GetLocaleInfoA(lcid, LOCALE_SISO639LANGNAME, buf, 100)) {
+            locale = buf;
+        }
+    }
+    if (!locale.empty()) {
+        locale = boost::to_upper_copy<std::string>(locale);
+        boost::replace_all(locale, "-", "_");
+        if (boost::filesystem::exists(appFolder / ((helpFile + "_" + locale) + ".chm"))) {
+            helpFile = helpFile + "_" + locale;
+        } else if (boost::filesystem::exists(appFolder / ((helpFile + "_" + locale.substr(0, 2)) + ".chm"))) {
+            helpFile = helpFile + "_" + locale.substr(0, 2);
+        }
+    }
+
+    appFolder /= helpFile + ".chm";
     std::_tstring helpPath = pathToWString(appFolder);
 
     HtmlHelp(GetDesktopWindow(), helpPath.c_str(), HH_DISPLAY_TOPIC, NULL);

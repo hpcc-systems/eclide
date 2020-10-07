@@ -9,6 +9,7 @@ static const SectionLabelDefault GLOBAL_APP_VERSION(SectionLabel(_T("General"), 
 static const SectionLabelDefault GLOBAL_USER(SectionLabel(_T("General"), _T("User")), _T(""));
 static const SectionLabelDefault GLOBAL_PASSWORD(SectionLabel(_T("General"), _T("Password")), _T(""));
 static const SectionLabelDefault GLOBAL_DEBUG_LOGRESULTXML(SectionLabel(_T("Debug"), _T("LogResultXML")), false);
+static const SectionLabelDefault GLOBAL_HELP_LOCALE(SectionLabel(_T("General"), _T("HelpLocale")), _T(""));
 
 typedef boost::signal<void(SectionLabel *)> globaldata_signal_type;
 typedef globaldata_signal_type::slot_type globaldata_slot_type;
