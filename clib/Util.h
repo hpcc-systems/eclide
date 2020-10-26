@@ -26,6 +26,7 @@ CLIB_API const TCHAR * UnescapeXML(const std::_tstring & source, std::_tstring &
 CLIB_API const TCHAR * GetActiveXDLLPath(const std::_tstring & clsID, std::_tstring & path);
 CLIB_API const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & folder);
 CLIB_API int MoveToRecycleBin(const std::_tstring & path);
+CLIB_API const TCHAR * GetLocale(std::_tstring & locale);
 CLIB_API void ShowHelp(const std::_tstring word);
 CLIB_API bool GetPluginECL(const std::_tstring & pluginPath, std::_tstring & ecl);
 
