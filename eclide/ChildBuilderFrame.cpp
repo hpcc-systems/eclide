@@ -889,16 +889,12 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
             UPDATEUI(cui, ID_HELP, TRUE);
             UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
             UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
+            UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_GO_GENERATE, m_dlgview.CanGenerate());
+            UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanCompile());
 
-            if (m_dlgview.HasPluginConfig())
-            {
-                if (!m_dlgview.CanSubmit())
-                {
-                    m_dlgview.m_goButton.SetDlgCtrlID(ID_GO_NOTHING);
-                }
-                UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
-                UPDATEUI(cui, ID_GO_GENERATE, m_dlgview.CanGenerate());
-                UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanCompile());
+            if (m_dlgview.HasPluginConfig() && !m_dlgview.CanSubmit()) {
+                m_dlgview.m_goButton.SetDlgCtrlID(ID_GO_NOTHING);
             }
 
             if (m_dlgview.CanExecute())
