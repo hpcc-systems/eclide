@@ -481,6 +481,19 @@ int MoveToRecycleBin(const std::_tstring & path)
     return SHFileOperation(&fileop);
 }
 
+CLIB_API const TCHAR * GetLocale(std::_tstring & locale) {
+    TCHAR buf[100];
+    LCID lcid = GetUserDefaultLCID();
+    if (GetLocaleInfo(lcid, LOCALE_SISO639LANGNAME, buf, 100)) {
+        locale = buf;
+    }
+    if (GetLocaleInfo(lcid, LOCALE_SISO3166CTRYNAME, buf, 100)) {
+        locale += _T("-");
+        locale += buf;
+    }
+    return locale.c_str();
+}
+
 void ShowHelp(const std::_tstring word)
 {
     if (word.empty())
@@ -490,15 +503,12 @@ void ShowHelp(const std::_tstring word)
     GetProgramFolder(appFolder);
     std::string helpFile = "ECLReference";
 
-    std::string locale = CT2A(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_HELP_LOCALE)));
-    if (locale.empty()) {
-        char buf[100];
-        LCID lcid = GetUserDefaultLCID();
-        if (GetLocaleInfoA(lcid, LOCALE_SISO639LANGNAME, buf, 100)) {
-            locale = buf;
-        }
+    std::_tstring locale_t = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_HELP_LOCALE));
+    if (locale_t.empty()) {
+        GetLocale(locale_t);
     }
-    if (!locale.empty()) {
+    if (!locale_t.empty()) {
+        std::string locale = CT2A(locale_t.c_str(), CP_UTF8);
         locale = boost::to_upper_copy<std::string>(locale);
         boost::replace_all(locale, "-", "_");
         if (boost::filesystem::exists(appFolder / ((helpFile + "_" + locale) + ".chm"))) {
