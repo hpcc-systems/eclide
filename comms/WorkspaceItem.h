@@ -27,6 +27,7 @@ __interface __declspec(uuid("A4A4FFF2-0DED-422F-B06B-B0FE4CDB6C52")) IWorkspaceI
     const TCHAR *GetChecksum() const;
 
     void SetContent(const CPersistMap & pm);
+    void SetLabel(const std::_tstring & label);
     void SetAttribute(IAttribute *attribute);
     void Restore(IPersistable * window) const;
 

@@ -2493,8 +2493,14 @@ void CMainFrame::DoWorkspaceLoad(IWorkspace * workspace)
             newWin = OpenBuilderMDI(this, itr->get());
             break;
         case WORKSPACE_ITEM_ATTRIBUTE:
-            if (CComPtr<IEclCC> eclcc = CreateIEclCC())
+            if (CComPtr<IEclCC> eclcc = CreateIEclCC()) {
+                std::_tstring label, module, attribute, attrType;
+                CModuleHelper modHelper(_T(""));
+                std::_tstring path = itr->get()->GetID();
+                modHelper.ModuleAttrFromPath(path, label, module, attribute, attrType);
+                itr->get()->SetLabel((boost::_tformat(_T("%1%.%2%")) % attribute % attrType).str());
                 newWin = OpenBuilderMDI(this, itr->get());
+            }
             else
                 newWin = OpenAttributeMDI(this, itr->get());
             break;

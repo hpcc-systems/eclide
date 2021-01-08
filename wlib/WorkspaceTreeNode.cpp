@@ -2,6 +2,8 @@
 #include "..\en_us\resource.h"
 
 #include "WorkspaceTreeNode.h"
+#include "ModuleHelper.h"
+#include "EclCC.h"
 
 #include <util.h> //clib
 #include <utilDateTime.h> //clib
@@ -127,9 +129,11 @@ void CWorkspaceNode::ItemExpanding()
 		newNode->InsertBelow(*GetTreeView(), *this);
 		newNode->operator ()(itr->get());
 	}
+	WORKSPACE_ITEM_TYPE type = WORKSPACE_ITEM_UNKNOWN;
 	for (IWorkspaceItemVector::const_iterator itr = windows.begin(); itr != windows.end(); ++itr)
 	{
-		switch(itr->get()->GetType())
+		type = CreateIEclCC() ? WORKSPACE_ITEM_BUILDER : itr->get()->GetType();
+		switch(type)
 		{
 		case WORKSPACE_ITEM_BUILDER:
 			{
