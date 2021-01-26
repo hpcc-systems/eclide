@@ -1330,6 +1330,12 @@ BEGIN
         MENUITEM "Copy Path\tCtrl+Alt+K",       ID_REPOSITORY_COPYPATH
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM "&Delete\tDel",                ID_EDIT_DELETE
+        POPUP "Bookmarks"
+        BEGIN
+            MENUITEM "Bookmark [BM]",               ID_BOOKMARKS_INSERT
+            MENUITEM "Todo",                        ID_BOOKMARKS_TODO
+            MENUITEM "Hack",                        ID_BOOKMARKS_HACK
+        END
         MENUITEM SEPARATOR
         MENUITEM "Fold All\tAlt+0",             ID_EDIT_FOLDALL
         MENUITEM "Unfold All\tCtrl+Alt+0",      ID_EDIT_UNFOLDALL
@@ -2053,12 +2059,23 @@ BEGIN
     POPUP "Bookmarks"
     BEGIN
         MENUITEM "&Open\tCtrl+O",               ID_BOOKMARKS_OPEN
-        MENUITEM "&Save\tCtrl+S",               ID_BOOKMARKS_SAVE
-        MENUITEM "&Load\tCtrl+L",               ID_BOOKMARKS_LOAD
-        MENUITEM "Load &Merge\tCtrl+M",         ID_BOOKMARKS_LOADMERGE
         MENUITEM "&Delete\tCtrl+D",             ID_BOOKMARKS_DELETE
         MENUITEM "&Clear\tCtrl+C",              ID_BOOKMARKS_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Save to Master\tCtrl+S",     ID_BOOKMARKS_SAVE
+        MENUITEM "&Load Master\tCtrl+L",        ID_BOOKMARKS_LOAD
+        MENUITEM "&Merge with Master\tCtrl+M",  ID_BOOKMARKS_LOADMERGE
     END
+END
+
+IDR_BOOKMARKS_MENU MENU
+BEGIN
+    MENUITEM "Open",                        ID_BOOKMARKS_OPEN
+    MENUITEM "Delete",                      ID_BOOKMARKS_DELETE
+    MENUITEM SEPARATOR
+    MENUITEM "Save to Master",              ID_BOOKMARKS_SAVE
+    MENUITEM "Load Master",                 ID_BOOKMARKS_LOAD
+    MENUITEM "Merge with Master",           ID_BOOKMARKS_LOADMERGE
 END
 
 

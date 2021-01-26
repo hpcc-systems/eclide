@@ -57,7 +57,7 @@ void CBookmarksFrame::ParsePathBookmarksEcl(std::_tstring pathStr)
 }
 bool CBookmarksFrame::HasBookmarks()
 {
-    return m_view.GetCount() ? true : false;
+    return m_view.HasBookmarks();
 }
 bool CBookmarksFrame::BookmarkSelected()
 {
@@ -67,9 +67,9 @@ int CBookmarksFrame::GetCount()
 {
     return m_view.GetCount();
 }
-bool CBookmarksFrame::HasLoad()
+bool CBookmarksFrame::BookmarkFileExists(BM_FILE_TYPE fileType)
 {
-    return boost::filesystem::exists(m_view.BookmarksFilePath(true));
+    return boost::filesystem::exists(m_view.BookmarksFilePath(fileType));
 }
 void CBookmarksFrame::View()
 {
@@ -111,9 +111,9 @@ void CBookmarksFrame::Save(bool saveState)
 {
     m_view.Save(saveState);
 }
-void CBookmarksFrame::Load(bool saveState)
+void CBookmarksFrame::Load(bool mergeFlag, BM_FILE_TYPE fileType)
 {
-    m_view.Load(saveState);
+    m_view.Load(mergeFlag, fileType);
 }
 void CBookmarksFrame::Delete()
 {
@@ -122,4 +122,24 @@ void CBookmarksFrame::Delete()
 void CBookmarksFrame::Clear()
 {
     m_view.Clear();
+}
+bool CBookmarksFrame::HasSelection()
+{
+    return m_view.HasSelection();
+}
+bool CBookmarksFrame::CanSave()
+{
+    return m_view.CanSave();
+}
+bool CBookmarksFrame::CanLoad()
+{
+    return m_view.CanLoad();
+}
+bool CBookmarksFrame::CanLoadMerge()
+{
+    return m_view.CanLoadMerge();
+}
+void CBookmarksFrame::BookmarkFilesState()
+{
+    m_view.BookmarkFilesState();
 }

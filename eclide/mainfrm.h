@@ -427,6 +427,7 @@ protected:
     afx_msg void OnBookmarkOpen();
     afx_msg void OnBookmarkSave();
     afx_msg void OnBookmarkLoad();
+    afx_msg void OnBookmarkLoadMerge();
     afx_msg void OnBookmarkClear();
     afx_msg void OnBookmarkDelete();
     afx_msg void OnUpdateBookmarkOpenItem(CCmdUI* pCmdUI);
