@@ -1,4 +1,4 @@
 [submodule "vcpkg"]
 	path = vcpkg
-	url = https://github.com/GordonSmith/vcpkg.git
-	branch = eclide
+	url = https://github.com/hpcc-systems/vcpkg.git
+	branch = eclide_2
