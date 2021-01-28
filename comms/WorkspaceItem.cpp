@@ -1,7 +1,8 @@
 #include "StdAfx.h"
 
 #include "Repository.h"
-//#include "WorkspaceItem.h"
+#include "WorkspaceItem.h"
+#include "ModuleHelper.h"
 #include "Thread.h"
 #include "cache.h"
 #include <UtilFilesystem.h>
@@ -181,6 +182,11 @@ public:
             m_attributeType = m_props.Get(PERSIST_ATTRIBUTETYPE);
             if (recalcID)
                 m_id += _T("/") + m_moduleLabel + _T("/") + m_attributeLabel + _T("/") + m_attributeType;
+            if (m_moduleLabel.empty() && !m_id.empty()) {
+                std::_tstring label, module;
+                CModuleHelper modHelper(_T(""));
+                modHelper.ModuleAttrFromPath(m_id, label, module, m_moduleLabel, m_attributeLabel);
+            }
             m_label = m_moduleLabel + _T(".") + m_attributeLabel;
             break;
         case WORKSPACE_ITEM_GRAPH:
@@ -397,6 +403,11 @@ public:
     void SetAttribute(IAttribute * attribute)
     {
         m_attribute = attribute;
+    }
+
+    void SetLabel(const std::_tstring & label)
+    {
+        m_label = label;
     }
 
     void Restore(IPersistable * window) const
