@@ -1155,8 +1155,14 @@ bool RestoreExisting(IWorkspaceItem * workspaceItem, CChildBuilderFrm** pChild)
             else if (fileFlag)
             {
                 std::_tstring existingID = wi->GetID();
-                if (boost::algorithm::iequals(existingID, passedID))
+                bool existingIsFileFlag = boost::filesystem::exists(existingID) ? true : false;
+                if (existingIsFileFlag && boost::algorithm::iequals(existingID, passedID))
                 {
+                    found = true;
+                }
+                else if (wi->GetAttribute()) {
+                    std::_tstring existingPath = wi->GetAttribute()->GetPath();
+                    if (boost::filesystem::exists(existingPath) && boost::algorithm::iequals(existingID, passedID))
                     found = true;
                 }
             }

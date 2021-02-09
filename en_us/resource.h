@@ -831,6 +831,15 @@
 #define ID_BOOKMARKS_PREV               33121
 #define ID_BOOKMARKS_VIEW               33122
 #define ID_REPOSITORY_COPYPATH          33123
+#define ID_OPEN_DELETE                  33124
+#define ID_OPEN_SAVETOMASTER            33125
+#define ID_OPEN_LOADMASTER              33126
+#define ID_OPEN_MERGEWITHMASTER         33127
+#define IDR_BOOKMARKS_OPEN              33128
+#define ID_BOOKMARKS_BOOKMARK           33129
+#define ID_BOOKMARKS_TODO               33130
+#define ID_BOOKMARKS_HACK               33131
+#define ID_BOOKMARKS_INSERT             33132
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -853,13 +862,14 @@
 #define IDR_POPUP_ERRORLOG              61411
 #define IDR_POPUP_SYNTAX                61412
 #define IDR_POPUP_BOOKMARKS             61413
+#define IDR_BOOKMARKS_MENU              61414
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        61414
-#define _APS_NEXT_COMMAND_VALUE         33124
+#define _APS_NEXT_RESOURCE_VALUE        61415
+#define _APS_NEXT_COMMAND_VALUE         33133
 #define _APS_NEXT_CONTROL_VALUE         547
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

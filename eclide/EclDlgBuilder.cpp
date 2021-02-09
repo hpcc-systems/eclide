@@ -81,9 +81,10 @@ bool CBuilderDlg::DoSave(bool saveFileAs, PREPROCESS_TYPE action)
     CWaitCursor wait;
     CString ecl;
     m_view.GetText(ecl);
-    if (m_attribute && m_attribute->SetText(ecl))
+    CBookmarksFrame * pFrame = GetBookmarksFrame();
+
+   if (m_attribute && m_attribute->SetText(ecl))
     {
-        CBookmarksFrame * pFrame = GetBookmarksFrame();
         if (pFrame)
         {
             pFrame->ParseBookmarksEcl(m_attribute);
@@ -112,8 +113,11 @@ bool CBuilderDlg::DoSave(bool saveFileAs, PREPROCESS_TYPE action)
         }
         return true;
     }
-    else if (!m_path.IsEmpty()) 
-        return DoFileSave(m_path);
+    else if (!m_path.IsEmpty()) {
+        bool saveFlag = DoFileSave(m_path);
+        pFrame->ParsePathBookmarksEcl(m_path.GetString());
+        return saveFlag;
+    }
     if (saveFileAs)
         return DoFileSaveAs();
     return false;

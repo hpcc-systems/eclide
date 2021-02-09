@@ -7,17 +7,23 @@
 #include <CustomMessages.h>
 
 const TCHAR * const CLEAR_BOOKMARKS_MSG = _T("Are you sure you want clear the displayed bookmarks?");
-const TCHAR * const SAVE_BOOKMARKS_MSG = _T("Are you sure you want overwrite the current bookmarks file?");
-const TCHAR * const LOAD_BOOKMARKS_MSG = _T("Are you sure you want replace the current list of bookmarks with what's saved?");
-const TCHAR * const LOAD_MERGE_BOOKMARKS_MSG = _T("Are you sure you want to merge your saved bookmarks with the current bookmark list?");
-const TCHAR * const LOAD_UNFOUND_BOOKMARKS_MSG = _T("No bookmarks file found");
+const TCHAR * const SAVE_BOOKMARKS_OVERWRITE_MSG = _T("Are you sure you want overwrite the master bookmarks file?");
+const TCHAR * const SAVE_BOOKMARKS_MSG = _T("Are you sure you want to save the current bookmarks as a master bookmarks file?");
+const TCHAR * const LOAD_BOOKMARKS_MSG = _T("Are you sure you want replace the current list of bookmarks with contents of the master?");
+const TCHAR * const LOAD_MERGE_BOOKMARKS_MSG = _T("Are you sure you want to merge your saved bookmarks with the master list?");
 const TCHAR * const DELETE_BOOKMARKS_MSG = _T("Do you want to delete the selected bookmark(s) from the list?");
 
 enum BM_SERVER_TYPE
 {
     BM_SERVER_TYPE_UNKNOWN = 0,
     BM_SERVER_TYPE_LOCAL,
-    BM_SERVER_TYPE_REMOTE,
+    BM_SERVER_TYPE_REMOTE
+};
+
+enum BM_FILE_TYPE
+{
+    BM_FILE_MASTER = 0,
+    BM_FILE_STATE
 };
 
 __interface ISciBookmarksMarker;
@@ -42,6 +48,13 @@ protected:
     bool m_checkMine;
     bool m_checkTodos;
     bool m_checkHacks;
+    bool m_masterExists;
+    bool m_stateExists;
+    bool m_filesDiff;
+    bool m_hasBookmarks;
+    bool m_hasSelection;
+    std::_tstring m_masterXML;
+    std::_tstring m_stateXML;
     BM_SERVER_TYPE m_serverType;
 
     HWND m_hWndOrigin;
@@ -103,9 +116,17 @@ public:
     int GetSelectedCount();
     void Open();
     void Save(bool saveState=false);
-    void Load(bool loadState=false);
+    void Load(bool mergeFlag=false, BM_FILE_TYPE fileType=BM_FILE_MASTER);
     void Clear();
     void OpenAttribute(int listRow);
+    bool BookmarkFilesState();
+    bool FileText(BM_FILE_TYPE fileType, std::_tstring& result);
+    bool FileDiff();
+    bool HasSelection();
+    bool CanSave();
+    bool CanLoad();
+    bool CanLoadMerge();
+    bool HasBookmarks();
 
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -125,11 +146,10 @@ protected:
     afx_msg void OnUpdateButtonRemoveBookmarks(CCmdUI* pCmdUI);
 
     afx_msg void OnOpen();
-    afx_msg void OpenMarkedBookmarks(bool val);
     afx_msg void OnUpdateOpen(CCmdUI* pCmdUI);
     afx_msg void OnSaveFile(bool saveState = false);
     afx_msg void OnUpdateSaveFile(CCmdUI* pCmdUI);
-    afx_msg void OnLoadFile(bool userFlag=true, bool mergeFlag=false , bool loadState=false);
+    afx_msg void OnLoadFile(bool mergeFlag=false , BM_FILE_TYPE fileType=BM_FILE_MASTER);
     afx_msg void OnDeleteLines();
     afx_msg void OnUpdateLoadFile(CCmdUI* pCmdUI);
 

@@ -22,6 +22,14 @@ std::_tstring emptyString;
 CBookmarksView::CBookmarksView()
 {
     m_prevBookmarksMarker = NULL;
+    m_checkMine = false;
+    m_checkTodos = false;
+    m_checkHacks = false;
+    m_masterExists = false;
+    m_stateExists = false;
+    m_filesDiff = false;
+    m_hasBookmarks = false;
+    m_hasSelection = false;
 }
 
 CBookmarksView::~CBookmarksView()
@@ -58,7 +66,7 @@ BOOL CBookmarksView::PreTranslateMessage(MSG* pMsg)
             }
             case 'M':
             {
-                OnLoadFile(true,true);
+                OnLoadFile(true);
                 break;
             }
             case 'D':
@@ -165,15 +173,14 @@ void CBookmarksView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
 {
     WTL::CMenu m;
     m.LoadMenu(IDR_POPUP_BOOKMARKS);
-    bool noCount = m_list.GetItemCount() == 0;
-    bool noSelection = m_list.GetSelectedCount() == 0;
-    bool existsBookmarkFile = GetIMainFrame()->m_Bookmarks->HasLoad();
-    m.EnableMenuItem(ID_BOOKMARKS_OPEN, noCount || noSelection ? MF_DISABLED : MF_ENABLED);
-    m.EnableMenuItem(ID_BOOKMARKS_SAVE, noCount ? MF_DISABLED : MF_ENABLED);
-    m.EnableMenuItem(ID_BOOKMARKS_CLEAR, noCount ? MF_DISABLED : MF_ENABLED);
-    m.EnableMenuItem(ID_BOOKMARKS_LOAD, existsBookmarkFile ? MF_ENABLED : MF_DISABLED);
-    m.EnableMenuItem(ID_BOOKMARKS_LOADMERGE, !noCount && existsBookmarkFile ? MF_ENABLED : MF_DISABLED);
-    m.EnableMenuItem(ID_BOOKMARKS_DELETE, noCount || noSelection ? MF_DISABLED : MF_ENABLED);
+    BookmarkFilesState();
+
+    m.EnableMenuItem(ID_BOOKMARKS_OPEN, HasSelection() ? MF_ENABLED : MF_DISABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_SAVE, CanSave() ? MF_ENABLED : MF_DISABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_CLEAR, HasBookmarks() ? MF_ENABLED : MF_DISABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_LOAD, CanLoad() ? MF_ENABLED : MF_DISABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_LOADMERGE, CanLoadMerge() ? MF_ENABLED : MF_DISABLED);
+    m.EnableMenuItem(ID_BOOKMARKS_DELETE, HasSelection() ? MF_ENABLED : MF_DISABLED);
 
     unsigned int id = m.GetSubMenu(0).TrackPopupMenuEx(TPM_RETURNCMD, pPoint.x, pPoint.y, m_hWnd, NULL);
     switch (id)
@@ -195,7 +202,7 @@ void CBookmarksView::OnContextMenu(HWND /*phWnd*/, CPoint pPoint)
     break;
     case ID_BOOKMARKS_LOADMERGE:
     {
-        OnLoadFile(true,true);
+        OnLoadFile(true);
     }
     break;
     case ID_BOOKMARKS_DELETE:
@@ -506,7 +513,7 @@ void CBookmarksView::ParseBookmarksEcl(const std::_tstring & ecl, const std::_ts
                         if (boost::algorithm::iequals(liner,nStr) && boost::algorithm::iequals(module,inModule) && boost::algorithm::iequals(attributeName,inAttributeName))
                         {
                             std::_tstring inComment = m_list.GetItemText(i, 6);
-                            if (boost::algorithm::iequals(comment,inComment))
+                            if (!boost::algorithm::iequals(comment,inComment))
                             {
                                 m_list.SetItemText(i, 6, comment.c_str());
                             }
@@ -612,83 +619,83 @@ void CBookmarksView::Save(bool saveState)
 
 void CBookmarksView::OnSaveFile(bool saveState)
 {
-    if (m_list.GetItemCount() > 0)
-    {
-        if (!saveState && MessageBox(SAVE_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES) {
+    if (!saveState) {
+        if (m_masterExists && MessageBox(SAVE_BOOKMARKS_OVERWRITE_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
             return;
-        }
+        if (MessageBox(SAVE_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
+            return;
+    }
 
-        CComPtr<IXMLWriter> writer = CreateIXMLWriter(true);
+    CComPtr<IXMLWriter> writer = CreateIXMLWriter(true);
 
-        writer->PushElement(_T("bookmarks"));
+    writer->PushElement(_T("bookmarks"));
 
-        std::_tstring bookmarks;
-        std::_tstring user;
-        std::_tstring id;
-        int col = 0;
+    std::_tstring bookmarks;
+    std::_tstring user;
+    std::_tstring id;
+    int col = 0;
 
-        for (int i = 0; i < m_list.GetItemCount(); ++i)
+    for (int i = 0; i < m_list.GetItemCount(); ++i)
+    {
+        col = 0;
+        std::_tstring line = m_list.GetItemText(i, col++);
+        std::_tstring type = m_list.GetItemText(i, col++);
+        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
         {
-            col = 0;
-            std::_tstring line = m_list.GetItemText(i, col++);
-            std::_tstring type = m_list.GetItemText(i, col++);
-            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
-            {
-                id = m_list.GetItemText(i, col++);
-            }
-            else
-            {
-                user = m_list.GetItemText(i, col++);
-            }
-            std::_tstring module = m_list.GetItemText(i, col++);
-            std::_tstring attribute = m_list.GetItemText(i, col++);
-            std::_tstring attributeType = m_list.GetItemText(i, col++);
-            std::_tstring description = m_list.GetItemText(i, col++);
-
-            BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
-
-            std::wstringstream col;
-            col << (data->column);
-            std::_tstring column = col.str();
-
-            writer->PushElement(_T("bookmark"));
-            writer->PushElement(_T("line"), line);
-            writer->PopElement();
-            writer->PushElement(_T("type"), type);
-            writer->PopElement();
-            writer->PushElement(_T("column"), column);
-            writer->PopElement();
-            if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
-            {
-                writer->PushElement(_T("id"), id);
-                writer->PopElement();
-            }
-            else
-            {
-                writer->PushElement(_T("user"), user);
-                writer->PopElement();
-            }
-            writer->PushElement(_T("module"), module);
-            writer->PopElement();
-            writer->PushElement(_T("attribute"), attribute);
-            writer->PopElement();
-            writer->PushElement(_T("attrtype"), attributeType);
-            writer->PopElement();
-            writer->PushElement(_T("description"), description);
-            writer->PopElement();
-            writer->PopElement(); // bookmark
+            id = m_list.GetItemText(i, col++);
         }
+        else
+        {
+            user = m_list.GetItemText(i, col++);
+        }
+        std::_tstring module = m_list.GetItemText(i, col++);
+        std::_tstring attribute = m_list.GetItemText(i, col++);
+        std::_tstring attributeType = m_list.GetItemText(i, col++);
+        std::_tstring description = m_list.GetItemText(i, col++);
 
+        BookmarkItemData *data = reinterpret_cast<BookmarkItemData *>(m_list.GetItemData(i));
+
+        std::wstringstream col;
+        col << (data->column);
+        std::_tstring column = col.str();
+
+        writer->PushElement(_T("bookmark"));
+        writer->PushElement(_T("line"), line);
         writer->PopElement();
-        writer->EndDocument(bookmarks);
-
-        CUnicodeFile file;
-        file.Create(BookmarksFilePath(saveState), GENERIC_WRITE, CREATE_ALWAYS);
-        if (file.IsOpen())
+        writer->PushElement(_T("type"), type);
+        writer->PopElement();
+        writer->PushElement(_T("column"), column);
+        writer->PopElement();
+        if (IsLocalRepositoryEnabled() == TRI_BOOL_TRUE)
         {
-            file.Write(bookmarks.c_str());
-            file.Close();
+            writer->PushElement(_T("id"), id);
+            writer->PopElement();
         }
+        else
+        {
+            writer->PushElement(_T("user"), user);
+            writer->PopElement();
+        }
+        writer->PushElement(_T("module"), module);
+        writer->PopElement();
+        writer->PushElement(_T("attribute"), attribute);
+        writer->PopElement();
+        writer->PushElement(_T("attrtype"), attributeType);
+        writer->PopElement();
+        writer->PushElement(_T("description"), description);
+        writer->PopElement();
+        writer->PopElement(); // bookmark
+    }
+
+    writer->PopElement();
+    writer->EndDocument(bookmarks);
+
+    CUnicodeFile file;
+    file.Create(BookmarksFilePath(saveState), GENERIC_WRITE, CREATE_ALWAYS);
+    if (file.IsOpen())
+    {
+        file.Write(bookmarks.c_str());
+        file.Close();
     }
 }
 
@@ -718,9 +725,9 @@ std::_tstring CBookmarksView::FindTag(std::_tstring str, std::_tstring tag, int 
     return foundStr;
 }
 
-void CBookmarksView::Load(bool loadState)
+void CBookmarksView::Load(bool mergeFlag, BM_FILE_TYPE fileType)
 {
-    OnLoadFile(false, false, loadState);
+    OnLoadFile(mergeFlag, fileType);
 }
 
 void CBookmarksView::Clear()
@@ -728,10 +735,115 @@ void CBookmarksView::Clear()
     m_list.DeleteAllItems();
 }
 
-void CBookmarksView::OnLoadFile(bool userFlag, bool mergeFlag, bool loadState)
-{
-    if (m_list.GetItemCount() > 0)
+bool CBookmarksView::FileText(BM_FILE_TYPE fileType, std::_tstring& xmlStr) {
+    CUnicodeFile file;
+    file.Open(BookmarksFilePath(fileType));
+    if (file.IsOpen())
     {
+        file.Read(xmlStr);
+        file.Close();
+        return true;
+    }
+    return false;
+}
+
+bool CBookmarksView::BookmarkFilesState()
+{
+    boost::filesystem::path loadPath = BookmarksFilePath(BM_FILE_MASTER);
+    boost::filesystem::path statePath = BookmarksFilePath(BM_FILE_STATE);
+
+    FileText(BM_FILE_MASTER, m_masterXML);
+    FileText(BM_FILE_STATE, m_stateXML);
+
+    m_masterExists = m_masterXML.length() > 0 ? true : false;
+    m_stateExists = m_stateXML.length() > 0 ? true : false;
+
+    m_hasBookmarks = m_list.GetItemCount() ? true : false;
+    m_hasSelection = m_list.GetSelectedCount() > 0;
+
+    m_filesDiff = FileDiff();
+    return m_filesDiff;
+}
+
+bool CBookmarksView::FileDiff() {
+    if (m_masterExists && !m_stateExists)
+        return false;
+    else if (!m_masterExists && m_stateExists)
+        return true;
+
+    int index = 0;
+    std::_tstring bookmarks;
+    std::vector<std::_tstring>bookmarksMaster;
+    std::vector<std::_tstring>bookmarksState;
+
+    bookmarks = FindTag(m_masterXML, _T("bookmarks"), index);
+    if (index >= 0)
+    {
+        index = 0;
+        std::_tstring bookmark;
+        while (index >= 0)
+        {
+            bookmark = FindTag(bookmarks, _T("bookmark"), index, true);
+            bookmarksMaster.push_back(bookmark);
+        }
+    }
+
+    index = 0;
+    bookmarks = FindTag(m_stateXML, _T("bookmarks"), index);
+    if (index >= 0)
+    {
+        index = 0;
+        std::_tstring bookmark;
+        while (index >= 0)
+        {
+            bookmark = FindTag(bookmarks, _T("bookmark"), index, true);
+            bookmarksState.push_back(bookmark);
+        }
+    }
+
+    std::_tstring str1, str2;
+
+    for (auto bm = bookmarksMaster.cbegin(); bm != bookmarksMaster.cend(); ++bm) {
+        bool found = false;
+        str1 = *bm;
+        for (auto bs = bookmarksState.cbegin(); bs != bookmarksState.cend(); ++bs) {
+            str2 = *bs;
+            if (_tcsicmp(str1.c_str(),str2.c_str()) == 0) {
+                found = true;
+            }
+        }
+        if (!found)
+            return true;
+    }
+
+    for (auto bs = bookmarksState.cbegin(); bs != bookmarksState.cend(); ++bs) {
+        bool found = false;
+        str1 = *bs;
+        for (auto bm = bookmarksMaster.cbegin(); bm != bookmarksMaster.cend(); ++bm) {
+            str2 = *bm;
+            if (_tcsicmp(str1.c_str(), str2.c_str()) == 0) {
+                found = true;
+            }
+        }
+        if (!found)
+            return true;
+    }
+
+    return false;
+}
+
+void CBookmarksView::OnLoadFile(bool mergeFlag, BM_FILE_TYPE fileType)
+{
+    BookmarkFilesState();
+    if (!m_masterExists && !m_stateExists)
+        return;
+
+    if (fileType == BM_FILE_STATE && !m_stateExists && m_masterExists)
+        fileType = BM_FILE_MASTER;
+    else if (fileType == BM_FILE_MASTER && !m_masterExists && m_stateExists)
+        fileType = BM_FILE_MASTER;
+
+    if (m_list.GetItemCount() > 0) {
         if (mergeFlag) {
             if (MessageBox(LOAD_MERGE_BOOKMARKS_MSG, _T("Warning"), MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) != IDYES)
             {
@@ -744,15 +856,13 @@ void CBookmarksView::OnLoadFile(bool userFlag, bool mergeFlag, bool loadState)
         }
     }
 
-    CUnicodeFile file;
-    std::_tstring xmlStr;
-    file.Open(BookmarksFilePath(loadState));
-    if (!loadState) boost::filesystem::remove(BookmarksFilePath(true));
-    if (file.IsOpen())
-    {
-        file.Read(xmlStr);
-        file.Close();
+    std::_tstring xmlStr = fileType == BM_FILE_MASTER ? m_masterXML : m_stateXML;
 
+    if (fileType == BM_FILE_MASTER)
+        boost::filesystem::remove(BookmarksFilePath(BM_FILE_STATE));
+
+    if (xmlStr.length())
+    {
         BOOL bResult = FALSE;
         std::_tstring bookmarks;
         int index = 0;
@@ -783,7 +893,7 @@ void CBookmarksView::OnLoadFile(bool userFlag, bool mergeFlag, bool loadState)
                     type = FindTag(bookmark, _T("type"), bookmarkIndex);
  
                     BM_TYPE bType = m_list.StringToType(type);
-                    if ((!m_checkMine && bType == BM_TYPE::BM_MINE) || (!m_checkTodos && bType == BM_TYPE::BM_TODO) || (!m_checkHacks && bType == BM_TYPE::BM_HACK))
+                    if ((!m_checkMine && bType == BM_TYPE::BM_BOOKMARK) || (!m_checkTodos && bType == BM_TYPE::BM_TODO) || (!m_checkHacks && bType == BM_TYPE::BM_HACK))
                     {
                         continue;
                     }
@@ -854,10 +964,6 @@ void CBookmarksView::OnLoadFile(bool userFlag, bool mergeFlag, bool loadState)
             }
         }
     }
-    else if (userFlag)
-    {
-        MessageBox(LOAD_UNFOUND_BOOKMARKS_MSG, _T("Warning"));
-    }
 }
 
 LRESULT CBookmarksView::OnClear(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
@@ -918,7 +1024,7 @@ void CBookmarksView::DoRefresh(ISciBookmarksMarker *bookmarks, int nSel)
         int col = 0;
 
         m_list.DeleteAllItems();
-        OnLoadFile(false, false, true);
+        OnLoadFile(false, BM_FILE_STATE);
 
         for (int i = 0; i < col; ++i) {
             m_list.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
@@ -940,4 +1046,25 @@ int CBookmarksView::GetCount()
 int CBookmarksView::GetSelectedCount()
 {
     return m_list.GetSelectedCount();
+}
+
+bool CBookmarksView::HasSelection()
+{
+    return m_hasSelection;
+}
+
+bool CBookmarksView::CanSave() {
+    return m_filesDiff && ((m_hasBookmarks && m_stateExists) || m_hasBookmarks);
+}
+
+bool CBookmarksView::CanLoad() {
+    return m_masterExists && m_stateExists && m_filesDiff;
+}
+
+bool CBookmarksView::CanLoadMerge() {
+    return m_hasBookmarks && m_masterExists && m_stateExists && m_filesDiff;
+}
+
+bool CBookmarksView::HasBookmarks() {
+    return m_hasBookmarks;
 }
