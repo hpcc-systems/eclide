@@ -85,16 +85,19 @@ public:
             }
         }
         else if (e.m_tag.compare(_T("Field")) == 0) {
-            CEclDefinition *def = m_defStack.top();
-            def->AddField(e);
+            if (!m_defStack.empty()) 
+            {
+                CEclDefinition *def = m_defStack.top();
+                def->AddField(e);
+            }
         }
         else if (e.m_tag.compare(_T("Type")) == 0) {
-            if (m_paramStack.size() > 0)
+            if (!m_paramStack.empty())
             {
                 CEclParam *param = m_paramStack.top();
                 param->AddType(e);
             }
-            else
+            else if (!m_defStack.empty())
             {
                 CEclDefinition *def = m_defStack.top();
                 def->AddFunctionType(e);
@@ -103,8 +106,11 @@ public:
         else if (e.m_tag.compare(_T("Param")) == 0) {
             CEclParam *param = m_paramStack.top();
             param->UpdateAttrs(e);
-            CEclDefinition *def = m_defStack.top();
-            def->AddParam(param);
+            if (!m_defStack.empty()) 
+            {
+                CEclDefinition *def = m_defStack.top();
+                def->AddParam(param);
+            }
             m_paramStack.pop();
         }
         else if (e.m_tag.compare(_T("content")) == 0) {
