@@ -404,6 +404,7 @@ protected:
     afx_msg void OnFileNewSpray();
     afx_msg void OnFileOpen();
     afx_msg void OnFileOpenAttribute();
+    afx_msg void OnUpdateFileOpenAttribute(CCmdUI* pCmdUI);
     afx_msg void OnFileOpenWorkunit();
     afx_msg void OnFileSaveAll();
     afx_msg void OnFileNewWorkspace();

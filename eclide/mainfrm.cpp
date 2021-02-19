@@ -107,6 +107,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
     ON_COMMAND(ID_FILE_OPENBUILDER, OnFileOpen)
     ON_COMMAND(ID_FILE_OPENATTRIBUTE, OnFileOpenAttribute)
+    ON_UPDATE_COMMAND_UI(ID_FILE_OPENATTRIBUTE, OnUpdateFileOpenAttribute)
     ON_COMMAND(ID_FILE_OPENWORKUNIT, OnFileOpenWorkunit)
     ON_COMMAND(ID_FILE_SAVE_ALL, OnFileSaveAll)
     ON_COMMAND(ID_FILE_NEWWORKSPACE, OnFileNewWorkspace)
@@ -1977,14 +1978,6 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
             DestroyWindow();
             return;
         }
-        if (IsLocalRepositoryEnabled())
-        {
-            int i = m_openRibbonButton->FindSubItemIndexByID(ID_FILE_OPENATTRIBUTE);
-            if (i >= 0)
-            {
-                m_openRibbonButton->RemoveSubItem(i);
-            }
-        }
     }
 
     boost::filesystem::path path;
@@ -3315,6 +3308,11 @@ void CMainFrame::OnFileOpenAttribute()
     CString attr;
     if (GetAttributeLabel(attr))
         OpenAttribute(attr, CreateIAttributeECLType());
+}
+
+void CMainFrame::OnUpdateFileOpenAttribute(CCmdUI* pCmdUI)
+{
+    pCmdUI->Enable(!IsLocalRepositoryEnabled());
 }
 
 void CMainFrame::OnFileOpenWorkunit()
