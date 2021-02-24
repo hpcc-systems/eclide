@@ -12,7 +12,7 @@
 #include <CustomMessages.h>
 #include <AutoUpdate.h>
 #include <UtilFilesystem.h>
-#include "ChangePasswordDlg.h""
+#include "ChangePasswordDlg.h"
 
 static const SectionLabelDefault GLOBAL_LASTCONFIG(SectionLabel(_T("General"), _T("LastConfig")), _T("default"));
 static const SectionLabelDefault GLOBAL_LASTCONFIG_LHS(SectionLabel(_T("General"), _T("LastConfigLHS")), _T("default"));

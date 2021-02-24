@@ -396,13 +396,19 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         StdStringVector args;
         args.push_back(_T("f\"syntaxcheck=1\""));
-        args.push_back(_T("M"));
+        if(!m_config->Get(GLOBAL_COMPILER_DISABLEMETA))
+        {
+            args.push_back(_T("M"));
+        }
 
         std::_tstring out, err;
         bool hasErrors = false;
         std::_tstring xmlMeta = CallEclCC(module, attribute, path, ecl, args, out, err, hasErrors, errors);
-        m_eclMeta.PopulateMetaUpwards(m_eclFolders, path);
-        m_eclMeta.Update(m_eclFolders, xmlMeta);
+        if(!m_config->Get(GLOBAL_COMPILER_DISABLEMETA))
+        {
+            m_eclMeta.PopulateMetaUpwards(m_eclFolders, path);
+            m_eclMeta.Update(m_eclFolders, xmlMeta);
+        }
         m_eclMeta.LoadImports(path,m_eclFolders);
         m_eclMeta.LoadFunctions(path);
 
