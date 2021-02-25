@@ -23,6 +23,7 @@ static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER06(SectionLabel(Compil
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER07(SectionLabel(CompilerSection, _T("EclFolder07")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER08(SectionLabel(CompilerSection, _T("EclFolder08")), _T(""));
 static const SectionLabelDefault GLOBAL_COMPILER_ECLFOLDER09(SectionLabel(CompilerSection, _T("EclFolder09")), _T(""));
+static const SectionLabelDefault GLOBAL_COMPILER_DISABLEMETA(SectionLabel(CompilerSection, _T("DisableMeta")), false);
 
 static const SectionLabelDefault GLOBAL_DISABLE_SUBMIT(SectionLabel(_T("Disables"), _T("Submit")), _T(""));
 static const SectionLabelDefault GLOBAL_DISABLE_GENERATE(SectionLabel(_T("Disables"), _T("Generate")), _T(""));

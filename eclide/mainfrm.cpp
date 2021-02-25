@@ -107,6 +107,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
     ON_COMMAND(ID_FILE_OPENBUILDER, OnFileOpen)
     ON_COMMAND(ID_FILE_OPENATTRIBUTE, OnFileOpenAttribute)
+    ON_UPDATE_COMMAND_UI(ID_FILE_OPENATTRIBUTE, OnUpdateFileOpenAttribute)
     ON_COMMAND(ID_FILE_OPENWORKUNIT, OnFileOpenWorkunit)
     ON_COMMAND(ID_FILE_SAVE_ALL, OnFileSaveAll)
     ON_COMMAND(ID_FILE_NEWWORKSPACE, OnFileNewWorkspace)
@@ -189,6 +190,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
     ON_COMMAND(ID_BOOKMARKS_OPEN, OnBookmarkOpen)
     ON_COMMAND(ID_BOOKMARKS_SAVE, OnBookmarkSave)
     ON_COMMAND(ID_BOOKMARKS_LOAD, OnBookmarkLoad)
+    ON_COMMAND(ID_BOOKMARKS_LOADMERGE, OnBookmarkLoadMerge)
     ON_COMMAND(ID_BOOKMARKS_CLEAR, OnBookmarkClear)
     ON_COMMAND(ID_BOOKMARKS_DELETE, OnBookmarkDelete)
     ON_UPDATE_COMMAND_UI(ID_BOOKMARKS_OPEN, OnUpdateBookmarkOpenItem)
@@ -1098,11 +1100,7 @@ void CMainFrame::InitializeRibbon()
         pPanelBookmark->Add(new CMFCRibbonButton(ID_BOOKMARKS_NEXT, _T("Next\nn"), 6));
         pPanelBookmark->Add(new CMFCRibbonButton(ID_BOOKMARKS_PREV, _T("Previous\np"), 7));
         pPanelBookmark->Add(new CMFCRibbonButton(ID_BOOKMARKS_CLEAR, _T("Clear\nc")));
-        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_OPEN, _T("Open\no")));
-        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_SAVE, _T("Save\ns")));
-        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_LOAD, _T("Load\nl")));
-        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_LOADMERGE, _T("Load Merge\nm")));
-        pButtBook->AddSubItem(new CMFCRibbonButton(ID_BOOKMARKS_DELETE, _T("Delete\nd")));
+        pButtBook->SetMenu(IDR_BOOKMARKS_MENU, TRUE);
 
         // Create and add a "Windows" panel:
         strTemp.LoadString(IDS_RIBBON_WINDOW);
@@ -1599,7 +1597,8 @@ void CMainFrame::OnBookmarkOpen()
 
 void CMainFrame::OnUpdateBookmarkOpenItem(CCmdUI* pCmdUI)
 {
-    if (m_Bookmarks->BookmarkSelected())
+    m_Bookmarks->BookmarkFilesState();
+    if (m_Bookmarks->HasSelection())
     {
         pCmdUI->Enable();
     }
@@ -1624,7 +1623,7 @@ void CMainFrame::OnBookmarkSave()
 
 void CMainFrame::OnUpdateBookmarkSave(CCmdUI* pCmdUI)
 {
-    if (m_Bookmarks->HasBookmarks())
+    if (m_Bookmarks->CanSave())
     {
         pCmdUI->Enable();
     }
@@ -1634,12 +1633,12 @@ void CMainFrame::OnUpdateBookmarkSave(CCmdUI* pCmdUI)
 
 void CMainFrame::OnBookmarkLoad()
 {
-    m_Bookmarks->Load();
+    m_Bookmarks->Load(false, BM_FILE_MASTER);
 }
 
 void CMainFrame::OnUpdateBookmarkLoad(CCmdUI* pCmdUI)
 {
-    if (m_Bookmarks->HasLoad())
+    if (m_Bookmarks->CanLoad())
     {
         pCmdUI->Enable();
     }
@@ -1649,9 +1648,14 @@ void CMainFrame::OnUpdateBookmarkLoad(CCmdUI* pCmdUI)
     }
 }
 
+void CMainFrame::OnBookmarkLoadMerge()
+{
+    m_Bookmarks->Load(true, BM_FILE_STATE);
+}
+
 void CMainFrame::OnUpdateBookmarkLoadMerge(CCmdUI* pCmdUI)
 {
-    if (m_Bookmarks->HasLoad() && m_Bookmarks->HasBookmarks())
+    if (m_Bookmarks->CanLoadMerge())
     {
         pCmdUI->Enable();
     }
@@ -1974,14 +1978,6 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
             DestroyWindow();
             return;
         }
-        if (IsLocalRepositoryEnabled())
-        {
-            int i = m_openRibbonButton->FindSubItemIndexByID(ID_FILE_OPENATTRIBUTE);
-            if (i >= 0)
-            {
-                m_openRibbonButton->RemoveSubItem(i);
-            }
-        }
     }
 
     boost::filesystem::path path;
@@ -2079,7 +2075,7 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
 
     RestoreState();
 
-    m_Bookmarks->Load(true);
+    m_Bookmarks->Load(false,BM_FILE_STATE);
     m_supressSyncTOC = false;
 }
 
@@ -3312,6 +3308,11 @@ void CMainFrame::OnFileOpenAttribute()
     CString attr;
     if (GetAttributeLabel(attr))
         OpenAttribute(attr, CreateIAttributeECLType());
+}
+
+void CMainFrame::OnUpdateFileOpenAttribute(CCmdUI* pCmdUI)
+{
+    pCmdUI->Enable(!IsLocalRepositoryEnabled());
 }
 
 void CMainFrame::OnFileOpenWorkunit()

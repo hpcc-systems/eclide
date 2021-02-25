@@ -4,7 +4,7 @@
 enum BM_TYPE
 {
     BM_NONE = 0,
-    BM_MINE = 1,
+    BM_BOOKMARK = 1,
     BM_TODO = 2,
     BM_HACK = 3
 };

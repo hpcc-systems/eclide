@@ -404,6 +404,7 @@ protected:
     afx_msg void OnFileNewSpray();
     afx_msg void OnFileOpen();
     afx_msg void OnFileOpenAttribute();
+    afx_msg void OnUpdateFileOpenAttribute(CCmdUI* pCmdUI);
     afx_msg void OnFileOpenWorkunit();
     afx_msg void OnFileSaveAll();
     afx_msg void OnFileNewWorkspace();
@@ -427,6 +428,7 @@ protected:
     afx_msg void OnBookmarkOpen();
     afx_msg void OnBookmarkSave();
     afx_msg void OnBookmarkLoad();
+    afx_msg void OnBookmarkLoadMerge();
     afx_msg void OnBookmarkClear();
     afx_msg void OnBookmarkDelete();
     afx_msg void OnUpdateBookmarkOpenItem(CCmdUI* pCmdUI);

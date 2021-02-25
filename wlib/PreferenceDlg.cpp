@@ -1924,6 +1924,7 @@ protected:
 	int m_IgnoreServerVersion;
 	int m_ShowCRLF;
 	int m_DisableAutoUpdate;
+	int m_DisableMeta;
 	int m_DisableGraphControl;
 	int m_WorkUnitPollFreq;
 	int m_WorkUnitFetchLimit;
@@ -1969,6 +1970,7 @@ public:
 		m_IgnoreServerVersion = m_config->Get(GLOBAL_IGNORESERVERVERSION);
 		m_ShowCRLF = m_config->Get(GLOBAL_SHOWCRLF);
 		m_DisableAutoUpdate = m_ini->Get(GLOBAL_DISABLEAUTOUPDATE);
+		m_DisableMeta = m_config->Get(GLOBAL_COMPILER_DISABLEMETA);
 		m_WorkUnitPollFreq = m_config->Get(GLOBAL_ACTIVEWORKUNIT_REFRESH);
 		m_WorkUnitFetchLimit = m_config->Get(GLOBAL_WORKUNIT_FETCHLIMIT);
 		m_WorkUnitPersistLimit = m_config->Get(GLOBAL_WORKUNIT_PERSISTLIMIT);
@@ -1987,6 +1989,7 @@ public:
 		m_config->Set(GLOBAL_IGNORESERVERVERSION, m_IgnoreServerVersion);
 		m_config->Set(GLOBAL_SHOWCRLF, m_ShowCRLF);
 		m_ini->Set(GLOBAL_DISABLEAUTOUPDATE, m_DisableAutoUpdate);
+		m_config->Set(GLOBAL_COMPILER_DISABLEMETA, m_DisableMeta);
 		m_config->Set(GLOBAL_ACTIVEWORKUNIT_REFRESH, m_WorkUnitPollFreq);
 		m_config->Set(GLOBAL_WORKUNIT_FETCHLIMIT, m_WorkUnitFetchLimit);
 		m_config->Set(GLOBAL_WORKUNIT_PERSISTLIMIT, m_WorkUnitPersistLimit);
@@ -2017,6 +2020,7 @@ public:
 		COMMAND_HANDLER(IDC_CHECK_IGNORESERVERVERSION, BN_CLICKED, OnCheckClicked)
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 		COMMAND_HANDLER(IDC_CHECK_DISABLEAUTOUPDATE, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_CHECK_DISABLEMETA, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_COMBO_HELP, CBN_SELCHANGE, OnCbnSelendokComboHelp)
 		COMMAND_HANDLER(IDC_COMBO_HELP, CBN_SELENDOK, OnCbnSelendokComboHelp)
 		NOTIFY_CODE_HANDLER(UDN_DELTAPOS, OnSpinChange)
@@ -2030,6 +2034,7 @@ public:
 		DDX_CHECK(IDC_CHECK_IGNORESERVERVERSION, m_IgnoreServerVersion)
 		DDX_CHECK(IDC_CHECK_SHOWCRLF, m_ShowCRLF)
 		DDX_CHECK(IDC_CHECK_DISABLEAUTOUPDATE, m_DisableAutoUpdate)
+		DDX_CHECK(IDC_CHECK_DISABLEMETA, m_DisableMeta)
 		DDX_INT(IDC_EDIT_WORKUNITPOLL, m_WorkUnitPollFreq)
 		DDX_INT(IDC_EDIT_WORKUNITFETCHLIMIT, m_WorkUnitFetchLimit)
 		DDX_INT(IDC_EDIT_WORKUNITPERSISTLIMIT, m_WorkUnitPersistLimit)

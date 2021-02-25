@@ -45,6 +45,9 @@ public:
         COMMAND_ID_HANDLER(ID_EDIT_PASTE, OnEditPaste)
         COMMAND_ID_HANDLER(ID_EDIT_DELETE, OnEditDelete)
         COMMAND_ID_HANDLER(ID_EDIT_SELECT_ALL, OnEditSelectAll)
+        COMMAND_ID_HANDLER(ID_BOOKMARKS_INSERT, OnBookmarkInsert)
+        COMMAND_ID_HANDLER(ID_BOOKMARKS_TODO, OnBookmarkTodo)
+        COMMAND_ID_HANDLER(ID_BOOKMARKS_HACK, OnBookmarkHack)
 #ifdef ID_EDIT_MATCHBRACE
         COMMAND_ID_HANDLER(ID_EDIT_MATCHBRACE, OnEditMatchBrace)
         COMMAND_ID_HANDLER(ID_EDIT_SELECTTOBRACE, OnEditSelectToBrace)
@@ -380,6 +383,27 @@ public:
         bHandled = true;
         pT->PathToClipboard();
         return 0;
+    }
+    LRESULT BookMarkInsertText(const std::_tstring & bookmarkStr) {
+        TCHAR str[360];
+        ::wsprintf(str, _T("\n// %s "), bookmarkStr.c_str());
+        m_ecl->InsertText(m_ecl->GetLineEndPosition(m_ecl->GetCurrentLineNumber()), str);
+        long pos = m_ecl->GetLineEndPosition(m_ecl->GetCurrentLineNumber() + 1);
+        m_ecl->SetSelectionStart(pos);
+        m_ecl->SetSelectionEnd(pos);
+        return 0;
+    }
+    LRESULT OnBookmarkInsert(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL& bHandled)
+    {
+        return BookMarkInsertText(_T("[BM]"));
+    }
+    LRESULT OnBookmarkTodo(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL& bHandled)
+    {
+        return BookMarkInsertText(_T("TODO:"));
+    }
+    LRESULT OnBookmarkHack(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL& bHandled)
+    {
+        return BookMarkInsertText(_T("HACK:"));
     }
     LRESULT OnEditPaste(UINT /*code*/, UINT /*id*/, HWND /*hwndControl*/, BOOL &bHandled)
     {
