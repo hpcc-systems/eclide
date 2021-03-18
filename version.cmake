@@ -4,10 +4,10 @@
 set ( HPCC_NAME "ECL IDE" )
 set ( HPCC_PROJECT "eclide" )
 set ( HPCC_AUDIENCE "community" )
-set ( HPCC_MAJOR 7 )
-set ( HPCC_MINOR 13 )
+set ( HPCC_MAJOR 8 )
+set ( HPCC_MINOR 0 )
 set ( HPCC_POINT 0 )
-set ( HPCC_MATURITY "trunk" )
+set ( HPCC_MATURITY "closedown" )
 set ( HPCC_SEQUENCE 0 )
 ###
 IF ( ${HPCC_SEQUENCE} GREATER 99 )
