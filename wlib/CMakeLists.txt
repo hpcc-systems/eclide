@@ -112,7 +112,7 @@ INCLUDE_DIRECTORIES (
     
     ${WTL_INCLUDE_DIR}
     ${SCINTILLA_INCLUDE_DIR}
-    ${CEF_WRAPPER_ROOT_DIR}/include/cef-project
+    ${CEF_ROOT_DIR}
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -128,8 +128,6 @@ ADD_DEPENDENCIES ( WLIB
     SGRID
 )
 
-MESSAGE("CEF_LIBRARY_DIR:  ${CEF_LIBRARY_DIR}")
-
 TARGET_LINK_LIBRARIES( WLIB
     CLIB
     COMMS
@@ -137,8 +135,8 @@ TARGET_LINK_LIBRARIES( WLIB
 )
 
 TARGET_LINK_LIBRARIES( WLIB
-    debug ${CEF_WRAPPER_ROOT_DIR}/debug/lib/libcef_dll_wrapper.lib
-    optimized ${CEF_WRAPPER_ROOT_DIR}/lib/libcef_dll_wrapper.lib
+    debug ${CEF_ROOT_DIR}/Debug/lib/libcef_dll_wrapper.lib
+    optimized ${CEF_ROOT_DIR}/lib/libcef_dll_wrapper.lib
 )
 
 TARGET_LINK_LIBRARIES( WLIB
@@ -159,9 +157,9 @@ INSTALL ( FILES
     ${CEF_ROOT_DIR}/Release/v8_context_snapshot.bin
     ${CEF_ROOT_DIR}/Resources/icudtl.dat
     ${CEF_ROOT_DIR}/Resources/cef.pak
-    ${CEF_ROOT_DIR}/Resources/cef_extensions.pak
     ${CEF_ROOT_DIR}/Resources/cef_100_percent.pak
     ${CEF_ROOT_DIR}/Resources/cef_200_percent.pak
+    ${CEF_ROOT_DIR}/Resources/cef_extensions.pak
     ${CEF_ROOT_DIR}/Resources/devtools_resources.pak
     DESTINATION bin 
 )
