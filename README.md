@@ -5,8 +5,7 @@
 ### Prerequisits 
 * git (optional - needed to clone sources)
 * cmake
-* Visual Studio 2015 / 2017 / 2019
-* Python 2.7 (used to build chromium)
+* Visual Studio 2017 / 2019
 * NSIS (optional - needed to create install package)
 
 ### Clone the repository
@@ -20,24 +19,21 @@ git submodule update --init --recursive
 ```
 cd vcpkg
 bootstrap-vcpkg.bat
-vcpkg install --keep-going boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap cef-project
+vcpkg install --keep-going boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
 ```
 
 ### Create an out of source build folder
 ```
 cd ..
-cd ..
 mkdir build
 cd build
-mkdir eclide
-cd eclide
 ```
 
 ### Generate Visual Studio Solution
 ```
-cmake ../../eclide -DCMAKE_TOOLCHAIN_FILE=../../eclide/vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
 ...or...
-cmake ../../eclide -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=../../eclide/vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake .. -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
 ```
 
 ### Build
