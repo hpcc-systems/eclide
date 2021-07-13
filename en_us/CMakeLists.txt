@@ -1,20 +1,28 @@
 PROJECT( EN_US )
 
-SET ( SRCS
+SET (SRCS
     en_us.cpp
     en_us.h
     resource.h
 )
 
 INCLUDE_DIRECTORIES (
-../clib
+    ../clib
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 
-ADD_LIBRARY ( EN_US SHARED
+ADD_LIBRARY (EN_US SHARED
     ${SRCS}
     en_us.rc
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET EN_US
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CEF_ROOT_DIR}/Release ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CEF_ROOT_DIR}/Resources ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/docs ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>
 )
 
 INSTALL ( TARGETS EN_US RUNTIME DESTINATION bin )

@@ -1,5 +1,6 @@
 /.vs
-/.vscode
+/.vscode/*.json
+!/.vscode/settings.*
 /build
 /comms/6_4_0
 !/comms/6_4_0/hpcc
