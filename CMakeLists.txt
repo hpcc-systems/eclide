@@ -1,5 +1,5 @@
 # CMakeLists.txt  ---
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 PROJECT(ECLIDE)
 
 # Build tag generation ---
@@ -111,7 +111,7 @@ SET(DOC_FILES
     ${PROJECT_SOURCE_DIR}/docs/LanguageRefKEL.xml
     ${PROJECT_SOURCE_DIR}/docs/LanguageRefSalt.xml
     ${PROJECT_SOURCE_DIR}/docs/SyntaxColorSamples.xml
- )
+)
 INSTALL (FILES ${DOC_FILES} DESTINATION bin)
 INSTALL (FILES ${PROJECT_SOURCE_DIR}/LICENSE.txt DESTINATION ".")
 
