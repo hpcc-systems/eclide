@@ -832,8 +832,10 @@ public:
 				text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER09);
 				break;
 			}
-			if (text.GetLength() > 0)
+			if (text.GetLength() > 0) {
 				m_listFolders.InsertString(i, text);
+				m_listFolders.UpdateWidth(text);
+			}
 		}
 		DoDataExchange();
 		EnableLocationSettings();
@@ -1050,6 +1052,7 @@ public:
 			m_listFolders.GetText(idx - 1, prevLine);
 			m_listFolders.DeleteString(idx - 1);
 			m_listFolders.InsertString(idx, prevLine);
+			m_listFolders.UpdateWidth(prevLine);
 			DoChanged();
 		}
 		else
@@ -1066,6 +1069,7 @@ public:
 			m_listFolders.GetText(idx + 1, nextLine);
 			m_listFolders.DeleteString(idx + 1);
 			m_listFolders.InsertString(idx, nextLine);
+			m_listFolders.UpdateWidth(nextLine);
 			DoChanged();
 		}
 		else
