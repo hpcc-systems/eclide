@@ -192,6 +192,9 @@ bool CEclMeta::GetPathFromModule(const std::_tstring & module, const WPathVector
             boost::filesystem::directory_iterator end_itr;
             mod = tok_iter->c_str();
             while (tok_iter != tokens.end()) {
+                if (!clib::filesystem::is_directory(pathstr.GetString())) {
+                    break;
+                }
                 for (boost::filesystem::directory_iterator itrDir(pathstr.GetString()); itrDir != end_itr; ++itrDir)
                 {
                     if (boost::algorithm::iequals(boost::filesystem::basename(*itrDir), mod))
