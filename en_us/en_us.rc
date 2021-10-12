@@ -379,6 +379,7 @@ BEGIN
     CONTROL         "Double Click Selects Qualified Label",IDC_CHECK_DOUBLECLICKSEL,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,135,127,10
     CONTROL         "Target Background Colors",IDC_CHECK_TARGETCOLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,71,93,97,10
+    CONTROL         "Byte Order Mark (BOM)",IDC_CHECK_BOM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,24,91,10
 END
 
 IDD_PREF_COLOR DIALOGEX 0, 0, 290, 157

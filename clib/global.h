@@ -8,8 +8,9 @@ typedef std::pair<SectionLabel, _variant_t> SectionLabelDefault;
 static const SectionLabelDefault GLOBAL_APP_VERSION(SectionLabel(_T("General"), _T("Version")), _T(""));
 static const SectionLabelDefault GLOBAL_USER(SectionLabel(_T("General"), _T("User")), _T(""));
 static const SectionLabelDefault GLOBAL_PASSWORD(SectionLabel(_T("General"), _T("Password")), _T(""));
-static const SectionLabelDefault GLOBAL_DEBUG_LOGRESULTXML(SectionLabel(_T("Debug"), _T("LogResultXML")), false);
+static const SectionLabelDefault GLOBAL_DEBUG_LOGRESULTXML(SectionLabel(_T("Debug"), _T("LogResultXML")), 0);
 static const SectionLabelDefault GLOBAL_HELP_LOCALE(SectionLabel(_T("General"), _T("HelpLocale")), _T(""));
+static const SectionLabelDefault GLOBAL_EDITOR_BOM(SectionLabel(_T("Editor"), _T("BOM")), 1);
 
 typedef boost::signal<void(SectionLabel *)> globaldata_signal_type;
 typedef globaldata_signal_type::slot_type globaldata_slot_type;
