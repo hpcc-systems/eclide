@@ -17,18 +17,18 @@ static const SectionLabelDefault GLOBAL_DISABLEAUTOUPDATE(SectionLabel(GeneralSe
 static const TCHAR ResultSection[](_T("Results"));
 static const SectionLabelDefault GLOBAL_FONT_RESULT(SectionLabel(ResultSection, _T("ResultFont")), _T("Courier New"));
 static const SectionLabelDefault GLOBAL_FONTSIZE_RESULT(SectionLabel(ResultSection, _T("ResultFontSize")), 10);
-static const SectionLabelDefault GLOBAL_LEGACY_IE(SectionLabel(ResultSection, _T("LegacyIE")), false);
+static const SectionLabelDefault GLOBAL_LEGACY_IE(SectionLabel(ResultSection, _T("LegacyIE")), 0);
 
 static const TCHAR EditorSection[](_T("Editor"));
 static const SectionLabelDefault GLOBAL_MAINTAININDENT(SectionLabel(EditorSection, _T("MaintainIndent")), 1);
 static const SectionLabelDefault GLOBAL_TAB_WIDTH(SectionLabel(EditorSection, _T("TabWidth")), 2);
-static const SectionLabelDefault GLOBAL_TAB_USESPACES(SectionLabel(EditorSection, _T("UseSpaces")), true);
+static const SectionLabelDefault GLOBAL_TAB_USESPACES(SectionLabel(EditorSection, _T("UseSpaces")), 1);
 static const SectionLabelDefault GLOBAL_LINENO(SectionLabel(EditorSection, _T("LineNo")), 0);
 static const SectionLabelDefault GLOBAL_TREE(SectionLabel(EditorSection, _T("Tree")), 1);
 static const SectionLabelDefault GLOBAL_FONT(SectionLabel(EditorSection, _T("Font")), _T("Courier New"));
 static const SectionLabelDefault GLOBAL_FONTSIZE(SectionLabel(EditorSection, _T("FontSize")), 10);
 static const SectionLabelDefault GLOBAL_TOOLTIP(SectionLabel(EditorSection, _T("Tooltip")), 1);
-static const SectionLabelDefault GLOBAL_SHOW_WS(SectionLabel(EditorSection, _T("ShowWS")), false);
+static const SectionLabelDefault GLOBAL_SHOW_WS(SectionLabel(EditorSection, _T("ShowWS")), 0);
 static const SectionLabelDefault GLOBAL_TARGETCOLOR(SectionLabel(EditorSection, _T("TargetColor")), 0);
 static const SectionLabelDefault GLOBAL_SYNCREPOSITORY(SectionLabel(EditorSection, _T("SyncRepository")), 0);
 static const SectionLabelDefault GLOBAL_AUTOCOMPLETEONDOT(SectionLabel(EditorSection, _T("AutoCompleteOnDot")), 1);

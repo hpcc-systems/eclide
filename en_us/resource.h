@@ -545,6 +545,7 @@
 #define IDC_STATIC_HELP                 545
 #define IDC_COMBO_HELP                  546
 #define IDC_CHECK_DISABLEMETA           547
+#define IDC_CHECK_BOM                   548
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -871,7 +872,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61415
 #define _APS_NEXT_COMMAND_VALUE         33133
-#define _APS_NEXT_CONTROL_VALUE         548
+#define _APS_NEXT_CONTROL_VALUE         549
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif
