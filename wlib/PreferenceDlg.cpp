@@ -519,6 +519,7 @@ protected:
 	IOwner * m_owner;
 	int  m_TabWidth;
 	int  m_TabUseSpaces;
+	int  m_BOM;
 
 	IConfigAdapt m_config;
 	IConfigAdapt m_ini;
@@ -552,6 +553,7 @@ public:
 		m_config = config;
 		m_TabWidth = m_config->Get(GLOBAL_TAB_WIDTH);
 		m_TabUseSpaces = m_config->Get(GLOBAL_TAB_USESPACES);
+		m_BOM = m_config->Get(GLOBAL_EDITOR_BOM);
 		m_MaintainIndent = m_config->Get(GLOBAL_MAINTAININDENT);
 		m_OpenMDIChildMax = m_config->Get(GLOBAL_OPENMDICHILDMAX);
 		m_AutoSaveFreq = m_config->Get(GLOBAL_AUTOSAVEFREQ);
@@ -571,6 +573,7 @@ public:
 		DoDataExchange(true);
 		m_config->Set(GLOBAL_TAB_WIDTH, m_TabWidth);
 		m_config->Set(GLOBAL_TAB_USESPACES, m_TabUseSpaces);
+		m_config->Set(GLOBAL_EDITOR_BOM, m_BOM);
 
 		m_config->Set(GLOBAL_MAINTAININDENT, m_MaintainIndent);
 		m_config->Set(GLOBAL_OPENMDICHILDMAX, m_OpenMDIChildMax);
@@ -604,6 +607,7 @@ public:
 		MSG_WM_DESTROY(OnDestroy)
 
 		COMMAND_HANDLER(IDC_CHECK_TABUSESPACES, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_CHECK_BOM, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_LINENO, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_TREE, BN_CLICKED, OnCheckClicked)
 		COMMAND_HANDLER(IDC_CHECK_MAINTAININDENT, BN_CLICKED, OnCheckClicked)
@@ -622,6 +626,7 @@ public:
 	BEGIN_DDX_MAP(thisClass)
 		DDX_INT(IDC_EDIT_TABWIDTH, m_TabWidth)
 		DDX_CHECK(IDC_CHECK_TABUSESPACES, m_TabUseSpaces)
+		DDX_CHECK(IDC_CHECK_BOM, m_BOM)
 		DDX_CHECK(IDC_CHECK_MAINTAININDENT, m_MaintainIndent)
 		DDX_CHECK(IDC_CHECK_OPENMDICHILDMAX, m_OpenMDIChildMax)
 		DDX_INT(IDC_EDIT_AUTOSAVEFREQ, m_AutoSaveFreq)

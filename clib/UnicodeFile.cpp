@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 
+#include "global.h"
 #include "UnicodeFile.h"
 #include "UtilFilesystem.h"
 
@@ -46,7 +47,7 @@ bool CUnicodeFile::Create(int readWriteMode, int createMode, ENCODING encoding)
 {
     if (m_file.Create(m_filePath.c_str(), readWriteMode, FILE_SHARE_READ, createMode) == S_OK)
     {
-        m_encoding = encoding;
+        encoding = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_EDITOR_BOM) ? encoding : CUnicodeFile::ENCODING_ANSI;
         char bom[4];
         DWORD bytesWritten;
         switch(encoding)

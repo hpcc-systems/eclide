@@ -164,7 +164,11 @@ public:
             std::_tstring runPath = pathToWString(m_compilerFolderPath);
             std::_tstring in, out, err;
             runProcess(command, runPath, _T(""), in, out, err);
-            m_version = out;
+            if (runPath.find(_T("(x86)")) == std::string::npos)
+                m_version = out;
+            else {
+                m_version = out.replace(out.end()-2,out.end(),_T(" (x86)\r\n"));
+            }
         }
         return m_version.c_str();
     }
