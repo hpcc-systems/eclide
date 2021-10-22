@@ -52,6 +52,8 @@ enum PANE   //  See "arrParts" in mainfrm.cpp
     PANE_POS,
     PANE_USER,
     PANE_LABEL,
+    PANE_SERVERSION,
+    PANE_CCVERSION,
     PANE_QUEUE,
     PANE_CLUSTER,
     PANE_LAST

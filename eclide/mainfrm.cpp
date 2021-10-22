@@ -657,6 +657,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_POS, _T(""), TRUE), _T("Cursor Pos"));
     m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_USER, _T(""), TRUE), _T("User"));
     m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_LABEL, _T(""), TRUE), _T("Environment"));
+    m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_SERVERSION, _T(""), TRUE), _T("Server"));
+    m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_CCVERSION, _T(""), TRUE), _T("Version"));
     m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_QUEUE, _T(""), TRUE), _T("Queue"));
     m_wndStatusBar.AddExtendedElement(new CMFCRibbonStatusBarPane(PANE_CLUSTER, _T(""), TRUE), _T("Cluster"));
 
@@ -2329,6 +2331,17 @@ void CMainFrame::operator()(SectionLabel * label)
 {
     //  Not called on main thread...
     PostMessage(CWM_STATUSUPDATE, PANE_LABEL, LPARAM(new CString(GetIConfig(QUERYBUILDER_CFG)->GetLabel())));
+
+    std::_tstring serversion;
+    GetAboutVersion(serversion);
+    if (serversion.length()) {
+        PostMessage(CWM_STATUSUPDATE, PANE_SERVERSION, LPARAM(new CString(serversion.c_str())));
+    }
+    std::_tstring clientVersion;
+    GetClientVersion(clientVersion);
+    if (clientVersion.length()) {
+        PostMessage(CWM_STATUSUPDATE, PANE_CCVERSION, LPARAM(new CString(clientVersion.c_str())));
+    }
     if(GLOBAL_USER.first == *label)
     {
         PostMessage(CWM_STATUSUPDATE, PANE_USER, LPARAM(new CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER))));
@@ -2352,8 +2365,7 @@ bool CMainFrame::UIUpdateMenuItems()
     {
         DisableAllMenuItems();
     }
-
-    return mdiActive; //
+    return mdiActive;
 }
 
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)

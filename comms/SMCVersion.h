@@ -10,6 +10,7 @@ __interface IVersion : public IUnknown
 {
     float Get();
     const TCHAR * GetString(std::_tstring & version);
+    bool IsExecutableBad() const;
 
     const TCHAR * GetPrefix(std::_tstring & prefix) const;
     unsigned int GetMajor() const;
@@ -18,6 +19,8 @@ __interface IVersion : public IUnknown
     const TCHAR * GetSuffixString(std::_tstring & suffix) const;
     unsigned int GetSuffixInteger() const;
     int Compare(const IVersion * other) const;
+    void GetExeVersion();
+    bool IsZeroVersion();
 };
 class IVersionCompare
 {
@@ -31,6 +34,8 @@ public:
     };
     unsigned int distance(IVersion * l, IVersion * r)
     {
+        if (!r->GetMajor() && !r->GetMinor() && !r->GetPoint())
+            return false;
         std::_tstring l_suffix, r_suffix;
         unsigned int retVal = 0;
         retVal += std::abs((int)r->GetSuffixInteger() - (int)l->GetSuffixInteger());
@@ -43,6 +48,8 @@ public:
 
     bool equals(IVersion * l, IVersion * r) const
     {
+        if (!r->GetMajor() && !r->GetMinor() && !r->GetPoint())
+            return false;
         std::_tstring l_suffix, r_suffix;
         return l->GetMajor() == r->GetMajor() &&
             l->GetMinor() == r->GetMinor() &&
@@ -53,6 +60,8 @@ public:
 
     bool operator ()(IVersion * l, IVersion * r) const
     {
+        if (!r->GetMajor() && !r->GetMinor() && !r->GetPoint())
+            return false;
         std::_tstring l_suffix, r_suffix;
         if (l->GetMajor() == r->GetMajor())
         {
