@@ -87,7 +87,7 @@ public:
 
 		m_compiler = _T("Compiler:\t");
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC())
-			m_compiler += eclcc->GetVersion();
+			m_compiler += eclcc->GetVersionString(version);
 		else
 			m_compiler += _T("Unknown");
 		SetDlgItemText(IDC_STATIC_COMPILER, m_compiler.c_str());

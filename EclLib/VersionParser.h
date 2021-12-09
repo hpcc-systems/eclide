@@ -27,6 +27,8 @@ struct ParsedVersion
     unsigned int lang_MinorVersion;
     unsigned int lang_PointVersion;
 
+    bool IsZeroVersion(ParsedVersion& parse);
+
     ParsedVersion()
     {
         majorVersion = 0;
@@ -37,6 +39,21 @@ struct ParsedVersion
         lang_MinorVersion = 0;
         lang_PointVersion = 0;
         build = 0;
+    }
+
+    bool IsZeroVersion() {
+        if (majorVersion == 0 &&
+            minorVersion == 0 &&
+            pointVersion == 0 &&
+            suffixInt == 0 &&
+            lang_MajorVersion == 0 &&
+            lang_MinorVersion == 0 &&
+            lang_PointVersion == 0 &&
+            build == 0) {
+
+            return true;
+        }
+        return false;
     }
 
     /*  Note:  ECL IDE Major version was brought in line with HPCC Platform for version 4.

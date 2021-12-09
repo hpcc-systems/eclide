@@ -31,7 +31,8 @@ static const SectionLabelDefault GLOBAL_DISABLE_COMPILE(SectionLabel(_T("Disable
 
 __interface IEclCC : public IUnknown
 {
-    const TCHAR * GetVersion() const;
+    const TCHAR* GetVersionString(std::_tstring& version) const;
+    const bool IsExecutableBad() const;
     SMC::IVersion * GetBuild() const;
     const TCHAR * GetPrefWarnings(std::_tstring & warnings) const;
     const TCHAR * GetPrefErrors(std::_tstring & warnings) const;
@@ -40,6 +41,7 @@ __interface IEclCC : public IUnknown
     const TCHAR * GetWorkingFolder() const;
     int GetEclFolderCount() const;
     const TCHAR * GetEclFolder(int i) const;
+    std::_tstring GetCompilerFilePath() const;
     bool GetAutoC(IAttribute *attr, const std::_tstring & partialLabel, StdStringVector &set);
     const TCHAR * GetToolTip(const std::_tstring & key, std::_tstring & tooltip);
 
@@ -73,5 +75,14 @@ COMMS_API TRI_BOOL IsRemoteDaliEnabled();
 COMMS_API void EnableRemoteQueueEnabled(TRI_BOOL enable = TRI_BOOL_TRUE);
 COMMS_API TRI_BOOL IsRemoteQueueEnabled();
 
-COMMS_API IEclCC * CreateIEclCC();
+COMMS_API IEclCC* CreateIEclCC(bool force = false);
+COMMS_API void RescanClients();
+COMMS_API IEclCC* MatchVersion();
+COMMS_API IEclCC* GetBestMatch();
+COMMS_API IEclCC* SetComboToBest();
+COMMS_API IEclCC* GetCurrentCompiler();
+COMMS_API IEclCC* SetCurrentClient();
 COMMS_API void ClearEclCCSingletons();
+COMMS_API std::wstring GetCompilers(std::vector<std::wstring> & strVec);
+COMMS_API IEclCC* CompilerFromVersion(const std::_tstring& versionStr);
+COMMS_API IEclCC* CompilerFromExePath(const std::_tstring& exePath);

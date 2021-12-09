@@ -64,6 +64,7 @@ BOOL APIENTRY DllMain( HANDLE /*hModule*/, DWORD  ul_reason_for_call, LPVOID lpR
 #endif
 
 const SectionLabelDefault GLOBAL_SERVER_IP(SectionLabel(_T("Server"), _T("ServerIP")), _T(""));
+const SectionLabelDefault GLOBAL_CLIENT_VERSION(SectionLabel(_T("Server"), _T("ClientVersion")), _T(""));
 const SectionLabelDefault GLOBAL_SERVER_SSL(SectionLabel(_T("Server"), _T("SSL")), false);
 const SectionLabelDefault GLOBAL_SERVER_ADVANCED(SectionLabel(_T("Server"), _T("Advanced")), false);
 

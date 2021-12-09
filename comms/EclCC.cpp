@@ -43,11 +43,11 @@ protected:
 
     WPathVector m_eclFolders;
 
-    mutable std::_tstring m_version;
     mutable CComPtr<SMC::IVersion> m_compilerVersion;
     mutable CEclMeta m_eclMeta;
 
 public:
+    mutable std::_tstring m_version;
     std::_tstring m_errors;
     std::_tstring m_warnings;
 
@@ -133,6 +133,8 @@ public:
         StringPathMap::const_iterator found = paths.find(ECLCC_ECLBUNDLE_PATH);
         if (found != paths.end())
             m_eclFolders.push_back(std::make_pair(found->second, false));
+
+        GetBuild();
     }
 
     void PopulateMeta(IAttribute *attribute)
@@ -149,28 +151,12 @@ public:
         return m_compilerFile.c_str();
     }
 
-    const TCHAR * GetVersion() const
-    {
-        clib::recursive_mutex::scoped_lock proc(m_mutex);
-        if (m_version.empty())
-        {
-            std::_tstring command = m_compilerFile;
-            if (!m_arguments.empty())
-            {
-                command += _T(" ");
-                command += m_arguments;
-            }
-            command += _T(" --version");
-            std::_tstring runPath = pathToWString(m_compilerFolderPath);
-            std::_tstring in, out, err;
-            runProcess(command, runPath, _T(""), in, out, err);
-            if (runPath.find(_T("(x86)")) == std::string::npos)
-                m_version = out;
-            else {
-                m_version = out.replace(out.end()-2,out.end(),_T(" (x86)\r\n"));
-            }
-        }
-        return m_version.c_str();
+    const TCHAR* GetVersionString(std::_tstring& version) const {
+        return m_compilerVersion->GetString(version);
+    }
+
+    const bool IsExecutableBad() const {
+        return m_compilerVersion->IsExecutableBad();
     }
 
     bool GetAutoC(IAttribute *attr, const std::_tstring & partialLabel, StdStringVector &set)
@@ -187,8 +173,10 @@ public:
     SMC::IVersion * GetBuild() const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        if (!m_compilerVersion)
-            m_compilerVersion = SMC::CreateVersion(m_compilerFile.c_str(), GetVersion());
+        if (!m_compilerVersion) {
+            CString version;
+            m_compilerVersion = SMC::CreateVersion(m_compilerFile.c_str(), version);
+        }
 
         return m_compilerVersion;
     }
@@ -246,6 +234,11 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         ATLASSERT(i >= 0 && i < (int)m_eclFolders.size());
         return m_eclFolders[i].first.c_str();
+    }
+
+    std::_tstring GetCompilerFilePath() const
+    {
+        return pathToWString(m_compilerFilePath);
     }
 
     bool LocateIDEPlugin(const std::string & batchFile, boost::filesystem::path & foundFolder) const
@@ -374,14 +367,12 @@ public:
 
         std::_tstring folder = m_workingFolder;
         bool exists = boost::filesystem::exists(folder);
-        if (!exists) {
-            _DBGLOG(LEVEL_SEVERE, (boost::_tformat(_T("Working folder not found:  %1%")) % folder.c_str()).str().c_str());
-        }
         if (folder.empty() || !exists)
         {
             _TCHAR buf[MAX_PATH];
-             if(GetTempPath(MAX_PATH, buf))
-                 folder = buf;
+            if (GetTempPath(MAX_PATH, buf)) {
+                folder = buf;
+            }
         }
         runProcess(command, folder, _T(""), in, out, err);
 
@@ -714,7 +705,10 @@ TRI_BOOL IsRemoteQueueEnabled()
 }
 
 CacheT<std::_tstring, CEclCC> EclCCCache;
+CEclCCVector g_foundCompilers;
 CComPtr<IEclCC> g_eclcc;
+CComPtr<IEclCC> g_eclccBest;
+CComPtr<IEclCC> g_eclccCombo;
 void ClearEclCCSingletons()
 {
     EclCCCache.Clear();
@@ -805,70 +799,174 @@ unsigned int FindAllCEclCC(CEclCCVector & results)
     return results.size();
 }
 
+void RescanClients() {
+    g_foundCompilers.clear();
+    FindAllCEclCC(g_foundCompilers);
+}
+
 const TCHAR * const warningTpl = _T("Compiler/Server mismatch:\r\nCompiler:\t%1%\r\nServer:\t%2%");
-IEclCC * CreateIEclCC()
+IEclCC * CreateIEclCC(bool force)
 {
-    if (g_EnableCompiler != TRI_BOOL_TRUE)
+    if (!force && g_EnableCompiler != TRI_BOOL_TRUE)
         return NULL;
 
     if (g_eclcc)
         return g_eclcc;
 
+    if (!g_foundCompilers.size())
+        FindAllCEclCC(g_foundCompilers);
+
+    GetBestMatch();
+
     CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
-    if (!config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION)) {
-        CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
-        CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
-        CEclCCVector foundCompilers;
-        if (FindAllCEclCC(foundCompilers))
+    CString client = CString(config->Get(GLOBAL_COMPILER_LOCATION));
+    bool override = config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
+    if (override) {
+        g_eclcc = CreateEclCCRaw(config, (const TCHAR*)client);
+    }
+    else if (client.GetLength()) {
+        g_eclcc = g_eclccBest;
+    }
+    return g_eclcc;
+}
+
+IEclCC* GetBestMatch() {
+    if (!g_eclccBest) {
+        g_eclccBest = MatchVersion();
+    }
+    return g_eclccBest;
+}
+
+IEclCC* SetComboToBest() {
+    if (g_eclccBest) {
+        g_eclccCombo = g_eclccBest;
+    }
+    return g_eclccCombo;
+}
+
+
+IEclCC* GetCurrentCompiler() {
+    return g_eclcc;
+}
+
+IEclCC* SetCurrentClient() {
+    CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+    CString client = CString(config->Get(GLOBAL_COMPILER_LOCATION));
+    bool override = config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
+
+    if (!override && g_eclccBest)
+        g_eclcc = g_eclccBest;
+    else if (override && client.GetLength()) {
+        CComPtr<IEclCC> eclcc = CompilerFromExePath(client.GetString());
+        if (!eclcc)
+            g_eclcc = CreateEclCCRaw(config, (const TCHAR*)client);
+    }
+
+    return g_eclcc;
+}
+
+IEclCC * MatchVersion() {
+    CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+    CComPtr<SMC::ISMC> smc = SMC::AttachSMC(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _T("SMC"));
+    CComPtr<SMC::IVersion> serverVersion = smc->GetBuild();
+    bool serverEmpty = serverVersion->IsZeroVersion();
+    if (g_foundCompilers.size())
+    {
+        SMC::IVersionCompare versionCompare;
+        StlLinked<CEclCC> bestMatchEclCC_before;
+        StlLinked<CEclCC> bestMatchEclCC_after;
+        StlLinked<CEclCC> latestGoodEclCC;
+        StlLinked<CEclCC> matchedEclCC;
+
+        for (CEclCCVector::const_iterator itr = g_foundCompilers.begin(); itr != g_foundCompilers.end(); ++itr)
         {
-            SMC::IVersionCompare versionCompare;
-            StlLinked<CEclCC> bestMatchEclCC_before;
-            StlLinked<CEclCC> bestMatchEclCC_after;
-            StlLinked<CEclCC> matchedEclCC;
-            for(CEclCCVector::const_iterator itr = foundCompilers.begin(); itr != foundCompilers.end(); ++itr)
-            {
-                if (versionCompare.equals(serverVersion.p, itr->get()->GetBuild()))
+            if (!itr->get()->IsExecutableBad()) {
+                latestGoodEclCC = itr->get();
+                if (!serverEmpty && versionCompare.equals(serverVersion.p, itr->get()->GetBuild()))
                 {
                     matchedEclCC = itr->get();
                     break;
                 }
-                if (versionCompare(serverVersion.p, itr->get()->GetBuild()))
+                if (!serverEmpty && versionCompare(serverVersion.p, itr->get()->GetBuild()))
                 {
                     bestMatchEclCC_after = itr->get();
                     break;
                 }
-                bestMatchEclCC_before = itr->get();
             }
-            if (matchedEclCC) {
-                g_eclcc = matchedEclCC;
-                return matchedEclCC;
-            }
+            bestMatchEclCC_before = itr->get();
+        }
+        if (matchedEclCC) {
+            g_eclccBest= matchedEclCC;
+            return g_eclccBest;
+        }
             
-            if (bestMatchEclCC_after && versionCompare.distance(serverVersion, bestMatchEclCC_after->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
-                matchedEclCC = bestMatchEclCC_after;
+        if (bestMatchEclCC_after && !bestMatchEclCC_after->IsExecutableBad() && versionCompare.distance(serverVersion, bestMatchEclCC_after->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
+            matchedEclCC = bestMatchEclCC_after;
 
-            if (bestMatchEclCC_before && versionCompare.distance(serverVersion, bestMatchEclCC_before->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
-                matchedEclCC = bestMatchEclCC_before;
+        if (bestMatchEclCC_before && !bestMatchEclCC_before->IsExecutableBad() && versionCompare.distance(serverVersion, bestMatchEclCC_before->GetBuild()) < SMC::IVersionCompare::DISTANCE_POINT)
+            matchedEclCC = bestMatchEclCC_before;
 
-            if (matchedEclCC)
-            {
-                std::_tstring eclccBuildStr, serverVersionStr;
-                matchedEclCC->m_warnings = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
-                g_eclcc = matchedEclCC;
-                return matchedEclCC;
-            }
-
-            //  No good match, just return latest  ---
-            matchedEclCC = foundCompilers.rbegin()->get();
+        if (matchedEclCC)
+        {
             std::_tstring eclccBuildStr, serverVersionStr;
-            const std::_tstring errors = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
-            matchedEclCC->m_errors = errors;
-            matchedEclCC->m_errors += _T("\r\n(To prevent this message from showing, either download and install the matching client tools package or override the default compiler settings in the preferences window)\r\n");
-            g_eclcc = matchedEclCC;
-            return matchedEclCC;
+            matchedEclCC->m_warnings = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
+            g_eclccBest = matchedEclCC;
+            return g_eclccBest;
+        }
+
+        //  No good match, just return latest  ---
+        matchedEclCC = latestGoodEclCC;
+        std::_tstring eclccBuildStr, serverVersionStr;
+        const std::_tstring errors = (boost::_tformat(warningTpl) % matchedEclCC->GetBuild()->GetString(eclccBuildStr) % serverVersion->GetString(serverVersionStr)).str();
+        matchedEclCC->m_errors = errors;
+        matchedEclCC->m_errors += _T("\r\n(To prevent this message from showing, either download and install the matching client tools package or override the default compiler settings in the preferences window)\r\n");
+        g_eclccBest = matchedEclCC;
+        return g_eclccBest;
+    }
+    return NULL;
+}
+
+std::wstring GetCompilers(std::vector<std::wstring> &strVec) {
+    StlLinked<CEclCC> matchedEclCC;
+    if (g_foundCompilers.size() > 0) {
+        std::wstring version;
+        for (CEclCCVector::const_iterator itr = g_foundCompilers.begin(); itr != g_foundCompilers.end(); ++itr)
+        {
+            itr->get()->GetVersionString(version);
+            if (version.length()) {
+                boost::algorithm::trim(version);
+                strVec.push_back(version);
+            }
+        }
+        g_eclcc->GetVersionString(version);
+        boost::algorithm::trim(version);
+        std::sort(strVec.begin(), strVec.end());
+        return version;
+    }
+    return _T("");
+}
+
+IEclCC* CompilerFromVersion(const std::_tstring& versionStr) {
+    std::wstring version;
+    for (CEclCCVector::const_iterator itr = g_foundCompilers.begin(); itr != g_foundCompilers.end(); ++itr)
+    {
+        itr->get()->GetVersionString(version);
+        if (version.length() && _tcsicmp(version.c_str(), versionStr.c_str()) == 0) {
+            g_eclccCombo = *itr;
+            return *itr;
         }
     }
+    return NULL;
+}
 
-    g_eclcc = CreateEclCCRaw(config, (const TCHAR *)CString(config->Get(GLOBAL_COMPILER_LOCATION)));
-    return g_eclcc;
+IEclCC* CompilerFromExePath(const std::_tstring& exePath) {
+    std::wstring path;
+    for (CEclCCVector::const_iterator itr = g_foundCompilers.begin(); itr != g_foundCompilers.end(); ++itr)
+    {
+        path = itr->get()->GetCompilerFilePath();
+        if (path.length() && _tcsicmp(path.c_str(), exePath.c_str()) == 0) {
+            return *itr;
+        }
+    }
+    return NULL;
 }

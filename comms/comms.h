@@ -18,6 +18,7 @@
 #include <global.h> //clib
 
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_IP; //(SectionLabel(_T("Server"), _T("ServerIP")), _T(""));
+extern COMMS_API const SectionLabelDefault GLOBAL_CLIENT_VERSION; //(SectionLabel(_T("Server"), _T("ClientVersion")), _T(""));
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_SSL; //(SectionLabel(_T("Server"), _T("SSL")), false);
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_ADVANCED; //(SectionLabel(_T("Server"), _T("Advanced")), false);
 

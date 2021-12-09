@@ -5,6 +5,8 @@
 #include "SoapUtil.h"
 #include "Cache.h"
 #include <VersionParser.h>	//EclLib
+#include <UtilFilesystem.h>
+#include <cmdProcess.h>
 
 #if _COMMS_VER < 68200
 using namespace WsSMC;
@@ -20,6 +22,7 @@ protected:
     std::_tstring m_url;
     std::_tstring m_rawversion;
     std::_tstring m_strversion;
+    bool m_badExecutable;
     ParsedVersion m_parsedVersion;
     mutable clib::recursive_mutex m_mutex;
 
@@ -32,6 +35,7 @@ public:
     CVersion(const CString & url, const CString &version) : m_url(url), m_rawversion(version)
     {
         m_id = m_url + _T("/") + m_rawversion.c_str();
+        m_badExecutable = false;
 #ifdef _DEBUGUNITTEST
         //  <string>-|_<int>.<int>[<char>][.<int>].|-|_<string>[_<int>[<char>]]
         static bool unitTest = false;
@@ -71,8 +75,11 @@ public:
             ATLASSERT(!ParseVersion(_T("4"), test));
         }
 #endif
-        ParseVersion((const TCHAR *)version, m_parsedVersion);
-        m_strversion = version;
+        GetExeVersion();
+        if (version.IsEmpty())
+            ParseVersion(m_rawversion, m_parsedVersion);
+        else
+            ParseVersion((const TCHAR *)version, m_parsedVersion);
         boost::algorithm::trim(m_strversion);
     }
 
@@ -99,6 +106,11 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         version = m_strversion;
         return version.c_str();
+    }
+
+    bool IsExecutableBad() const
+    {
+        return m_badExecutable;
     }
 
     const TCHAR * GetPrefix(std::_tstring & prefix) const
@@ -163,6 +175,45 @@ public:
     void Update()
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
+    }
+
+    void GetExeVersion()
+    {
+        clib::recursive_mutex::scoped_lock proc(m_mutex);
+        if (!m_url.empty() && boost::filesystem::exists(m_url))
+        {
+            bool badExeFlag = false;
+            std::_tstring command = m_url;
+            boost::filesystem::wpath path = wpathToPath(m_url);
+            std::_tstring runPath = pathToWString(path.parent_path());
+            command += _T(" --version");
+            std::_tstring in, out, err;
+            runProcess(command, runPath, _T(""), in, out, err);
+            if (!out.length()) {
+                boost::filesystem::wpath versionPath = path.parent_path().parent_path().parent_path();
+                boost::filesystem::wpath versionFilename = versionPath.filename();
+                m_rawversion = pathToWString(versionFilename);
+                badExeFlag = true;
+            }
+            else {
+                m_rawversion = out;
+                boost::algorithm::trim(m_rawversion);
+            }
+            m_strversion = m_rawversion;
+            if (m_url.find(_T("(x86)")) != std::string::npos)
+                m_strversion = m_strversion.replace(m_strversion.end(), m_strversion.end(), _T(" (x86)"));
+            if (badExeFlag) {
+                m_badExecutable = true;
+                m_strversion = (boost::_tformat(_T("%1% (BAD EXECUTABLE)")) % m_strversion).str();
+            }
+        }
+        else {
+            m_strversion = m_rawversion;
+        }
+    }
+
+    bool IsZeroVersion() {
+        return m_parsedVersion.IsZeroVersion();
     }
 };
 

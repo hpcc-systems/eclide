@@ -171,6 +171,7 @@ protected:
 	CComPtr<CCustomAutoComplete> m_DfuServerAC;
 
 	CString m_ServerIP;
+	CString m_ClientVersion;
 	CString m_TopologyServer;
 	CString m_WorkunitServer;
 	CString m_AttributeServer;
@@ -203,6 +204,7 @@ public:
 	void PopulateControls()
 	{
 		m_ServerIP = m_config->Get(GLOBAL_SERVER_IP);
+		m_ClientVersion = m_config->Get(GLOBAL_CLIENT_VERSION);
 		m_Advanced = m_config->Get(GLOBAL_SERVER_ADVANCED);
 		m_TopologyServer = m_config->Get(GLOBAL_SERVER_TOPOLOGY);
 
@@ -698,17 +700,21 @@ protected:
 
 	bool m_overrideAutoCompilerSelect;
 	bool m_metaData;
+	CString m_Version;
 	CString m_Location;
 	CString m_Arguments;
 	CString m_WUArguments;
 	CString m_EclWorkingFolder;
 
 	CHListBox m_listFolders;
+	CComboBox m_ctConfig;
 
 	CButton m_moveUp;
 	CButton m_moveDown;
 
 public:
+	CString m_ConfigClient;
+
 	CPrefCompilerDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner)
 	{
 		m_ConfigLabel = m_config->GetLabel();
@@ -792,11 +798,16 @@ public:
 		EnableLocationSettings();
 	}
 
+	bool OverrideAutoCompiler() {
+		return m_overrideAutoCompilerSelect;
+	}
+
 	void LoadFromConfig(IConfig * config)
 	{
 		m_config = config;
 		m_overrideAutoCompilerSelect = m_config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
 		m_Location = m_config->Get(GLOBAL_COMPILER_LOCATION);
+		m_ConfigClient = m_config->Get(GLOBAL_CLIENT_VERSION);
 		m_Arguments = m_config->Get(GLOBAL_COMPILER_ARGUMENTS);
 		m_WUArguments = m_config->Get(GLOBAL_COMPILER_WUARGUMENTS);
 		m_EclWorkingFolder = m_config->Get(GLOBAL_COMPILER_ECLWORKINGFOLDER);
@@ -844,12 +855,14 @@ public:
 		}
 		DoDataExchange();
 		EnableLocationSettings();
+		SelectBestMatch(false);
 	}
 
 	void SaveToConfig()
 	{
 		DoDataExchange(true);
 		m_config->Set(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION, m_overrideAutoCompilerSelect);
+		m_config->Set(GLOBAL_CLIENT_VERSION, m_ConfigClient);
 		m_config->Set(GLOBAL_COMPILER_LOCATION, m_Location);
 		m_config->Set(GLOBAL_COMPILER_ARGUMENTS, m_Arguments);
 		m_config->Set(GLOBAL_COMPILER_WUARGUMENTS, m_WUArguments);
@@ -894,11 +907,30 @@ public:
 		}
 	}
 
+	void SelectBestMatch(bool setLocationFlag) {
+		CComPtr<IEclCC> bestMatch = GetBestMatch();
+		if (bestMatch) {
+			std::wstring bestVersion;
+			bestMatch->GetVersionString(bestVersion);
+			std::wstring text = _T("");
+			int index = m_ctConfig.FindString(0, bestVersion.c_str());
+			if (index) {
+				m_ctConfig.SetCurSel(index);
+				if (setLocationFlag && m_overrideAutoCompilerSelect) {
+					CString location = bestMatch->GetCompilerFilePath().c_str();
+					GetDlgItem(IDC_EDIT_LOCATION).SetWindowTextW(location);
+					SetComboToBest();
+				}
+			}
+		}
+	}
+
 	void DoApply(bool bMakeGlobal)
 	{
 		DoDataExchange(true);
 
 		SaveToConfig();
+		SetCurrentClient();
 		DoChanged(false);
 	}
 
@@ -929,6 +961,9 @@ public:
 		COMMAND_HANDLER(IDC_BUTTON_DEFAULTS, BN_CLICKED, OnEclFolderDefaults)
 		COMMAND_HANDLER(IDC_BUTTON_ECLFOLDERADD, BN_CLICKED, OnEclFolderAddClicked)
 		COMMAND_HANDLER(IDC_BUTTON_ECLFOLDERDELETE, BN_CLICKED, OnEclFolderDeleteClicked)
+		COMMAND_HANDLER_EX(IDC_COMBO_CLIENT, CBN_SELENDOK, OnSelClientConfig)
+		COMMAND_HANDLER(IDC_BUTTON_SCANCLIENTS, BN_CLICKED, OnScanClients)
+		COMMAND_HANDLER(IDC_BUTTON_MATCH, BN_CLICKED, OnMatchClientServer)
 
 		NOTIFY_HANDLER(IDC_LIST_ECLFOLDERS, LBN_SELCHANGE, OnSelChange)
 		REFLECT_NOTIFICATIONS()
@@ -938,6 +973,7 @@ public:
 		DDX_CHECK(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, m_overrideAutoCompilerSelect)
 		DDX_CHECK(IDC_CHECK_METADATA, m_metaData)
 		DDX_TEXT(IDC_EDIT_LOCATION, m_Location)
+		DDX_TEXT(IDC_COMBO_CLIENT, m_Version)
 		DDX_TEXT(IDC_EDIT_ARGUMENTS, m_Arguments)
 		DDX_TEXT(IDC_EDIT_WUARGUMENTS, m_WUArguments)
 		DDX_TEXT(IDC_EDIT_ECLWORKINGFOLDER, m_EclWorkingFolder)
@@ -954,6 +990,9 @@ public:
 		ATLASSERT(m_listFolders);
 		m_moveUp = GetDlgItem(IDC_BUTTON_MOVEUP);
 		m_moveDown = GetDlgItem(IDC_BUTTON_MOVEDOWN);
+
+		m_ctConfig = GetDlgItem(IDC_COMBO_CLIENT);
+		::PopulateCTConfigCombo(m_ctConfig, (const TCHAR*)m_ConfigClient);
 
 		LoadFromConfig(m_config);
 		DoChanged(false);
@@ -983,7 +1022,7 @@ public:
 	LRESULT OnEclCompilerClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
 		static const TCHAR szEclFilter[] = _T("ECL Compiler (eclcc.exe)\0eclcc.exe\0All Files (*.*)\0*.*\0\0");
-		CFileDialog dlg(TRUE, NULL, NULL, OFN_FILEMUSTEXIST, szEclFilter, m_hWnd);	
+		CFileDialog dlg(TRUE, NULL, m_Location, OFN_FILEMUSTEXIST, szEclFilter, m_hWnd);
 		if (IDOK == dlg.DoModal())
 		{
 			m_Location = dlg.m_szFileName;
@@ -1082,10 +1121,46 @@ public:
 		return 0;
 	}
 
-   LRESULT OnSelChange(int wParam, LPNMHDR lParam, BOOL &/*bHandled*/)
-   {
-	   return 0;
-   }
+	LRESULT OnSelChange(int wParam, LPNMHDR lParam, BOOL&/*bHandled*/)
+	{
+		return 0;
+	}
+
+	void OnSelClientConfig(UINT /*nId*/, int /*wID*/, HWND /*hWndCtl*/)
+	{
+		GetDlgItem(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION);
+		if (OverrideAutoCompiler()) {
+			int index = m_ctConfig.GetCurSel();
+			CString currentChoice = "";
+			m_ctConfig.GetLBText(index, currentChoice);
+			if (currentChoice.Find(_T("(BAD EXECUTABLE)"), 0) < 0) {
+				m_ConfigClient = currentChoice;
+				std::wstring version(currentChoice);
+				CComPtr<IEclCC> eclcc = CompilerFromVersion(version);
+				if (eclcc) {
+					m_Location = eclcc->GetCompilerFilePath().c_str();
+					GetDlgItem(IDC_EDIT_LOCATION).SetWindowTextW(m_Location);
+				}
+			}
+			else {
+				m_ctConfig.SelectString(0, m_ConfigClient);
+				MessageBox(currentChoice, _T("Warning"), MB_ICONWARNING);
+			}
+		}
+	}
+
+	LRESULT OnScanClients(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
+		CWaitCursor wait;
+		RescanClients();
+		::PopulateCTConfigCombo(m_ctConfig, _T(""));
+		return 0;
+	}
+
+	LRESULT OnMatchClientServer(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
+		CWaitCursor wait;
+		SelectBestMatch(true);
+		return 0;
+	}
 };
 //  ===========================================================================
 class CPrefColorDlg : public CDialogImpl<CPrefColorDlg>, 

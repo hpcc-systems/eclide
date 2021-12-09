@@ -46,6 +46,7 @@ protected:
 	ILoginConfigPreferences *m_configPrefs;
 	CString m_Msg;
 	CString m_Title;
+	CString m_appVersion;
 	bool m_verifyUser;
 	CComPtr<IAutoUpdate> m_autoupdate;
 	CHyperLink m_autoUpdateLink;
@@ -934,13 +935,42 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 			}
 		}
 	}
-	if(configCombo.GetCount() == 0)
+	if (configCombo.GetCount() == 0)
 	{
 		configCombo.AddString(_T("default"));
 		retVal = false;
 	}
-	if ( matchID < 0 )
+	if (matchID < 0)
 		configCombo.SetCurSel(0);
+	return retVal;
+}
+
+bool PopulateCTConfigCombo(CComboBox & configCTCombo, const std::_tstring & savedValue)
+{
+	bool retVal = true;
+	if (CComPtr<IEclCC> eclcc = CreateIEclCC(true)) {
+		configCTCombo.ResetContent();
+		std::vector<std::wstring> compilers;
+		std::wstring currentVersion = GetCompilers(compilers);
+		CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+		int i = 0;
+		int current = 0;
+
+		for (auto& c : compilers)
+		{
+			if ((!savedValue.length() || !config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION) && currentVersion.length())) {
+				if (_tcsicmp(c.c_str(), currentVersion.c_str()) == 0)
+					current = i;
+			}
+			else if (savedValue.length()) {
+				if (_tcsicmp(c.c_str(), savedValue.c_str()) == 0)
+					current = i;
+			}
+			configCTCombo.AddString(c.c_str());
+			i++;
+		}
+		configCTCombo.SetCurSel(current);
+	}
 	return retVal;
 }
 
@@ -954,6 +984,16 @@ const TCHAR * GetAboutVersion(std::_tstring &version)
 {
 	std::_tstring buildVer;
 	version += GetBuildVersion(buildVer);
+	return version.c_str();
+}
+
+const TCHAR* GetClientVersion(std::_tstring& version)
+{
+	std::_tstring clientVersion;
+	if (CComPtr<IEclCC> eclcc = GetCurrentCompiler()) {
+		eclcc->GetVersionString(clientVersion);
+		version += clientVersion;
+	}
 	return version.c_str();
 }
 
