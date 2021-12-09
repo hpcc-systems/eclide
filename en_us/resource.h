@@ -24,6 +24,7 @@
 #define IDC_STATIC_PASSWORD             31
 #define IDC_COMBO_CONFIG                32
 #define IDC_STATIC_USER2                33
+#define IDC_COMBO_CLIENT                33
 #define IDC_STATIC_CONFIRM              34
 #define IDC_STATIC_CONFIGURATION_RHS    35
 #define IDC_COMBO_CONFIG_RHS            36
@@ -546,6 +547,8 @@
 #define IDC_COMBO_HELP                  546
 #define IDC_CHECK_DISABLEMETA           547
 #define IDC_CHECK_BOM                   548
+#define IDC_BUTTON_SCANCLIENTS          549
+#define IDC_BUTTON_MATCH                550
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -872,7 +875,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61415
 #define _APS_NEXT_COMMAND_VALUE         33133
-#define _APS_NEXT_CONTROL_VALUE         549
+#define _APS_NEXT_CONTROL_VALUE         551
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

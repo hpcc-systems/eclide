@@ -107,6 +107,7 @@ bool ParseVersion(const std::_tstring & version_string, ParsedVersion & result)
 {
     std::_tstring trim_version_string = version_string;
     boost::algorithm::trim(trim_version_string);
+    boost::algorithm::ireplace_last(trim_version_string, " (x86)", "");
     using namespace std;
     using namespace boost::spirit::classic;
     using namespace phoenix;
