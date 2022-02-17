@@ -8,7 +8,7 @@
 #include "LoginDlg.h"
 #include <EclCC.h>
 
-const TCHAR * const warning = _T("HPCC SYSTEMS software Copyright (C) 2018 HPCC Systems®.\r\n"
+const TCHAR * const warning = _T("HPCC SYSTEMS software Copyright (C) 2022 HPCC Systems®.\r\n"
 "\r\n"
 "Licensed under the Apache License, Version 2.0 (the \"License\");\r\n"
 "you may not use this file except in compliance with the License.\r\n"
