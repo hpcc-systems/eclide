@@ -23,7 +23,7 @@ FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtre
 FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/zlib)
 
 FILE(GLOB CEF_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/*")
-FIND_PATH(CEF_ROOT_DIR 
+FIND_PATH(CEF_ROOT_DIR
     NAMES Release/libcef.lib
     PATHS ${CEF_SEARCH_PATHS}
 )
@@ -97,7 +97,7 @@ ELSE ()
     MESSAGE("Skipping ${PROJECT_SOURCE_DIR}/docs/ECLReference_PT_BR.chm (file does not exist)")
 ENDIF ()
 
-SET(DOC_FILES 
+SET(DOC_FILES
     ${PROJECT_SOURCE_DIR}/docs/LangColorDUD.xml
     ${PROJECT_SOURCE_DIR}/docs/LangColorECL.xml
     ${PROJECT_SOURCE_DIR}/docs/LangColorESDL.xml
@@ -175,7 +175,7 @@ find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}
 if (CLIENTTOOLS_PACKAGE_FILE)
     install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
     get_filename_component(CLIENTTOOLS_PACKAGE_FILE_NAME ${CLIENTTOOLS_PACKAGE_FILE} NAME)
-    list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS " 
+    list ( APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
         ExecWait '$INSTDIR\\\\tmp\\\\${CLIENTTOOLS_PACKAGE_FILE_NAME} /S /D=$INSTDIR\\\\..\\\\clienttools'
 ")
 endif (CLIENTTOOLS_PACKAGE_FILE)
@@ -228,7 +228,7 @@ IF (EXISTS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt")
     FILE(STRINGS "${PROJECT_SOURCE_DIR}/../sign/passphrase.txt" PFX_PASSWORD LIMIT_COUNT 1)
 
     ADD_CUSTOM_TARGET(SIGN
-        COMMAND signtool sign /f "${PROJECT_SOURCE_DIR}/../sign/hpcc_code_signing.pfx" /p "${PFX_PASSWORD}" /tr "http://timestamp.digicert.com" "${CMAKE_BINARY_DIR}/${CPACK_PACKAGE_NAME}*.exe"
+        COMMAND signtool sign /f "${PROJECT_SOURCE_DIR}/../sign/hpcc_code_signing.pfx" /fd "SHA256" /p "${PFX_PASSWORD}" /tr "http://timestamp.digicert.com" "${CMAKE_BINARY_DIR}/${CPACK_PACKAGE_NAME}*.exe"
         COMMENT "Digital Signature"
     )
     ADD_DEPENDENCIES(SIGN PACKAGE)
