@@ -828,10 +828,10 @@ IEclCC * CreateIEclCC(bool force)
     CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
     CString client = CString(config->Get(GLOBAL_COMPILER_LOCATION));
     bool override = config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
-    if (override) {
+    if (override && !client.IsEmpty()) {
         g_eclcc = CreateEclCCRaw(config, (const TCHAR*)client);
     }
-    else if (client.GetLength()) {
+    else {
         g_eclcc = g_eclccBest;
     }
     return g_eclcc;
