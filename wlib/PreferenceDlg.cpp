@@ -17,6 +17,7 @@
 //#include "atlGraphView.h"
 //#include "GraphViewCtl.h"
 #include "cmdProcess.h"
+#include "comms.h"
 #include <EclCC.h>
 #include "npHPCCSystemsGraphViewControl.h"
 #include "HListBox.h"
@@ -171,6 +172,7 @@ protected:
 	CComPtr<CCustomAutoComplete> m_DfuServerAC;
 
 	CString m_ServerIP;
+	CString m_EclWatch;
 	CString m_ClientVersion;
 	CString m_TopologyServer;
 	CString m_WorkunitServer;
@@ -207,6 +209,7 @@ public:
 		m_ClientVersion = m_config->Get(GLOBAL_CLIENT_VERSION);
 		m_Advanced = m_config->Get(GLOBAL_SERVER_ADVANCED);
 		m_TopologyServer = m_config->Get(GLOBAL_SERVER_TOPOLOGY);
+		m_EclWatch = m_config->Get(GLOBAL_SERVER_ECLWATCH);
 
 		//to preserve "old" configs, go to advanced if they had a topo server defined
 		if (!m_Advanced)
@@ -239,6 +242,7 @@ public:
 	void UpdateConfig()
 	{
 		DoDataExchange(true);
+		m_config->Set(GLOBAL_SERVER_ECLWATCH, m_EclWatch);
 		m_config->Set(GLOBAL_SERVER_TOPOLOGY, m_TopologyServer);
 		m_config->Set(GLOBAL_SERVER_WORKUNIT, m_WorkunitServer);
 		m_config->Set(GLOBAL_SERVER_ATTRIBUTE, m_AttributeServer);
@@ -305,6 +309,7 @@ public:
 		DDX_TEXT(IDC_EDIT_DFUSERVER, m_DfuServer)
 		DDX_CHECK(IDC_CHECK_SSL, m_SSL)
 		DDX_CHECK(IDC_CHECK_ADVANCED, m_Advanced)
+		DDX_TEXT(IDC_EDIT_ECLWATCH, m_EclWatch)
 		DDX_TEXT(IDC_EDIT_IPADDRESS, m_ServerIP)
 	END_DDX_MAP()
 
@@ -444,12 +449,13 @@ public:
 			SetDlgItemText(IDC_EDIT_SMCSERVER, _T(""));
 			SetDlgItemText(IDC_EDIT_SPRAYSERVER, _T(""));
 			SetDlgItemText(IDC_EDIT_DFUSERVER, _T(""));
+			SetDlgItemText(IDC_EDIT_ECLWATCH, _T(""));
 		}
 		else
 		{
 			CString url = m_SSL ? _T("https://") : _T("http://");
 			url += m_ServerIP;
-			url += (m_SSL ? _T(":1") : _T(":"));
+			url += (m_SSL ? _T(":1") : _T(":")); 
 
 			SetDlgItemText(IDC_EDIT_TOPOLOGYSERVER,url+_T("8010/WsTopology"));
 			SetDlgItemText(IDC_EDIT_WORKUNITSERVER,url+_T("8010/WsWorkunits"));
@@ -458,6 +464,7 @@ public:
 			SetDlgItemText(IDC_EDIT_SMCSERVER,url+_T("8010/WsSMC"));
 			SetDlgItemText(IDC_EDIT_SPRAYSERVER,url+_T("8010/FileSpray"));
 			SetDlgItemText(IDC_EDIT_DFUSERVER,url+_T("8010/WsDfu"));
+			SetDlgItemText(IDC_EDIT_ECLWATCH, url+_T("8010/esp/files/stub.htm"));
 		}
 	}
 	void EnableServerSettings()
@@ -475,6 +482,7 @@ public:
 			GetDlgItem(IDC_EDIT_SMCSERVER).EnableWindow(false);
 			GetDlgItem(IDC_EDIT_SPRAYSERVER).EnableWindow(false);
 			GetDlgItem(IDC_EDIT_DFUSERVER).EnableWindow(false);
+			GetDlgItem(IDC_EDIT_ECLWATCH).EnableWindow(false);
 		}
 		else
 		{
@@ -487,6 +495,7 @@ public:
 			GetDlgItem(IDC_EDIT_SMCSERVER).EnableWindow(m_Advanced);
 			GetDlgItem(IDC_EDIT_SPRAYSERVER).EnableWindow(m_Advanced);
 			GetDlgItem(IDC_EDIT_DFUSERVER).EnableWindow(m_Advanced);
+			GetDlgItem(IDC_EDIT_ECLWATCH).EnableWindow(m_Advanced);
 		}
 	}
 	DWORD ParseAddress(const CString &addr)
