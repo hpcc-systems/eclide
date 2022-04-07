@@ -29,6 +29,7 @@ extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_ACCOUNT; //(SectionLabe
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_SMC; //(SectionLabel(_T("Server"), _T("SMC")), _T(""));
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_FILESPRAY; //(SectionLabel(_T("Server"), _T("FileSpray")), _T(""));
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_DFU; //(SectionLabel(_T("Server"), _T("DFU")), _T(""));
+extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_ECLWATCH; //(SectionLabel(_T("Server"), _T("EclWatch")), _T(""));
 extern COMMS_API const SectionLabelDefault GLOBAL_SERVER_ANALYSIS;
 extern COMMS_API const SectionLabelDefault GLOBAL_ACTION_CLASSIFY;
 extern COMMS_API const SectionLabelDefault GLOBAL_ACTION_RESOLVE;

@@ -46,9 +46,9 @@ const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
     //tp://IP:PORT?inner=/WsWorkunits/WUInfo?Wuid=W20050302-182157
     //http://192.168.1.201:8010/esp/files/stub.htm?Widget=HPCCPlatformWidget#/stub/ECL/Workunits/W20140410-041544/Summary - TODO New EclWatch does not support this fully...
-    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Wuid="));
+    std::_tstring str = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ECLWATCH));
     url = str.c_str();
+    url += _T("?Wuid=");
     url += wu->GetWuid();
     url += "&Widget=WUDetailsWidget";
     url = url.Trim();
@@ -58,9 +58,9 @@ const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
     //http://192.168.1.201:8010/esp/files/stub.htm?Wuid=W20140410-041422&Widget=WUDetailsWidget
-    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=WUDetailsWidget&Wuid="));
+    std::_tstring str = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ECLWATCH));
     url = str.c_str();
+    url += _T("?Widget=WUDetailsWidget&Wuid=");
     url += wu->GetWuid();
     url = url.Trim();
     return url;
@@ -68,9 +68,9 @@ const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 
 const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
-    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=GraphsWUWidget&Wuid="));
+    std::_tstring str = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ECLWATCH));
     url = str.c_str();
+    url += _T("?Widget=GraphsWUWidget&Wuid=");
     url += wu->GetWuid();
     url = url.Trim();
     return url;
@@ -80,9 +80,9 @@ const TCHAR * GetResultEclWatchURL(Dali::IWorkunit *wu, CString &url, int sequen
 {
     //http://10.150.64.208:8010/WsWorkunits/WUResult?Wuid=W20041006-101104&Sequence=0
     //http://192.168.1.201:8010/esp/files/stub.htm?Wuid=W20140410-041422&Sequence=0&Widget=ResultWidget
-    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=ResultWidget&Wuid="));
+    std::_tstring str = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ECLWATCH));
     url = str.c_str();
+    url += _T("?Widget=ResultWidget&Wuid=");
     url += wu->GetWuid();
     url += _T("&Sequence=");
     url += boost::lexical_cast<std::_tstring>(sequence).c_str();
@@ -97,9 +97,9 @@ const TCHAR * GetFramedDesdlEclWatchURL(const std::_tstring & desdlID, const std
 
 const TCHAR * GetDesdlEclWatchURL(const std::_tstring & desdlID, const std::_tstring & desdlVersion, CString &url)
 {
-    std::_tstring str = static_cast<const TCHAR * >(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-    boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm?Widget=DynamicESDLDefinitionDetailsWidget&Id="));
+    std::_tstring str = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ECLWATCH));
     url = str.c_str();
+    url += _T("?Widget=DynamicESDLDefinitionDetailsWidget&Id=");
     url += desdlID.c_str();
     url += _T(".");
     url += desdlVersion.c_str();
