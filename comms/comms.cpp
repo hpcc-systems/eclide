@@ -74,6 +74,7 @@ const SectionLabelDefault GLOBAL_SERVER_SMC(SectionLabel(_T("Server"), _T("SMC")
 const SectionLabelDefault GLOBAL_SERVER_FILESPRAY(SectionLabel(_T("Server"), _T("FileSpray")), _T(""));
 const SectionLabelDefault GLOBAL_SERVER_DFU(SectionLabel(_T("Server"), _T("DFU")), _T(""));
 const SectionLabelDefault GLOBAL_SERVER_ANALYSIS(SectionLabel(_T("Server"), _T("Analysis")), _T(""));
+const SectionLabelDefault GLOBAL_SERVER_ECLWATCH(SectionLabel(_T("Server"), _T("EclWatch")), _T(""));
 const SectionLabelDefault GLOBAL_ACTION_CLASSIFY(SectionLabel(_T("Action"), _T("Classify")), _T("SEEP2/EntityClassify"));
 const SectionLabelDefault GLOBAL_ACTION_RESOLVE(SectionLabel(_T("Action"), _T("Resolve")), _T("SEEP2/EntityResolve"));
 const SectionLabelDefault GLOBAL_ACTION_ENHANCE(SectionLabel(_T("Action"), _T("Enhance")), _T("Seep2/EntityEnhance"));
@@ -85,6 +86,7 @@ static const TCHAR accountRoot[]	= _T("8010/Ws_Account");
 static const TCHAR smcRoot[]		= _T("8010/WsSMC");
 static const TCHAR filesprayRoot[]	= _T("8010/FileSpray");
 static const TCHAR dfuRoot[]		= _T("8010/WsDfu");
+static const TCHAR eclwatchRoot[]	= _T("8010/esp/files/stub.htm");
 
 struct ServerAndRoot
 {
@@ -92,7 +94,7 @@ struct ServerAndRoot
     const TCHAR* root;
 };
 
-#define nSERVERS 7
+#define nSERVERS 8
 static ServerAndRoot Servers[nSERVERS] = 
 { 
     {GLOBAL_SERVER_TOPOLOGY,topologyRoot},
@@ -101,7 +103,8 @@ static ServerAndRoot Servers[nSERVERS] =
     {GLOBAL_SERVER_ACCOUNT,accountRoot},
     {GLOBAL_SERVER_SMC,smcRoot},
     {GLOBAL_SERVER_FILESPRAY,filesprayRoot},
-    {GLOBAL_SERVER_DFU,dfuRoot}
+    {GLOBAL_SERVER_DFU,dfuRoot},
+    {GLOBAL_SERVER_ECLWATCH,eclwatchRoot}
 };
 
 COMMS_API bool VerifyCommsServerConfig()

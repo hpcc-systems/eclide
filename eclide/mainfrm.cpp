@@ -33,6 +33,19 @@ enum UM
     UM_LAST
 };
 
+const TCHAR* g_paneLabels[] =
+{
+_T(""),
+_T("Position"),
+_T("User"),
+_T("Configuration"),
+_T("Server Version"),
+_T("Compiler Version"),
+_T("Queue"),
+_T("Cluster"),
+_T("")
+};
+
 static const SectionLabelDefault GLOBAL_TABBEDSTYLE(SectionLabel(_T("General"), _T("TabStyle")), (int)CMFCTabCtrl::STYLE_3D_VS2005);
 static const SectionLabelDefault GLOBAL_CLOSEONTAB(SectionLabel(_T("General"), _T("CloseOnTab")), false);
 
@@ -834,6 +847,7 @@ LRESULT CMainFrame::OnStatusUpdate(WPARAM wParam, LPARAM lParam)
     }
     CMFCRibbonBaseElement * elem = wParam == 0 ? m_wndStatusBar.GetElement(wParam) : m_wndStatusBar.GetExElement(wParam - 1);
     elem->SetText(text.c_str());
+    elem->SetToolTipText(g_paneLabels[wParam]);
 
     //if (wParam > 0)
     {

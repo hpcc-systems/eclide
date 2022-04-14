@@ -725,11 +725,18 @@ boost::filesystem::path EclCCSubPath(const boost::filesystem::path & directory)
     return directory / "clienttools" / "bin" / "eclcc.exe";
 }
 
+void PushUniqueEclCC(CEclCCVector& results, const boost::filesystem::path & eclccPath)
+{
+    bool found = std::any_of(results.begin(), results.end(), [&eclccPath](const CEclCCAdapt& obj) {return (_tcsicmp(obj.get()->GetCompilerFilePath().c_str(), eclccPath.c_str()) == 0); });
+    if (!found) {
+        CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+        results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+    }
+}
+
 unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVector & results)
 {
-    if (boost::filesystem::exists(progFiles)) {
-        CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
-
+    if (exists(progFiles)) {
         using namespace boost::filesystem;
         {   //  Locate clienttools installs  ---
             path testFolder = progFiles / "HPCCSystems";
@@ -743,7 +750,7 @@ unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVect
                     path eclccPath = EclCCSubPath(itr->path());
 #endif
                     if (exists(eclccPath))
-                        results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+                        PushUniqueEclCC(results, eclccPath);
                 }
             }
         }
@@ -760,7 +767,7 @@ unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVect
                     path eclccPath = itr->path() / "eclcc.exe";
 #endif
                     if (exists(eclccPath))
-                        results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+                        PushUniqueEclCC(results, eclccPath);
                 }
             }
         }
@@ -782,7 +789,7 @@ unsigned int FindRelative(const boost::filesystem::path & progFiles, CEclCCVecto
         path eclccPath = EclCCSubPath(current);
         if (exists(eclccPath)) {
             _DBGLOG(LEVEL_INFO, (boost::_tformat(_T("eclcc.exe relative path:  %1%")) % eclccPath.c_str()).str().c_str());
-            results.push_back(CreateEclCCRaw(config, pathToWString(eclccPath)));
+            PushUniqueEclCC(results,eclccPath);
         }
     }
     return results.size();
@@ -821,10 +828,10 @@ IEclCC * CreateIEclCC(bool force)
     CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
     CString client = CString(config->Get(GLOBAL_COMPILER_LOCATION));
     bool override = config->Get(GLOBAL_COMPILER_OVERRIDEDEFAULTSELECTION);
-    if (override) {
+    if (override && !client.IsEmpty()) {
         g_eclcc = CreateEclCCRaw(config, (const TCHAR*)client);
     }
-    else if (client.GetLength()) {
+    else {
         g_eclcc = g_eclccBest;
     }
     return g_eclcc;
