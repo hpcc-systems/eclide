@@ -9,7 +9,7 @@ public:
     enum ENCODING
     {
         ENCODING_UNKNOWN,
-        ENCODING_ANSI,
+        ENCODING_UTF_8_NOBOM,
         ENCODING_UTF_8,
         ENCODING_UTF_16
     };
