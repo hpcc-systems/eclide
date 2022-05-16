@@ -130,7 +130,7 @@ public:
 	{
 	}
 
-	bool Cleanup(const CLanguageColor * const other)
+	bool ClearDefaultValues(const CLanguageColor * const other)
 	{
 		if (boost::algorithm::equals(categoryid, other->categoryid))
 			return false;
@@ -164,20 +164,32 @@ public:
 		return retVal;
 	}
 
+	bool equalZeroCorrection(const std::_tstring& value1, const std::_tstring& value2) {
+		std::_tstring v1 = value1;
+		std::_tstring v2 = value2;
+		if (boost::algorithm::equals(v1, _T("0"))) {
+			v1 = _T("");
+		}
+		if (boost::algorithm::equals(v2, _T("0"))) {
+			v2 = _T("");
+		}
+		return boost::algorithm::equals(v1, v2);
+	}
+
 	bool operator != (const CLanguageColor & other)
 	{
 		ATLASSERT(GetCategoryID() == other.GetCategoryID());
-		if (!boost::algorithm::equals(name, other.name))
+		if (!equalZeroCorrection(name, other.name))
 			return true;
-		if (!boost::algorithm::equals(fore, other.fore))
+		if (!equalZeroCorrection(fore, other.fore))
 			return true;
-		if (!boost::algorithm::equals(back, other.back))
+		if (!equalZeroCorrection(back, other.back))
 			return true;
-		if (!boost::algorithm::equals(font, other.font))
+		if (!equalZeroCorrection(font, other.font))
 			return true;
-		if (!boost::algorithm::equals(size, other.size))
+		if (!equalZeroCorrection(size, other.size))
 			return true;
-		if (!boost::algorithm::equals(bold, other.bold))
+		if (!equalZeroCorrection(bold, other.bold))
 			return true;
 		return false;
 	}
@@ -243,7 +255,6 @@ public:
 	}
 };
 BOOST_CLASS_VERSION(CLanguageColor, 0)
-typedef std::pair<int, CLanguageColor> CategoryLanguageColorPair;
 typedef std::map<int, CLanguageColor> CategoryLanguageColorMap;
 typedef std::vector<int> RowCategoryIDVector;
 //  ===========================================================================
@@ -454,6 +465,7 @@ public:
 	{
 		loadDefaultColor(m_color);
 
+		// Find the default color for this language
 		m_defaultColor = NULL;
 		m_colorRowToCategoryID.clear();
 		for (CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
@@ -463,11 +475,10 @@ public:
 				m_defaultColor = &itr->second;
 		}
 
-		//  Quick Cleanup
 		bool found = false;
 		for (CategoryLanguageColorMap::iterator itr = m_color.begin(); itr != m_color.end(); ++itr)
 		{
-			if (itr->second.Cleanup(m_defaultColor))
+			if (itr->second.ClearDefaultValues(m_defaultColor))
 				found = true;
 		}
 		if (found)
@@ -580,8 +591,8 @@ public:
 			if (defaultColors[itr->first] != itr->second)
 			{
 				diffColors[itr->first] = itr->second;
-				diffColors[itr->first].Cleanup(&defaultColors[itr->first]);
-				diffColors[itr->first].Cleanup(m_defaultColor);
+				diffColors[itr->first].ClearDefaultValues(&defaultColors[itr->first]);
+				diffColors[itr->first].ClearDefaultValues(m_defaultColor);
 				if (defaultColors[itr->first] != diffColors[itr->first])
 					diffFound = true;
 			}
@@ -592,7 +603,7 @@ public:
 			save(diffColors, file.string().c_str());
 			m_saved = true;
 		}
-		else
+		else if (clib::filesystem::exists(file))
 		{
 			boost::filesystem::remove(file);
 		}
