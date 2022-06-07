@@ -594,7 +594,7 @@ HWND OpenAttributeMDI(CMainFrame* pFrame, const std::_tstring & module, const st
 
 HWND OpenAttributeMDI(CMainFrame* pFrame, IAttribute * attribute, IWorkspaceItem * workspaceItem, bool bHistoryView, const CSyntaxErrorVector & errors, Dali::CEclExceptionVector * errors2, const std::_tstring & searchTerm, FINDMODE findmode, unsigned int row, unsigned int col, unsigned int len)
 {
-    bool readOnly = attribute->GetAccess() < SecAccess_Write;
+    bool readOnly = attribute->GetAccess() < SecAccess_Write || attribute->IsLocked();
     WinID id(attribute->GetModuleQualifiedLabel(), attribute->GetLabel());
 
     FramePair win = g_attr_window[id];
