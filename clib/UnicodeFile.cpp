@@ -47,7 +47,8 @@ bool CUnicodeFile::Create(int readWriteMode, int createMode, ENCODING encoding)
 {
     if (m_file.Create(m_filePath.c_str(), readWriteMode, FILE_SHARE_READ, createMode) == S_OK)
     {
-        encoding = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_EDITOR_BOM) ? encoding : CUnicodeFile::ENCODING_ANSI;
+        encoding = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_EDITOR_BOM) ? encoding : CUnicodeFile::ENCODING_UTF_8_NOBOM;
+        m_encoding = encoding;
         char bom[4];
         DWORD bytesWritten;
         switch(encoding)
@@ -65,7 +66,7 @@ bool CUnicodeFile::Create(int readWriteMode, int createMode, ENCODING encoding)
             m_file.Write(bom, 3, &bytesWritten);
             ATLASSERT(bytesWritten == 3);
             break;
-        case ENCODING_ANSI:
+        case ENCODING_UTF_8_NOBOM:
         default:
             break;
         }
@@ -103,7 +104,7 @@ bool CUnicodeFile::Open(const TCHAR * filePath, int readWriteMode)
         else
         {
             m_file.Seek(0, FILE_BEGIN);
-            m_encoding = ENCODING_ANSI;
+            m_encoding = ENCODING_UTF_8_NOBOM;
         }
         return true;
     }
@@ -135,11 +136,9 @@ void CUnicodeFile::Write(const TCHAR* data)
         convertedWideData = CT2W(data);
         break;
     case ENCODING_UTF_8:
-        convertedData = CT2A(data, CP_UTF8);
-        break;
-    case ENCODING_ANSI:
+    case ENCODING_UTF_8_NOBOM:
     default:
-        convertedData = CT2A(data);
+        convertedData = CT2A(data, CP_UTF8);
         break;
     }
 
@@ -207,11 +206,9 @@ bool CUnicodeFile::Read(std::_tstring & data)
             data = CW2T(rawWideData.c_str());
             break;
         case ENCODING_UTF_8:
-            data = CA2T(rawData.c_str(), CP_UTF8);
-            break;
-        case ENCODING_ANSI:
+        case ENCODING_UTF_8_NOBOM:
         default:
-            data = CA2T(rawData.c_str());
+            data = CA2T(rawData.c_str(), CP_UTF8);
             break;
         }
         return true;
