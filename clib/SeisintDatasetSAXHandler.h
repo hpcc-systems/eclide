@@ -268,7 +268,9 @@ public:
                 {
                     CComPtr<ITable> table = m_tableMap[m_datasetName].m_table.get();
                     int col = EnsureColumnExists(table, e.m_tag);
-                    table->AppendCell(m_row, col, e.GetContent());
+                    std::_tstring content = e.GetContent();
+                    boost::algorithm::replace_all(content, _T("\t"), _T("    "));
+                    table->AppendCell(m_row, col, content);
                 }
                 break;
 
@@ -277,8 +279,10 @@ public:
                 {
                     CComPtr<ITable> table = m_tableMap[m_datasetName].m_table.get();
                     table->SetHasChildDataset(true);
-                    std::_tstring content, _content = e.GetContent();
-                    table->AppendCell(m_row, m_col, EscapeXML(_content, content));
+                    std::_tstring rawContent = e.GetContent();
+                    boost::algorithm::replace_all(rawContent, _T("\t"), _T("    "));
+                    std::_tstring escapedContent;
+                    table->AppendCell(m_row, m_col, EscapeXML(rawContent, escapedContent));
                     std::_tstring endTag;
                     if (boost::algorithm::iequals(e.m_tag, _T("Item")))
                     {
