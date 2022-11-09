@@ -1146,7 +1146,9 @@ public:
     const CString& GetTabToolTip(CString &tip) const 
     { 
         tip = m_name; 
-        CString value(m_result->GetValue());
+        std::_tstring val = m_result->GetValue();
+        boost::algorithm::replace_all(val, _T("\t"), _T("    "));
+        CString value = val.c_str();
         if ( !value.IsEmpty() )
             tip += _T(" = ") + value;
         return tip; 
