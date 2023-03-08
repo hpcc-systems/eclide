@@ -2325,6 +2325,10 @@ public:
 		m_compilerPref.DoApply(bMakeGlobal);
 		m_otherPref.DoApply(bMakeGlobal);
 
+		if (CComPtr<IEclCC> eclcc = CreateIEclCC(true)) {
+			eclcc->EclFoldersFromConfig();
+		}
+
 		SaveColorFiles();
 
 		return true;
