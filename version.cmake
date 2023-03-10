@@ -4,7 +4,7 @@
 set ( HPCC_NAME "ECL IDE" )
 set ( HPCC_PROJECT "eclide" )
 set ( HPCC_AUDIENCE "community" )
-set ( HPCC_MINOR 8 )
+set ( HPCC_MAJOR 8 )
 set ( HPCC_MINOR 12 )
 set ( HPCC_POINT 8 )
 set ( HPCC_MATURITY "rc" )
