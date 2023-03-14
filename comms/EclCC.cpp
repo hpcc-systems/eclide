@@ -57,6 +57,13 @@ public:
     CEclCC(IConfig * config, const std::_tstring & compilerFile) : m_config(config), m_compilerFile(compilerFile)
     {
         ATLASSERT(m_config);
+        EclFoldersFromConfig();
+        GetBuild();
+    }
+
+    void EclFoldersFromConfig() {
+
+        m_eclFolders.clear();
 
         for (int i = 0; i < 10; ++i)
         {
@@ -94,6 +101,7 @@ public:
                 text = m_config->Get(GLOBAL_COMPILER_ECLFOLDER09);
                 break;
             }
+
             if (text.GetLength() > 0 && clib::filesystem::exists(static_cast<const TCHAR *>(text)) && clib::filesystem::is_directory(static_cast<const TCHAR *>(text)))
                 m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
         }
@@ -133,8 +141,6 @@ public:
         StringPathMap::const_iterator found = paths.find(ECLCC_ECLBUNDLE_PATH);
         if (found != paths.end())
             m_eclFolders.push_back(std::make_pair(found->second, false));
-
-        GetBuild();
     }
 
     void PopulateMeta(IAttribute *attribute)
