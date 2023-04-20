@@ -70,7 +70,7 @@ namespace std
 #include <boost/concept_check.hpp>
 #include <boost/concept_archetype.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp> 
+#include <boost/bind/bind.hpp>
 #include <boost/format.hpp> 
 #include <boost/serialization/map.hpp> 
 #include <boost/serialization/vector.hpp> 

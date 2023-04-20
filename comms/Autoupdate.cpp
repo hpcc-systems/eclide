@@ -119,7 +119,7 @@ public:
             // Process the response headers.
             std::string header;
             while (std::getline(response_stream, header) && header != "\r")
-                m_header + header + "\n";
+                m_header += header + "\n";
 
             std::stringstream m_responseStream;
             // Write whatever content we already have to output.

@@ -947,7 +947,7 @@ void SaveColorFiles()
 ILangRef * CreateLangRef(std::_tstring elementType, IAttributeType * type)
 {
 	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
-	g_langRef.empty();
+	g_langRef.clear();
 	if (type != NULL && type->IsTypeOf(ATTRIBUTE_TYPE_ECLLIB))
 	{
 		elementType = ATTRIBUTE_TYPE_ECL;

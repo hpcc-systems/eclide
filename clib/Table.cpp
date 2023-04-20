@@ -91,8 +91,10 @@ protected:
 public:
     void Init(unsigned int col, COLUMN_TYPE_ENUM type, bool bAscending)
     {
-        std::remove(m_cols.begin(), m_cols.end(), boost::tuples::make_tuple(col, type, true));
-        std::remove(m_cols.begin(), m_cols.end(), boost::tuples::make_tuple(col, type, false));
+        auto itr = std::remove(m_cols.begin(), m_cols.end(), boost::tuples::make_tuple(col, type, true));
+        m_cols.erase(itr, m_cols.end());
+        itr = std::remove(m_cols.begin(), m_cols.end(), boost::tuples::make_tuple(col, type, false));
+        m_cols.erase(itr, m_cols.end());
         m_cols.push_front(boost::tuples::make_tuple(col, type, bAscending));
     }
 

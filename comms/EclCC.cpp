@@ -98,13 +98,13 @@ public:
                 m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
         }
 
-        m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
+        m_compilerFilePath = stringToWPath(m_compilerFile);
 
         //  Patch for 3.10 temporary weirdness (directory structure changes).
         if (!clib::filesystem::exists(m_compilerFilePath) && boost::algorithm::icontains(m_compilerFile, "\\bin\\ver_3_6")) 
         {
             boost::algorithm::replace_all(m_compilerFile, "\\bin\\ver_3_6", "\\ver_3_6\\bin");
-            m_compilerFilePath = boost::filesystem::wpath(m_compilerFile, boost::filesystem::native);
+            m_compilerFilePath = stringToWPath(m_compilerFile);
         }
         m_compilerFolderPath = m_compilerFilePath.parent_path();
         m_IDEPluginsFolderPath = m_compilerFolderPath.parent_path() / _T("IDEPlugins");
@@ -112,7 +112,7 @@ public:
         m_arguments = CString(m_config->Get(GLOBAL_COMPILER_ARGUMENTS));
 
         m_workingFolder = CString(m_config->Get(GLOBAL_COMPILER_ECLWORKINGFOLDER));
-        m_workingFolderPath = boost::filesystem::wpath(m_workingFolder, boost::filesystem::native);
+        m_workingFolderPath = stringToWPath(m_workingFolder);
 
         boost::filesystem::wpath stdLibPath = m_compilerFolderPath / _T("ecllibrary");
 
