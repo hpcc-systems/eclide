@@ -3,26 +3,39 @@
 #include "UtilFilesystem.h"
 
 #if (BOOST_FILESYSTEM_VERSION == 3)
-CLIB_API boost::filesystem::path wpathToPath(const boost::filesystem::path & path)
+CLIB_API boost::filesystem::path wpathToPath(const boost::filesystem::wpath &path)
 {
     return path;
 }
-CLIB_API boost::filesystem::path pathToWPath(const boost::filesystem::path & path)
+CLIB_API boost::filesystem::wpath pathToWPath(const boost::filesystem::path &path)
 {
     return path;
 }
+
 CLIB_API boost::filesystem::path stringToPath(const std::string & path)
 { 
     return boost::filesystem::path(path, boost::filesystem::native);
 }
 CLIB_API boost::filesystem::path stringToPath(const std::wstring & path)
 { 
-    return boost::filesystem::path(path, boost::filesystem::native);
+    CT2A t2a(path.c_str());
+    return boost::filesystem::path(std::string(t2a), boost::filesystem::native);
 }
+
+CLIB_API boost::filesystem::wpath stringToWPath(const std::string &path)
+{
+    return boost::filesystem::wpath(path, boost::filesystem::native);
+}
+CLIB_API boost::filesystem::wpath stringToWPath(const std::wstring &path)
+{
+    return stringToPath(path);
+}
+
 CLIB_API std::string pathToString(const boost::filesystem::path & path)
 { 
     return path.string();
 }
+
 CLIB_API std::wstring pathToWString(const boost::filesystem::path & path)
 { 
     return path.wstring();

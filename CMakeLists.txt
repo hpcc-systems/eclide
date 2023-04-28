@@ -1,5 +1,14 @@
 # CMakeLists.txt  ---
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+
+set(VCPKG_FILES_DIR "${CMAKE_BINARY_DIR}" CACHE STRING "Folder for vcpkg download, build and installed files")
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(VCPKG_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg)
+set(VCPKG_OVERLAY_PORTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_overlays)
+set(VCPKG_INSTALLED_DIR "${VCPKG_FILES_DIR}/vcpkg_installed")
+set(VCPKG_INSTALL_OPTIONS "--downloads-root=${VCPKG_FILES_DIR}/vcpkg_downloads;--x-buildtrees-root=${VCPKG_FILES_DIR}/vcpkg_buildtrees;--x-packages-root=${VCPKG_FILES_DIR}/vcpkg_packages")
+set(VCPKG_VERBOSE OFF)
+
 PROJECT(ECLIDE)
 
 # Build tag generation ---
@@ -15,12 +24,12 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options seri
 FIND_PATH(WTL_INCLUDE_DIR wtl/atlapp.h)
 FIND_PATH(VCPKG_ROOT_DIR include/wtl/atlapp.h)
 SET(GSOAP_DIR ${VCPKG_ROOT_DIR}/share/gsoap)
-FIND_PATH(SCINTILLA_INCLUDE_DIR Platform.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/include)
-FIND_PATH(SCINTILLA_SOURCE_DIR AutoComplete.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/src)
-FIND_PATH(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/LexLib)
-FIND_PATH(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/scintilla/src/3.7.6-74fea8797b/Win32)
-FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/Client)
-FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/buildtrees/bugtrap/src/BugTrap-1.4.9/source/zlib)
+FIND_PATH(SCINTILLA_INCLUDE_DIR Platform.h HINTS ${VCPKG_ROOT_DIR}/include/scintilla/include)
+FIND_PATH(SCINTILLA_SOURCE_DIR AutoComplete.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/src)
+FIND_PATH(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/LexLib)
+FIND_PATH(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/Win32)
+FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/Client)
+FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/zlib)
 
 FILE(GLOB CEF_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/*")
 FIND_PATH(CEF_ROOT_DIR

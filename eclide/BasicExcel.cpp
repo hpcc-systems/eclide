@@ -4434,7 +4434,7 @@ int GetRKValueFromDouble(double value)
 
     int rkValue = intdouble.intvalue_;
     rkValue <<= 2;
-    rkValue |= isMultiplied;
+    rkValue |= static_cast<int>(isMultiplied);
     return rkValue;
 }
 

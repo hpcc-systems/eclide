@@ -20,7 +20,7 @@
 #endif
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp> 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 #include <boost/tuple/tuple_io.hpp>
