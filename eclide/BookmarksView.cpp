@@ -435,21 +435,22 @@ void CBookmarksView::DeleteMarkedBookmarks(const std::_tstring inPath, const std
     }
 }
 
-static inline std::_tstring &ltrim(std::_tstring &s)
-{
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-    return s;
+static inline std::_tstring ltrim(const std::_tstring& s) {
+    auto it = std::find_if_not(s.begin(), s.end(), [](int c) {
+        return std::isspace(c);
+    });
+    return std::_tstring(it, s.end());
 }
 
-static inline std::_tstring &rtrim(std::_tstring &s)
-{
-    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-    return s;
+static inline std::_tstring rtrim(const std::_tstring& s) {
+    auto it = std::find_if_not(s.rbegin(), s.rend(), [](int c) {
+        return std::isspace(c);
+    });
+    return std::_tstring(s.begin(), it.base());
 }
 
-static inline std::_tstring &trim(std::_tstring &s)
-{
-    return ltrim(rtrim(s));
+static inline std::_tstring trim(const std::_tstring& s) {
+    return rtrim(ltrim(s));
 }
 
 void CBookmarksView::ParseBookmarksEcl(const std::_tstring & ecl, const std::_tstring & user, const std::_tstring & id, const std::_tstring & inModule, const std::_tstring & inAttributeName, IAttributeType *attrType)

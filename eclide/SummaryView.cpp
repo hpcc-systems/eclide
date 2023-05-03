@@ -9,12 +9,13 @@
 CSummaryView::CSummaryView(IResultSlot *resultSlot)
 {
     m_resultSlot = resultSlot;
-    m_isIE = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_LEGACY_IE);
-    if (m_isIE) {
+    m_browserEngine = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_BROWSER_ENGINE);
+    if (m_browserEngine.Compare(_T("IE")) == 0) {
         m_view = CreateIEView();
-    }
-    else {
+    } else if (m_browserEngine.Compare(_T("Chromium")) == 0) {
         m_view = CreateChromiumView();
+    } else {
+        m_view = CreateWebView2View(); 
     }
 }
 
@@ -182,7 +183,7 @@ bool CSummaryView::UpdateUI(CCmdUI * cui)
     if ( m_view->IsLoaded() )
     {
         UPDATEUI(cui, ID_BROWSER_NEW, true);
-        UPDATEUI(cui, ID_BROWSER_IE, m_isIE);
+        UPDATEUI(cui, ID_BROWSER_IE, m_browserEngine.Compare(L"IE") == 0);
         UPDATEUI(cui, ID_BROWSER_NEW_ECLWATCH, true);
         UPDATEUI(cui, ID_BROWSER_RESET, true);
         UPDATEUI(cui, ID_BROWSER_BACK, m_view->BackEnabled());
@@ -281,8 +282,6 @@ void CDesdlSummaryView::Refresh()
     {
         if (IsRemoteDaliEnabled() == TRI_BOOL_TRUE)
         {
-            CString password(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_PASSWORD));
-            CString user(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_USER));
             m_view->Navigate(m_Url, false);
         }
     }

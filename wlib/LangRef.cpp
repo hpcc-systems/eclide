@@ -975,3 +975,9 @@ void ImportLangRef()
 	retVal->init(NULL);
 	retVal->ImportLanguageReference();
 }
+
+void ResetLangRef()
+{
+	boost::recursive_mutex::scoped_lock proc(g_langRef_mutex);
+	g_langRef.clear();
+}
