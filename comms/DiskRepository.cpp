@@ -753,7 +753,7 @@ public:
 
         for (int i = 0; i < eclcc->GetEclFolderCount(); ++i)
         {
-            boost::filesystem::wpath path = boost::filesystem::wpath(eclcc->GetEclFolder(i), boost::filesystem::native);
+            boost::filesystem::wpath path = stringToWPath(eclcc->GetEclFolder(i));
             if (clib::filesystem::exists(path) && clib::filesystem::is_directory(path))
             {
                 m_paths[pathToWString(path.leaf())] = wpathToPath(path);
@@ -764,7 +764,7 @@ public:
 
     void Update(const TCHAR* url)
     {
-        m_amtRoot = boost::filesystem::wpath(url, boost::filesystem::native);
+        m_amtRoot = stringToWPath(url);
         ATLASSERT(clib::filesystem::exists(m_amtRoot));
         m_paths[pathToWString(m_amtRoot.leaf())] = wpathToPath(m_amtRoot);
         m_pathOrder.push_back(m_amtRoot);

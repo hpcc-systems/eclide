@@ -40,5 +40,4 @@ Internet Explorer 3.0, 3.01, 3.02 _WIN32_IE>=0x0300
 #define _WIN32_WINDOWS	0x0501
 #define WINVER			0x0501
 #define _WIN32_WINNT	0x0501
-#define _WIN32_IE		0x0600 
 #define _RICHEDIT_VER	0x0200

@@ -5,51 +5,52 @@
 ### Prerequisits 
 * git (optional - needed to clone sources)
 * cmake
-* Visual Studio 2017 / 2019
+* Visual Studio 2017 / 2019 / 2022
 * NSIS (optional - needed to create install package)
 
+**Note:**  The following instructions assume you are using the `git bash` terminal.  If you are using the `cmd` terminal, replace `rm` with `del` and `mkdir` with `md`.
+
 ### Clone the repository
-```
+```sh
 git clone https://github.com/hpcc-systems/eclide.git eclide
 cd eclide
 git submodule update --init --recursive
 ```
 
-### Fetch the third-party libraries (via vcpkg)
-```
-cd vcpkg
-bootstrap-vcpkg.bat
-vcpkg install --keep-going boost-crc boost-asio boost-date-time boost-filesystem boost-format boost-multi-index boost-program-options boost-ptr-container boost-random boost-serialization boost-signals boost-spirit boost-thread scintilla wtl gsoap bugtrap
+### Remove old vcpkg.exe (if it exists)
+```sh
+rm ./vcpkg/vcpkg.exe
 ```
 
-### Create an out of source build folder
-```
-cd ..
+### Create a build folder (eclide/build)
+```sh
 mkdir build
 cd build
 ```
 
 ### Generate Visual Studio Solution
-```
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+```sh
+cmake .. -A Win32
 ...or...
-cmake .. -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake .. -G "Visual Studio 16 2019" -A Win32
+...or...
+cmake .. -G "Visual Studio 17 2022" -A Win32
 ```
 
 ### Build
-```
-cmake --build . --config RelWithDebInfo -- -m
+```sh
+cmake --build . --config RelWithDebInfo --parallel
 ```
 
 Supported Builds
-```
-cmake --build . --config Debug -- -m
-cmake --build . --config RelWithDebInfo -- -m
-cmake --build . --config Release -- -m
-cmake --build . --config MinSizeRel -- -m
+```sh
+cmake --build . --config Debug --parallel
+cmake --build . --config RelWithDebInfo --parallel
+cmake --build . --config Release --parallel
+cmake --build . --config MinSizeRel --parallel
 ```
 
 ### Create Installer
-```
-cmake --build . --config RelWithDebInfo --target package -- -m
+```sh
+cmake --build . --config RelWithDebInfo --target package --parallel
 ```

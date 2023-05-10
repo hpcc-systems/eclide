@@ -25,7 +25,7 @@ CLIB_API const TCHAR * SortedSerialize(StdStringVector & source, std::_tstring &
 
 CLIB_API StdStringVector::size_type SortedDeserialize(const std::_tstring & source, StdStringVector & target, const TCHAR * delim)
 {
-    boost::algorithm::split(target, source, boost::algorithm::is_any_of(delim), boost::algorithm::token_compress_on).size(); 
+    boost::algorithm::split(target, source, boost::algorithm::is_any_of(delim), boost::algorithm::token_compress_on); 
     std::sort(target.begin(), target.end(), StringCompareUpperCased());
     return target.size();
 }
