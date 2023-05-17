@@ -180,7 +180,7 @@ ENDIF()
 SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_RPM_PACKAGE_VERSION}_${version}-${stagever}${CPACK_SYSTEM_NAME}")
 MESSAGE ("-- Current release version is ${CPACK_PACKAGE_FILE_NAME}")
 
-find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}-${stagever}${CPACK_SYSTEM_NAME}.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform )
+find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}-${stagever}${CMAKE_SYSTEM_NAME}-x86_64.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform )
 if (CLIENTTOOLS_PACKAGE_FILE)
     install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
     get_filename_component(CLIENTTOOLS_PACKAGE_FILE_NAME ${CLIENTTOOLS_PACKAGE_FILE} NAME)
