@@ -68,6 +68,7 @@ public:
     virtual void OnAddressChange(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString& url) override;
     virtual void OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title) override;
     virtual void OnFullscreenModeChange(CefRefPtr<CefBrowser> browser, bool fullscreen) override;
+    virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level, const CefString& message, const CefString& source, int line);
 
     // CefLifeSpanHandler methods:
     virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) override;

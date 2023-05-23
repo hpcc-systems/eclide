@@ -22,6 +22,12 @@
 #include <UtilFilesystem.h>
 #include <Logger.h>
 
+#ifdef _DEBUG
+_CrtMemState sOld;
+_CrtMemState sNew;
+_CrtMemState sDiff;
+#endif
+
 enum UM
 {
     UM_FIRST = CWM_LAST + 1,
@@ -1981,8 +1987,23 @@ void CMainFrame::DoLogout()
     m_Error->Send_Clear();
 
     ReleaseAllSingletons();
+    ResetLangRef();
 
     m_wndRibbonBar.SendMessage(WM_IDLEUPDATECMDUI, true);
+
+#ifdef _DEBUG
+    _CrtMemCheckpoint(&sNew); //take a snapshot 
+    if (_CrtMemDifference(&sDiff, &sOld, &sNew)) // if there is a difference
+    {
+        OutputDebugString(L"-----------_CrtMemDumpStatistics ---------\n");
+        _CrtMemDumpStatistics(&sDiff);
+        // _CrtDbgBreak();
+        OutputDebugString(L"-----------_CrtMemDumpAllObjectsSince ---------\n");
+        _CrtMemDumpAllObjectsSince(&sOld);
+        // OutputDebugString(L"-----------_CrtDumpMemoryLeaks ---------\n");
+        // _CrtDumpMemoryLeaks();
+    }
+#endif
 }
 
 void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
@@ -1996,6 +2017,10 @@ void CMainFrame::DoLogin(bool SkipLoginWindow, const CString & previousPassword)
         }
     }
 
+#ifdef _DEBUG
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF & ~_CRTDBG_LEAK_CHECK_DF);
+    _CrtMemCheckpoint(&sOld);
+#endif
     boost::filesystem::path path;
     GetIConfig(QUERYBUILDER_CFG)->GetEnvironmentFolder(path);
     m_singleInstance = NULL;	//kills the previous mutex...

@@ -18,7 +18,7 @@ protected:
     CString m_Url;
     CString m_FramedUrl;
     IHtmlView *m_view;
-    bool m_isIE;
+    CString m_browserEngine;
 
 public:
     enum {IDD = IDD_SUMMARYVIEW};

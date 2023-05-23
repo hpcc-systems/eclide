@@ -541,15 +541,16 @@
 #define IDC_CHECK_SHOWWS                539
 #define IDD_GRAPHSUMMARYVIEW            541
 #define IDC_CHECK_METADATA              542
-#define IDC_CHECK_LEGACY_IE             543
-#define IDC_STATIC_RESULTS              544
-#define IDC_STATIC_HELP                 545
-#define IDC_COMBO_HELP                  546
-#define IDC_CHECK_DISABLEMETA           547
-#define IDC_CHECK_BOM                   548
-#define IDC_BUTTON_SCANCLIENTS          549
-#define IDC_BUTTON_MATCH                550
-#define IDC_EDIT_ECLWATCH               551
+#define IDC_STATIC_RESULTS              543
+#define IDC_STATIC_HELP                 544
+#define IDC_COMBO_HELP                  545
+#define IDC_CHECK_DISABLEMETA           546
+#define IDC_CHECK_BOM                   547
+#define IDC_BUTTON_SCANCLIENTS          548
+#define IDC_BUTTON_MATCH                549
+#define IDC_EDIT_ECLWATCH               550
+#define IDC_STATIC_BROWSERENGINE        551
+#define IDC_COMBO_BROWSERENGINE         552
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -876,7 +877,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61415
 #define _APS_NEXT_COMMAND_VALUE         33133
-#define _APS_NEXT_CONTROL_VALUE         552
+#define _APS_NEXT_CONTROL_VALUE         553
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif

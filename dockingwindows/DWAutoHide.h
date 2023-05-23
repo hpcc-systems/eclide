@@ -1348,38 +1348,38 @@ protected:
 		long*		m_ppos;
 		long		m_offset;
 	};
-	class CSizeTrackerGhost : public CSizeTrackerFull
-	{
-        typedef CSimpleSplitterBarSlider<CSplitterBar> CSlider;
-	public:
-		CSizeTrackerGhost(HWND hWnd,CPoint pt,const CSide& side,CSplitterBar& splitter,const CRect& rcBound)
-			: CSizeTrackerFull(hWnd,pt,side,splitter.GetThickness(),rcBound),m_dc(::GetWindowDC(NULL))
-			,m_splitter(splitter),m_slider(splitter)
-		{
-			m_spOffset=m_slider-*m_ppos;
-		}
-        void BeginDrag()
-        {
-            m_splitter.DrawGhostBar(m_dc);
-        }
-        void EndDrag(bool bCanceled)
-        {
-            m_splitter.CleanGhostBar(m_dc);
-            if(!bCanceled)
-                SetPosition();
-        }
-		virtual void Move()
-		{
-			m_splitter.CleanGhostBar(m_dc);
-			m_slider=*m_ppos+m_spOffset;
-			m_splitter.DrawGhostBar(m_dc);
-		}
-	protected:
-		WTL::CDC				m_dc;
-		CSplitterBar&	m_splitter;
-		CSlider			m_slider;
-		long			m_spOffset;
-	};
+	// class CSizeTrackerGhost : public CSizeTrackerFull
+	// {
+    //     typedef CSimpleSplitterBarSlider<CSplitterBar> CSlider;
+	// public:
+	// 	CSizeTrackerGhost(HWND hWnd,CPoint pt,const CSide& side,CSplitterBar& splitter,const CRect& rcBound)
+	// 		: CSizeTrackerFull(hWnd,pt,side,splitter.GetThickness(),rcBound),m_dc(::GetWindowDC(NULL))
+	// 		,m_splitter(splitter),m_slider(splitter)
+	// 	{
+	// 		m_spOffset=m_slider-*m_ppos;
+	// 	}
+    //     void BeginDrag()
+    //     {
+    //         m_splitter.DrawGhostBar(m_dc);
+    //     }
+    //     void EndDrag(bool bCanceled)
+    //     {
+    //         m_splitter.CleanGhostBar(m_dc);
+    //         if(!bCanceled)
+    //             SetPosition();
+    //     }
+	// 	virtual void Move()
+	// 	{
+	// 		m_splitter.CleanGhostBar(m_dc);
+	// 		m_slider=*m_ppos+m_spOffset;
+	// 		m_splitter.DrawGhostBar(m_dc);
+	// 	}
+	// protected:
+	// 	WTL::CDC				m_dc;
+	// 	CSplitterBar&	m_splitter;
+	// 	CSlider			m_slider;
+	// 	long			m_spOffset;
+	// };
 public:
 	CAutoHideManager() 
 		: m_barThickness(0),m_pActive(0),m_pTracked(0)

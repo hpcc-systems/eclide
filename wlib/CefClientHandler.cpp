@@ -25,7 +25,7 @@ bool CefClientHandler::IsLoaded() {
 void CefClientHandler::OnAddressChange(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString& url)
 {
     CEF_REQUIRE_UI_THREAD();
-    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnAddressChange - %1%")) % browser->GetIdentifier()).str().c_str());
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnAddressChange - %1%")) % url.c_str()).str().c_str());
 
     // Only update the address for the main (top-level) frame.
     if (frame->IsMain())
@@ -38,7 +38,7 @@ void CefClientHandler::OnAddressChange(CefRefPtr<CefBrowser> browser, CefRefPtr<
 void CefClientHandler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title)
 {
     CEF_REQUIRE_UI_THREAD();
-    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnTitleChange - %1%")) % browser->GetIdentifier()).str().c_str());
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnTitleChange - %1%")) % title.c_str()).str().c_str());
 
     if (m_delegate != nullptr)
         m_delegate->OnSetTitle(title);
@@ -47,10 +47,16 @@ void CefClientHandler::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefStr
 void CefClientHandler::OnFullscreenModeChange(CefRefPtr<CefBrowser> browser, bool fullscreen)
 {
     CEF_REQUIRE_UI_THREAD();
-    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnFullscreenModeChange - %1%")) % browser->GetIdentifier()).str().c_str());
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnFullscreenModeChange - %1%")) % fullscreen).str().c_str());
 
     if (m_delegate != nullptr)
         m_delegate->OnSetFullscreen(fullscreen);
+}
+
+bool CefClientHandler::OnConsoleMessage(CefRefPtr<CefBrowser> browser, cef_log_severity_t level, const CefString& message, const CefString& source, int line) {
+    CEF_REQUIRE_UI_THREAD();
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnConsoleMessage - %1% %2% (%3%:%4%)")) % level % message.c_str() % source.c_str() % line).str().c_str());
+    return false;
 }
 
 void CefClientHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser)
@@ -107,7 +113,7 @@ void CefClientHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser)
 void CefClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,CefRefPtr<CefFrame> frame, ErrorCode errorCode, const CefString& errorText, const CefString& failedUrl)
 {
     CEF_REQUIRE_UI_THREAD();
-    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnLoadError - %1%")) % browser->GetIdentifier()).str().c_str());
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnLoadError - %1%:  %2% (%3%)")) % errorCode % errorText.c_str() % failedUrl.c_str()).str().c_str());
 
     // Don't display an error for downloaded files.
     if (errorCode == ERR_ABORTED)
@@ -125,7 +131,7 @@ void CefClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,CefRefPtr<CefFr
 void CefClientHandler::OnLoadingStateChange(CefRefPtr<CefBrowser> browser, bool isLoading, bool canGoBack, bool canGoForward)
 {
     CEF_REQUIRE_UI_THREAD();
-    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnLoadingStateChange - %1%")) % browser->GetIdentifier()).str().c_str());
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnLoadingStateChange - %1%, %2%, %3%")) % isLoading % canGoBack % canGoForward).str().c_str());
 
     if (m_delegate != nullptr)
         m_delegate->OnSetLoadingState(isLoading, canGoBack, canGoForward);
@@ -133,7 +139,7 @@ void CefClientHandler::OnLoadingStateChange(CefRefPtr<CefBrowser> browser, bool 
 
 CefRequestHandler::ReturnValue CefClientHandler::OnBeforeResourceLoad(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, CefRefPtr<CefRequestCallback> callback)
 {
-    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnBeforeResourceLoad - %1%")) % browser->GetIdentifier()).str().c_str());
+    _DBGLOG(LEVEL_DEBUG, (boost::_tformat(_T("CefClientHandler::OnBeforeResourceLoad - %1%")) % request.get()->GetURL().c_str()).str().c_str());
     if (m_delegate != nullptr)
         m_delegate->OnBeforeResourceLoad(browser, frame, request, callback);
 

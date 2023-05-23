@@ -10,6 +10,12 @@
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
 
+//  Leak Checking ---
+#if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
+# define _CRTDBG_MAP_ALLOC
+#endif
+
+//  Target  ---
 #include "stdversion.h"
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
@@ -75,4 +81,12 @@ typedef CAtlString CString;
 #else
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
+#endif
+
+//  Leak Checking ---
+#if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
+# include <stdlib.h>
+# include <crtdbg.h>
+// # define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
+// # define new GJS_DEBUG_NEW 
 #endif

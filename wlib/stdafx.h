@@ -7,7 +7,7 @@
 
 //  Leak Checking ---
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
-#define _CRTDBG_MAP_ALLOC
+# define _CRTDBG_MAP_ALLOC
 #endif
 
 //  Target  ---
@@ -15,6 +15,10 @@
 
 // Platform SDK  ---
 #include "stdplatform.h"
+#include <wrl.h>
+#include <wil/com.h>
+#include <WebView2EnvironmentOptions.h>
+#include <WebView2.h>
 
 //  ATL  ---
 #include "stdatl.h"
@@ -53,8 +57,8 @@
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
 # include <stdlib.h>
 # include <crtdbg.h>
-# define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
-# define new GJS_DEBUG_NEW 
+// # define GJS_DEBUG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__) 
+// # define new GJS_DEBUG_NEW 
 #endif
 
 #pragma warning(3:4702;error:4702)	  //warning C4702: unreachable code - make level 3 warning

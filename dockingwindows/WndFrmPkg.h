@@ -150,7 +150,7 @@ protected:
     struct CWndFrameTraits : ssec::spraits<T, typename T::position, typename T::distance/*,TMinDist*/>
     {
         typedef ssec::spraits<T,position,position/*,TMinDist*/> baseClass;
-        static distance min_distance(const T& x)
+        static typename T::distance min_distance(const T& x)
         {
             const distance dist=TMinDist;
             return dist+x.MinDistance();
@@ -837,7 +837,7 @@ protected:
 #ifdef USE_BOOST
     mutable boost::shared_ptr<T> m_ptr;
 #else
-    mutable std::auto_ptr<T> m_ptr;
+    mutable std::shared_ptr<T> m_ptr;
 #endif
 };
 
@@ -1095,7 +1095,8 @@ public:
         return bRes;
     }
 
-    bool AcceptDock(const_iterator i,DFDOCKRECT* pHdr,const CRect& rc)
+    template<typename T>
+    bool AcceptDock(T i,DFDOCKRECT* pHdr,const CRect& rc)
     {
         assert(std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(m_pDecl->hwnd()))!=m_frames.end());
         const_iterator begin=m_frames.begin();
