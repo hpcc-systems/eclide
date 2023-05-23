@@ -85,6 +85,8 @@ CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesyst
 CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const std::_tstring & env);
 CLIB_API IConfig * CreateIConfig(const std::_tstring & id);
 CLIB_API IConfig * GetIConfig(const std::_tstring & id);
+CLIB_API void ResetIConfigs();
 #ifdef __IServiceProvider_INTERFACE_DEFINED__
     CLIB_API IServiceProvider * GetIServiceProvider(const std::_tstring & id = QUERYBUILDER_CFG);
-#endif		
+#endif
+

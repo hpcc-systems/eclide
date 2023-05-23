@@ -72,7 +72,7 @@ protected:
 
 public:
     std::_tstring m_tag;
-    struct ciLessBoost : std::binary_function<std::_tstring, std::_tstring, bool> 
+    struct ciLessBoost 
     { 
         bool operator() (const std::_tstring & s1, const std::_tstring & s2) const { 
             return boost::lexicographical_compare(s1, s2, boost::is_iless()); 

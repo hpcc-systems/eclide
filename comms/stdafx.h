@@ -9,12 +9,12 @@
 
 //  Leak Checking ---
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
-#define _CRTDBG_MAP_ALLOC
-#if _COMMS_VER < 68200
-#ifdef _DEBUG
-#define _ATLSOAP_TRACE_XML
-#endif
-#endif
+# define _CRTDBG_MAP_ALLOC
+# if _COMMS_VER < 68200
+# ifdef _DEBUG
+#   define _ATLSOAP_TRACE_XML
+#  endif
+# endif
 #endif
 
 //  Target  ---
@@ -142,8 +142,8 @@ const TCHAR * const _COMMS_VER_STR = _T("build_3_08");
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
 # include <stdlib.h>
 # include <crtdbg.h>
-# define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
-# define new GJS_DEBUG_NEW 
+// # define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
+// # define new GJS_DEBUG_NEW 
 #endif
 
 #pragma warning(3:4702; error:4702)	 //warning C4702: unreachable code

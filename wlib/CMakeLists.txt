@@ -1,5 +1,7 @@
 PROJECT( WLIB )
 
+find_package(unofficial-webview2 CONFIG REQUIRED)
+
 SET ( SRCS
     AboutDlg.cpp
     AboutDlg.h
@@ -42,6 +44,7 @@ SET ( SRCS
     HtmlView.h
     HtmlIEView.cpp
     HtmlChromiumView.cpp
+    HtmlWebView2View.cpp
     #ImportRecordAnalyze.cpp
     #ImportRecordAnalyze.h
     #ImportRecordInfo.cpp
@@ -132,6 +135,7 @@ TARGET_LINK_LIBRARIES( WLIB
     CLIB
     COMMS
     SGRID
+    unofficial::webview2::webview2
 )
 
 TARGET_LINK_LIBRARIES( WLIB

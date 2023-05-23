@@ -11,6 +11,9 @@ set(VCPKG_VERBOSE OFF)
 
 PROJECT(ECLIDE)
 
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Build tag generation ---
 INCLUDE("${PROJECT_SOURCE_DIR}/version.cmake")
 

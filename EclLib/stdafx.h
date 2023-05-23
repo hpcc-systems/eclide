@@ -7,7 +7,7 @@
 
 //  Leak Checking ---
 #if defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
+# define _CRTDBG_MAP_ALLOC
 #endif
 
 //  Target  ---
@@ -93,8 +93,8 @@ namespace boost
 #ifdef _DEBUG 
 # include <stdlib.h>
 # include <crtdbg.h>
-# define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
-# define new GJS_DEBUG_NEW 
+// # define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
+// # define new GJS_DEBUG_NEW 
 #endif
 
 #pragma warning(3:4702;error:4702)	 //warning C4702: unreachable code

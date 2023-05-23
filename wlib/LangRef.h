@@ -53,3 +53,4 @@ WLIB_API ILangRef * CreateLangRef(std::_tstring code, IAttributeType * type);
 //  One of usage to upgrade XML file!
 WLIB_API void ExportLangRef();
 WLIB_API void ImportLangRef();
+WLIB_API void ResetLangRef();

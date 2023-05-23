@@ -70,7 +70,8 @@
         {
             "name": "bugtrap",
             "version>=": "1.4.9"
-        }
+        },
+        "webview2"
     ],
     "builtin-baseline": "0d7603c4efc351da97b43c1952ba943e76f9b35f"
 }

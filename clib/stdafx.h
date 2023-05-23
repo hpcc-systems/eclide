@@ -7,7 +7,7 @@
 
 //  Leak Checking ---
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
-#define _CRTDBG_MAP_ALLOC
+# define _CRTDBG_MAP_ALLOC
 #endif
 
 //  Target  ---
@@ -46,6 +46,6 @@
 #if defined(_DEBUG) && !defined(SEISINT_LIBEXPORTS)
 # include <stdlib.h>
 # include <crtdbg.h>
-# define GJS_DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__) 
-# define new GJS_DEBUG_NEW 
+// # define GJS_DEBUG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
+// # define new GJS_DEBUG_NEW 
 #endif

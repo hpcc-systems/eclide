@@ -17,7 +17,7 @@ static const SectionLabelDefault GLOBAL_DISABLEAUTOUPDATE(SectionLabel(GeneralSe
 static const TCHAR ResultSection[](_T("Results"));
 static const SectionLabelDefault GLOBAL_FONT_RESULT(SectionLabel(ResultSection, _T("ResultFont")), _T("Courier New"));
 static const SectionLabelDefault GLOBAL_FONTSIZE_RESULT(SectionLabel(ResultSection, _T("ResultFontSize")), 10);
-static const SectionLabelDefault GLOBAL_LEGACY_IE(SectionLabel(ResultSection, _T("LegacyIE")), 0);
+static const SectionLabelDefault GLOBAL_BROWSER_ENGINE(SectionLabel(ResultSection, _T("BrowserEngine")), _T("WebView2"));
 
 static const TCHAR EditorSection[](_T("Editor"));
 static const SectionLabelDefault GLOBAL_MAINTAININDENT(SectionLabel(EditorSection, _T("MaintainIndent")), 1);

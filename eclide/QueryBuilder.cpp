@@ -218,6 +218,9 @@ BOOL CQueryBuilderApp::InitInstance()
 
 int CQueryBuilderApp::ExitInstance() 
 {
+#ifdef _DEBUG
+    AfxEnableMemoryLeakDump(false);
+#endif
     //TODO: handle additional resources you may have added
     if (m_hMDIMenu != NULL)
         FreeResource(m_hMDIMenu);
@@ -232,7 +235,10 @@ int CQueryBuilderApp::ExitInstance()
 
     UninitializeCef();
 
+    ResetIConfigs();
+
     int retVal = CWinAppEx::ExitInstance();
+
     return retVal;
 }
 

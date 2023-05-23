@@ -624,6 +624,10 @@ CLIB_API IConfig * GetIConfig(const std::_tstring & id)
     return ConfigCache[id];
 }
 
+CLIB_API void ResetIConfigs() {
+    ConfigCache.clear();
+}
+
 CLIB_API IServiceProvider * GetIServiceProvider(const std::_tstring & id)
 {
     ATLASSERT(ConfigCache.find(id) != ConfigCache.end());
