@@ -36,6 +36,7 @@ __interface IEclCC : public IUnknown
     SMC::IVersion * GetBuild() const;
     const TCHAR * GetPrefWarnings(std::_tstring & warnings) const;
     const TCHAR * GetPrefErrors(std::_tstring & warnings) const;
+    void EclFoldersFromConfig();
     void PopulateMeta(IAttribute *attribute);
 
     const TCHAR * GetWorkingFolder() const;
