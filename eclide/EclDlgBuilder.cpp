@@ -83,7 +83,7 @@ bool CBuilderDlg::DoSave(bool saveFileAs, PREPROCESS_TYPE action)
     m_view.GetText(ecl);
     CBookmarksFrame * pFrame = GetBookmarksFrame();
 
-   if (m_attribute && m_attribute->SetText(ecl))
+   if (m_attribute && m_attribute->SetText(ecl,true))
     {
         if (pFrame)
         {
