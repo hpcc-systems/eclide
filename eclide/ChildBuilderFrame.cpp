@@ -885,11 +885,13 @@ bool CBuilderFrame::UIUpdateMenuItems(CCmdUI * cui)
 
         if (eclType)
         {
+            bool canExecute = m_dlgview.CanExecute();
             UPDATEUI(cui, ID_FILE_SAVE_AS, TRUE);
             UPDATEUI(cui, ID_HELP, TRUE);
-            UPDATEUI(cui, ID_ECL_GO, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_ECL_GO, canExecute);
             UPDATEUI(cui, ID_GO_SUBMITSELECTED, m_dlgview.m_view.IsTextSelected());
-            UPDATEUI(cui, ID_GO_SUBMIT, m_dlgview.CanExecute());
+            UPDATEUI(cui, ID_GO_SUBMITNOARCHIV, canExecute);
+            UPDATEUI(cui, ID_GO_SUBMIT, canExecute);
             UPDATEUI(cui, ID_GO_GENERATE, m_dlgview.CanGenerate());
             UPDATEUI(cui, ID_GO_COMPILE, m_dlgview.CanCompile());
 
