@@ -847,6 +847,8 @@
 #define ID_BOOKMARKS_TODO               33130
 #define ID_BOOKMARKS_HACK               33131
 #define ID_BOOKMARKS_INSERT             33132
+#define ID_ECL_NOARCHIV_GO              33133
+#define ID_GO_SUBMITNOARCHIV            33134
 #define ATL_IDS_IDLEMESSAGE             0xE001
 #define ATL_IDS_SCSIZE                  0xEF00
 #define ATL_IDS_SCMOVE                  0xEF01
@@ -876,7 +878,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61415
-#define _APS_NEXT_COMMAND_VALUE         33133
+#define _APS_NEXT_COMMAND_VALUE         33135
 #define _APS_NEXT_CONTROL_VALUE         553
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif

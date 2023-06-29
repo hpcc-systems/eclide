@@ -1380,8 +1380,9 @@ BEGIN
             MENUITEM "Copy Path\tCtrl+Alt+K",       ID_REPOSITORY_COPYPATH
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Submit ECL\tCtrl+Enter",     ID_ECL_GO
+        MENUITEM "&Submit ECL\tCtrl+Enter",         ID_ECL_GO
         MENUITEM "Submit Selected ECL\tCtrl+Shift+Enter", ID_ECL_SEL_GO
+        MENUITEM "Submit (No Archive)",             ID_ECL_NOARCHIV_GO
         POPUP "Syntax"
         BEGIN
             MENUITEM "&Check Syntax\tF7",           ID_ECL_CHECKSYNTAX
@@ -2026,6 +2027,7 @@ BEGIN
     BEGIN
         MENUITEM "&Submit",                     ID_GO_SUBMIT
         MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
+        MENUITEM "Submit (No &Archive)",        ID_GO_SUBMITNOARCHIV
         MENUITEM "&Generate",                   ID_GO_GENERATE
         MENUITEM "&Compile",                    ID_GO_COMPILE
     END
@@ -2041,6 +2043,7 @@ IDR_POPUP_EEGO2 MENU
 BEGIN
     MENUITEM "&Submit",                     ID_GO_SUBMIT
     MENUITEM "Su&bmit Selected",            ID_GO_SUBMITSELECTED
+    MENUITEM "Submit (No &Archive)",        ID_GO_SUBMITNOARCHIV
     MENUITEM "&Compile",                    ID_GO_COMPILE
 END
 
