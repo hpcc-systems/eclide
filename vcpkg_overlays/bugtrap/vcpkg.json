@@ -1,8 +1,0 @@
-{
-  "name": "bugtrap",
-  "version": "1.4.9",
-  "port-version": 0,
-  "description": "BugTrap is a free, open-source, crash reporting library for Windows applications.",
-  "dependencies": [
-  ]
-}
