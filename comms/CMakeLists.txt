@@ -10,10 +10,25 @@ SET (GEN_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapWsWorkunitsServiceSoapProxy.cpp
 )
 
+SET (GEN_DEPS
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/Ws_Account.wsdl
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsAttributes.wsdl
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsDfu.wsdl
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsSMC.wsdl
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsStore.wsdl 
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsTopology.wsdl
+    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsWorkunits.wsdl
+)
+
+SET(GSOAP "${CMAKE_BINARY_DIR}/vcpkg_installed/x86-windows/share/gsoap")
+SET(GSOAP_BIN "${GSOAP}/bin/win32")
+
 ADD_CUSTOM_COMMAND(
     OUTPUT ${GEN_SRCS}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/gsoap_build.bat
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/gsoap_build.bat
+    DEPENDS ${GEN_DEPS}
+    COMMAND ${GSOAP_BIN}/wsdl2h.exe -I${GSOAP} -I./hpcc -o Services.h Ws_Account.wsdl WsAttributes.wsdl WsDfu.wsdl WsSMC.wsdl WsTopology.wsdl WsWorkunits.wsdl
+    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP}/import Services.h
+    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP}/import -penv ./hpcc/env.h
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0
 )
 

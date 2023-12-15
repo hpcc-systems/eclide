@@ -1,0 +1,144 @@
+name: Build Package (gh-runner)
+
+env:
+  VCPKG_BINARY_SOURCES: "clear;nuget,GitHub,read"
+  VCPKG_NUGET_REPOSITORY: "https://github.com/hpcc-systems/vcpkg"
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        description: 'Operating System'
+        required: false
+        default: 'windows-2022'
+      build-type:
+        type: string
+        description: 'CMake Build Type'
+        required: false
+        default: 'RelWithDebInfo'
+      cmake-configuration:
+        type: string
+        description: 'CMake Configuration'
+        required: false
+        default: ''
+      cmake-configuration-ex:
+        type: string
+        description: 'CMake Configuration Extra'
+        required: false
+        default: ''
+      update-cache:
+        type: boolean
+        description: 'Update Cache'
+        required: false
+        default: true
+      upload-package:
+        type: boolean
+        description: 'Upload Package as Asset'
+        required: false
+        default: false
+      asset-name:
+        type: string
+        description: 'Asset Name (if upload-package is true)'
+        required: false
+        default: 'build-package'
+    secrets:
+      LNB_TOKEN:
+        required: false
+
+jobs:
+
+  build-gh_runner:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: "Remove builtin vcpkg (old)"
+        working-directory: .
+        shell: "bash"
+        run: |
+          ${{ !contains(inputs.os, 'windows') && 'sudo' || '' }} rm -rf "$VCPKG_INSTALLATION_ROOT"
+
+      - name: Checkout ECLIDE
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          path: ${{ github.workspace }}/eclide
+
+      - name: Fetch vcpkg history
+        shell: "bash"
+        working-directory: ${{ github.workspace }}/eclide/vcpkg
+        run: |
+          git fetch --unshallow
+
+      - name: "vcpkg Bootstrap"
+        shell: "bash"
+        run: |
+          ./eclide/vcpkg/bootstrap-vcpkg.sh
+
+      - name: "Setup NuGet credentials"
+        shell: "bash"
+        run: |
+          `./eclide/vcpkg/vcpkg fetch nuget | tail -n 1` \
+            sources add \
+            -name "GitHub" \
+            -source "https://nuget.pkg.github.com/hpcc-systems/index.json" \
+            -storepasswordincleartext \
+            -username "${{ github.actor }}" \
+            -password "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Calculate vars
+        id: vars
+        working-directory: ${{ github.workspace }}/eclide/vcpkg
+        shell: "bash"
+        run: |
+          branch_label_1=${{ github.base_ref }}
+          branch_label_2=$(echo ${{ github.ref }} | cut -d'/' -f3)
+          echo "branch_label=${branch_label_1:-$branch_label_2}" >> $GITHUB_OUTPUT
+          vcpkg_sha_short=$(git rev-parse --short=8 HEAD)
+          echo "vcpkg_sha_short=$vcpkg_sha_short" >> $GITHUB_OUTPUT
+
+      - name: Print vars
+        shell: "bash"
+        run: |
+          echo "${{ toJSON(steps.vars.outputs) }}"
+
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: |
+            ${{github.workspace}}/build/vcpkg_installed
+          key: vcpkg-${{ inputs.os }}-${{ steps.vars.outputs.vcpkg_sha_short }}
+
+      - uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          save: ${{ inputs.update-cache == true }}
+          key: gh-runner-${{ inputs.os }}-${{ inputs.build-type }}-${{ steps.vars.outputs.branch_label }}-eclide
+          restore-keys: |
+            gh-runner-${{ inputs.os }}-${{ inputs.build-type }}-${{ steps.vars.outputs.branch_label }}-
+            gh-runner-${{ inputs.os }}-${{ inputs.build-type }}-
+            gh-runner-${{ inputs.os }}-
+
+      - name: CMake Configure
+        shell: "bash"
+        run: |
+          mkdir -p ${{ github.workspace }}/build
+          cmake -S ./eclide -B ./build -T host=x86 -A Win32 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
+
+      - name: CMake Build
+        run: |
+          cmake --build ./build --config RelWithDebInfo --parallel ${{ inputs.upload-package == true && '--target package' || ''}}
+
+      - name: Upload Package
+        if: ${{ inputs.upload-package == true }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.asset-name }}
+          path: |
+            ${{ github.workspace }}/build/*.exe
+          if-no-files-found: error
+
+      - name: Upload Error Logs
+        if: ${{ failure() || cancelled() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.os }}-eclide-logs
+          path: ${{ github.workspace }}/build/**/*.log
