@@ -1085,6 +1085,7 @@ protected:
         request.IncludeTimers = true;
         request.IncludeVariables = false;
         request.IncludeWorkflows = false;
+        request.TruncateEclTo64k = false;
         request.SuppressResultSchemas = false;
 
         _ns6__WUInfoResponse response;
