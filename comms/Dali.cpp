@@ -321,6 +321,7 @@ bool ProtectWorkunits(const CString & url, IWorkunitVector *workunits, bool prot
     _ns6__WUProtect request;
     ns6__EspStringArray espStringArray;
     request.Wuids = &espStringArray;
+    request.Protect = protect;
     for (unsigned i = 0; i < workunits->size(); ++i)
         espStringArray.Item.push_back(stringPool.Create((*workunits)[i]->GetWuid()));
 
@@ -1085,6 +1086,7 @@ protected:
         request.IncludeTimers = true;
         request.IncludeVariables = false;
         request.IncludeWorkflows = false;
+        request.TruncateEclTo64k = false;
         request.SuppressResultSchemas = false;
 
         _ns6__WUInfoResponse response;

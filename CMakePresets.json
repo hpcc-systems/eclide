@@ -1,0 +1,90 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "vcpkg",
+            "displayName": "vcpkg ",
+            "toolchainFile": "${sourceDir}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+            "binaryDir": "${sourceDir}/build",
+            "installDir": "${sourceDir}/build/stage",
+            "cacheVariables": {
+                "VCPKG_INSTALLED_DIR": "${sourceDir}/build/vcpkg_installed",
+                "VCPKG_INSTALL_OPTIONS": "--downloads-root=${sourceDir}/build/vcpkg_downloads;--x-buildtrees-root=${sourceDir}/build/vcpkg_buildtrees;--x-packages-root=${sourceDir}/build/vcpkg_packages"
+            },
+            "hidden": true
+        },
+        {
+            "name": "Ninja",
+            "generator": "Ninja",
+            "architecture": {
+                "strategy": "external",
+                "value": "x86"
+            },
+            "hidden": true
+        },
+        {
+            "name": "VS-16",
+            "generator": "Visual Studio 16 2019",
+            "architecture": {
+                "strategy": "set",
+                "value": "Win32"
+            },
+            "hidden": true
+        },
+        {
+            "name": "VS-17",
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "strategy": "set",
+                "value": "Win32"
+            },
+            "hidden": true
+        },
+        {
+            "name": "vcpkg-Ninja",
+            "inherits": [
+                "vcpkg",
+                "Ninja"
+            ]
+        },
+        {
+            "name": "vcpkg-VS-16",
+            "inherits": [
+                "vcpkg",
+                "VS-16"
+            ]
+        },
+        {
+            "name": "vcpkg-VS-17",
+            "inherits": [
+                "vcpkg",
+                "VS-17"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "VS-16-Debug",
+            "configurePreset": "vcpkg-VS-16",
+            "configuration": "Debug",
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-17-Debug",
+            "configurePreset": "vcpkg-VS-17",
+            "configuration": "Debug",
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-17-RelWithDebInfo",
+            "configurePreset": "vcpkg-VS-17",
+            "configuration": "RelWithDebInfo",
+            "nativeToolOptions": ["-m"]
+        }
+    ]
+}
