@@ -1862,8 +1862,6 @@ protected:
 	std::_tstring m_Font;
 	int m_FontSizeResult;
 	CFontComboBox m_comboFont;
-	std::_tstring m_comboBrowserEngineStr;
-	CComboBox m_comboBrowserEngine;
 
 public:
 	CPrefResultDlg(IOwner *owner, IConfig * config) : m_config(config), m_owner(owner)
@@ -1884,14 +1882,6 @@ public:
 		DoChanged(false);
 	}
 
-	void InitComboBrowserEngine()
-	{
-		m_comboBrowserEngine = GetDlgItem(IDC_COMBO_BROWSERENGINE);
-		m_comboBrowserEngine.AddString(_T("WebView2"));
-		m_comboBrowserEngine.AddString(_T("Chromium"));
-		m_comboBrowserEngine.AddString(_T("IE"));
-	}
-
 	void PopulateControls()
 	{
 		m_ResultLimit = m_config->Get(GLOBAL_WORKUNIT_RESULTLIMIT);
@@ -1899,8 +1889,6 @@ public:
 		m_Font = CString(m_config->Get(GLOBAL_FONT_RESULT));
 		m_FontSizeResult = m_config->Get(GLOBAL_FONTSIZE_RESULT);
 		SetComboText(m_comboFont, m_Font);
-		m_comboBrowserEngineStr = CString(m_config->Get(GLOBAL_BROWSER_ENGINE));
-		SetComboText(m_comboBrowserEngine, m_comboBrowserEngineStr);
 
 		DoDataExchange();
 
@@ -1916,8 +1904,6 @@ public:
 		m_config->Set(GLOBAL_FONT_RESULT, font);
         m_config->Set(GLOBAL_FONTSIZE_RESULT, m_FontSizeResult);
 		CString comboBrowserEngineStr;
-		m_comboBrowserEngine.GetWindowText(comboBrowserEngineStr);
-		m_config->Set(GLOBAL_BROWSER_ENGINE, comboBrowserEngineStr);
     }
 
 	void DoApply(bool bMakeGlobal)
@@ -1941,8 +1927,6 @@ public:
 		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
 		COMMAND_HANDLER(IDC_COMBO_FONT, CBN_SELCHANGE, OnCbnSelendokComboFont)
 		COMMAND_HANDLER(IDC_COMBO_FONT, CBN_SELENDOK, OnCbnSelendokComboFont)
-		COMMAND_HANDLER(IDC_COMBO_BROWSERENGINE, CBN_SELCHANGE, OnCbnSelendokBrowserEngine)
-		COMMAND_HANDLER(IDC_COMBO_BROWSERENGINE, CBN_SELENDOK, OnCbnSelendokBrowserEngine)
 		NOTIFY_CODE_HANDLER(UDN_DELTAPOS, OnSpinChange)
 
 		REFLECT_NOTIFICATIONS()
@@ -1962,7 +1946,6 @@ public:
 		wndPlaceholder.DestroyWindow();
 		m_comboFont.Create(m_hWnd, rc, _T(""), WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VSCROLL | CBS_DROPDOWN | CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | CBS_SORT , 0, IDC_COMBO_FONT);
 		m_comboFont.Init();
-		InitComboBrowserEngine();
 	}
 
 	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
@@ -2000,14 +1983,6 @@ public:
 		DoChanged();
 		CString font;
 		m_Font = m_comboFont.GetLBText(m_comboFont.GetCurSel(), font);
-		return 0;
-	}
-
-	LRESULT OnCbnSelendokBrowserEngine(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-	{
-		DoChanged();
-		CString comboBrowserEngineStr;
-		m_comboBrowserEngineStr = m_comboBrowserEngine.GetLBText(m_comboBrowserEngine.GetCurSel(), comboBrowserEngineStr);
 		return 0;
 	}
 

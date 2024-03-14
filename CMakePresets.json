@@ -72,18 +72,21 @@
             "name": "VS-16-Debug",
             "configurePreset": "vcpkg-VS-16",
             "configuration": "Debug",
+            "jobs": 4,
             "nativeToolOptions": ["-m"]
         },
         {
             "name": "VS-17-Debug",
             "configurePreset": "vcpkg-VS-17",
             "configuration": "Debug",
+            "jobs": 4,
             "nativeToolOptions": ["-m"]
         },
         {
             "name": "VS-17-RelWithDebInfo",
             "configurePreset": "vcpkg-VS-17",
             "configuration": "RelWithDebInfo",
+            "jobs": 4,
             "nativeToolOptions": ["-m"]
         }
     ]

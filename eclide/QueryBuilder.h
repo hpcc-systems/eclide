@@ -8,9 +8,6 @@
 
 #include "..\en_us\resource.h"       // main symbols
 
-#include "include/cef_base.h"
-#include "include/cef_app.h" 
-
 // CQueryBuilderApp:
 // See QueryBuilder.cpp for the implementation of this class
 //
@@ -42,13 +39,7 @@ public:
     virtual void SaveCustomState();
 
     afx_msg void OnAppAbout();
-    DECLARE_MESSAGE_MAP()
-
-private:
-    CefRefPtr<CefApp> m_cefApp;
-
-    bool InitializeCef();
-    void UninitializeCef();
+    DECLARE_MESSAGE_MAP();
 
 };
 
