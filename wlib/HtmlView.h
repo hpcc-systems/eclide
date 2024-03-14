@@ -22,5 +22,4 @@ __interface IHtmlView {
 };
 
 WLIB_API IHtmlView * CreateIEView();
-WLIB_API IHtmlView * CreateChromiumView();
 WLIB_API IHtmlView * CreateWebView2View();

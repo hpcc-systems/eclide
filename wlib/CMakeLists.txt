@@ -13,8 +13,6 @@ SET ( SRCS
     AttributeDlg.h
     AttrListDlg.cpp
     AttrListDlg.h
-    CefClientHandler.h
-    CefClientHandler.cpp
     ChangePasswordDlg.cpp
     ChangePasswordDlg.h
     ColorPicker.cpp
@@ -43,7 +41,6 @@ SET ( SRCS
     HListBox.h
     HtmlView.h
     HtmlIEView.cpp
-    HtmlChromiumView.cpp
     HtmlWebView2View.cpp
     #ImportRecordAnalyze.cpp
     #ImportRecordAnalyze.h
@@ -115,7 +112,6 @@ INCLUDE_DIRECTORIES (
     
     ${WTL_INCLUDE_DIR}
     ${SCINTILLA_INCLUDE_DIR}
-    ${CEF_ROOT_DIR}
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -138,43 +134,4 @@ TARGET_LINK_LIBRARIES( WLIB
     unofficial::webview2::webview2
 )
 
-TARGET_LINK_LIBRARIES( WLIB
-    debug ${CEF_ROOT_DIR}/Debug/lib/libcef_dll_wrapper.lib
-    optimized ${CEF_ROOT_DIR}/lib/libcef_dll_wrapper.lib
-)
-
-TARGET_LINK_LIBRARIES( WLIB
-    debug ${CEF_ROOT_DIR}/Debug/libcef.lib
-    optimized ${CEF_ROOT_DIR}/Release/libcef.lib
-)
-
 INSTALL ( TARGETS WLIB RUNTIME DESTINATION bin )
-
-INSTALL ( FILES 
-    ${CEF_ROOT_DIR}/Release/chrome_elf.dll
-    ${CEF_ROOT_DIR}/Release/d3dcompiler_47.dll
-    ${CEF_ROOT_DIR}/Release/libcef.dll
-    ${CEF_ROOT_DIR}/Release/libEGL.dll
-    ${CEF_ROOT_DIR}/Release/libGLESv2.dll
-    ${CEF_ROOT_DIR}/Release/natives_blob.bin
-    ${CEF_ROOT_DIR}/Release/snapshot_blob.bin
-    ${CEF_ROOT_DIR}/Release/v8_context_snapshot.bin
-    ${CEF_ROOT_DIR}/Resources/icudtl.dat
-    ${CEF_ROOT_DIR}/Resources/cef.pak
-    ${CEF_ROOT_DIR}/Resources/cef_100_percent.pak
-    ${CEF_ROOT_DIR}/Resources/cef_200_percent.pak
-    ${CEF_ROOT_DIR}/Resources/cef_extensions.pak
-    ${CEF_ROOT_DIR}/Resources/devtools_resources.pak
-    DESTINATION bin 
-)
-
-INSTALL ( FILES 
-    ${CEF_ROOT_DIR}/Release/swiftshader/libEGL.dll
-    ${CEF_ROOT_DIR}/Release/swiftshader/libGLESv2.dll
-    DESTINATION bin/swiftshader
-)
-
-INSTALL ( FILES 
-    ${CEF_ROOT_DIR}/Resources/locales/en-US.pak
-    DESTINATION bin/locales
-)
