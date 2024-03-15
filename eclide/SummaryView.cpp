@@ -12,8 +12,6 @@ CSummaryView::CSummaryView(IResultSlot *resultSlot)
     m_browserEngine = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_BROWSER_ENGINE);
     if (m_browserEngine.Compare(_T("IE")) == 0) {
         m_view = CreateIEView();
-    } else if (m_browserEngine.Compare(_T("Chromium")) == 0) {
-        m_view = CreateChromiumView();
     } else {
         m_view = CreateWebView2View(); 
     }

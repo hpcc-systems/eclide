@@ -34,17 +34,10 @@ FIND_PATH(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintill
 FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/Client)
 FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/zlib)
 
-FILE(GLOB CEF_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/*")
-FIND_PATH(CEF_ROOT_DIR
-    NAMES Release/libcef.lib
-    PATHS ${CEF_SEARCH_PATHS}
-)
-
 MESSAGE("includes")
 MESSAGE("  - boost:  ${Boost_INCLUDE_DIRS}")
 MESSAGE("  - wtl:  ${WTL_INCLUDE_DIR}")
 MESSAGE("  - Scintilla:  ${SCINTILLA_INCLUDE_DIR}")
-MESSAGE("  - CEF:  ${CEF_ROOT_DIR}")
 
 MESSAGE("sources")
 MESSAGE("  - Scintilla")

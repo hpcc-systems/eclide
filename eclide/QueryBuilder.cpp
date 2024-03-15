@@ -15,21 +15,6 @@
 #include "aboutdlg.h"
 #include <EclCC.h>
 
-#include "include/cef_base.h"
-#include "include/cef_app.h" 
-
-class CefMfcCefApp : public CefApp, public CefBrowserProcessHandler {
-public:
-    CefMfcCefApp() {}
-
-    virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE {
-        return this;
-    }
-
-private:
-    IMPLEMENT_REFCOUNTING(CefMfcCefApp);
-};
-
 class CConfigCache 
 {
 public:
@@ -74,13 +59,9 @@ BOOL CQueryBuilderApp::PumpMessage()
     auto result = CWinAppEx::PumpMessage();
 
     // If there are other messages on queue then return right away
-    // otherwise CEF has a habit of eating keystrokes not meant for it
     MSG msg;
     if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
         return result;
-
-    // Allow Cef to do his thing
-    CefDoMessageLoopWork();
 
     return result;
 }
@@ -117,9 +98,6 @@ BOOL CQueryBuilderApp::InitInstance()
     // in your application.
     InitCtrls.dwICC = ICC_WIN95_CLASSES;
     InitCommonControlsEx(&InitCtrls);
-
-    if (!InitializeCef())
-        return FALSE;
 
     CWinAppEx::InitInstance();
 
@@ -233,8 +211,6 @@ int CQueryBuilderApp::ExitInstance()
     // Terminate ATL
     _Module.Term();
 
-    UninitializeCef();
-
     ResetIConfigs();
 
     int retVal = CWinAppEx::ExitInstance();
@@ -266,25 +242,3 @@ void CQueryBuilderApp::LoadCustomState()
 void CQueryBuilderApp::SaveCustomState()
 {
 }
-
-bool CQueryBuilderApp::InitializeCef()
-{
-    m_cefApp = new CefMfcCefApp();
-    CefMainArgs mainargs(m_hInstance);
-
-    const auto exit_code = CefExecuteProcess(mainargs, m_cefApp.get(), nullptr);
-    if (exit_code >= 0)
-        return false;
-
-    CefSettings settings;
-    settings.multi_threaded_message_loop = false;
-    settings.no_sandbox = true;
-    settings.ignore_certificate_errors = true;
-    return CefInitialize(mainargs, settings, m_cefApp.get(), nullptr);
-}
-
-void CQueryBuilderApp::UninitializeCef()
-{
-    CefShutdown();
-}
-
