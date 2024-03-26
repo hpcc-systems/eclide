@@ -18,7 +18,6 @@ protected:
     CString m_Url;
     CString m_FramedUrl;
     IHtmlView *m_view;
-    CString m_browserEngine;
 
 public:
     enum {IDD = IDD_SUMMARYVIEW};
@@ -40,7 +39,6 @@ public:
         MESSAGE_HANDLER(WM_FORWARDMSG, OnForwardMsg)
         MESSAGE_HANDLER_EX(CWM_REFRESH, OnRefresh)
         COMMAND_ID_HANDLER(ID_BROWSER_NEW, OnBrowserNew)
-        COMMAND_ID_HANDLER(ID_BROWSER_IE, OnBrowserIE)
         COMMAND_ID_HANDLER(ID_BROWSER_NEW_ECLWATCH, OnBrowserNewEclWatch)
         COMMAND_ID_HANDLER(ID_BROWSER_BACK, OnBrowserBack)
         COMMAND_ID_HANDLER(ID_BROWSER_FORWARD, OnBrowserForward)
@@ -60,7 +58,6 @@ public:
     void DoRefresh();
     LRESULT OnRefresh(UINT /*uMsg*/, WPARAM /*bCreated*/, LPARAM /*lParam*/);
     LRESULT OnBrowserNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-    LRESULT OnBrowserIE(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserNewEclWatch(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserBack(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnBrowserForward(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);

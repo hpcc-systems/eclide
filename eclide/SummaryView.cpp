@@ -9,14 +9,7 @@
 CSummaryView::CSummaryView(IResultSlot *resultSlot)
 {
     m_resultSlot = resultSlot;
-    m_browserEngine = GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_BROWSER_ENGINE);
-    if (m_browserEngine.Compare(_T("IE")) == 0) {
-        m_view = CreateIEView();
-    } else if (m_browserEngine.Compare(_T("Chromium")) == 0) {
-        m_view = CreateChromiumView();
-    } else {
-        m_view = CreateWebView2View(); 
-    }
+    m_view = CreateWebView2View(); 
 }
 
 CSummaryView::~CSummaryView()
@@ -85,12 +78,6 @@ LRESULT CSummaryView::OnBrowserNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hW
     DWORD_PTR dwRet = (DWORD_PTR)::ShellExecute(0, _T("open"), m_FramedUrl, 0, 0, SW_SHOWNORMAL);
     bool bRet = (dwRet > 32);
     ATLASSERT(bRet);
-    return 0;
-}
-
-LRESULT CSummaryView::OnBrowserIE(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-    m_view->Navigate(m_FramedUrl, true);
     return 0;
 }
 
@@ -183,7 +170,6 @@ bool CSummaryView::UpdateUI(CCmdUI * cui)
     if ( m_view->IsLoaded() )
     {
         UPDATEUI(cui, ID_BROWSER_NEW, true);
-        UPDATEUI(cui, ID_BROWSER_IE, m_browserEngine.Compare(L"IE") == 0);
         UPDATEUI(cui, ID_BROWSER_NEW_ECLWATCH, true);
         UPDATEUI(cui, ID_BROWSER_RESET, true);
         UPDATEUI(cui, ID_BROWSER_BACK, m_view->BackEnabled());
