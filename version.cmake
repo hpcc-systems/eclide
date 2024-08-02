@@ -6,7 +6,7 @@ set ( HPCC_PROJECT "eclide" )
 set ( HPCC_AUDIENCE "community" )
 set ( HPCC_MAJOR 9 )
 set ( HPCC_MINOR 8 )
-set ( HPCC_POINT 9 )
+set ( HPCC_POINT 11 )
 set ( HPCC_MATURITY "closedown" )
 set ( HPCC_SEQUENCE 0 )
 ###
