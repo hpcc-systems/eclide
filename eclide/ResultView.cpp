@@ -47,31 +47,30 @@ const std::_tstring ECLWatchStr()
     std::_tstring str = CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_ECLWATCH));
     if (str.length() == 0) {
         str = static_cast<const TCHAR*>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
-        boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/stub.htm"));
+        boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/index.html"));
     }
     return str;
 }
 
 const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
-    //tp://IP:PORT?inner=/WsWorkunits/WUInfo?Wuid=W20050302-182157
-    //http://192.168.1.201:8010/esp/files/stub.htm?Widget=HPCCPlatformWidget#/stub/ECL/Workunits/W20140410-041544/Summary - TODO New EclWatch does not support this fully...
+    //http://localhost:8010/esp/files/index.html#/workunits/W20241018-162657
     std::_tstring str = ECLWatchStr();
     url = str.c_str();
-    url += _T("?Wuid=");
+    url += _T("#/workunits/");
     url += wu->GetWuid();
-    url += "&Widget=WUDetailsWidget";
     url = url.Trim();
     return url;
 }
 
 const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
-    //http://192.168.1.201:8010/esp/files/stub.htm?Wuid=W20140410-041422&Widget=WUDetailsWidget
+    //http://localhost:8010/esp/files/index.html#/workunits/W20241018-162657?fullscreen=1
     std::_tstring str = ECLWatchStr();
     url = str.c_str();
-    url += _T("?Widget=WUDetailsWidget&Wuid=");
+    url += _T("#/workunits/");
     url += wu->GetWuid();
+    url += _T("?fullscreen=1");
     url = url.Trim();
     return url;
 }
@@ -80,22 +79,10 @@ const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
     std::_tstring str = ECLWatchStr();
     url = str.c_str();
-    url += _T("?Widget=GraphsWUWidget&Wuid=");
+    url += _T("#/workunits/");
     url += wu->GetWuid();
-    url = url.Trim();
-    return url;
-}
-
-const TCHAR * GetResultEclWatchURL(Dali::IWorkunit *wu, CString &url, int sequence)
-{
-    //http://10.150.64.208:8010/WsWorkunits/WUResult?Wuid=W20041006-101104&Sequence=0
-    //http://192.168.1.201:8010/esp/files/stub.htm?Wuid=W20140410-041422&Sequence=0&Widget=ResultWidget
-    std::_tstring str = ECLWatchStr();
-    url = str.c_str();
-    url += _T("?Widget=ResultWidget&Wuid=");
-    url += wu->GetWuid();
-    url += _T("&Sequence=");
-    url += boost::lexical_cast<std::_tstring>(sequence).c_str();
+    url += _T("/metrics");
+    url += _T("?fullscreen=1");
     url = url.Trim();
     return url;
 }
