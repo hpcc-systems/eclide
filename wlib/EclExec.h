@@ -13,7 +13,7 @@ public:
     {
     }
 
-    virtual void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugSettings, bool archive, int maxRunTime=0, bool debug=false);
+    virtual void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugSettings, bool archive, int maxRunTime=0, bool debug=false, bool rawECL=false);
     virtual void ExecEclNoRefCount(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath);
 
     virtual void WorkunitCreated(Dali::IWorkunit * src);
@@ -37,6 +37,7 @@ private:
         bool archive;
         int maxRunTime;
         bool debug;
+        bool rawECL;
     };
     static void EclGo(CComPtr<CEclExec> bf, std::pair<std::_tstring, std::_tstring> clusterQueue, std::pair<Dali::WUAction, std::_tstring> actionAttrQualifiedLabel, CString ecl, CString path, CString label, int resultLimit, CString debugSettings, BindLimitStruct bls);
     static void EclGoNoRefCount(CEclExec * bf, CString cluster, CString queue, Dali::WUAction action, CString attrQualifiedLabel, CString ecl, CString path);

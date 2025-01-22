@@ -2420,7 +2420,7 @@ public:
     int GetTabCount();
     void CloseAllTabs();
     void DestroyWindow();
-    void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugString, bool archive, int maxRuntime, bool debug);
+    void ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugString, bool archive, int maxRuntime, bool debug, bool rawECL);
     void PublishESDL(const std::_tstring & desdlID, const std::_tstring & desdlVersion);
     void SetDeleteWorkunit(bool bDelete=true);
     void PostSelectRibbon();
@@ -2552,10 +2552,10 @@ void CMultiResultView::RenameColumn(unsigned col, const std::_tstring& newname)
         m_tabs[n]->RenameColumn(col, newname);
 }
 
-void CMultiResultView::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR * debugString, bool archive, int maxRuntime, bool debug)
+void CMultiResultView::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR * debugString, bool archive, int maxRuntime, bool debug, bool rawECL)
 {
     m_launchDebugger = debug;
-    CEclExec::ExecEcl(clusterName, queueName, action, attrQualifiedLabel, eclSource, eclPath, scheduled, label, resultLimit, debugString, archive, maxRuntime, debug);
+    CEclExec::ExecEcl(clusterName, queueName, action, attrQualifiedLabel, eclSource, eclPath, scheduled, label, resultLimit, debugString, archive, maxRuntime, debug, rawECL);
 }
 
 void CMultiResultView::PublishESDL(const std::_tstring & desdlID, const std::_tstring & desdlVersion)
