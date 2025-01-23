@@ -362,17 +362,17 @@ public:
         return true;
     }
 
-    void OnButtonGo(Dali::WUAction action, bool selected)
+    void OnButtonGo(Dali::WUAction action, bool selected, bool rawECL)
     {
         CString ecl;
         if (selected)
             m_dlgview.GetSource(ecl, selected);
         else
             m_dlgview.GetSource(ecl);
-        ExecEcl(action, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled());
+        ExecEcl(action, ecl, m_dlgview.IsScheduled(), m_dlgview.IsLabeled(), false, false, rawECL);
     }
 
-    void ExecEcl(Dali::WUAction action, const CString &_ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool supressPath=false)
+    void ExecEcl(Dali::WUAction action, const CString &_ecl, bool isScheduled=false, bool isLabeled=false, bool isDebug=false, bool supressPath=false, bool rawECL=false)
     {
         bool isSaved = false;
         if (CComPtr<IEclCC> eclcc = CreateIEclCC())
@@ -456,7 +456,7 @@ public:
         }
         else if (action != Dali::WUActionGenerate)
         {
-            result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, supressPath ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug);
+            result->ExecEcl(m_dlgview.GetCluster(), m_dlgview.GetQueue(), action, attrQualifiedLabel.c_str(), ecl, supressPath ? _T("") : m_dlgview.GetPath(), when.c_str(), label, m_dlgview.GetResultLimit(), debugStr.c_str(), m_dlgview.IsArchive(), m_dlgview.GetMaxRuntime(), isDebug, rawECL);
             GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_QUEUE, m_dlgview.GetQueue());
             GetIConfig(QUERYBUILDER_CFG)->Set(GLOBAL_CLUSTER, m_dlgview.GetCluster());
         }

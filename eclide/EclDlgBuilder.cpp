@@ -738,8 +738,6 @@ void CBuilderDlg::OnFileSaveAs(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 
 void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
 {
-    bool prevArchive = m_archive;
-
     switch(nID)
     {
     case ID_ECL_GO:
@@ -752,8 +750,7 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
         break;
     case ID_ECL_NOARCHIV_GO:
     case ID_GO_SUBMITNOARCHIV:
-        m_archive = false;
-        m_owner->OnButtonGo(Dali::WUActionRun);
+        m_owner->OnButtonGo(Dali::WUActionRun, false, true);
         break;
     case ID_GO_COMPILE:
         m_owner->OnButtonGo(Dali::WUActionCompile);
@@ -779,8 +776,6 @@ void CBuilderDlg::OnEclGo(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
         ATLASSERT(false);
         break;
     }
-
-    m_archive = prevArchive;
 }
 
 void CBuilderDlg::OnEclGenerate(UINT /*uNotifyCode*/, int nID, HWND /*hWnd*/)
