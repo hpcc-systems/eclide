@@ -5,7 +5,7 @@
 #include <RecursiveMutex.h> //clib
 #include "Thread.h" //clib
 
-void CEclExec::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugSettings, bool archive, int maxRunTime, bool debug)
+void CEclExec::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::WUAction action, const TCHAR *attrQualifiedLabel, const TCHAR *eclSource, const TCHAR *eclPath, const TCHAR *scheduled, const TCHAR *label, int resultLimit, const TCHAR *debugSettings, bool archive, int maxRunTime, bool debug, bool rawECL)
 {
 	if (scheduled && scheduled[0])
 	{
@@ -13,7 +13,7 @@ void CEclExec::ExecEcl(const TCHAR *clusterName, const TCHAR *queueName, Dali::W
 	}
 	else
 	{
-		BindLimitStruct bls = {archive, maxRunTime, debug};
+		BindLimitStruct bls = {archive, maxRunTime, debug, rawECL};
 		clib::thread run(__FUNCTION__, boost::bind(&EclGo, this, std::make_pair(clusterName, queueName), std::make_pair(action, attrQualifiedLabel), eclSource, eclPath, label, resultLimit, debugSettings, bls));
 	}
 }
@@ -84,7 +84,7 @@ void CEclExec::EclGo(CComPtr<CEclExec> t, std::pair<std::_tstring, std::_tstring
 {
 	CString wuid;
 	StlLinked<Dali::IDali> server = Dali::AttachDali();
-	StlLinked<Dali::IWorkunit> workunit = server->Submit(clusterQueue.first.c_str(), clusterQueue.second.c_str(), actionAttrQualifiedLabel.first, actionAttrQualifiedLabel.second.c_str(), ecl, path, label, resultLimit, debugSettings, bls.archive, bls.maxRunTime, bls.debug);
+	StlLinked<Dali::IWorkunit> workunit = server->Submit(clusterQueue.first.c_str(), clusterQueue.second.c_str(), actionAttrQualifiedLabel.first, actionAttrQualifiedLabel.second.c_str(), ecl, path, label, resultLimit, debugSettings, bls.archive, bls.maxRunTime, bls.debug, bls.rawECL);
 	if ( workunit.isLinked() )
 	{
 		UpdateDefaultCluster(clusterQueue.first.c_str());
@@ -100,7 +100,7 @@ void CEclExec::EclGoNoRefCount(CEclExec * t, CString cluster, CString queue, Dal
 {
 	CString wuid;
 	StlLinked<Dali::IDali> server = Dali::AttachDali();
-	StlLinked<Dali::IWorkunit> workunit = server->Submit(cluster, queue, action, attrQualifiedLabel, ecl, path, _T(""), 0, _T(""), false, 0, false);
+	StlLinked<Dali::IWorkunit> workunit = server->Submit(cluster, queue, action, attrQualifiedLabel, ecl, path, _T(""), 0, _T(""), false, 0, false, false);
 	if ( workunit.isLinked() )
 	{
 		UpdateDefaultCluster(cluster);

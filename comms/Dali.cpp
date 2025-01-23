@@ -691,11 +691,11 @@ public:
         return localfiles.size();
     }
 
-    IWorkunit* Submit(const CString &cluster, const CString & queue, WUAction action, const CString & attrQualifiedLabel, const CString & ecl, const CString & path, const CString & label, int resultLimit, const CString & debugSettings, bool archive, int maxRunTime, bool debug)
+    IWorkunit* Submit(const CString &cluster, const CString & queue, WUAction action, const CString & attrQualifiedLabel, const CString & ecl, const CString & path, const CString & label, int resultLimit, const CString & debugSettings, bool archive, int maxRunTime, bool debug, bool rawECL)
     {
         CComInitialize com;
         StlLinked<IWorkunit> resultWu;
-        SubmitEcl(cluster, queue, action, attrQualifiedLabel, ecl, path, label, resultLimit, resultWu, debugSettings, archive, false, maxRunTime, debug);
+        SubmitEcl(cluster, queue, action, attrQualifiedLabel, ecl, path, label, resultLimit, resultWu, debugSettings, archive, false, maxRunTime, debug, rawECL);
         return resultWu.get();
     }
 
@@ -1109,7 +1109,7 @@ protected:
     {
         CComInitialize com;
         bool retVal = false;
-        if (SubmitEcl(cluster, queue, action, attrQualifiedLabel, ecl, path, label, resultLimit, resultWu, debugSettings, archive, noCommonPrivateAttributes, maxRunTime, debug))
+        if (SubmitEcl(cluster, queue, action, attrQualifiedLabel, ecl, path, label, resultLimit, resultWu, debugSettings, archive, noCommonPrivateAttributes, maxRunTime, debug, false))
         {
             retVal = BlockUntilComplete(m_config, resultWu->GetWuid());
 
@@ -1221,12 +1221,14 @@ protected:
         }
     }
 
-    bool SubmitEcl(const CString &cluster, const CString & queue, WUAction _action, const CString & attrQualifiedLabel, const CString & _ecl, const CString & path, const CString label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive, bool noCommonPrivateAttributes, int maxRunTime, bool debug)
+    bool SubmitEcl(const CString &cluster, const CString & queue, WUAction _action, const CString & attrQualifiedLabel, const CString & _ecl, const CString & path, const CString label, int resultLimit, StlLinked<IWorkunit> &resultWu, const CString & debugString, bool archive, bool noCommonPrivateAttributes, int maxRunTime, bool debug, bool rawECL)
     {
         bool isXml = false;
         bool isArchive = false;
         CString ecl = _ecl;
         std::_tstring queryName;
+
+        if (!rawECL)
         {//  ECL or XML
             CComInitialize com;
             CComPtr<ISAXXMLReader> pRdr; 
@@ -1248,7 +1250,7 @@ protected:
             }
         }
 
-        if (!isXml && !boost::algorithm::iequals(static_cast<const TCHAR *>(cluster), _T("Local")))
+        if (!rawECL && !isXml && !boost::algorithm::iequals(static_cast<const TCHAR *>(cluster), _T("Local")))
         {
             CComPtr<IEclCC> eclcc = CreateIEclCC();
             if (_action != WUActionExecuteExisting && eclcc)
