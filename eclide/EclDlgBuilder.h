@@ -15,7 +15,7 @@ enum BUM
 //  ===========================================================================
 __interface IEclBuilderSlot : public ISourceSlot
 {
-    void OnButtonGo(Dali::WUAction action, bool selected = false);
+    void OnButtonGo(Dali::WUAction action, bool selected = false, bool rawECL = false);
 };
 
 class CBuilderDlg : 
