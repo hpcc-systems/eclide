@@ -7,7 +7,7 @@ set ( HPCC_AUDIENCE "community" )
 set ( HPCC_MAJOR 9 )
 set ( HPCC_MINOR 10 )
 set ( HPCC_POINT 44 )
-set ( HPCC_MATURITY "rc" )
+set ( HPCC_MATURITY "release" )
 set ( HPCC_SEQUENCE 1 )
 ###
 IF ( ${HPCC_SEQUENCE} GREATER 99 )
