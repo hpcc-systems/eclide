@@ -102,5 +102,5 @@ webview2 provides CMake targets:
 
 wtl is header-only and can be used from CMake via:
 
-  find_path(WTL_INCLUDE_DIRS "wtl/atlapp.h")
+  find_path(WTL_INCLUDE_DIRS "atlapp.h")
   target_include_directories(main PRIVATE ${WTL_INCLUDE_DIRS})

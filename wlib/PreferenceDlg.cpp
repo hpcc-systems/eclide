@@ -2363,6 +2363,7 @@ public:
 		ScreenToClient(rc);
 		wndPlaceholder.DestroyWindow();
 		m_tabView.Create(*this, rc, _T(""), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, NULL, IDC_SHEET);
+		m_tabView.m_bTabCloseButton = false;  // Disable close buttons on tabs
 
 		m_serverPref.Create(m_tabView);
 		m_tabView.AddPage(m_serverPref, _T("Server"));

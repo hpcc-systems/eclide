@@ -1,6 +1,6 @@
 PROJECT( SGRID )
 
-find_path(WTL_INCLUDE_DIRS "wtl/atlapp.h")
+find_path(WTL_INCLUDE_DIRS "atlapp.h")
 
 SET ( SRCS
     atlsgrid.h
