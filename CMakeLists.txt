@@ -1,10 +1,36 @@
-cmake_minimum_required(VERSION 3.23.0)
+cmake_minimum_required(VERSION 3.25.1)
 
 set(VCPKG_FILES_DIR "${CMAKE_BINARY_DIR}" CACHE STRING "Folder for vcpkg download, build and installed files")
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 set(VCPKG_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg)
 set(VCPKG_INSTALLED_DIR "${VCPKG_FILES_DIR}/vcpkg_installed")
-set(VCPKG_INSTALL_OPTIONS "--downloads-root=${VCPKG_FILES_DIR}/vcpkg_downloads;--x-buildtrees-root=${VCPKG_FILES_DIR}/vcpkg_buildtrees;--x-packages-root=${VCPKG_FILES_DIR}/vcpkg_packages")
+set(VCPKG_INSTALL_OPTIONS "--x-abi-tools-use-exact-versions;--downloads-root=${VCPKG_FILES_DIR}/vcpkg_downloads;--x-buildtrees-root=${VCPKG_FILES_DIR}/vcpkg_buildtrees;--x-packages-root=${VCPKG_FILES_DIR}/vcpkg_packages")
+
+#  Check if vcpkg needs a bootstrap ---
+if(WIN32)
+    set(VCPKG_BOOTSTRAP_FILE "bootstrap-vcpkg.bat")
+else()
+    set(VCPKG_BOOTSTRAP_FILE "./bootstrap-vcpkg.sh")
+endif()
+file(SHA256 "${VCPKG_ROOT}/scripts/vcpkgTools.xml" VCPKG_SCRIPT_HASH)
+set(VCPKG_HASH_FILE "${VCPKG_FILES_DIR}/bootstrap-vcpkg-hash.txt")
+
+set(SAVED_VCPKG_SCRIPT_HASH "")
+if(EXISTS "${VCPKG_HASH_FILE}")
+    file(READ "${VCPKG_HASH_FILE}" SAVED_VCPKG_SCRIPT_HASH)
+endif()
+
+if(NOT "${VCPKG_SCRIPT_HASH}" STREQUAL "${SAVED_VCPKG_SCRIPT_HASH}")
+    message( "Hash mismatch or hash file missing. Running ${VCPKG_BOOTSTRAP_FILE}..." )
+    execute_process(
+        COMMAND "${CMAKE_COMMAND}" -E chdir "${VCPKG_ROOT}" "${VCPKG_BOOTSTRAP_FILE}"
+        RESULT_VARIABLE BOOTSTRAP_RESULT
+    )
+    if(NOT BOOTSTRAP_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to execute ${VCPKG_BOOTSTRAP_FILE}")
+    endif()
+    file(WRITE "${VCPKG_HASH_FILE}" "${VCPKG_SCRIPT_HASH}")
+endif()
 
 PROJECT(ECLIDE)
 
