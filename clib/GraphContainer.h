@@ -76,7 +76,7 @@ enum GRAPHNOTIFICATION
 };
 
 #ifndef EXCLUDE_BOOST
-typedef boost::signal<void(GRAPHNOTIFICATION modification, IGraphItem * item)> graph_signal_type;
+typedef boost::signals2::signal<void(GRAPHNOTIFICATION modification, IGraphItem * item)> graph_signal_type;
 typedef graph_signal_type::slot_type graph_slot_type;
 #endif
 
@@ -117,8 +117,8 @@ __interface __declspec(uuid("A697F331-C28C-4ebc-94CC-5596D0123131")) IGraphItem 
     void SetInternalUnknown(int key, IUnknown * unknown);
 
 #ifndef EXCLUDE_BOOST
-    boost::signals::connection Connect(const graph_slot_type& s);
-    void Disconnect(boost::signals::connection& sc);
+    boost::signals2::connection Connect(const graph_slot_type& s);
+    void Disconnect(boost::signals2::connection& sc);
 #endif
 };
 

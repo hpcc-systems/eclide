@@ -14,7 +14,7 @@ struct ProjectContextState
 };
 //  ===========================================================================
 template<typename T>
-class CWorkspaceFrameT :	public CWorkspaceSlotImpl, public CRepositorySlotImpl, public CDaliSlotImpl, public boost::signals::trackable
+class CWorkspaceFrameT :	public CWorkspaceSlotImpl, public CRepositorySlotImpl, public CDaliSlotImpl, public boost::signals2::trackable
 {
     typedef CWorkspaceFrameT<T> thisClass;
 public:

@@ -23,7 +23,7 @@ SET (LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB f
 
 # Third Party Libraries ---
 SET(CMAKE_INSTALL_MFC_LIBRARIES TRUE)
-FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options serialization signals thread)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options serialization thread)
 FIND_PATH(WTL_INCLUDE_DIR wtl/atlapp.h)
 FIND_PATH(VCPKG_ROOT_DIR include/wtl/atlapp.h)
 SET(GSOAP_DIR ${VCPKG_ROOT_DIR}/share/gsoap)
@@ -51,7 +51,7 @@ MESSAGE("    - src:  ${BUGTRAP_DIR}")
 MESSAGE("    - zlib:  ${BUGTRAP_ZLIB_DIR}")
 
 # Compiler Flags  ---
-ADD_DEFINITIONS(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE)
+ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE)
 
 MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar)
     IF(MSVC)

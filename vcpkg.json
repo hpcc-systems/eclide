@@ -44,8 +44,8 @@
             "version>=": "1.79.0"
         },
         {
-            "name": "boost-signals",
-            "version>=": "1.68.0"
+            "name": "boost-signals2",
+            "version>=": "1.79.0"
         },
         {
             "name": "boost-spirit",

@@ -24,7 +24,7 @@ struct ClassifyStruct
 typedef std::vector<ClassifyStruct> ClassifyStructVector;
 
 __interface IServer;
-typedef boost::signal<void(const std::_tstring action, const std::_tstring req, const std::_tstring resp)> logging_signal_type;
+typedef boost::signals2::signal<void(const std::_tstring action, const std::_tstring req, const std::_tstring resp)> logging_signal_type;
 typedef logging_signal_type::slot_type logging_slot_type;
 __interface IServer : public IUnknown
 {
@@ -37,8 +37,8 @@ __interface IServer : public IUnknown
 	bool Enhance(IWebPage * webPage, IEntity * entity, __int64 maxdids, __int64 maxfull);
 
 	//logging connections
-	boost::signals::connection on_logging_connect(const logging_slot_type& s);
-	void on_logging_disconnect(boost::signals::connection& sc);
+	boost::signals2::connection on_logging_connect(const logging_slot_type& s);
+	void on_logging_disconnect(boost::signals2::connection& sc);
 };
 
 typedef StlLinked<IServer> IServerAdapt;

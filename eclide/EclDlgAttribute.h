@@ -12,7 +12,7 @@ class CAttributeDlg :
     public WTL::CWinDataExchange<CAttributeDlg>,
     public CCtlColor,
     public IMigrationCallback,
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CAttributeDlg thisClass;
     typedef CEclDlgQBImpl<thisClass> baseClass;
@@ -21,7 +21,7 @@ protected:
     CComPtr<CAttributeMonitor> m_attrMonitor;
     CComPtr<IMigration> m_migrator;
     std::_tstring m_cluster;
-    boost::signals::connection m_sigConn;
+    boost::signals2::connection m_sigConn;
 
 public:
     enum { IDD = IDD_ATTRIBUTEVIEW };

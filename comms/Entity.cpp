@@ -320,7 +320,7 @@ public:
 		on_refresh(this);
 	}
 
-	boost::signals::connection on_refresh_connect(const entity_slot_type& s)
+	boost::signals2::connection on_refresh_connect(const entity_slot_type& s)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return on_refresh.connect(s); 

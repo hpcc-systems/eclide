@@ -20,7 +20,7 @@ typedef std::pair<CChildAttributeFrm *, CAttributeFrame *> FramePair;
 std::map<WinID, FramePair> g_attr_window;
 std::_tstring blankString;
 
-class CAttributeFrame : public CChildFrame, public boost::signals::trackable,
+class CAttributeFrame : public CChildFrame, public boost::signals2::trackable,
     public IAttributeHistory, 
     public ISourceSlot,
     public IHistorySlot
@@ -36,7 +36,7 @@ public:
     mutable CAttributeDlg m_dlgview;
     CHistoryView m_historyView;
     bool m_defaultToHistory;
-    boost::signals::connection m_attrConnection;
+    boost::signals2::connection m_attrConnection;
 
 public:
     BEGIN_CLOCKABLEUNKNOWN

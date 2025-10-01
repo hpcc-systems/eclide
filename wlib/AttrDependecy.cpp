@@ -169,7 +169,7 @@ class CAttrDependencyDlg :
 	//public CRepositoryFrameT<CAttrDependencyDlg>, 
 	public CRepositorySlotImpl,
 	public CDialogImpl<CAttrDependencyDlg>, 
-	public boost::signals::trackable
+	public boost::signals2::trackable
 {
 	typedef CAttrDependencyDlg thisClass;
 	typedef CDialogImpl<thisClass> baseClass;
