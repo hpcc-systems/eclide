@@ -58,7 +58,7 @@ jobs:
           ${{ !contains(inputs.os, 'windows') && 'sudo' || '' }} rm -rf "$VCPKG_INSTALLATION_ROOT"
 
       - name: Checkout ECLIDE
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           path: ${{ github.workspace }}/eclide
@@ -101,7 +101,7 @@ jobs:
         run: |
           echo "${{ toJSON(steps.vars.outputs) }}"
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cache
         with:
           path: |
@@ -129,7 +129,7 @@ jobs:
 
       - name: Upload Package
         if: ${{ inputs.upload-package == true }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.asset-name }}
           path: |
@@ -138,7 +138,7 @@ jobs:
 
       - name: Upload Error Logs
         if: ${{ failure() || cancelled() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.os }}-eclide-logs
           path: ${{ github.workspace }}/build/**/*.log
