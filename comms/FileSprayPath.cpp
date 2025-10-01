@@ -129,7 +129,7 @@ public:
 	IFileSprayPath * GetParent() const
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
-		boost::filesystem::path parent = m_path.branch_path();
+		boost::filesystem::path parent = m_path.parent_path();
 		std::_tstring folder;
 		ToString(parent, folder);
 		if (folder.length())
@@ -273,7 +273,7 @@ public:
 			result = CA2T(path.string().c_str());
 			break;
 		case WINDOWS_NAME:
-			result = CA2T(path.native_file_string().c_str());
+			result = CA2T(path.string().c_str());
 			break;
 		case PORTABLE_NAME:
 			result = CA2T(path.string().c_str());

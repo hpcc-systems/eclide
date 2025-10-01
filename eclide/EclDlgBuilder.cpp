@@ -794,8 +794,8 @@ void CBuilderDlg::OnEclSyncToc(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 
 void CBuilderDlg::OnLocateFileInExplorer(UINT /*uNotifyCode*/, int /*nID*/, HWND /*hWnd*/)
 {
-    boost::filesystem::wpath file = m_path;
-    boost::filesystem::wpath folder = file.parent_path();
+    boost::filesystem::path file = m_path;
+    boost::filesystem::path folder = file.parent_path();
     ::ShellExecute(m_hWnd, _T("open"), _T(""), _T(""), pathToWString(folder).c_str(), SW_SHOWNORMAL);
 }
 

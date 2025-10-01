@@ -1,30 +1,106 @@
-The package boost is compatible with built-in CMake targets:
+boost-date-time provides CMake targets:
 
-    find_package(Boost REQUIRED [COMPONENTS <libs>...])
-    target_link_libraries(main PRIVATE Boost::boost Boost::<lib1> Boost::<lib2> ...)
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+boost-crc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_crc CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::crc)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-format provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_format CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::format)
+
+boost-multi-index provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_multi_index CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::multi_index)
+
+boost-program-options provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_program_options CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::program_options)
+
+boost-ptr-container provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_ptr_container CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::ptr_container)
+
+boost-random provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_random CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::random)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-spirit provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_spirit CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::spirit)
+
+boost-serialization provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_serialization CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::serialization)
+
+  find_package(boost_wserialization CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::wserialization)
+
+boost-signals2 provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_signals2 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::signals2)
 
 bugtrap is header-only and can be used from CMake via:
 
-    find_path(BUGTRAP_INCLUDE_DIRS "bugtrap/BugTrap.h")
-    target_include_directories(main PRIVATE ${BUGTRAP_INCLUDE_DIRS})
+  find_path(BUGTRAP_INCLUDE_DIRS "bugtrap/BugTrap.h")
+  target_include_directories(main PRIVATE ${BUGTRAP_INCLUDE_DIRS})
 
 gsoap is header-only and can be used from CMake via:
 
-    find_path(GSOAP_INCLUDE_DIRS "gsoap/stdsoap2.h")
-    target_include_directories(main PRIVATE ${GSOAP_INCLUDE_DIRS})
+  find_path(GSOAP_INCLUDE_DIRS "gsoap/stdsoap2.h")
+  target_include_directories(main PRIVATE ${GSOAP_INCLUDE_DIRS})
 
 scintilla is header-only and can be used from CMake via:
 
-    find_path(SCINTILLA_INCLUDE_DIRS "scintilla/include/ILexer.h")
-    target_include_directories(main PRIVATE ${SCINTILLA_INCLUDE_DIRS})
+  find_path(SCINTILLA_INCLUDE_DIRS "scintilla/include/ILexer.h")
+  target_include_directories(main PRIVATE ${SCINTILLA_INCLUDE_DIRS})
 
 webview2 provides CMake targets:
 
-    # this is heuristically generated, and may not be correct
-    find_package(unofficial-webview2 CONFIG REQUIRED)
-    target_link_libraries(main PRIVATE unofficial::webview2::webview2)
+  # this is heuristically generated, and may not be correct
+  find_package(unofficial-webview2 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE unofficial::webview2::webview2)
 
 wtl is header-only and can be used from CMake via:
 
-    find_path(WTL_INCLUDE_DIRS "wtl/atlapp.h")
-    target_include_directories(main PRIVATE ${WTL_INCLUDE_DIRS})
+  find_path(WTL_INCLUDE_DIRS "wtl/atlapp.h")
+  target_include_directories(main PRIVATE ${WTL_INCLUDE_DIRS})

@@ -1,5 +1,8 @@
 PROJECT( BUGTRAP )
 
+find_path(BUGTRAP_DIR BugTrap.h HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/Client)
+find_path(BUGTRAP_ZLIB_DIR zlib.def HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/zlib)
+
 SET ( SRCS
     ${BUGTRAP_DIR}/AboutDlg.cpp
     ${BUGTRAP_DIR}/AboutDlg.h
@@ -146,7 +149,7 @@ ADD_LIBRARY ( BUGTRAP SHARED
     ${SRCS}
 )
 
-TARGET_LINK_LIBRARIES( BUGTRAP
+TARGET_LINK_LIBRARIES( BUGTRAP PRIVATE
     ws2_32
     comctl32
     shlwapi

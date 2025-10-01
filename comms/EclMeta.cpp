@@ -197,7 +197,7 @@ bool CEclMeta::GetPathFromModule(const std::_tstring & module, const WPathVector
                 }
                 for (boost::filesystem::directory_iterator itrDir(pathstr.GetString()); itrDir != end_itr; ++itrDir)
                 {
-                    if (boost::algorithm::iequals(boost::filesystem::basename(*itrDir), mod))
+                    if (boost::algorithm::iequals(itrDir->path().stem().string(), mod))
                     {
                         tok_iter++;
                         if (tok_iter != tokens.end())
@@ -339,7 +339,7 @@ const TCHAR * CEclMeta::GetFunctionTooltip(const std::_tstring & key, std::_tstr
 
 void CEclMeta::PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path)
 {
-    boost::filesystem::path p = wpathToPath(path);
+    boost::filesystem::path p = stringToPath(path);
     bool found = false;
     std::_tstring pather = _T("");
     std::vector<std::_tstring> tokens;
@@ -367,7 +367,7 @@ void CEclMeta::PopulateMetaUpwards(const WPathVector & folders, const std::_tstr
     }
 
     int count = 1;
-    p = wpathToPath(path);
+    p = stringToPath(path);
     std::_tstring dottedPath = _T("");
     typedef  std::vector <std::_tstring>::iterator tIntIter;
 
@@ -393,7 +393,7 @@ void CEclMeta::PopulateMetaUpwards(const WPathVector & folders, const std::_tstr
     }
 }
 
-void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath, int level)
+void CEclMeta::PopulateMeta(const boost::filesystem::path & fileOrDir, const std::_tstring & dottedPath, int level)
 {
     if (clib::filesystem::exists(fileOrDir))
     {
@@ -412,9 +412,9 @@ void CEclMeta::PopulateMeta(const boost::filesystem::wpath & fileOrDir, const st
             if (level && !MetaExists(newDottedPath))
                 m_masterMeta[newDottedPath] = new CEclFolder(fileOrDir);
             boost::filesystem::directory_iterator end_itr;
-            for (boost::filesystem::directory_iterator itr(wpathToPath(fileOrDir)); itr != end_itr; ++itr)
+            for (boost::filesystem::directory_iterator itr(fileOrDir); itr != end_itr; ++itr)
             {
-                PopulateMeta(pathToWString(*itr), newDottedPath, ++level);
+                PopulateMeta(pathToWString(itr->path()), newDottedPath, ++level);
             }
         }
         else if (HasValidExtension(pathToWString(fileOrDir)) && !MetaExists(newDottedPath))
@@ -525,10 +525,11 @@ bool CEclMeta::GetMetaModuleInfo(IAttribute *attr, const std::_tstring & token, 
     if (boost::filesystem::is_directory(meta.get()->GetPath())) {
         for (boost::filesystem::directory_iterator itr(meta.get()->GetPath()); itr != end_itr; ++itr)
         {
-            boost::filesystem::wpath path = *itr;
-            if (boost::filesystem::is_directory(path) || boost::algorithm::ends_with(path.extension().c_str(), ATTRIBUTE_TYPE_ECL))
+            boost::filesystem::path path = itr->path();
+            if (boost::filesystem::is_directory(path) || boost::algorithm::ends_with(path.extension().string(), ATTRIBUTE_TYPE_ECL))
             {
-                AddAutoStr(set, path.stem().c_str());
+                std::_tstring stemStr = CA2T(path.stem().string().c_str());
+                AddAutoStr(set, stemStr);
             }
         }
     }

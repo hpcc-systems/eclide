@@ -175,7 +175,7 @@ public:
         clib::recursive_mutex::scoped_lock lock(m_mutex);
         try
         {
-            boost::filesystem::remove(boost::filesystem::path(m_filePath, boost::filesystem::native)); 
+            boost::filesystem::remove(boost::filesystem::path(m_filePath)); 
         }
         catch(std::exception &)
         {

@@ -996,7 +996,7 @@ void CMainFrame::OnHelpClientTools()
 {
     boost::filesystem::path folder;
     GetProgramFolder(folder);
-    boost::filesystem::path file = folder / boost::filesystem::path("ClientTools.pdf", boost::filesystem::native);
+    boost::filesystem::path file = folder / boost::filesystem::path("ClientTools.pdf");
     ::ShellExecute(m_hWnd, _T("open"), pathToWString(file).c_str(), 0, pathToWString(folder).c_str(), SW_MAXIMIZE);
 }
 

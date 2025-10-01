@@ -294,7 +294,7 @@ class CDiskModule : public IDiskModule, public clib::CLockableUnknown
 protected:
     IRepository * m_repository;
     CComPtr<IModule> m_parent;
-    boost::filesystem::wpath m_path;
+    boost::filesystem::path m_path;
     std::_tstring m_pathStr;
     CString m_url;
     CString m_qualifiedLabel;
@@ -310,7 +310,7 @@ protected:
 public:
     IMPLEMENT_CLOCKABLEUNKNOWN;
 
-    CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::wpath & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_qualifiedLabel(label.c_str()), m_labelLeaf(labelLeaf.c_str())
+    CDiskModule(const IRepository *rep, const IModule * parent, const boost::filesystem::path & path, const std::_tstring & label, const std::_tstring & labelLeaf) : m_qualifiedLabel(label.c_str()), m_labelLeaf(labelLeaf.c_str())
     {
         m_repository = const_cast<IRepository *>(rep);
         m_parent = const_cast<IModule *>(parent);
@@ -486,13 +486,13 @@ public:
             return false;
 
         boost::filesystem::directory_iterator end_itr;
-        for (boost::filesystem::directory_iterator itr(wpathToPath(m_path)); itr != end_itr; ++itr)
+        for (boost::filesystem::directory_iterator itr(stringToPath(m_pathStr)); itr != end_itr; ++itr)
         {
             if (clib::filesystem::is_directory(*itr))
                 return true;
             else
             {
-                std::_tstring type = CA2T(boost::filesystem::extension(*itr).c_str());
+                std::_tstring type = CA2T(itr->path().extension().string().c_str());
                 if (IsValidExtension(type))
                     return true;
             }
@@ -554,7 +554,7 @@ void DeleteModule(CDiskModule * module)
     DiskModuleCache.Clear(module->GetCacheID());
 }
 
-CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, boost::filesystem::wpath path)
+CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & label, boost::filesystem::path path)
 {
     CModuleHelper modHelper(label);
     StdStringVector tokens;
@@ -575,7 +575,7 @@ CDiskModule * CreateDiskModuleRaw(const IRepository *rep, const std::_tstring & 
     return retVal;
 }
 
-IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::wpath & path, bool noBroadcast = false)
+IModule * CreateDiskModule(const IRepository *rep, const std::_tstring &label, const boost::filesystem::path & path, bool noBroadcast = false)
 {
     CDiskModule * mod = CreateDiskModuleRaw(rep, label, path);
     ATLASSERT(mod);

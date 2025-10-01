@@ -1,79 +1,25 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
     "name": "eclide",
-    "version": "9.4",
+    "version": "10.0.0",
     "dependencies": [
-        {
-            "name": "boost-crc",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-asio",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-date-time",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-filesystem",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-format",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-multi-index",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-program-options",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-ptr-container",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-random",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-serialization",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-signals2",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-spirit",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "boost-thread",
-            "version>=": "1.79.0"
-        },
-        {
-            "name": "scintilla",
-            "version>=": "3.7.6"
-        },
-        {
-            "name": "wtl",
-            "version>=": "9.1.5321"
-        },
-        {
-            "name": "gsoap",
-            "version>=": "2.7.13"
-        },
-        {
-            "name": "bugtrap",
-            "version>=": "1.4.9"
-        },
-        {
-            "name": "webview2",
-            "version>=": "1.0.1210.39#1"
-        }
+        "boost-crc",
+        "boost-asio",
+        "boost-date-time",
+        "boost-filesystem",
+        "boost-format",
+        "boost-multi-index",
+        "boost-program-options",
+        "boost-ptr-container",
+        "boost-random",
+        "boost-serialization",
+        "boost-signals2",
+        "boost-spirit",
+        "boost-thread",
+        "bugtrap",
+        "gsoap",
+        "scintilla",
+        "wtl",
+        "webview2"
     ]
 }

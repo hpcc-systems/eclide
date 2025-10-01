@@ -118,7 +118,7 @@ void CDiskMonitor::thread_MonitorFolder(CComPtr<CDiskMonitor> self)
             }
 #endif
             std::_tstring filename(Buffer[i].FileName, Buffer[i].FileNameLength / sizeof(_T(' ')));
-            boost::filesystem::wpath filePath = self->m_folder / filename;
+            boost::filesystem::path filePath = self->m_folder / filename;
             if (self->m_file.compare(filePath) == 0)
             {
                 self->modified(self->m_file);

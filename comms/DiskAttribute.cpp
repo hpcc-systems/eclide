@@ -26,7 +26,7 @@ class CDiskAttribute : public CAttributeBase, public IDiskAttribute, public IAtt
 protected:
     CString m_id;
     mutable CComPtr<IModule> m_module;
-    boost::filesystem::wpath m_path;
+    boost::filesystem::path m_path;
     std::_tstring m_pathStr;
     CString m_moduleQualifiedLabel;
     CString m_moduleQualifiedLabelNoRoot;
@@ -63,7 +63,7 @@ public:
         IMPLEMENT_INTERFACE(IAttributeHistory)
     END_CUNKNOWN(clib::CLockableUnknown)
 
-    CDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed) 
+    CDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::path & path, unsigned version, bool sandboxed) 
         : m_moduleQualifiedLabel(module), m_label(label), m_type(CreateIAttributeType(type)), m_version(version), m_sandboxed(sandboxed)
     {
         ATLASSERT(!boost::algorithm::contains(module, _T("\\")));
@@ -350,7 +350,7 @@ public:
         std::_tstring newFilename = label;
         newFilename += _T(".");
         newFilename += GetType()->GetRepositoryCode();
-        boost::filesystem::wpath newPath = m_path;
+        boost::filesystem::path newPath = m_path;
         newPath.remove_filename();
         newPath = newPath / newFilename;
         try
@@ -543,7 +543,7 @@ void ClearDiskAttributeCache()
 
 IAttribute * GetDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, unsigned version, bool sandboxed)
 {
-    CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::wpath(), version, sandboxed);
+    CComPtr<CDiskAttribute> attr = new CDiskAttribute(rep, module, label, type->GetRepositoryCode(), boost::filesystem::path(), version, sandboxed);
     IAttribute * retVal = DiskAttributeCache.Exists(attr->GetCacheID());
     if (retVal && !retVal->Exists())
     {
@@ -558,22 +558,22 @@ void DeleteAttribute(CDiskAttribute * attr)
     DiskAttributeCache.Clear(attr->GetCacheID());
 }
 
-CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path, unsigned version, bool sandboxed)
+CDiskAttribute * CreateDiskAttributeRaw(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::path & path, unsigned version, bool sandboxed)
 {
     return DiskAttributeCache.Get(new CDiskAttribute(rep, module, label, type, path, version, sandboxed));
 }
 
-IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, const boost::filesystem::wpath & path)
+IAttribute * CreateDiskAttribute(const IRepository *rep, const TCHAR* module, const TCHAR* label, IAttributeType * type, const boost::filesystem::path & path)
 {
     return CreateDiskAttributeRaw(rep, module, label, type->GetRepositoryCode(), path, 0, false);
 }
 
-IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::wpath & path)
+IAttribute * CreateDiskAttributePlaceholder(const IRepository *rep, const TCHAR* module, const TCHAR* label, const TCHAR* type, const boost::filesystem::path & path)
 {
     return CreateDiskAttributeRaw(rep, module, label, type, path, 0, false);
 }
 
-IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::wpath & path, const std::_tstring & ecl, bool noBroadcast)
+IAttribute * CreateDiskAttribute(const IRepository *rep, const std::_tstring &moduleLabel, const std::_tstring &label, const std::_tstring &type, const boost::filesystem::path & path, const std::_tstring & ecl, bool noBroadcast)
 {
     if (moduleLabel.empty() || label.empty())
         return 0;
