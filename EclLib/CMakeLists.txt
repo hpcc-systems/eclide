@@ -1,5 +1,8 @@
 PROJECT( ECLLIB )
 
+find_package(boost_thread CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
+
 SET ( SRCS
     DefinitionParser.cpp
     DefinitionParser.h
@@ -19,9 +22,6 @@ SET ( SRCS
 include_directories (
     ../clib
     ../ecllib
-
-    ${Boost_INCLUDE_DIRS}
-    ${WTL_INCLUDE_DIR}
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -35,9 +35,11 @@ ADD_DEPENDENCIES ( ECLLIB
     CLIB
 )
 
-TARGET_LINK_LIBRARIES( ECLLIB
+TARGET_LINK_LIBRARIES( ECLLIB PRIVATE
     CLIB
-    ${Boost_LIBRARIES}
+    msxml2
+    Boost::thread
+    Boost::serialization
 )
 
 INSTALL ( TARGETS ECLLIB RUNTIME DESTINATION bin )

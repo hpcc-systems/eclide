@@ -924,7 +924,7 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 		{
 			if (boost::algorithm::iequals(pathToString(itr->path().extension()), _T(".cfg")))
 			{
-				std::string s = pathToString(itr->path().leaf());
+				std::string s = pathToString(itr->path().filename());
 				std::_tstring label = CA2T(s.substr(0, s.length() - 4).c_str());
 				int id = configCombo.AddString(label.c_str());
 				if (defaultValue.length() && defaultValue == label)

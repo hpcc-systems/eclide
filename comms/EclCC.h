@@ -57,7 +57,7 @@ __interface IEclCC : public IUnknown
 
     bool PluginFolderExists(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder, int level, bool pluginFolder) const;
     bool LocatePlugin(const std::string & attrTypeStr, const std::string & batchFile, boost::filesystem::path & foundFolder) const;
-    boost::filesystem::wpath GetIDEPluginFolder() const;
+    boost::filesystem::path GetIDEPluginFolder() const;
 };
 
 enum TRI_BOOL

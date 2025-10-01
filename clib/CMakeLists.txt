@@ -1,5 +1,8 @@
 PROJECT( CLIB )
 
+find_package(boost_filesystem CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
+
 SET ( SRCS
     Cache.h
     clib.cpp
@@ -88,8 +91,6 @@ SET ( SRCS
 INCLUDE_DIRECTORIES (
     ../clib
     ../wtlex
-    ${Boost_INCLUDE_DIRS}
-    ${WTL_INCLUDE_DIR}
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -99,14 +100,15 @@ ADD_LIBRARY ( CLIB SHARED
     clib.rc
 )
 
-TARGET_LINK_LIBRARIES( CLIB
+TARGET_LINK_LIBRARIES( CLIB PRIVATE 
     Wininet
     Ws2_32
     msxml2
     comsupp
     version
     Htmlhelp
-    ${Boost_LIBRARIES}
+    Boost::filesystem
+    Boost::serialization
 )
 
 INSTALL ( TARGETS CLIB RUNTIME DESTINATION bin )

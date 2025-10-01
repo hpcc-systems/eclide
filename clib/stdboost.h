@@ -40,7 +40,6 @@
 #include <boost/crc.hpp>
 #include <boost/thread.hpp>
 #include <boost/variant.hpp>
-#include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
 #include <boost/serialization/map.hpp> 
 #include <boost/serialization/vector.hpp> 

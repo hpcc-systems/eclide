@@ -162,20 +162,20 @@ void CModuleHelper::LoadFolders() const
 const TCHAR * CModuleHelper::ModuleAttrFromPath(const std::_tstring & pathStr, std::_tstring & retLabel, std::_tstring & retModuleName, std::_tstring & retAttrName, std::_tstring & retAttrType) const
 {
     LoadFolders();
-    boost::filesystem::path p = wpathToPath(pathStr);
+    boost::filesystem::path p = stringToPath(pathStr);
     retAttrType = ExtensionWithoutDot(p.extension().c_str());
     retAttrName = pathToWString(p.stem());
     retLabel = retAttrName;
     std::_tstring attr = retAttrName;
     if (attr.size() == 0)
     {
-        attr = pathToWString(p.leaf());
+        attr = pathToWString(p.filename());
     }
 
     for (WPathVector::const_iterator itr = m_folders.begin(); itr != m_folders.end(); ++itr)
     {
         std::wstring folderPath = itr->first;
-        boost::filesystem::path p2 = wpathToPath(folderPath);
+        boost::filesystem::path p2 = stringToPath(folderPath);
         if (boost::algorithm::istarts_with(p.c_str(), folderPath))
         {
             folderPath = p2.parent_path().c_str();

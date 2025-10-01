@@ -1,5 +1,10 @@
 PROJECT( ECLEDITOR )
 
+find_path(SCINTILLA_INCLUDE_DIR Platform.h HINTS ${VCPKG_ROOT_DIR}/include/scintilla/include)
+find_path(SCINTILLA_SOURCE_DIR AutoComplete.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/src)
+find_path(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/LexLib)
+find_path(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/Win32)
+
 SET ( SRCS
     lexgeneral.cxx
     lexecl.cxx
@@ -116,8 +121,6 @@ INCLUDE_DIRECTORIES (
     ${SCINTILLA_LEXLIB_DIR}
     ${SCINTILLA_SOURCE_DIR}
     ${SCINTILLA_WIN32_DIR}
-        
-    ${WTL_INCLUDE_DIR}
 )
 
 ADD_DEFINITIONS( -DSCI_LEXER )
@@ -127,7 +130,7 @@ ADD_LIBRARY ( ECLEDITOR SHARED
     ${SCINTILLA_WIN32_DIR}/ScintRes.rc
 )
 
-TARGET_LINK_LIBRARIES( ECLEDITOR
+TARGET_LINK_LIBRARIES( ECLEDITOR PRIVATE
     imm32
     Msimg32
     )

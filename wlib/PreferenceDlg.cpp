@@ -780,7 +780,7 @@ public:
 			const TCHAR * hpccbin = _tgetenv(_T("HPCCBIN"));
 			if (hpccbin)
 			{
-				boost::filesystem::wpath eclccPath = hpccbin;
+				boost::filesystem::path eclccPath = hpccbin;
 				eclccPath /= _T("eclcc.exe");
 				if (clib::filesystem::exists(eclccPath))
 					m_Location = pathToWString(eclccPath).c_str();
@@ -789,12 +789,12 @@ public:
 			const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
 			if (hpccEcl)
 			{
-				boost::filesystem::wpath wuFolder = hpccEcl;
+				boost::filesystem::path wuFolder = hpccEcl;
 				wuFolder /= _T("wu");
 				boost::filesystem::create_directories(wuFolder);
 				m_EclWorkingFolder = pathToWString(wuFolder).c_str();
 
-				boost::filesystem::wpath repositoryPath = hpccEcl;
+				boost::filesystem::path repositoryPath = hpccEcl;
 				repositoryPath = repositoryPath.parent_path();
 				repositoryPath /= _T("My Files");
 				boost::filesystem::create_directories(repositoryPath);
@@ -1067,22 +1067,21 @@ public:
 		if (IDOK == dlg.DoModal())
 		{
 			std::_tstring folder = dlg.GetFolderPath();
-			boost::filesystem::wpath path = folder;
+			boost::filesystem::path path = folder;
 
-			for (int i = 0; i < m_listFolders.GetCount(); ++i) 
+		for (int i = 0; i < m_listFolders.GetCount(); ++i) 
+		{
+			CString otherFolder;
+			m_listFolders.GetText(i, otherFolder);
+			boost::filesystem::path otherPath = static_cast<const TCHAR *>(otherFolder);
+			if (boost::algorithm::iequals(pathToString(path.filename()), pathToString(otherPath.filename()))) 
 			{
-				CString otherFolder;
-				m_listFolders.GetText(i, otherFolder);
-				boost::filesystem::wpath otherPath = static_cast<const TCHAR *>(otherFolder);
-				if (boost::algorithm::iequals(pathToString(path.leaf()), pathToString(otherPath.leaf()))) 
-				{
-					std::_tstring msg = _T("ECL folders must have unique name.  \"") + pathToWString(otherPath.leaf()) + _T("\" is already used.");
-					MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
-					return 0;
-				}
+				std::_tstring msg = _T("ECL folders must have unique name.  \"") + pathToWString(otherPath.filename()) + _T("\" is already used.");
+				MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
+				return 0;
 			}
-
-			m_listFolders.AddString(folder.c_str());
+		}
+		m_listFolders.AddString(folder.c_str());
 			DoChanged();
 		}
 		return 0;

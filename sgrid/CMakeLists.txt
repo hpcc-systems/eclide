@@ -1,5 +1,7 @@
 PROJECT( SGRID )
 
+find_path(WTL_INCLUDE_DIRS "wtl/atlapp.h")
+
 SET ( SRCS
     atlsgrid.h
     atlstooltip.h
@@ -89,7 +91,7 @@ INCLUDE_DIRECTORIES (
     ../clib
     ../wtlex
 
-    ${WTL_INCLUDE_DIR}
+    ${WTL_INCLUDE_DIRS}
 )
 
 ADD_DEFINITIONS( -D_AFXDLL -D_USRDLL )

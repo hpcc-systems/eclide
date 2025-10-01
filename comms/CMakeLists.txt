@@ -1,5 +1,11 @@
 PROJECT( COMMS )
 
+find_package(boost_thread CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
+find_package(boost_filesystem CONFIG REQUIRED)
+find_path(GSOAP_DIR stdsoap2.cpp HINTS ${VCPKG_ROOT_DIR}/share/gsoap)
+find_path(GSOAP_BIN wsdl2h.exe HINTS ${VCPKG_ROOT_DIR}/share/gsoap/bin/win32)
+
 SET (GEN_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapC.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapws_USCOREaccountServiceSoapProxy.cpp
@@ -20,15 +26,12 @@ SET (GEN_DEPS
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsWorkunits.wsdl
 )
 
-SET(GSOAP "${CMAKE_BINARY_DIR}/vcpkg_installed/x86-windows/share/gsoap")
-SET(GSOAP_BIN "${GSOAP}/bin/win32")
-
 ADD_CUSTOM_COMMAND(
     OUTPUT ${GEN_SRCS}
     DEPENDS ${GEN_DEPS}
-    COMMAND ${GSOAP_BIN}/wsdl2h.exe -I${GSOAP} -I./hpcc -o Services.h Ws_Account.wsdl WsAttributes.wsdl WsDfu.wsdl WsSMC.wsdl WsTopology.wsdl WsWorkunits.wsdl
-    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP}/import Services.h
-    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP}/import -penv ./hpcc/env.h
+    COMMAND ${GSOAP_BIN}/wsdl2h.exe -I${GSOAP_DIR} -I./hpcc -o Services.h Ws_Account.wsdl WsAttributes.wsdl WsDfu.wsdl WsSMC.wsdl WsTopology.wsdl WsWorkunits.wsdl
+    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP_DIR}/import Services.h
+    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP_DIR}/import -penv ./hpcc/env.h
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0
 )
 
@@ -134,9 +137,6 @@ INCLUDE_DIRECTORIES (
     ../clib
     ../ecllib
 
-    ${WTL_INCLUDE_DIR}/include
-    ${Boost_INCLUDE_DIRS}
-
     ${GSOAP_DIR}
     ${GSOAP_DIR}/extras
     ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet
@@ -148,7 +148,7 @@ ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 
 ADD_LIBRARY ( COMMS SHARED 
     ${SRCS}
-	${GEN_SRCS}
+    ${GEN_SRCS}
     comms.rc
 
     ${GSOAP_DIR}/stdsoap2.cpp
@@ -160,13 +160,16 @@ ADD_DEPENDENCIES ( COMMS
     CLIB
 )
 
-TARGET_LINK_LIBRARIES( COMMS
+TARGET_LINK_LIBRARIES( COMMS PRIVATE
     CLIB
     ECLLIB
-    msxml2.lib
-    comsupp.lib
-    authz.lib
-    ${Boost_LIBRARIES}
+    msxml2
+    comsupp
+    authz
+
+    Boost::thread
+    Boost::serialization
+    Boost::filesystem
 )
 
 INSTALL ( TARGETS COMMS RUNTIME DESTINATION bin )

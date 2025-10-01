@@ -184,14 +184,14 @@ public:
         {
             bool badExeFlag = false;
             std::_tstring command = m_url;
-            boost::filesystem::wpath path = wpathToPath(m_url);
+            boost::filesystem::path path = stringToPath(m_url);
             std::_tstring runPath = pathToWString(path.parent_path());
             command += _T(" --version");
             std::_tstring in, out, err;
             runProcess(command, runPath, _T(""), in, out, err);
             if (!out.length()) {
-                boost::filesystem::wpath versionPath = path.parent_path().parent_path().parent_path();
-                boost::filesystem::wpath versionFilename = versionPath.filename();
+                boost::filesystem::path versionPath = path.parent_path().parent_path().parent_path();
+                boost::filesystem::path versionFilename = versionPath.filename();
                 m_rawversion = pathToWString(versionFilename);
                 badExeFlag = true;
             }

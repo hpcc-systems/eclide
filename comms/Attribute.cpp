@@ -331,7 +331,7 @@ public:
             boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
             for (boost::filesystem::directory_iterator itr(path); itr != end_itr; ++itr)
             {
-                if (boost::algorithm::iequals(boost::filesystem::extension(itr->path()).c_str(), ".ecl"))
+                if (boost::algorithm::iequals(itr->path().extension().string().c_str(), ".ecl"))
                 {
                     attributes.push_back(CreateDiskAttributeHistory(itr->path(), this, --version));
                 }

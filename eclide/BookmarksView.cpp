@@ -477,7 +477,7 @@ void CBookmarksView::ParseBookmarksEcl(const std::_tstring & ecl, const std::_ts
             std::_tstring line;
             int index = 0;
             bool found = false;
-            boost::filesystem::path p = wpathToPath(id);
+            boost::filesystem::path p = stringToPath(id);
 
             typedef std::vector<std::_tstring> split_vector_type;
             split_vector_type lines;

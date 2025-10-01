@@ -32,14 +32,14 @@ protected:
     CComPtr<IConfig> m_config;
     CComPtr<IConfig> m_pluginConfig;
     std::_tstring m_compilerFile;
-    boost::filesystem::wpath m_compilerFilePath;
-    boost::filesystem::wpath m_compilerFolderPath;
-    boost::filesystem::wpath m_IDEPluginsFolderPath;
+    boost::filesystem::path m_compilerFilePath;
+    boost::filesystem::path m_compilerFolderPath;
+    boost::filesystem::path m_IDEPluginsFolderPath;
 
     std::_tstring m_arguments;
 
     std::_tstring m_workingFolder;
-    boost::filesystem::wpath m_workingFolderPath;
+    boost::filesystem::path m_workingFolderPath;
 
     WPathVector m_eclFolders;
 
@@ -106,13 +106,13 @@ public:
                 m_eclFolders.push_back(std::make_pair(static_cast<const TCHAR *>(text), true));
         }
 
-        m_compilerFilePath = stringToWPath(m_compilerFile);
+        m_compilerFilePath = stringToPath(m_compilerFile);
 
         //  Patch for 3.10 temporary weirdness (directory structure changes).
         if (!clib::filesystem::exists(m_compilerFilePath) && boost::algorithm::icontains(m_compilerFile, "\\bin\\ver_3_6")) 
         {
             boost::algorithm::replace_all(m_compilerFile, "\\bin\\ver_3_6", "\\ver_3_6\\bin");
-            m_compilerFilePath = stringToWPath(m_compilerFile);
+            m_compilerFilePath = stringToPath(m_compilerFile);
         }
         m_compilerFolderPath = m_compilerFilePath.parent_path();
         m_IDEPluginsFolderPath = m_compilerFolderPath.parent_path() / _T("IDEPlugins");
@@ -120,19 +120,19 @@ public:
         m_arguments = CString(m_config->Get(GLOBAL_COMPILER_ARGUMENTS));
 
         m_workingFolder = CString(m_config->Get(GLOBAL_COMPILER_ECLWORKINGFOLDER));
-        m_workingFolderPath = stringToWPath(m_workingFolder);
+        m_workingFolderPath = stringToPath(m_workingFolder);
 
-        boost::filesystem::wpath stdLibPath = m_compilerFolderPath / _T("ecllibrary");
+        boost::filesystem::path stdLibPath = m_compilerFolderPath / _T("ecllibrary");
 
         //  Patch for 3.10 temporary weirdness (directory structure changes).
-        boost::filesystem::wpath clientToolsFolderPath =  m_compilerFolderPath.parent_path();
+        boost::filesystem::path clientToolsFolderPath =  m_compilerFolderPath.parent_path();
 
         if (!clib::filesystem::exists(stdLibPath))
             stdLibPath = clientToolsFolderPath / _T("share") / _T("ecllibrary");
         if (clib::filesystem::exists(stdLibPath))
             m_eclFolders.push_back(std::make_pair(pathToWString(stdLibPath), false));
 
-        boost::filesystem::wpath pluginsPath = clientToolsFolderPath / PLUGINS_FOLDER;
+        boost::filesystem::path pluginsPath = clientToolsFolderPath / PLUGINS_FOLDER;
         if (clib::filesystem::exists(pluginsPath))
             m_eclFolders.push_back(std::make_pair(pathToWString(pluginsPath), false));
 
@@ -469,8 +469,8 @@ public:
     const TCHAR * GetWorkunitResults(const std::_tstring & wuid, bool compileOnly, std::_tstring & results, bool & hasErrors, Dali::CEclExceptionVector & errors) const
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        boost::filesystem::wpath resultPath = m_workingFolderPath / (wuid + _T("-result.xml"));
-        boost::filesystem::wpath exePath = m_workingFolderPath / (wuid + _T(".exe"));
+        boost::filesystem::path resultPath = m_workingFolderPath / (wuid + _T("-result.xml"));
+        boost::filesystem::path exePath = m_workingFolderPath / (wuid + _T(".exe"));
         if (clib::filesystem::exists(exePath) && !clib::filesystem::exists(resultPath))
         {
             if (compileOnly)
@@ -662,7 +662,7 @@ public:
         return processType;
     }
 
-    boost::filesystem::wpath GetIDEPluginFolder() const
+    boost::filesystem::path GetIDEPluginFolder() const
     {
         return m_IDEPluginsFolderPath;
     }
@@ -751,7 +751,7 @@ unsigned int FindAllCEclCC(const boost::filesystem::path & progFiles, CEclCCVect
                 for (directory_iterator itr(testFolder); itr != end_itr; ++itr)
                 {
 #if (BOOST_FILESYSTEM_VERSION == 3)
-                    path eclccPath = EclCCSubPath(wpathToPath(*itr));
+                    path eclccPath = EclCCSubPath(itr->path());
 #else
                     path eclccPath = EclCCSubPath(itr->path());
 #endif
