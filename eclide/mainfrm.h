@@ -299,7 +299,7 @@ enum WORKSPACE
 class CMainFrame :	public CMDIFrameWndEx, 
                     public IFindReplace,
                     public ILoginConfigPreferences,
-                    public boost::signals::trackable
+                    public boost::signals2::trackable
 {
     DECLARE_DYNAMIC(CMainFrame)
 public:

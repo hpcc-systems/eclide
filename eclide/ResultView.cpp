@@ -110,7 +110,7 @@ static const TCHAR * const UINTEGER4 = _T("unsigned integer4");
 static const TCHAR * const REAL = _T("real");
 static const TCHAR * const VARSTRING = _T("varstring");
 // =============================================================================
-class CResultDataSource : public IDataSource, public ISearchable, public CUnknown, public boost::signals::trackable
+class CResultDataSource : public IDataSource, public ISearchable, public CUnknown, public boost::signals2::trackable
 {
 protected:
     CString m_wuid;
@@ -894,7 +894,7 @@ public:
 //  ======================================================================================================================================================
 class CResultView : 
     public WTL::CDialogImpl<CResultView>,
-    public boost::signals::trackable, 
+    public boost::signals2::trackable, 
     public CTabPane,
     public IResultGridView
 {
@@ -2324,7 +2324,7 @@ private:
     Dali::IWorkunitAdapt m_wu;
     std::_tstring m_desdlID;
     std::_tstring m_desdlVersion;
-    boost::signals::connection m_wuConn;
+    boost::signals2::connection m_wuConn;
     CTabPanePtrVector m_tabs;
     IResultSlot		*m_resultSlot;
     CTabPanePtr		 m_exceptionView;

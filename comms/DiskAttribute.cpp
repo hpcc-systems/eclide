@@ -477,7 +477,7 @@ public:
         return CAttributeBase::PreProcess(action, overrideEcl, attrs, attrProcessed, errs, metaInfo);
     }
 
-    boost::signals::connection on_refresh_connect(const refresh_slot_type& s)
+    boost::signals2::connection on_refresh_connect(const refresh_slot_type& s)
     { 
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return on_refresh.connect(s); 

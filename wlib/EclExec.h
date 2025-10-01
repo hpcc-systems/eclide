@@ -5,7 +5,7 @@
 #include <Dali.h> //comms
 #include <Workunit.h> //comms
 
-class WLIB_API CEclExec : public CUnknown, public boost::signals::trackable
+class WLIB_API CEclExec : public CUnknown, public boost::signals2::trackable
 {
 public:
     IMPLEMENT_CUNKNOWN

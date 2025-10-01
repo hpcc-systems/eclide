@@ -33,7 +33,7 @@ class CBuilderFrame :
     public CChildFrame, 
     public IEclBuilderSlot, 
     public CResultSlotImpl,
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CBuilderFrame thisClass;
     typedef CChildFrame baseClass;
@@ -50,7 +50,7 @@ public:
     int		m_contextTab;
     CComPtr<Dali::IWorkunit> m_recentDebugWorkunit;
     CComPtr<Dali::IWorkunit> m_recentWorkunit;
-    boost::signals::connection m_attrConnection;
+    boost::signals2::connection m_attrConnection;
 
     const void GetCompletionList(const std::_tstring & module, StdStringVector &list)
     {

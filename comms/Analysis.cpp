@@ -612,13 +612,13 @@ public:
 		return true;
 	}
 
-	boost::signals::connection on_logging_connect(const logging_slot_type& s)
+	boost::signals2::connection on_logging_connect(const logging_slot_type& s)
     { 
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return on_logging.connect(s); 
 	}
 
-	void on_logging_disconnect(boost::signals::connection& sc)
+	void on_logging_disconnect(boost::signals2::connection& sc)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		sc.disconnect();

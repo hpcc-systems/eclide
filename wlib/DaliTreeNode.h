@@ -76,7 +76,7 @@ public:
     void CDaliNode::callback(Dali::IWorkunitVectorAdapt wus, int allUsers = -1);
 };
 
-class WLIB_API __declspec(uuid("d985a935-4152-4703-8e5a-0e3bc9268ff2")) CDateFolderNode : public CDaliBaseNode, public boost::signals::trackable
+class WLIB_API __declspec(uuid("d985a935-4152-4703-8e5a-0e3bc9268ff2")) CDateFolderNode : public CDaliBaseNode, public boost::signals2::trackable
 {
 protected:
     boost::gregorian::date m_from;
@@ -99,12 +99,12 @@ public:
     void operator()(Dali::IWorkunitVectorAdapt workunits);
 };
 
-class WLIB_API __declspec(uuid("d985a935-4152-4703-8e5a-0e3bc9268ff3")) CWorkunitNode : public CDaliBaseNode, public boost::signals::trackable
+class WLIB_API __declspec(uuid("d985a935-4152-4703-8e5a-0e3bc9268ff3")) CWorkunitNode : public CDaliBaseNode, public boost::signals2::trackable
 {
 protected:
     CComPtr<Dali::IWorkunit> m_wu;
     std::_tstring m_label;
-    boost::signals::connection m_sc;
+    boost::signals2::connection m_sc;
 
 public:
     CWorkunitNode(){}

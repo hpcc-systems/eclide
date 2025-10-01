@@ -17,7 +17,7 @@ enum REFRESH_MODULE
     REFRESH_MODULE_CHILDADDED,
     REFRESH_MODULE_LAST
 };
-typedef boost::signal<void(IModule *, REFRESH_MODULE refreshType)> module_refresh_signal_type;
+typedef boost::signals2::signal<void(IModule *, REFRESH_MODULE refreshType)> module_refresh_signal_type;
 typedef module_refresh_signal_type::slot_type module_refresh_slot_type;
 
 __interface IModule : public clib::ILockableUnknown
@@ -46,7 +46,7 @@ __interface IModule : public clib::ILockableUnknown
     IAttribute * InsertAttribute(const TCHAR* attribute, IAttributeType * type) const;
     IRepository * GetRepository() const;
 
-    boost::signals::connection on_refresh_connect(const module_refresh_slot_type& s);
+    boost::signals2::connection on_refresh_connect(const module_refresh_slot_type& s);
     void Refresh(REFRESH_MODULE refreshType);  //  Triggers Refresh Notification Only  ---
 };
 

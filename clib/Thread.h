@@ -28,7 +28,7 @@ private:
     bool m_joinable;
 };
 
-typedef boost::signal<void()> worker_signal_type;
+typedef boost::signals2::signal<void()> worker_signal_type;
 typedef worker_signal_type::slot_type worker_slot_type;
 
 class CThreadWorker : public CUnknown, boost::noncopyable
@@ -56,10 +56,10 @@ enum THREAD_EVENT
     THREAD_EVENT_LAST
 };
 class CThreadQueue;
-typedef boost::signal<void(CThreadQueue *, THREAD_EVENT)> queue_signal_type;
+typedef boost::signals2::signal<void(CThreadQueue *, THREAD_EVENT)> queue_signal_type;
 typedef queue_signal_type::slot_type queue_slot_type;
 
-class CLIB_API CThreadQueue : public boost::noncopyable, public boost::signals::trackable, CLockableUnknown
+class CLIB_API CThreadQueue : public boost::noncopyable, public boost::signals2::trackable, CLockableUnknown
 {
 protected:
     LONG m_max_thread_count;
@@ -78,7 +78,7 @@ public:
     void Join();
     void SetMaxThreadCount(int maxThreadCount);
     void operator()();
-    boost::signals::connection MonitorEvents(const queue_slot_type& s);
+    boost::signals2::connection MonitorEvents(const queue_slot_type& s);
 
 protected:
     void Start();

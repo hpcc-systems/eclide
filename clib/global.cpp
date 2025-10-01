@@ -420,12 +420,12 @@ public:
         _variant_t variant(val.c_str());
         Set(sectionLabelDefault.first, variant);
     }
-    boost::signals::connection ConnectSlot(const globaldata_slot_type & slot)
+    boost::signals2::connection ConnectSlot(const globaldata_slot_type & slot)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return on_refresh.connect(slot);
     }
-    void Disconnect(boost::signals::connection& slot)
+    void Disconnect(boost::signals2::connection& slot)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         slot.disconnect();
