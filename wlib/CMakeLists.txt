@@ -112,6 +112,7 @@ INCLUDE_DIRECTORIES (
     ../EclEditor
     
     ${SCINTILLA_INCLUDE_DIR}
+    ${LEXILLA_INCLUDE_DIR}
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -125,6 +126,7 @@ ADD_DEPENDENCIES ( WLIB
     CLIB
     COMMS
     SGRID
+    ECLEDITOR
 )
 
 TARGET_LINK_LIBRARIES( WLIB PRIVATE
@@ -132,6 +134,7 @@ TARGET_LINK_LIBRARIES( WLIB PRIVATE
     ECLLIB
     COMMS
     SGRID
+    ECLEDITOR
     unofficial::webview2::webview2
     msxml2
     comsupp

@@ -1,11 +1,19 @@
 PROJECT( ECLEDITOR )
 
-find_path(SCINTILLA_INCLUDE_DIR Platform.h HINTS ${VCPKG_ROOT_DIR}/include/scintilla/include)
-find_path(SCINTILLA_SOURCE_DIR AutoComplete.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/src)
-find_path(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/LexLib)
-find_path(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/Win32)
+find_path(SCINTILLA_INCLUDE_DIR Scintilla.h HINTS ${VCPKG_ROOT_DIR}/include/scintilla)
+message(STATUS "SCINTILLA_INCLUDE_DIR: ${SCINTILLA_INCLUDE_DIR}")
+find_path(LEXILLA_INCLUDE_DIR SciLexer.h HINTS ${VCPKG_ROOT_DIR}/include/lexilla)
+message(STATUS "LEXILLA_INCLUDE_DIR: ${LEXILLA_INCLUDE_DIR}")
+
+# Find the prebuilt libraries
+find_library(SCINTILLA_LIBRARY Scintilla HINTS ${VCPKG_ROOT_DIR}/lib)
+find_library(LEXILLA_LIBRARY Lexilla HINTS ${VCPKG_ROOT_DIR}/lib)
+
+# Find the lexlib source files needed for custom lexers
+find_path(LEXILLA_SOURCE_DIR Accessor.cxx HINTS ${VCPKG_ROOT_DIR}/share/lexilla/lexlib)
 
 SET ( SRCS
+    # Custom ECL lexers
     lexgeneral.cxx
     lexecl.cxx
     lexsalt.cxx
@@ -13,7 +21,7 @@ SET ( SRCS
     lexkel.cxx
     lexdud.cxx
 
-    ${SCINTILLA_INCLUDE_DIR}/SciLExer.h
+    ${LEXILLA_INCLUDE_DIR}/SciLexer.h
 
     ${ECLEDITOR_SOURCE_DIR}/LexGENERAL.cxx
     ${ECLEDITOR_SOURCE_DIR}/LexSALT.cxx
@@ -21,118 +29,64 @@ SET ( SRCS
     ${ECLEDITOR_SOURCE_DIR}/LexESDL.cxx
     ${ECLEDITOR_SOURCE_DIR}/LexDUD.cxx
 
-    ${SCINTILLA_SOURCE_DIR}/AutoComplete.cxx
-    ${SCINTILLA_SOURCE_DIR}/AutoComplete.h
-    ${SCINTILLA_SOURCE_DIR}/CallTip.cxx
-    ${SCINTILLA_SOURCE_DIR}/CallTip.h
+    # Catalogue for registering custom lexers
     ./Catalogue.cxx
-    ${SCINTILLA_SOURCE_DIR}/Catalogue.h
-    ${SCINTILLA_SOURCE_DIR}/CellBuffer.cxx
-    ${SCINTILLA_SOURCE_DIR}/CellBuffer.h
-    ${SCINTILLA_SOURCE_DIR}/CaseConvert.cxx
-    ${SCINTILLA_SOURCE_DIR}/CaseConvert.h
-    ${SCINTILLA_SOURCE_DIR}/CaseFolder.cxx
-    ${SCINTILLA_SOURCE_DIR}/CaseFolder.h
-    ${SCINTILLA_SOURCE_DIR}/CharClassify.cxx
-    ${SCINTILLA_SOURCE_DIR}/CharClassify.h
-    ${SCINTILLA_SOURCE_DIR}/ContractionState.cxx
-    ${SCINTILLA_SOURCE_DIR}/ContractionState.h
-    ${SCINTILLA_SOURCE_DIR}/Decoration.cxx
-    ${SCINTILLA_SOURCE_DIR}/Decoration.h
-    ${SCINTILLA_SOURCE_DIR}/Document.cxx
-    ${SCINTILLA_SOURCE_DIR}/Document.h
-    ${SCINTILLA_SOURCE_DIR}/Editor.cxx
-    ${SCINTILLA_SOURCE_DIR}/Editor.h
-    ${SCINTILLA_SOURCE_DIR}/EditModel.cxx
-    ${SCINTILLA_SOURCE_DIR}/EditModel.h
-    ${SCINTILLA_SOURCE_DIR}/EditView.cxx
-    ${SCINTILLA_SOURCE_DIR}/EditView.h
-    ${SCINTILLA_SOURCE_DIR}/ExternalLexer.cxx
-    ${SCINTILLA_SOURCE_DIR}/ExternalLexer.h
-    ${SCINTILLA_SOURCE_DIR}/FontQuality.h
-    ${SCINTILLA_SOURCE_DIR}/Indicator.cxx
-    ${SCINTILLA_SOURCE_DIR}/Indicator.h
-    ${SCINTILLA_SOURCE_DIR}/KeyMap.cxx
-    ${SCINTILLA_SOURCE_DIR}/KeyMap.h
-    #${SCINTILLA_SOURCE_DIR}/KeyWords.cxx
-    ${SCINTILLA_SOURCE_DIR}/LineMarker.cxx
-    ${SCINTILLA_SOURCE_DIR}/LineMarker.h
-    ${SCINTILLA_SOURCE_DIR}/MarginView.cxx
-    ${SCINTILLA_SOURCE_DIR}/MarginView.h
-    ${SCINTILLA_SOURCE_DIR}/Partitioning.h
-    ${SCINTILLA_SOURCE_DIR}/PerLine.cxx
-    ${SCINTILLA_SOURCE_DIR}/PerLine.h
-    ${SCINTILLA_SOURCE_DIR}/PositionCache.cxx
-    ${SCINTILLA_SOURCE_DIR}/PositionCache.h
-    #${SCINTILLA_SOURCE_DIR}/PropSet.cxx
-    ${SCINTILLA_SOURCE_DIR}/RESearch.cxx
-    ${SCINTILLA_SOURCE_DIR}/RESearch.h
-    ${SCINTILLA_SOURCE_DIR}/RunStyles.cxx
-    ${SCINTILLA_SOURCE_DIR}/RunStyles.h
-    ${SCINTILLA_SOURCE_DIR}/ScintillaBase.cxx
-    ${SCINTILLA_SOURCE_DIR}/ScintillaBase.h
-    ${SCINTILLA_SOURCE_DIR}/Selection.cxx
-    ${SCINTILLA_SOURCE_DIR}/Selection.h
-    ${SCINTILLA_SOURCE_DIR}/SplitVector.h
-    ${SCINTILLA_SOURCE_DIR}/Style.cxx
-    ${SCINTILLA_SOURCE_DIR}/Style.h
-    #${SCINTILLA_SOURCE_DIR}/SVector.h
-    ${SCINTILLA_SOURCE_DIR}/UniConversion.cxx
-    ${SCINTILLA_SOURCE_DIR}/UniConversion.h
-    ${SCINTILLA_SOURCE_DIR}/ViewStyle.cxx
-    ${SCINTILLA_SOURCE_DIR}/ViewStyle.h
-    #${SCINTILLA_SOURCE_DIR}/WindowAccessor.cxx
-    ${SCINTILLA_SOURCE_DIR}/XPM.cxx
-    ${SCINTILLA_SOURCE_DIR}/XPM.h
-
-    ${SCINTILLA_LEXLIB_DIR}/Accessor.cxx
-    ${SCINTILLA_LEXLIB_DIR}/Accessor.h
-    ${SCINTILLA_LEXLIB_DIR}/CharacterCategory.cxx
-    ${SCINTILLA_LEXLIB_DIR}/CharacterCategory.h
-    ${SCINTILLA_LEXLIB_DIR}/CharacterSet.cxx
-    ${SCINTILLA_LEXLIB_DIR}/CharacterSet.h
-    ${SCINTILLA_LEXLIB_DIR}/LexAccessor.h
-    ${SCINTILLA_LEXLIB_DIR}/LexerBase.cxx
-    ${SCINTILLA_LEXLIB_DIR}/LexerBase.h
-    ${SCINTILLA_LEXLIB_DIR}/LexerModule.cxx
-    ${SCINTILLA_LEXLIB_DIR}/LexerModule.h
-    ${SCINTILLA_LEXLIB_DIR}/LexerNoExceptions.cxx
-    ${SCINTILLA_LEXLIB_DIR}/LexerNoExceptions.h
-    ${SCINTILLA_LEXLIB_DIR}/LexerSimple.cxx
-    ${SCINTILLA_LEXLIB_DIR}/LexerSimple.h
-    ${SCINTILLA_LEXLIB_DIR}/OptionSet.h
-    ${SCINTILLA_LEXLIB_DIR}/PropSetSimple.cxx
-    ${SCINTILLA_LEXLIB_DIR}/PropSetSimple.h
-    ${SCINTILLA_LEXLIB_DIR}/StyleContext.cxx
-    ${SCINTILLA_LEXLIB_DIR}/StyleContext.h
-    ${SCINTILLA_LEXLIB_DIR}/WordList.cxx
-    ${SCINTILLA_LEXLIB_DIR}/WordList.h
     
-#    ${SCINTILLA_INCLUDE_DIR}/Win32/PlatformRes.h
-    ${SCINTILLA_WIN32_DIR}/PlatWin.cxx
-    ${SCINTILLA_WIN32_DIR}/ScintillaWin.cxx
-    ${SCINTILLA_WIN32_DIR}/HanjaDic.cxx
-    ${SCINTILLA_WIN32_DIR}/HanjaDic.h
+    # Lexlib source files needed for custom lexers
+    ${LEXILLA_SOURCE_DIR}/Accessor.cxx
+    ${LEXILLA_SOURCE_DIR}/CharacterCategory.cxx
+    ${LEXILLA_SOURCE_DIR}/CharacterSet.cxx
+    ${LEXILLA_SOURCE_DIR}/LexAccessor.cxx
+    ${LEXILLA_SOURCE_DIR}/LexerBase.cxx
+    ${LEXILLA_SOURCE_DIR}/LexerModule.cxx
+    ${LEXILLA_SOURCE_DIR}/LexerSimple.cxx
+    ${LEXILLA_SOURCE_DIR}/PropSetSimple.cxx
+    ${LEXILLA_SOURCE_DIR}/StyleContext.cxx
+    ${LEXILLA_SOURCE_DIR}/WordList.cxx
 )
 
 INCLUDE_DIRECTORIES (
     .
     ${SCINTILLA_INCLUDE_DIR}
-    ${SCINTILLA_LEXLIB_DIR}
-    ${SCINTILLA_SOURCE_DIR}
-    ${SCINTILLA_WIN32_DIR}
+    ${LEXILLA_INCLUDE_DIR}
+    ${LEXILLA_INCLUDE_DIR}/lexlib
 )
 
 ADD_DEFINITIONS( -DSCI_LEXER )
 
 ADD_LIBRARY ( ECLEDITOR SHARED
     ${SRCS}
-    ${SCINTILLA_WIN32_DIR}/ScintRes.rc
 )
 
 TARGET_LINK_LIBRARIES( ECLEDITOR PRIVATE
+    ${SCINTILLA_LIBRARY}
+    ${LEXILLA_LIBRARY}
     imm32
     Msimg32
     )
 
+# Copy Scintilla.dll and Lexilla.dll to output directory after build
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_CONFIGURATION_TYPES)
+    set(SCINTILLA_DLL_DEBUG "${VCPKG_ROOT_DIR}/debug/bin/Scintilla.dll")
+    set(SCINTILLA_DLL_RELEASE "${VCPKG_ROOT_DIR}/bin/Scintilla.dll")
+    set(LEXILLA_DLL_DEBUG "${VCPKG_ROOT_DIR}/debug/bin/Lexilla.dll")
+    set(LEXILLA_DLL_RELEASE "${VCPKG_ROOT_DIR}/bin/Lexilla.dll")
+    
+    add_custom_command(TARGET ECLEDITOR POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "$<IF:$<CONFIG:Debug>,${SCINTILLA_DLL_DEBUG},${SCINTILLA_DLL_RELEASE}>"
+            "$<TARGET_FILE_DIR:ECLEDITOR>"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "$<IF:$<CONFIG:Debug>,${LEXILLA_DLL_DEBUG},${LEXILLA_DLL_RELEASE}>"
+            "$<TARGET_FILE_DIR:ECLEDITOR>"
+        COMMENT "Copying Scintilla.dll and Lexilla.dll to output directory"
+    )
+endif()
+
 INSTALL ( TARGETS ECLEDITOR RUNTIME DESTINATION bin )
+
+# Install Scintilla.dll and Lexilla.dll from vcpkg for packaging
+install(FILES "$<IF:$<CONFIG:Debug>,${SCINTILLA_DLL_DEBUG},${SCINTILLA_DLL_RELEASE}>" 
+        DESTINATION bin)
+install(FILES "$<IF:$<CONFIG:Debug>,${LEXILLA_DLL_DEBUG},${LEXILLA_DLL_RELEASE}>" 
+        DESTINATION bin)

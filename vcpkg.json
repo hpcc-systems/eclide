@@ -18,6 +18,7 @@
         "boost-thread",
         "bugtrap",
         "gsoap",
+        "lexilla",
         "scintilla",
         "wtl",
         "webview2"

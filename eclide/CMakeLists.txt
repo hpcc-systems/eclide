@@ -144,6 +144,7 @@ TARGET_LINK_LIBRARIES( ECLIDE PRIVATE
     ECLLIB
     COMMS
     WLIB
+    ECLEDITOR
     BUGTRAP
     
     Boost::filesystem

@@ -2,7 +2,6 @@
 
 #include "global.h"
 #include "AboutDlg.h"
-#include "Platform.h"
 #include "Scintilla.h"
 
 class WordList2
@@ -103,7 +102,7 @@ protected:
     enum { lineNumbersWidthDefault = 4};
 
     //  Printing Support  ---
-    Scintilla::PRectangle m_pagesetupMargin;
+    Sci_Rectangle m_pagesetupMargin;
     HGLOBAL m_hDevMode;
     HGLOBAL m_hDevNames;
     //  --- --- ---
@@ -1265,9 +1264,9 @@ public:
 
         HDC hdc = pdlg.hDC;
 
-        Scintilla::PRectangle rectMargins, rectPhysMargins;
-        Scintilla::Point ptPage;
-        Scintilla::Point ptDpi;
+        Sci_Rectangle rectMargins, rectPhysMargins;
+        POINT ptPage;
+        POINT ptDpi;
 
         // Get printer resolution
         ptDpi.x = GetDeviceCaps(hdc, LOGPIXELSX);    // dpi in X direction
@@ -1299,7 +1298,7 @@ public:
         // Take in account the page setup given by the user (if one value is not null)
         if (m_pagesetupMargin.left != 0 || m_pagesetupMargin.right != 0 || m_pagesetupMargin.top != 0 || m_pagesetupMargin.bottom != 0) 
         {
-            Scintilla::PRectangle rectSetup;
+            Sci_Rectangle rectSetup;
 
             // Convert the hundredths of millimeters (HiMetric) or
             // thousandths of inches (HiEnglish) margin values
