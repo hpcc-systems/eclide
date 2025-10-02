@@ -21,7 +21,6 @@ SET (GEN_DEPS
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsAttributes.wsdl
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsDfu.wsdl
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsSMC.wsdl
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsStore.wsdl 
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsTopology.wsdl
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsWorkunits.wsdl
 )
@@ -155,6 +154,17 @@ ADD_LIBRARY ( COMMS SHARED
     ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.cpp
     ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.h
 )
+
+# Suppress deprecated 'register' keyword warnings in generated gsoap code
+if(MSVC)
+    set_source_files_properties(
+        ${GEN_SRCS}
+        ${GSOAP_DIR}/stdsoap2.cpp
+        ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.cpp
+        PROPERTIES
+        COMPILE_FLAGS "/wd5033"
+    )
+endif()
 
 ADD_DEPENDENCIES ( COMMS
     CLIB
