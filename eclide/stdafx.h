@@ -101,7 +101,7 @@ extern WTL::CAppModule _Module;
 
 //// Scintilla  --
 #define SCI_NAMESPACE
-#include "platform.h"
+#include "Scintilla.h"
 #include "SciLexer.h"
 #include "atlscintilla.h"
 
