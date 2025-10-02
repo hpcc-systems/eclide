@@ -28,11 +28,29 @@
             "hidden": true
         },
         {
+            "name": "Ninja-x64",
+            "generator": "Ninja",
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "hidden": true
+        },
+        {
             "name": "VS-16",
             "generator": "Visual Studio 16 2019",
             "architecture": {
                 "strategy": "set",
                 "value": "Win32"
+            },
+            "hidden": true
+        },
+        {
+            "name": "VS-16-x64",
+            "generator": "Visual Studio 16 2019",
+            "architecture": {
+                "strategy": "set",
+                "value": "x64"
             },
             "hidden": true
         },
@@ -46,10 +64,26 @@
             "hidden": true
         },
         {
+            "name": "VS-17-x64",
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "strategy": "set",
+                "value": "x64"
+            },
+            "hidden": true
+        },
+        {
             "name": "vcpkg-Ninja",
             "inherits": [
                 "vcpkg",
                 "Ninja"
+            ]
+        },
+        {
+            "name": "vcpkg-Ninja-x64",
+            "inherits": [
+                "vcpkg",
+                "Ninja-x64"
             ]
         },
         {
@@ -60,10 +94,24 @@
             ]
         },
         {
+            "name": "vcpkg-VS-16-x64",
+            "inherits": [
+                "vcpkg",
+                "VS-16-x64"
+            ]
+        },
+        {
             "name": "vcpkg-VS-17",
             "inherits": [
                 "vcpkg",
                 "VS-17"
+            ]
+        },
+        {
+            "name": "vcpkg-VS-17-x64",
+            "inherits": [
+                "vcpkg",
+                "VS-17-x64"
             ]
         }
     ],
@@ -76,6 +124,13 @@
             "nativeToolOptions": ["-m"]
         },
         {
+            "name": "VS-16-x64-Debug",
+            "configurePreset": "vcpkg-VS-16-x64",
+            "configuration": "Debug",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
             "name": "VS-17-Debug",
             "configurePreset": "vcpkg-VS-17",
             "configuration": "Debug",
@@ -83,8 +138,22 @@
             "nativeToolOptions": ["-m"]
         },
         {
+            "name": "VS-17-x64-Debug",
+            "configurePreset": "vcpkg-VS-17-x64",
+            "configuration": "Debug",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
             "name": "VS-17-RelWithDebInfo",
             "configurePreset": "vcpkg-VS-17",
+            "configuration": "RelWithDebInfo",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-17-x64-RelWithDebInfo",
+            "configurePreset": "vcpkg-VS-17-x64",
             "configuration": "RelWithDebInfo",
             "jobs": 4,
             "nativeToolOptions": ["-m"]

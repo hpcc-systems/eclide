@@ -11,6 +11,14 @@ on:
         description: 'Operating System'
         required: false
         default: 'windows-2022'
+      architecture:
+        type: choice
+        options:
+          - 'Win32'
+          - 'x64'
+        description: 'Build Architecture'
+        required: false
+        default: 'x64'
 
   # Do not include "push" in final version (uncomment for testing on users own repo)
   # push:
@@ -37,18 +45,37 @@ jobs:
     uses: ./.github/workflows/build-gh_runner.yml
     with:
       os: ${{ inputs.os }}
+      architecture: ${{ inputs.architecture }}
     secrets: inherit
 
-  build-gh_runner-windows-2022:
+  build-gh_runner-windows-2022-x64:
     if: ${{ contains('pull_request,push', github.event_name) }}
     uses: ./.github/workflows/build-gh_runner.yml
     with:
       os: windows-2022
+      architecture: x64
     secrets: inherit
 
-  build-gh_runner-windows-2019:
+  build-gh_runner-windows-2022-Win32:
+    if: ${{ contains('pull_request,push', github.event_name) }}
+    uses: ./.github/workflows/build-gh_runner.yml
+    with:
+      os: windows-2022
+      architecture: Win32
+    secrets: inherit
+
+  build-gh_runner-windows-2019-x64:
     if: ${{ contains('schedule,push', github.event_name) }}
     uses: ./.github/workflows/build-gh_runner.yml
     with:
       os: windows-2019
+      architecture: x64
+    secrets: inherit
+
+  build-gh_runner-windows-2019-Win32:
+    if: ${{ contains('schedule,push', github.event_name) }}
+    uses: ./.github/workflows/build-gh_runner.yml
+    with:
+      os: windows-2019
+      architecture: Win32
     secrets: inherit

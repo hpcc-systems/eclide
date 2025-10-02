@@ -17,6 +17,11 @@ on:
         description: 'CMake Build Type'
         required: false
         default: 'RelWithDebInfo'
+      architecture:
+        type: string
+        description: 'Build Architecture (Win32 or x64)'
+        required: false
+        default: 'x64'
       cmake-configuration:
         type: string
         description: 'CMake Configuration'
@@ -106,22 +111,22 @@ jobs:
         with:
           path: |
             ${{github.workspace}}/build/vcpkg_installed
-          key: vcpkg-${{ inputs.os }}-${{ steps.vars.outputs.vcpkg_sha_short }}
+          key: vcpkg-${{ inputs.os }}-${{ inputs.architecture }}-${{ steps.vars.outputs.vcpkg_sha_short }}
 
       - uses: hendrikmuhs/ccache-action@v1.2
         with:
           save: ${{ inputs.update-cache == true }}
-          key: gh-runner-${{ inputs.os }}-${{ inputs.build-type }}-${{ steps.vars.outputs.branch_label }}-eclide
+          key: gh-runner-${{ inputs.os }}-${{ inputs.architecture }}-${{ inputs.build-type }}-${{ steps.vars.outputs.branch_label }}-eclide
           restore-keys: |
-            gh-runner-${{ inputs.os }}-${{ inputs.build-type }}-${{ steps.vars.outputs.branch_label }}-
-            gh-runner-${{ inputs.os }}-${{ inputs.build-type }}-
-            gh-runner-${{ inputs.os }}-
+            gh-runner-${{ inputs.os }}-${{ inputs.architecture }}-${{ inputs.build-type }}-${{ steps.vars.outputs.branch_label }}-
+            gh-runner-${{ inputs.os }}-${{ inputs.architecture }}-${{ inputs.build-type }}-
+            gh-runner-${{ inputs.os }}-${{ inputs.architecture }}-
 
       - name: CMake Configure
         shell: "bash"
         run: |
           mkdir -p ${{ github.workspace }}/build
-          cmake -S ./eclide -B ./build -T host=x86 -A Win32 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
+          cmake -S ./eclide -B ./build -T host=x86 -A ${{ inputs.architecture }} -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
 
       - name: CMake Build
         run: |
