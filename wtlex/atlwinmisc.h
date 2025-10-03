@@ -183,11 +183,9 @@ public:
    BOOL AnimateWindow(DWORD dwTime = 200, DWORD dwFlags = AW_BLEND|AW_ACTIVATE)
    {
       typedef BOOL (CALLBACK* PFNANIMATEWINDOW)(HWND,DWORD,DWORD);
-      if( !AtlIsOldWindows() ) {
-         PFNANIMATEWINDOW pfnAnimateWindow = (PFNANIMATEWINDOW)
-            ::GetProcAddress(::GetModuleHandle(_T("user32.dll")), "AnimateWindow");
-         if( pfnAnimateWindow != NULL ) return pfnAnimateWindow( m_hWnd, dwTime, dwFlags );
-      }
+      PFNANIMATEWINDOW pfnAnimateWindow = (PFNANIMATEWINDOW)
+         ::GetProcAddress(::GetModuleHandle(_T("user32.dll")), "AnimateWindow");
+      if( pfnAnimateWindow != NULL ) return pfnAnimateWindow( m_hWnd, dwTime, dwFlags );
       return FALSE;
    }
 };
