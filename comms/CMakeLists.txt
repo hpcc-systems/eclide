@@ -83,6 +83,8 @@ SET ( SRCS
     Group.h
     GSoapUtil.cpp
     GSoapUtil.h
+    Kel.cpp
+    Kel.h
     LocalFile.cpp
     LocalFile.h
     LocalResult.cpp

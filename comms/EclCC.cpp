@@ -11,16 +11,12 @@
 #include <UtilFilesystem.h>
 #include "DiskAttribute.h"
 #include "ModuleHelper.h"
+#include "Kel.h"
 
 namespace algo = boost::algorithm;
 
 const TCHAR * const ECLCC_ECLBUNDLE_PATH = _T("ECLCC_ECLBUNDLE_PATH");
 typedef std::map<std::_tstring, std::_tstring> StringPathMap;
-
-namespace SMC
-{
-IVersion * CreateVersion(const CString & url, const CString & version);
-}
 
 TRI_BOOL g_EnableCompiler = TRI_BOOL_UNKNOWN;
 TRI_BOOL g_EnableRemoteDali = TRI_BOOL_UNKNOWN;
@@ -181,7 +177,7 @@ public:
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         if (!m_compilerVersion) {
             CString version;
-            m_compilerVersion = SMC::CreateVersion(m_compilerFile.c_str(), version);
+            m_compilerVersion = SMC::CreateVersion(m_compilerFile.c_str(), version, false);
         }
 
         return m_compilerVersion;
@@ -645,6 +641,15 @@ public:
         }
         else if (LocateIDEPlugin(batchFile, foundFolder)) {
             return true;
+        }
+        if (attrTypeStr.compare("kel") == 0)
+        {
+            StlLinked<IKel> kel = KEL::CreateIKel();
+            if (kel)
+            {
+                foundFolder = kel->GetFolderPath();
+                return true;
+            }
         }
         if (!boost::algorithm::iequals(batchFile, "ecl.bat")) {
             _DBGLOG(LEVEL_WARNING, (boost::format("Plugin not found - %1%") % batchFile).str().c_str());
