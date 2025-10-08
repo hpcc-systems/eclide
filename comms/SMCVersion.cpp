@@ -23,6 +23,7 @@ protected:
     std::_tstring m_rawversion;
     std::_tstring m_strversion;
     bool m_badExecutable;
+    bool m_isKel;
     ParsedVersion m_parsedVersion;
     mutable clib::recursive_mutex m_mutex;
 
@@ -32,7 +33,7 @@ public:
 
     //  Format One:	build_0689_44, build_0702_13_gentoo64_linux
     //  Format Two: 
-    CVersion(const CString & url, const CString &version) : m_url(url), m_rawversion(version)
+    CVersion(const CString &url, const CString &version, bool isKel) : m_url(url), m_rawversion(version), m_isKel(isKel)
     {
         m_id = m_url + _T("/") + m_rawversion.c_str();
         m_badExecutable = false;
@@ -70,7 +71,8 @@ public:
             ATLASSERT(ParseVersion(_T("4.3.2 community_5.6.7-rc8"), test));
             ATLASSERT(test.type == ParsedVersion::ECLCC);
             ATLASSERT(!ParseVersion(_T("4.3.2-abc"), test));
-            ATLASSERT(!ParseVersion(_T("4.3.2"), test));
+            ATLASSERT(ParseVersion(_T("4.3.2"), test));
+            ATLASSERT(test.type == ParsedVersion::KEL);
             ATLASSERT(!ParseVersion(_T("4.3"), test));
             ATLASSERT(!ParseVersion(_T("4"), test));
         }
@@ -180,7 +182,7 @@ public:
     void GetExeVersion()
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
-        if (!m_url.empty() && boost::filesystem::exists(m_url))
+        if (!m_isKel && !m_url.empty() && boost::filesystem::exists(m_url))
         {
             bool badExeFlag = false;
             std::_tstring command = m_url;
@@ -219,10 +221,10 @@ public:
 
 CacheT<std::_tstring, CVersion> VersionCache;
 
-IVersion * CreateVersion(const CString & url, const CString & version)
+IVersion *CreateVersion(const CString &url, const CString &version, bool isKel)
 {
     //return new CVersion(url, version);
-    CVersion * retVal = VersionCache.Get(new CVersion(url, version));
+    CVersion *retVal = VersionCache.Get(new CVersion(url, version, isKel));
     retVal->Update();
     return retVal;
 }
@@ -234,6 +236,6 @@ void ClearVersionCache()
 
 COMMS_API SMC::IVersion * GetCommsVersion()
 {
-    return SMC::CreateVersion(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _COMMS_VER_STR);
+    return SMC::CreateVersion(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_SMC), _COMMS_VER_STR, false);
 }
 

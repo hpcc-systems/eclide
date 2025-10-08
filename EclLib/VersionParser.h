@@ -9,6 +9,7 @@ struct ParsedVersion
          UNKNOWN,
          ECLIDE,
          ECLCC,
+         KEL,
          OSS,
          BUILD,
          LAST

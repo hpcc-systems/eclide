@@ -55,11 +55,13 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
                               | def_eclcc_str			[ASSIGN(type, ParsedVersion::ECLCC)]
                               | def_oss_str				[ASSIGN(type, ParsedVersion::OSS)]
                               | def_build_str			[ASSIGN(type, ParsedVersion::BUILD)] 
+                              | def_kel_str			    [ASSIGN(type, ParsedVersion::KEL)]
                               ), 
                 def_ide_str = majorVersion_num >> '.' >> minorVersion_num >> '.' >> pointVersion_num >> '.' >> build_num,
                 def_eclcc_str = def_ecllang_str >> def_oss_str,
                 def_oss_str = prefix_str >> delim >> majorVersion_num >> delim >> minorVersion_num >> delim >> pointVersion_num >> delim >> suffix_str >> !github_str,
                 def_build_str = prefix_str >> '_' >> majorVersion_num >> !('_' >> minorVersion_num >> !('_' >> pointVersion_num)),
+                def_kel_str = majorVersion_num >> '.' >> minorVersion_num >> '.' >> pointVersion_num,
 
                 delim =				ch_p('_') | '-' | '.',
 
@@ -86,15 +88,16 @@ struct version_parser : public boost::spirit::classic::grammar<version_parser, v
         boost::spirit::classic::subrule<2> def_oss_str;
         boost::spirit::classic::subrule<3> def_build_str;
         boost::spirit::classic::subrule<4> def_eclcc_str;
-        boost::spirit::classic::subrule<5> def_ecllang_str;
-        boost::spirit::classic::subrule<6> prefix_str;
-        boost::spirit::classic::subrule<7> majorVersion_num;
-        boost::spirit::classic::subrule<8> minorVersion_num;
-        boost::spirit::classic::subrule<9> pointVersion_num;
-        boost::spirit::classic::subrule<10> suffix_str;
-        boost::spirit::classic::subrule<11> github_str;
-        boost::spirit::classic::subrule<12> build_num;
-        boost::spirit::classic::subrule<13> delim;
+        boost::spirit::classic::subrule<5> def_kel_str;
+        boost::spirit::classic::subrule<6> def_ecllang_str;
+        boost::spirit::classic::subrule<7> prefix_str;
+        boost::spirit::classic::subrule<8> majorVersion_num;
+        boost::spirit::classic::subrule<9> minorVersion_num;
+        boost::spirit::classic::subrule<10> pointVersion_num;
+        boost::spirit::classic::subrule<11> suffix_str;
+        boost::spirit::classic::subrule<12> github_str;
+        boost::spirit::classic::subrule<13> build_num;
+        boost::spirit::classic::subrule<14> delim;
         boost::spirit::classic::rule<scannerT> first;
         const boost::spirit::classic::rule<scannerT>& start() const
         {

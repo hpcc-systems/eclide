@@ -209,6 +209,7 @@
 #define IDB_AMT_WRITELARGE              224
 #define IDD_BOOKMARKS                   224
 #define IDB_AMT_WRITESMALL              225
+#define IDD_PREF_KEL                    225
 #define IDB_AMT_FILESMALL               226
 #define IDB_AMT_FILELARGE               227
 #define IDC_EDIT_USERFILTER             228
@@ -550,6 +551,7 @@
 #define IDC_BUTTON_MATCH                549
 #define IDC_EDIT_ECLWATCH               550
 #define IDC_STATIC_BROWSERENGINE        551
+#define IDC_BUTTON_KELCOMPILER          552
 #define ID_COL_PANE                     32772
 #define ID_WINDOW_MANAGER               32773
 #define ID_ROW_PANE                     32774
@@ -877,7 +879,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        61415
 #define _APS_NEXT_COMMAND_VALUE         33135
-#define _APS_NEXT_CONTROL_VALUE         552
+#define _APS_NEXT_CONTROL_VALUE         553
 #define _APS_NEXT_SYMED_VALUE           61503
 #endif
 #endif
