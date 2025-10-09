@@ -8,14 +8,14 @@
 
 template<typename T>
 class CWorkunitFrameT :	public CWtlDockablePane<T>, 
-                        public boost::signals::trackable, 
+                        public boost::signals2::trackable, 
                         public IWorkunitSlot
 {
     typedef CWtlDockablePane<T> baseClass;
     typedef CWorkunitFrameT thisClass;
 
 protected:
-    boost::signals::connection m_globalConnection;
+    boost::signals2::connection m_globalConnection;
 
 public:
     CWorkunitFrameT()

@@ -31,7 +31,7 @@ boost::posix_time::ptime g_lastBackupTime = boost::posix_time::second_clock::loc
 template<typename T>
 void save(const T &s, const char * filename)
 {
-    boost::filesystem::path filePath(filename, boost::filesystem::native);
+    boost::filesystem::path filePath(filename);
     if ((boost::posix_time::second_clock::local_time() - g_lastBackupTime) > boost::posix_time::time_duration(boost::posix_time::seconds(BACKUP_EVERY)))
     {
         g_lastBackupTime = boost::posix_time::second_clock::local_time();

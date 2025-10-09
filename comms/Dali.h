@@ -46,10 +46,10 @@ enum WUExceptionSeverity
     ExceptionSeveritySize = 3
 };
 
-typedef boost::signal<void(IWorkunitVectorAdapt workunits)> async_wucomplete_signal_type;
+typedef boost::signals2::signal<void(IWorkunitVectorAdapt workunits)> async_wucomplete_signal_type;
 typedef async_wucomplete_signal_type::slot_type async_wucomplete_slot_type;
 
-typedef boost::signal<void(__int64 start, int count, __int64 total, bool success)> async_datacomplete_signal_type;
+typedef boost::signals2::signal<void(__int64 start, int count, __int64 total, bool success)> async_datacomplete_signal_type;
 typedef async_datacomplete_signal_type::slot_type async_datacomplete_slot_type;
 
 typedef std::pair<std::_tstring, std::_tstring> Attribute;
@@ -107,7 +107,7 @@ __interface IDali : public IUnknown
     bool SendDebugRequest(const std::_tstring & wuid, const std::_tstring & request, std::_tstring & response);
 };
 
-class COMMS_API CResultDataRequest : public CUnknown, public boost::signals::trackable
+class COMMS_API CResultDataRequest : public CUnknown, public boost::signals2::trackable
 {
 public:
     CComPtr<Dali::IResult> m_result;

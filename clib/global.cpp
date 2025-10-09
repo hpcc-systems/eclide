@@ -34,14 +34,14 @@ CLIB_API const boost::filesystem::path & GetProgramPath(boost::filesystem::path 
     path = stringToPath(programPath);
     if(!g_appName.empty())
     {
-        path = path.branch_path() / stringToPath(g_appName);
+        path = path.parent_path() / stringToPath(g_appName);
     }
     return path;
 }
 CLIB_API const boost::filesystem::path & GetProgramFolder(boost::filesystem::path & path)
 {
     boost::filesystem::path p;
-    path = GetProgramPath(p).branch_path();
+    path = GetProgramPath(p).parent_path();
     return path;
 }
 CLIB_API const boost::filesystem::path & GetProgramFilesX86Folder(boost::filesystem::path & path)
@@ -125,7 +125,7 @@ CLIB_API const boost::filesystem::path & GetApplicationFolder(boost::filesystem:
     else
     {
         boost::filesystem::path programPath;
-        std::string leaf = pathToString(GetProgramPath(programPath).leaf());
+        std::string leaf = pathToString(GetProgramPath(programPath).filename());
         TCHAR szFileName[_MAX_FNAME];
         TCHAR szExt[_MAX_FNAME];
         _tsplitpath(CA2T(leaf.c_str()), NULL, NULL, szFileName, szExt);		
@@ -164,7 +164,7 @@ CLIB_API const boost::filesystem::path & GetConfigPath(const std::_tstring & env
 CLIB_API const boost::filesystem::path & GetIniPath(boost::filesystem::path & path)
 {
     boost::filesystem::path programPath;
-    std::string leaf = pathToString(GetProgramPath(programPath).leaf());
+    std::string leaf = pathToString(GetProgramPath(programPath).filename());
     TCHAR szFileName[_MAX_FNAME];
     TCHAR szExt[_MAX_FNAME];
     _tsplitpath(CA2T(leaf.c_str()), NULL, NULL, szFileName, szExt);
@@ -420,12 +420,12 @@ public:
         _variant_t variant(val.c_str());
         Set(sectionLabelDefault.first, variant);
     }
-    boost::signals::connection ConnectSlot(const globaldata_slot_type & slot)
+    boost::signals2::connection ConnectSlot(const globaldata_slot_type & slot)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return on_refresh.connect(slot);
     }
-    void Disconnect(boost::signals::connection& slot)
+    void Disconnect(boost::signals2::connection& slot)
     {
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         slot.disconnect();
@@ -596,7 +596,7 @@ CLIB_API IConfig * CreateIConfig(const std::_tstring & id, const boost::filesyst
     CConfig * retVal = ConfigCache.Get(new CConfig(id, path));
     TCHAR szFileName[_MAX_FNAME];
     TCHAR szExt[_MAX_FNAME];
-    _tsplitpath(pathToWString(path.leaf()).c_str(), NULL, NULL, szFileName, szExt);
+    _tsplitpath(pathToWString(path.filename()).c_str(), NULL, NULL, szFileName, szExt);
     boost::filesystem::path pathForced = forcePathFlag ? path : _T("");
     if (szExt[0] == '.')
         retVal->InitConfigPath(szFileName, &szExt[1], pathForced);

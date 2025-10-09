@@ -344,7 +344,7 @@ class CWorkunitFilterView :
     public WTL::CDialogResize<CWorkunitFilterView>,
     public WTL::CWinDataExchange<CWorkunitFilterView>,
     public CCtlColor,
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CWorkunitFilterView thisClass;
     typedef WTL::CDialogImpl<CWorkunitFilterView> baseClass;

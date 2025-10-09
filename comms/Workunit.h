@@ -23,7 +23,7 @@ enum WUEvent
     WUEventLast
 };
 
-typedef boost::signal<void(WUEvent, IWorkunit *)> workunit_signal_type;
+typedef boost::signals2::signal<void(WUEvent, IWorkunit *)> workunit_signal_type;
 typedef workunit_signal_type::slot_type workunit_slot_type;
 
 enum WUState 
@@ -159,7 +159,7 @@ __interface IWorkunit : public clib::ILockableUnknown
     void MonitorState();	//Notifications come thru "on_refresh_connect"
     void ForceBroadcast(WUEvent evt = WUEventUpdated);	
 
-    boost::signals::connection on_refresh_connect(const workunit_slot_type& s);
+    boost::signals2::connection on_refresh_connect(const workunit_slot_type& s);
 };
 
 typedef StlLinked<IWorkunit> IWorkunitAdapt;

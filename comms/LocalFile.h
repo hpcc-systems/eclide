@@ -7,7 +7,7 @@ namespace Dali
 {
 __interface ILocalFile;
 
-typedef boost::signal<void(ILocalFile *)> localfile_signal_type;
+typedef boost::signals2::signal<void(ILocalFile *)> localfile_signal_type;
 typedef localfile_signal_type::slot_type localfile_slot_type;
 
 __interface ILocalFile : public IUnknown
@@ -17,7 +17,7 @@ __interface ILocalFile : public IUnknown
     const TCHAR *GetSource() const;
     const TCHAR *GetDestination() const;
 
-    boost::signals::connection on_refresh_connect(const localfile_slot_type& s);
+    boost::signals2::connection on_refresh_connect(const localfile_slot_type& s);
 };
 
 typedef StlLinked<ILocalFile> ILocalFileAdapt;

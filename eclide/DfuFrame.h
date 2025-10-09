@@ -128,7 +128,7 @@ public:
 class CDfuFilterFrame :  
     public CDfuFrameT<CDfuFilterFrame>, 
     public CWtlDockablePane<CDfuFilterView>, 
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CDfuFilterFrame thisClass;
     typedef CWtlDockablePane<CDfuFilterView> baseClass;

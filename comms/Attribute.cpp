@@ -331,7 +331,7 @@ public:
             boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
             for (boost::filesystem::directory_iterator itr(path); itr != end_itr; ++itr)
             {
-                if (boost::algorithm::iequals(boost::filesystem::extension(itr->path()).c_str(), ".ecl"))
+                if (boost::algorithm::iequals(itr->path().extension().string().c_str(), ".ecl"))
                 {
                     attributes.push_back(CreateDiskAttributeHistory(itr->path(), this, --version));
                 }
@@ -521,7 +521,7 @@ public:
         return CAttributeBase::PreProcess(action, overrideEcl, attrs, attrProcessed, errs, metaInfo);
     }
 
-    boost::signals::connection on_refresh_connect(const refresh_slot_type& s)
+    boost::signals2::connection on_refresh_connect(const refresh_slot_type& s)
     { 
         clib::recursive_mutex::scoped_lock proc(m_mutex);
         return on_refresh.connect(s); 

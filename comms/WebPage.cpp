@@ -56,7 +56,7 @@ public:
 	}
 };
 //  ===========================================================================
-class CWebPage : public IWebPage, public clib::CLockableUnknown, public boost::signals::trackable
+class CWebPage : public IWebPage, public clib::CLockableUnknown, public boost::signals2::trackable
 {
 protected:
 	CComPtr<IHTMLDocument> m_doc;
@@ -437,7 +437,7 @@ public:
 		proc.unlock();
 	}
 
-	boost::signals::connection on_refresh_connect(const webpage_slot_type& s)
+	boost::signals2::connection on_refresh_connect(const webpage_slot_type& s)
 	{
 		clib::recursive_mutex::scoped_lock proc(m_mutex);
 		return on_refresh.connect(s); 

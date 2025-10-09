@@ -26,7 +26,7 @@ enum WORKUNIT_COLUMNS
     WORKUNIT_WUID
 };
 //  ===========================================================================
-class CWorkunitRow : public CListRow, public boost::signals::trackable
+class CWorkunitRow : public CListRow, public boost::signals2::trackable
 {
 protected:
     StlLinked<Dali::IWorkunit> m_workunit;

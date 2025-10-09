@@ -23,7 +23,7 @@ namespace SMC
 #if _COMMS_VER >= 68200
 #define ESP_EXCEPTION_LOG3(T) CReportingGSoapEspException<ns4__ArrayOfEspException> exceptions(T, __FILE__, __LINE__)
 ICluster * CreateCluster(const CString & url, const std::_tstring & cluster, const std::_tstring & status, const std::vector<ns4__ActiveWorkunit *> &running);
-IVersion * CreateVersion(const CString & url, const CString & version);
+IVersion * CreateVersion(const CString & url, const CString & version, bool isKel);
 void ClearVersionCache();
 void ClearClusterCache();
 
@@ -40,7 +40,7 @@ public:
 
     CSMC(const CString & url, const CString & label) : m_label(label), m_url(url)
     {
-        m_unknown = CreateVersion(_T("http://www.seisint.com/"), DEFAULT_VERSION);
+        m_unknown = CreateVersion(_T("http://www.seisint.com/"), DEFAULT_VERSION, false);
     }
 
     ~CSMC()
@@ -78,7 +78,7 @@ public:
         if (server.Activity(&request, &response) == SOAP_OK)
         {
             if (response.Build)
-                m_version = CreateVersion(m_url, response.Build->c_str());
+                m_version = CreateVersion(m_url, response.Build->c_str(), false);
 
             //  Multi thor support - there could be some jobs running on a multi thor!
             if (response.Running)

@@ -2409,8 +2409,8 @@ bool CMainFrame::UIUpdateMenuItems()
 BOOL CMainFrame::DoFileOpen(const CString & sPathName)
 {
     boost::filesystem::path path = stringToPath(static_cast<const TCHAR *>(sPathName));
-    std::_tstring filename = pathToWString(path.leaf());
-    if (boost::algorithm::iequals(boost::filesystem::extension(path), ".mod"))
+    std::_tstring filename = pathToWString(path.filename());
+    if (boost::algorithm::iequals(path.extension().string(), ".mod"))
     {
         IModuleAdapt targetModule = DoConfirmImportDlg(*this, path);
         m_Repository->Send_Refresh(targetModule);

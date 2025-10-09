@@ -121,7 +121,7 @@ class CGridCtrlEx :
 	public SGRID::CGridCtrl,
 	public IDataSourceListener,
 	public CUnknown,
-	public boost::signals::trackable
+	public boost::signals2::trackable
 
 {
 	typedef CGridCtrlEx thisClass;

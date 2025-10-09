@@ -1,6 +1,8 @@
 PROJECT( WLIB )
 
 find_package(unofficial-webview2 CONFIG REQUIRED)
+find_package(boost_filesystem CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
 
 SET ( SRCS
     AboutDlg.cpp
@@ -109,8 +111,8 @@ INCLUDE_DIRECTORIES (
     ../dockingwindows
     ../EclEditor
     
-    ${WTL_INCLUDE_DIR}
     ${SCINTILLA_INCLUDE_DIR}
+    ${LEXILLA_INCLUDE_DIR}
 )
 
 ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
@@ -124,13 +126,21 @@ ADD_DEPENDENCIES ( WLIB
     CLIB
     COMMS
     SGRID
+    ECLEDITOR
 )
 
-TARGET_LINK_LIBRARIES( WLIB
+TARGET_LINK_LIBRARIES( WLIB PRIVATE
     CLIB
+    ECLLIB
     COMMS
     SGRID
+    ECLEDITOR
     unofficial::webview2::webview2
+    msxml2
+    comsupp
+    
+    Boost::filesystem
+    Boost::serialization
 )
 
 INSTALL ( TARGETS WLIB RUNTIME DESTINATION bin )

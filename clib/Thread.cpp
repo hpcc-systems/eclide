@@ -241,7 +241,7 @@ void CThreadQueue::operator()()
     Start();
 }
 
-boost::signals::connection CThreadQueue::MonitorEvents(const queue_slot_type& s)
+boost::signals2::connection CThreadQueue::MonitorEvents(const queue_slot_type& s)
 {
     clib::recursive_mutex::scoped_lock lock(m_mutex);
     return on_refresh.connect(s); 

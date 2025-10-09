@@ -73,7 +73,7 @@ typedef std::map<IAttributeUnique, bool> IAttributeBookkeep;
 
 __interface IMigrationCallback;
 
-typedef boost::signal<void(IAttribute *, bool, IAttribute *, bool deleted)> refresh_signal_type;
+typedef boost::signals2::signal<void(IAttribute *, bool, IAttribute *, bool deleted)> refresh_signal_type;
 typedef refresh_signal_type::slot_type refresh_slot_type;
 
 __interface IRepository;
@@ -117,7 +117,7 @@ __interface __declspec(uuid("1D743D5B-2719-4b7d-A5EB-4D5ACF34A493")) IAttribute 
     bool Create();
     int PreProcess(PREPROCESS_TYPE action, const TCHAR * overrideEcl, IAttributeVector & attrs, IAttributeBookkeep & attrProcessed, Dali::CEclExceptionVector & errs, MetaInfo & metaInfo) const;
 
-    boost::signals::connection on_refresh_connect(const refresh_slot_type& s);
+    boost::signals2::connection on_refresh_connect(const refresh_slot_type& s);
     void Refresh(bool eclChanged = false, IAttribute * newAttrAsOldOneMoved = NULL, bool deleted = false);
     IRepository* GetRepository();
     IAttributeHistory * GetAsHistory();

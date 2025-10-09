@@ -27,7 +27,7 @@ enum STATE
 	STATE_LAST
 };
 
-typedef boost::signal<void(IWebPage *, EVENT)> webpage_signal_type;
+typedef boost::signals2::signal<void(IWebPage *, EVENT)> webpage_signal_type;
 typedef webpage_signal_type::slot_type webpage_slot_type;
 
 typedef StlLinked<IWebPage> IWebPageAdapt;
@@ -60,7 +60,7 @@ __interface __declspec(uuid("86CED41D-8A5F-4dc0-8812-C7EEAEC708A4")) IWebPage : 
 	void SetPopupTemplate(const std::_tstring & tpl);
 	const TCHAR *GetPopupTemplate();
 
-	boost::signals::connection on_refresh_connect(const webpage_slot_type& s);
+	boost::signals2::connection on_refresh_connect(const webpage_slot_type& s);
 };
 
 typedef CUnknownT<IWebPageVector> IWebPageVectorCom;

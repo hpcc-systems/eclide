@@ -9,6 +9,7 @@
 #include "thread.h"
 #include "PreferenceDlg.h"
 #include "EclCC.h"
+#include "Kel.h"
 #include <CustomMessages.h>
 #include <AutoUpdate.h>
 #include <UtilFilesystem.h>
@@ -924,7 +925,7 @@ bool PopulateConfigCombo(CComboBox &configCombo, const std::_tstring & defaultVa
 		{
 			if (boost::algorithm::iequals(pathToString(itr->path().extension()), _T(".cfg")))
 			{
-				std::string s = pathToString(itr->path().leaf());
+				std::string s = pathToString(itr->path().filename());
 				std::_tstring label = CA2T(s.substr(0, s.length() - 4).c_str());
 				int id = configCombo.AddString(label.c_str());
 				if (defaultValue.length() && defaultValue == label)
@@ -970,6 +971,35 @@ bool PopulateCTConfigCombo(CComboBox & configCTCombo, const std::_tstring & save
 			i++;
 		}
 		configCTCombo.SetCurSel(current);
+	}
+	return retVal;
+}
+
+bool PopulateKelConfigCombo(CComboBox & configKelCombo, const std::_tstring & savedValue)
+{
+	bool retVal = true;
+	if (CComPtr<IKel> kel = KEL::CreateIKel(true)) {
+		configKelCombo.ResetContent();
+		std::vector<std::wstring> kelVersions;
+		std::wstring currentVersion = KEL::GetAll(kelVersions);
+		CComPtr<IConfig> config = GetIConfig(QUERYBUILDER_CFG);
+		int i = 0;
+		int current = 0;
+
+		for (auto& k : kelVersions)
+		{
+			if ((!savedValue.length() || !config->Get(GLOBAL_KEL_OVERRIDEDEFAULTSELECTION) && currentVersion.length())) {
+				if (_tcsicmp(k.c_str(), currentVersion.c_str()) == 0)
+					current = i;
+			}
+			else if (savedValue.length()) {
+				if (_tcsicmp(k.c_str(), savedValue.c_str()) == 0)
+					current = i;
+			}
+			configKelCombo.AddString(k.c_str());
+			i++;
+		}
+		configKelCombo.SetCurSel(current);
 	}
 	return retVal;
 }

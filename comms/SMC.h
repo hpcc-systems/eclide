@@ -34,5 +34,6 @@ __interface ISMC : public IUnknown
 COMMS_API ISMC * AttachSMC(const std::_tstring & url, const std::_tstring & label);
 COMMS_API ISMC * AttachSMC(const _variant_t & url, const std::_tstring & label);
 void ClearSingletons();
+IVersion *CreateVersion(const CString &url, const CString &version, bool isKel);
 }
 

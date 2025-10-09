@@ -12,7 +12,7 @@ static const SectionLabelDefault GLOBAL_DEBUG_LOGRESULTXML(SectionLabel(_T("Debu
 static const SectionLabelDefault GLOBAL_HELP_LOCALE(SectionLabel(_T("General"), _T("HelpLocale")), _T(""));
 static const SectionLabelDefault GLOBAL_EDITOR_BOM(SectionLabel(_T("Editor"), _T("BOM")), 1);
 
-typedef boost::signal<void(SectionLabel *)> globaldata_signal_type;
+typedef boost::signals2::signal<void(SectionLabel *)> globaldata_signal_type;
 typedef globaldata_signal_type::slot_type globaldata_slot_type;
 
 __interface IConfig : public IUnknown
@@ -28,8 +28,8 @@ __interface IConfig : public IUnknown
     void Set(const SectionLabelDefault & sectionLabelDefault, const _variant_t & val);
     void Set(const SectionLabelDefault & sectionLabelDefault, const TCHAR * val);
     void Set(const SectionLabelDefault & sectionLabelDefault, const std::_tstring & val);
-    boost::signals::connection ConnectSlot(const globaldata_slot_type & slot);
-    void Disconnect(boost::signals::connection& slot);
+    boost::signals2::connection ConnectSlot(const globaldata_slot_type & slot);
+    void Disconnect(boost::signals2::connection& slot);
 
     //void SetLabel(const CString & label);
     //void Reset(const CString & newLabel);

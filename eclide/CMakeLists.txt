@@ -1,5 +1,8 @@
 PROJECT( ECLIDE )
 
+find_package(boost_filesystem CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
+
 SET ( SRCS
     BasicExcel.cpp
     BookmarksFrame.cpp
@@ -102,6 +105,7 @@ SET ( SRCS
     eclide.exe.manifest
 )
 
+
 INCLUDE_DIRECTORIES (
     ../clib
     ../ecllib
@@ -115,7 +119,6 @@ INCLUDE_DIRECTORIES (
     ../dockingwindows
     ../EclEditor
 
-    ${WTL_INCLUDE_DIR}
     ${SCINTILLA_INCLUDE_DIR}
     ${BUGTRAP_DIR}
 )
@@ -136,11 +139,16 @@ ADD_DEPENDENCIES ( ECLIDE
     BUGTRAP
 )
 
-TARGET_LINK_LIBRARIES( ECLIDE
+TARGET_LINK_LIBRARIES( ECLIDE PRIVATE
     CLIB
+    ECLLIB
     COMMS
     WLIB
+    ECLEDITOR
     BUGTRAP
+    
+    Boost::filesystem
+    Boost::serialization
 )
 
 SET_TARGET_PROPERTIES(ECLIDE PROPERTIES LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")

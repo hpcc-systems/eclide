@@ -510,7 +510,7 @@ public:
         CComPtr<IEclCC> eclcc = CreateIEclCC();
         if (eclcc)
         {
-            boost::filesystem::wpath path = eclcc->GetWorkingFolder();
+            boost::filesystem::path path = eclcc->GetWorkingFolder();
         }
 
         IWorkunitVector workunits;
@@ -965,8 +965,8 @@ protected:
                         boost::algorithm::replace_all(toWU, _T("T"), _T("-"));
                         boost::algorithm::replace_all(toWU, _T("Z"), _T(""));
                         toWU = _T("L") + toWU;
-                        std::_tstring basename = CA2T(boost::filesystem::basename(*attr_itr).c_str());
-                        std::_tstring extension = CA2T(boost::filesystem::extension(*attr_itr).c_str());
+                        std::_tstring basename = CA2T(attr_itr->path().stem().string().c_str());
+                        std::_tstring extension = CA2T(attr_itr->path().extension().string().c_str());
                         if (boost::algorithm::iequals(extension, _T(".exe")))
                         {
                             if (wuid.IsEmpty() || boost::algorithm::iequals(basename, (const TCHAR *)wuid))
@@ -1053,7 +1053,7 @@ protected:
             CComPtr<IEclCC> eclcc = CreateIEclCC();
             if (eclcc)
             {
-                boost::filesystem::wpath path = eclcc->GetWorkingFolder();
+                boost::filesystem::path path = eclcc->GetWorkingFolder();
                 path /= (const TCHAR *)(wuid + _T(".exe"));
                 if (clib::filesystem::exists(path))
                 {
@@ -1310,7 +1310,7 @@ protected:
 
                     if (!path.IsEmpty())
                     {
-                        boost::filesystem::wpath p = path;
+                        boost::filesystem::path p = path;
                         request.Jobname = stringPool.Create(pathToWString(p.stem()));
                     }
 
@@ -1525,7 +1525,7 @@ protected:
         return DeleteWorkunits(&workunits);
     }
 
-    static bool DeleteFile(const boost::filesystem::wpath & file)
+    static bool DeleteFile(const boost::filesystem::path & file)
     {
         if (clib::filesystem::exists(file))
         {
@@ -1563,7 +1563,7 @@ protected:
         {
             for(IWorkunitVector::const_iterator itr = localWUs.begin(); itr != localWUs.end(); ++itr)
             {
-                boost::filesystem::wpath path = eclcc->GetWorkingFolder();
+                boost::filesystem::path path = eclcc->GetWorkingFolder();
                 std::_tstring wuid = itr->get()->GetWuid();
                 if (DeleteFile(path / (wuid + _T(".exe"))))
                 {

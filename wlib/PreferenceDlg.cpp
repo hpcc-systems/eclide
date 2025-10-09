@@ -16,12 +16,12 @@
 #include "EclParser.h"
 //#include "atlGraphView.h"
 //#include "GraphViewCtl.h"
-#include "cmdProcess.h"
 #include "comms.h"
 #include <EclCC.h>
 #include "npHPCCSystemsGraphViewControl.h"
 #include "HListBox.h"
 #include <UtilFilesystem.h>
+#include <Kel.h>
 //  ===========================================================================
 #define GLYPH_WIDTH 15
 
@@ -780,7 +780,7 @@ public:
 			const TCHAR * hpccbin = _tgetenv(_T("HPCCBIN"));
 			if (hpccbin)
 			{
-				boost::filesystem::wpath eclccPath = hpccbin;
+				boost::filesystem::path eclccPath = hpccbin;
 				eclccPath /= _T("eclcc.exe");
 				if (clib::filesystem::exists(eclccPath))
 					m_Location = pathToWString(eclccPath).c_str();
@@ -789,12 +789,12 @@ public:
 			const TCHAR * hpccEcl = _tgetenv(_T("HPCCECL"));
 			if (hpccEcl)
 			{
-				boost::filesystem::wpath wuFolder = hpccEcl;
+				boost::filesystem::path wuFolder = hpccEcl;
 				wuFolder /= _T("wu");
 				boost::filesystem::create_directories(wuFolder);
 				m_EclWorkingFolder = pathToWString(wuFolder).c_str();
 
-				boost::filesystem::wpath repositoryPath = hpccEcl;
+				boost::filesystem::path repositoryPath = hpccEcl;
 				repositoryPath = repositoryPath.parent_path();
 				repositoryPath /= _T("My Files");
 				boost::filesystem::create_directories(repositoryPath);
@@ -950,7 +950,6 @@ public:
 
 	void EnableLocationSettings()
 	{
-		GetDlgItem(IDC_STATIC_LOCATION).EnableWindow(m_overrideAutoCompilerSelect);
 		GetDlgItem(IDC_EDIT_LOCATION).EnableWindow(m_overrideAutoCompilerSelect);
 		GetDlgItem(IDC_BUTTON_ECLCOMPILER).EnableWindow(m_overrideAutoCompilerSelect);
 	}
@@ -1067,22 +1066,21 @@ public:
 		if (IDOK == dlg.DoModal())
 		{
 			std::_tstring folder = dlg.GetFolderPath();
-			boost::filesystem::wpath path = folder;
+			boost::filesystem::path path = folder;
 
-			for (int i = 0; i < m_listFolders.GetCount(); ++i) 
+		for (int i = 0; i < m_listFolders.GetCount(); ++i) 
+		{
+			CString otherFolder;
+			m_listFolders.GetText(i, otherFolder);
+			boost::filesystem::path otherPath = static_cast<const TCHAR *>(otherFolder);
+			if (boost::algorithm::iequals(pathToString(path.filename()), pathToString(otherPath.filename()))) 
 			{
-				CString otherFolder;
-				m_listFolders.GetText(i, otherFolder);
-				boost::filesystem::wpath otherPath = static_cast<const TCHAR *>(otherFolder);
-				if (boost::algorithm::iequals(pathToString(path.leaf()), pathToString(otherPath.leaf()))) 
-				{
-					std::_tstring msg = _T("ECL folders must have unique name.  \"") + pathToWString(otherPath.leaf()) + _T("\" is already used.");
-					MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
-					return 0;
-				}
+				std::_tstring msg = _T("ECL folders must have unique name.  \"") + pathToWString(otherPath.filename()) + _T("\" is already used.");
+				MessageBox(msg.c_str(), CString(MAKEINTRESOURCE(IDR_MAINFRAME)), MB_OK);
+				return 0;
 			}
-
-			m_listFolders.AddString(folder.c_str());
+		}
+		m_listFolders.AddString(folder.c_str());
 			DoChanged();
 		}
 		return 0;
@@ -1161,6 +1159,221 @@ public:
 		CWaitCursor wait;
 		RescanClients();
 		::PopulateCTConfigCombo(m_ctConfig, _T(""));
+		return 0;
+	}
+
+	LRESULT OnMatchClientServer(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
+		CWaitCursor wait;
+		SelectBestMatch(true);
+		return 0;
+	}
+};
+//  ===========================================================================
+class CPrefKELDlg : public CDialogImpl<CPrefKELDlg>, 
+	public CWinDataExchange<CPrefKELDlg>
+{
+	typedef CPrefKELDlg thisClass;
+	typedef CDialogImpl<thisClass> baseClass;
+protected:
+	IOwner * m_owner;
+	IConfigAdapt m_config;
+	IConfigAdapt m_ini;
+	CString m_ConfigLabel;
+
+	bool m_overrideAutoKelSelect;
+	CString m_Version;
+	CString m_Location;
+
+	CComboBox m_ctConfig;
+
+public:
+	CString m_ConfigClient;
+
+	CPrefKELDlg(IOwner * owner, IConfig * config) : m_config(config), m_owner(owner)
+	{
+		m_ConfigLabel = m_config->GetLabel();
+		if (m_ConfigLabel.IsEmpty())
+		{
+			m_ConfigLabel = g_DefaultConfig;
+		}
+	}
+
+	enum { IDD = IDD_PREF_KEL };
+
+	void LoadDefaults()
+	{
+		m_overrideAutoKelSelect = false;
+
+		CComPtr<IKel> kel = KEL::CreateIKel();
+		m_Location = kel->GetFilePath().wstring().c_str();
+
+		DoDataExchange();
+		SaveToConfig();
+		EnableLocationSettings();
+	}
+
+	bool OverrideAutoKel() {
+		return m_overrideAutoKelSelect;
+	}
+
+	void LoadFromConfig(IConfig * config)
+	{
+		m_config = config;
+		m_overrideAutoKelSelect = m_config->Get(GLOBAL_KEL_OVERRIDEDEFAULTSELECTION);
+		m_Location = m_config->Get(GLOBAL_KEL_LOCATION);
+		m_ConfigClient = m_config->Get(GLOBAL_CLIENT_VERSION);
+		DoDataExchange();
+		EnableLocationSettings();
+		SelectBestMatch(false);
+	}
+
+	void SaveToConfig()
+	{
+		DoDataExchange(true);
+		m_config->Set(GLOBAL_KEL_OVERRIDEDEFAULTSELECTION, m_overrideAutoKelSelect);
+		m_config->Set(GLOBAL_CLIENT_VERSION, m_ConfigClient);
+		m_config->Set(GLOBAL_KEL_LOCATION, m_Location);
+	}
+
+	void SelectBestMatch(bool setLocationFlag) {
+		CComPtr<IKel> bestMatch = KEL::GetBestMatch();
+		if (bestMatch) {
+			std::wstring bestVersion;
+			bestMatch->GetVersionString(bestVersion);
+			std::wstring text = _T("");
+			int index = m_ctConfig.FindString(0, bestVersion.c_str());
+			if (index != CB_ERR) {
+				m_ctConfig.SetCurSel(index);
+				if (setLocationFlag && m_overrideAutoKelSelect) {
+					CString location = bestMatch->GetFilePath().c_str();
+					GetDlgItem(IDC_EDIT_LOCATION).SetWindowTextW(location);
+					KEL::SetComboToBest();
+				}
+			}
+		}
+	}
+
+	void DoApply(bool bMakeGlobal)
+	{
+		DoDataExchange(true);
+
+		SaveToConfig();
+		KEL::SetCurrentClient();
+		DoChanged(false);
+	}
+
+	void DoChanged(bool bChanged=true)
+	{
+		m_owner->SetChanged(bChanged);
+	}
+
+	void EnableLocationSettings()
+	{
+		GetDlgItem(IDC_EDIT_LOCATION).EnableWindow(m_overrideAutoKelSelect);
+		GetDlgItem(IDC_BUTTON_KELCOMPILER).EnableWindow(m_overrideAutoKelSelect);
+	}
+
+	BEGIN_MSG_MAP(thisClass)
+		MSG_WM_INITDIALOG(OnInitDialog)
+		MSG_WM_DESTROY(OnDestroy)
+
+		COMMAND_CODE_HANDLER(EN_CHANGE, OnChangedEdit)
+
+		COMMAND_HANDLER(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_CHECK_METADATA, BN_CLICKED, OnCheckClicked)
+		COMMAND_HANDLER(IDC_BUTTON_KELCOMPILER, BN_CLICKED, OnKelCompilerClicked)
+		COMMAND_HANDLER_EX(IDC_COMBO_CLIENT, CBN_SELENDOK, OnSelClientConfig)
+		COMMAND_HANDLER(IDC_BUTTON_SCANCLIENTS, BN_CLICKED, OnScanClients)
+		COMMAND_HANDLER(IDC_BUTTON_MATCH, BN_CLICKED, OnMatchClientServer)
+
+		REFLECT_NOTIFICATIONS()
+	END_MSG_MAP()
+
+	BEGIN_DDX_MAP(thisClass)
+		DDX_CHECK(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION, m_overrideAutoKelSelect)
+		DDX_TEXT(IDC_EDIT_LOCATION, m_Location)
+	END_DDX_MAP()
+
+	LRESULT OnInitDialog(HWND /*wParam*/, LPARAM /*lParam*/)
+	{
+		CWaitCursor wait;
+
+		boost::filesystem::path iniPath;
+		m_ini = CreateIConfig(QUERYBUILDER_INI, GetIniPath(iniPath));
+
+		m_ctConfig = GetDlgItem(IDC_COMBO_CLIENT);
+		::PopulateKelConfigCombo(m_ctConfig, (const TCHAR*)m_ConfigClient);
+
+		LoadFromConfig(m_config);
+		DoChanged(false);
+
+		return TRUE;
+	}
+
+	void OnDestroy()
+	{
+		SetMsgHandled(false);
+	}
+
+	LRESULT OnChangedEdit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoChanged();
+		return 0;
+	}
+
+	LRESULT OnCheckClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		DoDataExchange(true);
+		DoChanged();
+		EnableLocationSettings();
+		return 0;
+	}
+
+	LRESULT OnKelCompilerClicked(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+	{
+		static const TCHAR szKelFilter[] = _T("KEL Batch File (KEL.bat)\0KEL.bat\0All Files (*.*)\0*.*\0\0");
+		CFileDialog dlg(TRUE, NULL, m_Location, OFN_FILEMUSTEXIST, szKelFilter, m_hWnd);
+		if (IDOK == dlg.DoModal())
+		{
+			m_Location = dlg.m_szFileName;
+			::SetWindowText(::GetDlgItem(m_hWnd, IDC_EDIT_LOCATION), m_Location);
+			DoChanged();
+		}
+		return 0;
+	}
+
+	LRESULT OnSelChange(int wParam, LPNMHDR lParam, BOOL&/*bHandled*/)
+	{
+		return 0;
+	}
+
+	void OnSelClientConfig(UINT /*nId*/, int /*wID*/, HWND /*hWndCtl*/)
+	{
+		GetDlgItem(IDC_CHECK_OVERRIDEDEFAULTCOMPILERSELECTION);
+		if (OverrideAutoKel()) {
+			int index = m_ctConfig.GetCurSel();
+			CString currentChoice = "";
+			m_ctConfig.GetLBText(index, currentChoice);
+			if (currentChoice.Find(_T("(BAD EXECUTABLE)"), 0) < 0) {
+				m_ConfigClient = currentChoice;
+				std::wstring version(currentChoice);
+				CComPtr<IKel> kel = KEL::ToolFromVersion(version);
+				if (kel) {
+					m_Location = kel->GetFilePath().c_str();
+					GetDlgItem(IDC_EDIT_LOCATION).SetWindowTextW(m_Location);
+				}
+			}
+			else {
+				m_ctConfig.SelectString(0, m_ConfigClient);
+				MessageBox(currentChoice, _T("Warning"), MB_ICONWARNING);
+			}
+		}
+	}
+
+	LRESULT OnScanClients(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
+		CWaitCursor wait;
+		KEL::RescanClients();
+		::PopulateKelConfigCombo(m_ctConfig, _T(""));
 		return 0;
 	}
 
@@ -2220,12 +2433,13 @@ protected:
 	CPrefColorDlg m_colorPref;
 	CPrefResultDlg m_resultPref;
 	CPrefCompilerDlg m_compilerPref;
+	CPrefKELDlg m_kelPref;
 	CPrefOtherDlg m_otherPref;
 
 	bool m_disableEnvironmentSettings;
 
 public:
-	CPrefDlg(IConfig * config, bool disableEnvironmentSettings) : m_serverPref(this, config, disableEnvironmentSettings), m_editorPref(this, config), m_colorPref(this, config), m_resultPref(this, config), m_compilerPref(this, config), m_otherPref(this, config)
+	CPrefDlg(IConfig * config, bool disableEnvironmentSettings) : m_serverPref(this, config, disableEnvironmentSettings), m_editorPref(this, config), m_colorPref(this, config), m_resultPref(this, config), m_compilerPref(this, config), m_kelPref(this, config), m_otherPref(this, config)
 	{
 		m_disableEnvironmentSettings = disableEnvironmentSettings;
 		m_changed = false;
@@ -2289,6 +2503,8 @@ public:
 		m_resultPref.DoChanged(changed);
 		m_compilerPref.LoadFromConfig(m_config);
 		m_compilerPref.DoChanged(changed);
+		m_kelPref.LoadFromConfig(m_config);
+		m_kelPref.DoChanged(changed);
 		m_otherPref.LoadFromConfig(m_config);
 		m_otherPref.DoChanged(changed);
 	}
@@ -2319,6 +2535,7 @@ public:
 		m_colorPref.DoApply(bMakeGlobal);
 		m_resultPref.DoApply(bMakeGlobal);
 		m_compilerPref.DoApply(bMakeGlobal);
+		m_kelPref.DoApply(bMakeGlobal);
 		m_otherPref.DoApply(bMakeGlobal);
 
 		if (CComPtr<IEclCC> eclcc = CreateIEclCC(true)) {
@@ -2364,6 +2581,7 @@ public:
 		ScreenToClient(rc);
 		wndPlaceholder.DestroyWindow();
 		m_tabView.Create(*this, rc, _T(""), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, NULL, IDC_SHEET);
+		m_tabView.m_bTabCloseButton = false;  // Disable close buttons on tabs
 
 		m_serverPref.Create(m_tabView);
 		m_tabView.AddPage(m_serverPref, _T("Server"));
@@ -2378,7 +2596,10 @@ public:
 		m_tabView.AddPage(m_resultPref, _T("Results"));
 
 		m_compilerPref.Create(m_tabView);
-		m_tabView.AddPage(m_compilerPref, _T("Compiler"));
+		m_tabView.AddPage(m_compilerPref, _T("eclcc"));
+
+		m_kelPref.Create(m_tabView);
+		m_tabView.AddPage(m_kelPref, _T("KEL"));
 
 		m_otherPref.Create(m_tabView);
 		m_tabView.AddPage(m_otherPref, _T("Other"));

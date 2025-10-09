@@ -1,13 +1,19 @@
 PROJECT( COMMS )
 
+find_package(boost_thread CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
+find_package(boost_filesystem CONFIG REQUIRED)
+find_path(GSOAP_DIR stdsoap2.cpp HINTS ${VCPKG_ROOT_DIR}/share/gsoap)
+find_path(GSOAP_BIN wsdl2h.exe HINTS ${VCPKG_ROOT_DIR}/share/gsoap/bin/win32)
+
 SET (GEN_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapC.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapws_USCOREaccountServiceSoapProxy.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapWsAttributesServiceSoapProxy.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapWsDfuServiceSoapProxy.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapWsSMCServiceSoapProxy.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapWsTopologyServiceSoapProxy.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/soapWsWorkunitsServiceSoapProxy.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapC.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapws_USCOREaccountServiceSoapProxy.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapWsAttributesServiceSoapProxy.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapWsDfuServiceSoapProxy.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapWsSMCServiceSoapProxy.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapWsTopologyServiceSoapProxy.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/soapWsWorkunitsServiceSoapProxy.cpp
 )
 
 SET (GEN_DEPS
@@ -15,21 +21,18 @@ SET (GEN_DEPS
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsAttributes.wsdl
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsDfu.wsdl
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsSMC.wsdl
-    ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsStore.wsdl 
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsTopology.wsdl
     ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsWorkunits.wsdl
 )
 
-SET(GSOAP "${CMAKE_BINARY_DIR}/vcpkg_installed/x86-windows/share/gsoap")
-SET(GSOAP_BIN "${GSOAP}/bin/win32")
-
 ADD_CUSTOM_COMMAND(
     OUTPUT ${GEN_SRCS}
     DEPENDS ${GEN_DEPS}
-    COMMAND ${GSOAP_BIN}/wsdl2h.exe -I${GSOAP} -I./hpcc -o Services.h Ws_Account.wsdl WsAttributes.wsdl WsDfu.wsdl WsSMC.wsdl WsTopology.wsdl WsWorkunits.wsdl
-    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP}/import Services.h
-    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP}/import -penv ./hpcc/env.h
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/6_4_0
+    COMMAND ${GSOAP_BIN}/wsdl2h.exe -I${GSOAP_DIR} -I${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/hpcc -o ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/Services.h ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/Ws_Account.wsdl ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsAttributes.wsdl ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsDfu.wsdl ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsSMC.wsdl ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsTopology.wsdl ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/WsWorkunits.wsdl
+    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP_DIR}/import ${CMAKE_CURRENT_BINARY_DIR}/6_4_0/Services.h
+    COMMAND ${GSOAP_BIN}/soapcpp2.exe -C -x -i -I${GSOAP_DIR}/import -I${CMAKE_CURRENT_SOURCE_DIR}/6_4_0 -penv ${CMAKE_CURRENT_SOURCE_DIR}/6_4_0/hpcc/env.h
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/6_4_0
 )
 
 SET ( SRCS
@@ -80,6 +83,8 @@ SET ( SRCS
     Group.h
     GSoapUtil.cpp
     GSoapUtil.h
+    Kel.cpp
+    Kel.h
     LocalFile.cpp
     LocalFile.h
     LocalResult.cpp
@@ -134,9 +139,7 @@ INCLUDE_DIRECTORIES (
     ../clib
     ../ecllib
 
-    ${WTL_INCLUDE_DIR}/include
-    ${Boost_INCLUDE_DIRS}
-
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${GSOAP_DIR}
     ${GSOAP_DIR}/extras
     ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet
@@ -148,7 +151,7 @@ ADD_MSVC_PRECOMPILED_HEADER("stdafx.h" "stdafx.cpp" SRCS)
 
 ADD_LIBRARY ( COMMS SHARED 
     ${SRCS}
-	${GEN_SRCS}
+    ${GEN_SRCS}
     comms.rc
 
     ${GSOAP_DIR}/stdsoap2.cpp
@@ -156,17 +159,31 @@ ADD_LIBRARY ( COMMS SHARED
     ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.h
 )
 
+# Suppress deprecated 'register' keyword warnings in generated gsoap code
+if(MSVC)
+    set_source_files_properties(
+        ${GEN_SRCS}
+        ${GSOAP_DIR}/stdsoap2.cpp
+        ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.cpp
+        PROPERTIES
+        COMPILE_FLAGS "/wd5033"
+    )
+endif()
+
 ADD_DEPENDENCIES ( COMMS
     CLIB
 )
 
-TARGET_LINK_LIBRARIES( COMMS
+TARGET_LINK_LIBRARIES( COMMS PRIVATE
     CLIB
     ECLLIB
-    msxml2.lib
-    comsupp.lib
-    authz.lib
-    ${Boost_LIBRARIES}
+    msxml2
+    comsupp
+    authz
+
+    Boost::thread
+    Boost::serialization
+    Boost::filesystem
 )
 
 INSTALL ( TARGETS COMMS RUNTIME DESTINATION bin )

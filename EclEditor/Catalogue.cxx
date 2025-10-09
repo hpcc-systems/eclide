@@ -18,12 +18,24 @@
 #include "Scintilla.h"
 #include "SciLexer.h"
 
-#include "LexerModule.h"
-#include "Catalogue.h"
+#include "lexlib/LexerModule.h"
+
+using namespace Lexilla;
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
 #endif
+
+// Forward declaration
+int Scintilla_LinkLexers();
+
+// Simple Catalogue class for managing custom lexers
+class Catalogue {
+public:
+    static const LexerModule *Find(int language);
+    static const LexerModule *Find(const char *languageName);
+    static void AddLexerModule(LexerModule *plm);
+};
 
 static std::vector<LexerModule *> lexerCatalogue;
 static int nextLanguage = SCLEX_AUTOMATIC+1;
@@ -53,11 +65,31 @@ const LexerModule *Catalogue::Find(const char *languageName) {
 }
 
 void Catalogue::AddLexerModule(LexerModule *plm) {
-    if (plm->GetLanguage() == SCLEX_AUTOMATIC) {
-        plm->language = nextLanguage;
-        nextLanguage++;
+    // In Scintilla 5, we can't directly modify the language field
+    // NOTE: Each LexerModule must have a unique language ID. If a LexerModule with the same language ID
+    // is already present in the catalogue, this function will print a warning and not add the duplicate.
+    for (std::vector<LexerModule *>::const_iterator it = lexerCatalogue.begin(); it != lexerCatalogue.end(); ++it) {
+        if ((*it)->GetLanguage() == plm->GetLanguage()) {
+            fprintf(stderr, "Warning: Attempt to add LexerModule with duplicate language ID (%d). Skipping.\n", plm->GetLanguage());
+            return;
+        }
     }
     lexerCatalogue.push_back(plm);
+}
+
+// Export C functions for use from atlscintilla.h
+extern "C" {
+    __declspec(dllexport) const LexerModule* Catalogue_Find(int language) {
+        return Catalogue::Find(language);
+    }
+    
+    __declspec(dllexport) Scintilla::ILexer5* Catalogue_CreateLexer(int language) {
+        const LexerModule* module = Catalogue::Find(language);
+        if (module) {
+            return module->Create();
+        }
+        return nullptr;
+    }
 }
 
 // Alternative historical name for Scintilla_LinkLexers

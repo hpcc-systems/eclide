@@ -14,13 +14,13 @@ typedef std::vector<StringBoolPair> WPathVector;
 class CEclMetaData : public clib::CLockableUnknown
 {
 protected:
-    boost::filesystem::wpath m_path;
+    boost::filesystem::path m_path;
     std::_tstring m_moduleLabel;
 public:
     BEGIN_CUNKNOWN
     END_CUNKNOWN(CUnknown)
 
-    const boost::filesystem::wpath & GetPath() { return m_path; }
+    const boost::filesystem::path & GetPath() { return m_path; }
     bool HasPath() { return m_path.size() > 0; }
 
     const TCHAR * GetValue(const Element & e, const std::_tstring &key, std::_tstring & retVal) {
@@ -43,7 +43,7 @@ public:
 class CEclFolder : public CEclMetaData
 {
 public:
-    CEclFolder(const boost::filesystem::wpath &path)
+    CEclFolder(const boost::filesystem::path &path)
     {
         m_path = path;
     }
@@ -256,7 +256,7 @@ public:
     BEGIN_CUNKNOWN
     END_CUNKNOWN(CUnknown)
 
-    CEclFile(const boost::filesystem::wpath path)
+    CEclFile(const boost::filesystem::path path)
     {
         m_path = path;
         m_defs.clear();
@@ -364,7 +364,7 @@ public:
     std::map<std::wstring, StlLinked<CEclDefinition> > m_funcs;
 
     bool CEclMeta::MetaExists(const std::_tstring & key);
-    void PopulateMeta(const boost::filesystem::wpath & fileOrDir, const std::_tstring & dottedPath = _T(""), int level = 0);
+    void PopulateMeta(const boost::filesystem::path & fileOrDir, const std::_tstring & dottedPath = _T(""), int level = 0);
     void Update(const WPathVector & folders, const std::wstring & xml);
     void PopulateMetaUpwards(const WPathVector & folders, const std::_tstring & path);
     CEclFile * CreateMetaFile(const std::_tstring & dottedPath, const std::_tstring & path = _T(""));

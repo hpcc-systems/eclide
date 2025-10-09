@@ -281,7 +281,7 @@ std::_tstring ExtensionWithoutDot(const std::_tstring & filename)
     std::_tstring ext = _T("");
     if (HasValidExtension(filename))
     {
-        ext = pathToWString(boost::filesystem::extension(filename));
+        ext = pathToWString(boost::filesystem::path(filename).extension());
         boost::algorithm::replace_all(ext, _T("."), _T(""));
     }
     return ext;
@@ -383,5 +383,5 @@ bool IsValidExtension(const std::_tstring & ext)
 }
 COMMS_API bool HasValidExtension(const std::_tstring & filename)
 {
-    return IsValidExtension(pathToWString(boost::filesystem::extension(filename)));
+    return IsValidExtension(pathToWString(boost::filesystem::path(filename).extension()));
 }

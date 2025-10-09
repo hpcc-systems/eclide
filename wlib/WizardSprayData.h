@@ -80,7 +80,7 @@ public:
 		switch(m_os)
 		{
 		case Topology::OS_WIN:
-			m_path_str = CA2T(m_path.native_file_string().c_str());
+			m_path_str = CA2T(m_path.string().c_str());
 			break;
 		case Topology::OS_LINUX:
 			m_path_str = CA2T(m_path.string().c_str());
@@ -92,11 +92,11 @@ public:
 	const TCHAR * GetParentPath() const
 	{
 		m_path_str = _T("");
-		boost::filesystem::path parent_path = m_path.branch_path();
+		boost::filesystem::path parent_path = m_path.parent_path();
 		switch(m_os)
 		{
 		case Topology::OS_WIN:
-			m_path_str = CA2T(parent_path.native_file_string().c_str());
+			m_path_str = CA2T(parent_path.string().c_str());
 			break;
 		case Topology::OS_LINUX:
 			m_path_str = CA2T(parent_path.string().c_str());
@@ -119,7 +119,7 @@ public:
 
 	void Up()
 	{
-		m_path = m_path.branch_path();
+		m_path = m_path.parent_path();
 		m_is_folder = true;
 	}
 
