@@ -6,13 +6,13 @@
 class CSyntaxFrame :  
     public CWtlDockablePane<CSyntaxView>,
     public ISyntaxSlot, 
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CWtlDockablePane<CSyntaxView> baseClass;
     typedef CSyntaxFrame thisClass;
 
 protected:
-    boost::signals::connection m_globalConnection;
+    boost::signals2::connection m_globalConnection;
 
 public:
     CSyntaxFrame();

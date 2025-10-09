@@ -29,14 +29,16 @@
 #include "Scintilla.h"
 #include "SciLexer.h"
 
-#include "PropSetSimple.h"
-#include "WordList.h"
-#include "LexAccessor.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "CharacterSet.h"
-#include "LexerModule.h"
-#include "OptionSet.h"
+#include "lexlib/PropSetSimple.h"
+#include "lexlib/WordList.h"
+#include "lexlib/LexAccessor.h"
+#include "lexlib/Accessor.h"
+#include "lexlib/StyleContext.h"
+#include "lexlib/CharacterSet.h"
+#include "lexlib/LexerModule.h"
+#include "lexlib/OptionSet.h"
+
+using namespace Lexilla;
 
 #define SET_LOWER "abcdefghijklmnopqrstuvwxyz"
 #define SET_UPPER "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

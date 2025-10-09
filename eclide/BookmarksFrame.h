@@ -7,13 +7,13 @@
 class CBookmarksFrame :
     public CWtlDockablePane<CBookmarksView>,
     public IBookmarksSlot,
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CWtlDockablePane<CBookmarksView> baseClass;
     typedef CBookmarksFrame thisClass;
 
 protected:
-    boost::signals::connection m_globalConnection;
+    boost::signals2::connection m_globalConnection;
 
 public:
     CBookmarksFrame();

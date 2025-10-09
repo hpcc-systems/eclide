@@ -158,7 +158,7 @@ void CPersistWindow::SetPath(const std::string & path, const boost::filesystem::
         GenerateTmpFile(folder);
     else
     {
-        m_filePath = boost::filesystem::path(path, boost::filesystem::native);
+        m_filePath = boost::filesystem::path(path);
         if (!(clib::filesystem::exists(m_filePath) && m_file.Open(m_filePath.string().c_str(), GENERIC_WRITE)))
             GenerateTmpFile(folder);
     }

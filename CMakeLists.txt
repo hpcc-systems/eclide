@@ -1,10 +1,48 @@
-cmake_minimum_required(VERSION 3.23.0)
+cmake_minimum_required(VERSION 3.25.1)
 
 set(VCPKG_FILES_DIR "${CMAKE_BINARY_DIR}" CACHE STRING "Folder for vcpkg download, build and installed files")
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 set(VCPKG_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg)
 set(VCPKG_INSTALLED_DIR "${VCPKG_FILES_DIR}/vcpkg_installed")
-set(VCPKG_INSTALL_OPTIONS "--downloads-root=${VCPKG_FILES_DIR}/vcpkg_downloads;--x-buildtrees-root=${VCPKG_FILES_DIR}/vcpkg_buildtrees;--x-packages-root=${VCPKG_FILES_DIR}/vcpkg_packages")
+set(VCPKG_INSTALL_OPTIONS "--x-abi-tools-use-exact-versions;--downloads-root=${VCPKG_FILES_DIR}/vcpkg_downloads;--x-buildtrees-root=${VCPKG_FILES_DIR}/vcpkg_buildtrees;--x-packages-root=${VCPKG_FILES_DIR}/vcpkg_packages")
+
+#  Check if vcpkg needs a bootstrap ---
+if(WIN32)
+    set(VCPKG_BOOTSTRAP_FILE "bootstrap-vcpkg.bat")
+else()
+    set(VCPKG_BOOTSTRAP_FILE "./bootstrap-vcpkg.sh")
+endif()
+file(SHA256 "${VCPKG_ROOT}/scripts/vcpkg-tool-metadata.txt" VCPKG_SCRIPT_HASH)
+set(VCPKG_HASH_FILE "${VCPKG_FILES_DIR}/bootstrap-vcpkg-hash.txt")
+
+set(SAVED_VCPKG_SCRIPT_HASH "")
+if(EXISTS "${VCPKG_HASH_FILE}")
+    file(READ "${VCPKG_HASH_FILE}" SAVED_VCPKG_SCRIPT_HASH)
+endif()
+
+if(NOT "${VCPKG_SCRIPT_HASH}" STREQUAL "${SAVED_VCPKG_SCRIPT_HASH}")
+    message( "Hash mismatch or hash file missing. Running ${VCPKG_BOOTSTRAP_FILE}..." )
+    execute_process(
+        COMMAND "${CMAKE_COMMAND}" -E chdir "${VCPKG_ROOT}" "${VCPKG_BOOTSTRAP_FILE}"
+        RESULT_VARIABLE BOOTSTRAP_RESULT
+    )
+    if(NOT BOOTSTRAP_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to execute ${VCPKG_BOOTSTRAP_FILE}")
+    endif()
+    file(WRITE "${VCPKG_HASH_FILE}" "${VCPKG_SCRIPT_HASH}")
+endif()
+
+if(NOT DEFINED VCPKG_INSTALLED_DIR)
+    set(VCPKG_INSTALLED_DIR "${CMAKE_BINARY_DIR}/vcpkg_installed")
+endif()
+if(NOT DEFINED VCPKG_TARGET_TRIPLET)
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(VCPKG_TARGET_TRIPLET "x64-windows")
+    else()
+        set(VCPKG_TARGET_TRIPLET "x86-windows")
+    endif()
+endif()
+set(VCPKG_ROOT_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
 
 PROJECT(ECLIDE)
 
@@ -23,35 +61,9 @@ SET (LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of LIB f
 
 # Third Party Libraries ---
 SET(CMAKE_INSTALL_MFC_LIBRARIES TRUE)
-FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options serialization signals thread)
-FIND_PATH(WTL_INCLUDE_DIR wtl/atlapp.h)
-FIND_PATH(VCPKG_ROOT_DIR include/wtl/atlapp.h)
-SET(GSOAP_DIR ${VCPKG_ROOT_DIR}/share/gsoap)
-FIND_PATH(SCINTILLA_INCLUDE_DIR Platform.h HINTS ${VCPKG_ROOT_DIR}/include/scintilla/include)
-FIND_PATH(SCINTILLA_SOURCE_DIR AutoComplete.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/src)
-FIND_PATH(SCINTILLA_LEXLIB_DIR Accessor.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/LexLib)
-FIND_PATH(SCINTILLA_WIN32_DIR PlatWin.cxx HINTS ${VCPKG_ROOT_DIR}/share/scintilla/Win32)
-FIND_PATH(BUGTRAP_DIR BugTrap.h HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/Client)
-FIND_PATH(BUGTRAP_ZLIB_DIR zlib.def HINTS ${VCPKG_ROOT_DIR}/share/bugtrap/source/zlib)
-
-MESSAGE("includes")
-MESSAGE("  - boost:  ${Boost_INCLUDE_DIRS}")
-MESSAGE("  - wtl:  ${WTL_INCLUDE_DIR}")
-MESSAGE("  - Scintilla:  ${SCINTILLA_INCLUDE_DIR}")
-
-MESSAGE("sources")
-MESSAGE("  - Scintilla")
-MESSAGE("    - src:  ${SCINTILLA_SOURCE_DIR}")
-MESSAGE("    - LexLib:  ${SCINTILLA_LEXLIB_DIR}")
-MESSAGE("    - Win32:  ${SCINTILLA_WIN32_DIR}")
-MESSAGE("  - gsoap")
-MESSAGE("    - dir:  ${GSOAP_DIR}")
-MESSAGE("  - bugtrap")
-MESSAGE("    - src:  ${BUGTRAP_DIR}")
-MESSAGE("    - zlib:  ${BUGTRAP_ZLIB_DIR}")
 
 # Compiler Flags  ---
-ADD_DEFINITIONS(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE)
+ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -DUNICODE -D_UNICODE)
 
 MACRO(ADD_MSVC_PRECOMPILED_HEADER PrecompiledHeader PrecompiledSource SourcesVar)
     IF(MSVC)

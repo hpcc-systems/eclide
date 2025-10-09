@@ -51,21 +51,21 @@ public:
         std::string product = CT2A(_product.c_str());
         try
         {
-            boost::asio::io_service io_service;
+            boost::asio::io_context io_service;
 
             // Get a list of endpoints corresponding to the server name.
             tcp::resolver resolver(io_service);
-            tcp::resolver::query query(url, "http");
-            tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-            tcp::resolver::iterator end;
+            tcp::resolver::results_type endpoints = resolver.resolve(url, "http");
 
             // Try each endpoint until we successfully establish a connection.
             tcp::socket socket(io_service);
             boost::system::error_code error = boost::asio::error::host_not_found;
-            while (error && endpoint_iterator != end)
+            for (const auto& endpoint : endpoints)
             {
                 socket.close();
-                socket.connect(*endpoint_iterator++, error);
+                socket.connect(endpoint, error);
+                if (!error)
+                    break;
             }
             if (error)
                 throw boost::system::system_error(error);
@@ -162,14 +162,13 @@ COMMS_API bool DNSLookup(std::_tstring & url) {
 
     //  localhost resolves in a strange way
     if (!boost::algorithm::iequals(host, _T("localhost"))) {
-        boost::asio::io_service io_service;
-        tcp::resolver resolver(io_service);
+        boost::asio::io_context io_context;
+        tcp::resolver resolver(io_context);
         try {
             std::string hostname = CT2A(host.c_str());
-            tcp::resolver::query query(hostname, "");
-            tcp::resolver::iterator found = resolver.resolve(query);
-            if (found != tcp::resolver::iterator()) {
-                tcp::endpoint end = *found;
+            tcp::resolver::results_type results = resolver.resolve(hostname, "");
+            if (!results.empty()) {
+                tcp::endpoint end = results.begin()->endpoint();
                 std::_tstring ipAddr = CA2T(end.address().to_string().c_str());
                 url = protocol + _T("://") + ipAddr + _T(":") + port + path;
                 return true;

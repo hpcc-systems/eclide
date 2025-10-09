@@ -8,7 +8,7 @@ const TCHAR *GetRegPathQB(const std::_tstring & overideVersion)
 {
 	static std::_tstring regPath;
 	boost::filesystem::path p = stringToPath(static_cast<const TCHAR *>(GetApplicationName()));
-	std::_tstring app = CA2T(boost::filesystem::basename(p).c_str());
+	std::_tstring app = CA2T(p.stem().string().c_str());
 	std::_tstring ver = overideVersion.length() ? overideVersion : static_cast<const TCHAR *>(GetApplicationVersion());
 	regPath = (boost::_tformat(_T("Software\\HPCC Systems\\%1%\\Ver %2%")) % app % ver).str();
 	return regPath.c_str();

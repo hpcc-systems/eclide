@@ -24,7 +24,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 #include <boost/tuple/tuple_io.hpp>
-#include <boost/signal.hpp>
+#include <boost/signals2.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -40,7 +40,6 @@
 #include <boost/crc.hpp>
 #include <boost/thread.hpp>
 #include <boost/variant.hpp>
-#include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
 #include <boost/serialization/map.hpp> 
 #include <boost/serialization/vector.hpp> 

@@ -28,6 +28,18 @@
 #include "Scintilla.h"
 #undef PLAT_WIN
 
+// Include SciLexer.h for lexer language IDs
+#include "SciLexer.h"
+
+// Include Lexilla headers for custom lexer support
+// ILexer.h must be included before LexerModule.h
+#include "ILexer.h"
+
+extern "C" {
+   // These are defined in ECLEDITOR.dll Catalogue.cxx
+   __declspec(dllimport) Scintilla::ILexer5* Catalogue_CreateLexer(int language);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CScintillaCtrl
@@ -59,7 +71,7 @@ public:
 
    static LPCTSTR GetLibraryName()
    {
-      return _T("ECLEDITOR.DLL");
+      return _T("Scintilla.DLL");
    }
 
    // Operations
@@ -1213,6 +1225,7 @@ public:
    }
    void SetText(LPCTSTR pstrText)
    {
+      ATLASSERT(::IsWindow(m_hWnd));
 	   BeginUndoAction();
 	   _SetText(CT2A(pstrText, CP_UTF8));
 	   EndUndoAction();
@@ -2144,13 +2157,34 @@ public:
    }
    void SetLexer(int iLexer)
    {
-      ATLASSERT(::IsWindow(m_hWnd));
-      ::SendMessage(m_hWnd, SCI_SETLEXER, (WPARAM) iLexer, 0L);
+      ATLASSERT(::IsWindow(m_hWnd));      
+      // Scintilla 5: Use SCI_SETILEXER with ILexer5 pointer
+      // For custom lexers, get from the Catalogue via ECLEDITOR.dll
+      Scintilla::ILexer5* lexer = Catalogue_CreateLexer(iLexer);
+      if (lexer) {
+         ::SendMessage(m_hWnd, SCI_SETILEXER, 0, (LPARAM)lexer);
+      } else {
+         // Lexer not found - this might happen if ECLEDITOR.dll isn't loaded
+         // or if the lexer ID is not registered. Set to null lexer.
+         ::SendMessage(m_hWnd, SCI_SETILEXER, 0, 0);
+      }
    }
    int GetLexer() const
    {
       ATLASSERT(::IsWindow(m_hWnd));
-      return (int) ::SendMessage(m_hWnd, SCI_GETLEXER, 0, 0L);
+      // Scintilla 5: Get the language name and map back to ID
+      char languageName[100] = {0};
+      ::SendMessage(m_hWnd, SCI_GETLEXERLANGUAGE, 0, (LPARAM)languageName);
+      
+      // Map language name back to lexer ID
+      if (strcmp(languageName, "general") == 0) return SCLEX_GENERAL;
+      if (strcmp(languageName, "ecl") == 0) return SCLEX_ECL;
+      if (strcmp(languageName, "salt") == 0) return SCLEX_SALT;
+      if (strcmp(languageName, "esdl") == 0) return SCLEX_ESDL;
+      if (strcmp(languageName, "kel") == 0) return SCLEX_KEL;
+      if (strcmp(languageName, "dud") == 0) return SCLEX_DUD;
+      
+      return SCLEX_NULL; // Unknown lexer
    }
    void Colourise(long lStart, long lEnd)
    {

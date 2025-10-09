@@ -36,7 +36,7 @@ enum ENTITY_TYPE
 __interface IWebPage;
 __interface IEntity;
 
-typedef boost::signal<void(IEntity *)> entity_signal_type;
+typedef boost::signals2::signal<void(IEntity *)> entity_signal_type;
 typedef entity_signal_type::slot_type entity_slot_type;
 
 typedef StlLinked<IEntity> IEntityAdapt;
@@ -70,7 +70,7 @@ __interface __declspec(uuid("78da599d-2bba-438c-8f32-014179c3aa2e")) IEntity : p
 	void AppendOutEdge(IEntity * other);
 	std::pair<IEntityVector::iterator, IEntityVector::iterator> GetOutEdges();
 
-	boost::signals::connection on_refresh_connect(const entity_slot_type& s);
+	boost::signals2::connection on_refresh_connect(const entity_slot_type& s);
 };
 
 typedef CUnknownT<IEntityVector> IEntityVectorCom;

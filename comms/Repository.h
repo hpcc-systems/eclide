@@ -136,7 +136,7 @@ COMMS_API IRepository * AttachModFileRepository(const TCHAR* url, bool bClearCac
 void ClearModFileRepositorySingletons();
 
 //an ansync rollback
-//typedef boost::signal<void(IAttributeVectorAdapt attrs, bool bOK)> async_rollback_complete_signal_type;
+//typedef boost::signals2::signal<void(IAttributeVectorAdapt attrs, bool bOK)> async_rollback_complete_signal_type;
 //typedef async_rollback_complete_signal_type::slot_type async_rollback_complete_slot_type;
 //COMMS_API void Rollback(const TCHAR* url, const TCHAR* user, const TCHAR* password, IAttributeVectorPtr & attributes, const async_rollback_complete_slot_type &s);
 

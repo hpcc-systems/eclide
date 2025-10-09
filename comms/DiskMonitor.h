@@ -6,8 +6,8 @@
 class COMMS_API CDiskMonitor : public clib::CLockableUnknown
 {
 protected:
-    boost::filesystem::wpath m_folder;
-    boost::filesystem::wpath m_file;
+    boost::filesystem::path m_folder;
+    boost::filesystem::path m_file;
 
     bool m_doMonitor;
     std::set<boost::filesystem::path> m_modified;

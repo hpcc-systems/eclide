@@ -109,9 +109,9 @@ const TCHAR * CheckExtension(const std::_tstring & path, const std::string & def
     try
     {
         boost::filesystem::path p = stringToPath(path);
-        std::string d = extension(p);
-        if (extension(p).length() == 0)
-            p = change_extension(p, defaultExt);
+        std::string d = p.extension().string();
+        if (p.extension().string().length() == 0)
+            p.replace_extension(defaultExt);
         ext = pathToWString(p);
         return ext.c_str();
     }
@@ -787,7 +787,7 @@ const TCHAR * GetActiveXDLLPath(const std::_tstring & clsID, std::_tstring & pat
 const TCHAR * GetActiveXDLLFolder(const std::_tstring & clsID, std::_tstring & folder)
 {
     boost::filesystem::path dllPath(stringToPath(GetActiveXDLLPath(clsID, folder))), dllFolder;
-    dllFolder = dllPath.branch_path();
+    dllFolder = dllPath.parent_path();
     folder = pathToWString(dllFolder);
     return folder.c_str();
 }

@@ -38,7 +38,7 @@ struct ContextState
 
 template<typename T>
 class CRepositoryFrameT :	public CRepositorySlotImpl, 
-                            public boost::signals::trackable
+                            public boost::signals2::trackable
 {
 
     std::_tstring m_copyPathStr;

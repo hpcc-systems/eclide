@@ -1,5 +1,8 @@
 PROJECT( AMT )
 
+find_package(boost_filesystem CONFIG REQUIRED)
+find_package(boost_serialization CONFIG REQUIRED)
+
 SET ( SRCS
     AMT.cpp
     AMT.h
@@ -47,8 +50,6 @@ INCLUDE_DIRECTORIES (
     ../dockingwindows
     ../EclEditor
 
-    ${Boost_INCLUDE_DIRS}
-    ${WTL_INCLUDE_DIR}
     ${SCINTILLA_INCLUDE_DIR}
     ${BUGTRAP_DIR}
 )
@@ -69,12 +70,17 @@ ADD_DEPENDENCIES ( AMT
     BUGTRAP
 )
 
-TARGET_LINK_LIBRARIES( AMT
+TARGET_LINK_LIBRARIES( AMT PRIVATE
     CLIB
+    ECLLIB
     COMMS
     WLIB
+    ECLEDITOR
     BUGTRAP
-    ${Boost_LIBRARIES}
+
+    msxml2
+    Boost::filesystem
+    Boost::serialization
 )
 
 SET_TARGET_PROPERTIES(AMT PROPERTIES LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")

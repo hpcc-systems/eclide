@@ -8,7 +8,7 @@ namespace Dali
 {
 __interface IGraph;
 
-typedef boost::signal<void(IGraph *)> graph_signal_type;
+typedef boost::signals2::signal<void(IGraph *)> graph_signal_type;
 typedef graph_signal_type::slot_type graph_slot_type;
 
 __interface IGraph : public IUnknown
@@ -26,7 +26,7 @@ __interface IGraph : public IUnknown
     bool IsComplete() const;
     bool Refresh();
 
-    boost::signals::connection on_refresh_connect(const graph_slot_type& s);
+    boost::signals2::connection on_refresh_connect(const graph_slot_type& s);
 };
 
 typedef StlLinked<IGraph> IGraphAdapt;

@@ -749,7 +749,7 @@ void thread_ItemClicked(CRepositoryCompareView * self, CTreeNode * tn, bool shif
             Dali::AttributeVector results;
             Dali::CEclExceptionVector errorResults;
             self->m_daliLHS.m_dali->GetDependancies(self->m_daliLHS.cluster.c_str(), self->m_daliLHS.queue.c_str(), ecl, attrNode->m_lhs->GetModuleQualifiedLabel(), attrNode->m_lhs->GetLabel(), results, errorResults);
-            BOOST_FOREACH(Dali::Attribute attr, results)
+            for (const auto& attr : results)
             {
                 info.m_depAttrs.push_back(self->m_repLHS->GetAttribute(attr.first.c_str(), attr.second.c_str(), CreateIAttributeECLType()));
             }

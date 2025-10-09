@@ -42,12 +42,18 @@
 //  ATL  ---
 #include "stdatl.h"
 
+// When MFC is loaded first, CString is in global namespace
+// but WTL 10.0 expects ATL::CString, so create an alias
+namespace ATL {
+	typedef ::CString CString;
+}
+
 //  WTL  ---
 #define _WTL_NO_AUTOMATIC_NAMESPACE // Add this line so you won't get ambiguous symbol errors..
 #define _WTL_NO_WTYPES
 #define _WTL_NO_CSTRING
-#define _CSTRING_NS
-#include <wtl/atlapp.h>
+#define _CSTRING_NS ATL
+#include <atlapp.h>
 extern WTL::CAppModule _Module;
 #include "stdwtl.h"
 
@@ -98,7 +104,7 @@ extern WTL::CAppModule _Module;
 
 // Scintilla  --
 #define SCI_NAMESPACE
-#include "platform.h"
+#include "Scintilla.h"
 #include "SciLexer.h"
 #include "atlscintilla.h"
 

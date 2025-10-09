@@ -24,7 +24,7 @@ class CBuilderDlg :
     public WTL::CWinDataExchange<CBuilderDlg>,
     public CCtlColor,
     public IMigrationCallback,
-    public boost::signals::trackable
+    public boost::signals2::trackable
 {
     typedef CBuilderDlg thisClass;
     typedef CEclDlgQBImpl<thisClass> baseClass;
@@ -59,7 +59,7 @@ protected:
     CComPtr<IAttribute> m_attribute;
     CComPtr<CAttributeMonitor> m_attrMonitor;
     CComPtr<IMigration> m_migrator;
-    boost::signals::connection m_sigConn;
+    boost::signals2::connection m_sigConn;
 
 public:
     WTL::CButtonMenuCtrl m_goButton;

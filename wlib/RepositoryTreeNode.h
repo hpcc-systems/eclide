@@ -127,11 +127,11 @@ public:
 typedef StlLinked<CRepositoryNode> CRepositoryNodeAdapt;
 typedef std::vector<CRepositoryNodeAdapt> CRepositoryNodeVector;
 
-class WLIB_API __declspec(uuid("8175886e-3d91-4c35-b365-15fcb706bf92")) CModuleNode : public CRepositoryBaseNode, public boost::signals::trackable
+class WLIB_API __declspec(uuid("8175886e-3d91-4c35-b365-15fcb706bf92")) CModuleNode : public CRepositoryBaseNode, public boost::signals2::trackable
 {
 protected:
     CComPtr<IModule> m_module;
-    boost::signals::connection m_sigConn;
+    boost::signals2::connection m_sigConn;
     bool m_nextExpandShouldBeFast;
 
 public:
@@ -168,11 +168,11 @@ enum SYNTAX_CHECK
     SYNTAX_CHECK_PASS
 };
 
-class WLIB_API __declspec(uuid("8175886e-3d91-4c35-b365-15fcb706bf93")) CAttributeNode : public CRepositoryBaseNode, public boost::signals::trackable
+class WLIB_API __declspec(uuid("8175886e-3d91-4c35-b365-15fcb706bf93")) CAttributeNode : public CRepositoryBaseNode, public boost::signals2::trackable
 {
 protected:
     CComPtr<IAttribute> m_attribute;
-    boost::signals::connection m_sigConn;
+    boost::signals2::connection m_sigConn;
     std::_tstring m_DispText;
     virtual void GenerateDispText();
     bool m_displayQualified;
@@ -239,7 +239,7 @@ public:
     virtual void ItemExpanding();
 };
 //  ===========================================================================
-class WLIB_API __declspec(uuid("893E784A-FD84-4449-8169-D380DB02C1F4")) CAttributeHistoryNode : public CRepositoryBaseNode, public boost::signals::trackable
+class WLIB_API __declspec(uuid("893E784A-FD84-4449-8169-D380DB02C1F4")) CAttributeHistoryNode : public CRepositoryBaseNode, public boost::signals2::trackable
 {
 protected:
     CComPtr<IAttributeHistory> m_attributeHistory;

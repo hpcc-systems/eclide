@@ -422,12 +422,12 @@ public:
         return m_vertex;
     }
 
-    boost::signals::connection Connect(const graph_slot_type& s)
+    boost::signals2::connection Connect(const graph_slot_type& s)
     {
         return m_signal.connect(s);
     }
 
-    void Disconnect(boost::signals::connection& sc)
+    void Disconnect(boost::signals2::connection& sc)
     {
         sc.disconnect();
     }
