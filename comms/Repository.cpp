@@ -73,7 +73,8 @@ public:
         _ns2__GetModules request;
         request.IncludeDeleted = false;
         CStringAssign Label(request.Label, m_repositoryLabel);
-        request.GetChecksum = GetChecksum;
+        bool getChecksumValue = GetChecksum;
+        request.GetChecksum = &getChecksumValue;
 
         _ns2__GetModulesResponse response;
         ESP_EXCEPTION_LOG3(response.Exceptions);
@@ -254,10 +255,10 @@ public:
         CStringArrayAssign<ns2__EspStringArray> TypeList(request.TypeList);
         for(IAttributeTypeVector::const_iterator itr = types.begin(); itr != types.end(); ++itr)
             TypeList.Append(itr->get()->GetRepositoryCode());
-        request.Sandboxed = sandboxed;
-        request.Locked = locked;
-        request.CheckedOut = checkedout;
-        request.Orphaned = orphaned;
+        request.Sandboxed = &sandboxed;
+        request.Locked = &locked;
+        request.CheckedOut = &checkedout;
+        request.Orphaned = &orphaned;
         request.GetText = false;
         request.GetMatchedLines = false;
 
@@ -506,8 +507,8 @@ public:
             return NULL;
         CStringAssign Type(request.Type, type->GetRepositoryCode());
         request.Version = &version;
-        request.GetSandbox = sandbox;
-        request.GetText = text;
+        request.GetSandbox = &sandbox;
+        request.GetText = &text;
         CStringAssign Label(request.Label, m_repositoryLabel);
 
         _ns2__GetAttributeResponse response;
@@ -542,7 +543,7 @@ public:
         CStringAssign Type(request.Type, type->GetRepositoryCode());
         request.Version = &version;
         request.GetSandbox = false;
-        request.GetText = text;
+        request.GetText = &text;
         CStringAssign Label(request.Label, m_repositoryLabel);
 
         _ns2__GetAttributeResponse response;
@@ -576,8 +577,9 @@ public:
             return NULL;
         CStringAssign Type(request.Type, type->GetRepositoryCode());
         request.Version = &version;
-        request.GetSandbox = sandbox;
-        request.GetText = true;
+        request.GetSandbox = &sandbox;
+        bool GetText = true;
+        request.GetText = &GetText;
         CStringAssign Label(request.Label, m_repositoryLabel);
 
         _ns2__GetAttributeResponse response;
