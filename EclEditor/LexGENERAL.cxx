@@ -79,7 +79,7 @@ static void strtrim(char* str) {
     while ((*buffer++ = *str++));  // remove leading spaces: K&R
 }
 
-static void ColouriseGENERALDocSensitive(unsigned int startPos, int length, int initStyle, WordList *keywordlists[], Accessor &styler) {
+static void ColouriseGENERALDocSensitive(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[], Accessor &styler) {
 
     WordList &headerList = *keywordlists[0];
     WordList &thorList = *keywordlists[1];
@@ -165,7 +165,7 @@ static void ColouriseGENERALDocSensitive(unsigned int startPos, int length, int 
     sc.Complete();
 }
 
-static void FoldGENERALDoc(unsigned int startPos, int length, int initStyle,
+static void FoldGENERALDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
     WordList *[], Accessor &styler) {
 }
 

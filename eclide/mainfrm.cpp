@@ -761,7 +761,11 @@ void CMainFrame::OnClose()
     CMDIFrameWndEx::OnClose();
 }
 
+#ifdef _WIN64
+void CMainFrame::OnTimer(UINT_PTR nID)
+#else
 void CMainFrame::OnTimer(UINT nID)
+#endif
 {
     switch (nID)
     {
@@ -2347,22 +2351,9 @@ void CMainFrame::PostStatus(const TCHAR* pStr, PANE pane)
 void CMainFrame::Send_RefreshStatusBar1(const TCHAR* pStr)
 {
     ATLASSERT(pStr != 0);
-    
-    va_list args;	
-    va_start(args, pStr);
-
-    TCHAR buffer[512 * sizeof(TCHAR)] = {0};
-
-    int nLen = wvsprintf(buffer, pStr, args);
-    nLen;
-
-    ATLASSERT(nLen < 512);
-    ATLASSERT(nLen == lstrlen(buffer));
 
     CMFCRibbonBaseElement * elem = m_wndStatusBar.GetExElement(0);
-    elem->SetText(buffer);
-
-    va_end(args);
+    elem->SetText(pStr);
 }
 
 void CMainFrame::operator()(SectionLabel * label)

@@ -93,7 +93,11 @@ struct IPinnedLabel
 			m_width=width;
 			m_icon=reinterpret_cast<HICON>(::SendMessage(hWnd, WM_GETICON, FALSE, 0));
 			if(m_icon == NULL)
+#ifdef _WIN64
+				m_icon = reinterpret_cast<HICON>(::GetClassLongPtr(hWnd, GCLP_HICONSM));
+#else
 				m_icon = reinterpret_cast<HICON>(::GetClassLong(hWnd, GCL_HICONSM));
+#endif
 			delete [] m_txt;
 			int len=0;
 			try

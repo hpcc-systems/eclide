@@ -14,7 +14,10 @@
                 "ECLIDE",
                 "--parallel"
             ],
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile",
             "presentation": {
                 "reveal": "always",
@@ -27,20 +30,14 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "build",
+                "${workspaceFolder}/build",
                 "--config",
                 "Debug",
                 "--target",
                 "ECLIDE",
                 "--parallel"
             ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "problemMatcher": "$msCompile",
             "presentation": {
                 "reveal": "always",

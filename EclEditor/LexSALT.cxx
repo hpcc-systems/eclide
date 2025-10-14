@@ -55,7 +55,7 @@ enum SALT_LINETYPE {
     LINETYPE_ARGUMENT
 };
 
-static void ColouriseSaltDoc(unsigned int startPos, int length, int initStyle, WordList *keywordlists[],
+static void ColouriseSaltDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
     Accessor &styler) {
 
     WordList &keywords0 = *keywordlists[0];  // Functions that start a line
@@ -188,7 +188,7 @@ static bool IsStreamCommentStyleSalt(int style) {
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldSaltDoc(unsigned int startPos, int length, int initStyle,
+static void FoldSaltDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
     WordList *[], Accessor &styler) {
     bool foldComment = true;
     bool foldPreprocessor = true;

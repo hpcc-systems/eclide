@@ -1,7 +1,6 @@
 /.vs
-/.vscode/*.json
-!/.vscode/settings.*
 /build
+/build-x64
 /comms/6_4_0
 !/comms/6_4_0/hpcc
 !/comms/6_4_0/gsoap_build.bat

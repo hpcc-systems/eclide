@@ -279,7 +279,11 @@ public:
 		int image = -1;
 		HICON hIcon=wnd.GetIcon(FALSE);
 		if(hIcon == NULL)
+#ifdef _WIN64
+			hIcon = (HICON) ::GetClassLongPtr(wnd.m_hWnd, GCLP_HICONSM);
+#else
 			hIcon = (HICON) ::GetClassLong(wnd.m_hWnd, GCL_HICONSM);
+#endif
 		if(hIcon)
 			image = m_images.AddIcon(hIcon);
 		index=m_tabs.InsertItem(index,ptxt,image,param);
