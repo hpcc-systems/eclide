@@ -54,6 +54,7 @@ option(EMBED_64BIT_CLIENTTOOLS "Embed 64bit client tools (OFF=32bit)" ON)
 
 # Build tag generation ---
 INCLUDE("${PROJECT_SOURCE_DIR}/version.cmake")
+set (HPCC_AUDIENCE "community" CACHE STRING "Audience of the build (community, enterprise, internal)")
 
 # Install Targets ---
 SET (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BIN files")
@@ -141,7 +142,6 @@ ENDIF ()
 MESSAGE ("-- 64bit architecture is ${ARCH64BIT}")
 
 SET(projname ${HPCC_PROJECT})
-SET(audience ${HPCC_AUDIENCE})
 SET(majorver ${HPCC_MAJOR})
 SET(minorver ${HPCC_MINOR})
 SET(point ${HPCC_POINT})
@@ -175,7 +175,7 @@ SET(CPACK_PACKAGE_CONTACT "HPCCSystems <ossdevelopment@lexisnexis.com>")
 SET(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.txt")
 SET(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/CPackReadMe.txt")
 
-SET(CPACK_RPM_PACKAGE_VERSION "${audience}")
+SET(CPACK_RPM_PACKAGE_VERSION "${HPCC_AUDIENCE}")
 IF(${ARCH64BIT} EQUAL 1)
     SET(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
 ELSE(${ARCH64BIT} EQUAL 1)
@@ -192,7 +192,7 @@ SET(CT_ARCH "i386")
 IF (EMBED_64BIT_CLIENTTOOLS)
   SET(CT_ARCH "x86_64")
 ENDIF ()
-find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-community_${version}-${stagever}${CMAKE_SYSTEM_NAME}-${CT_ARCH}.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform ${CMAKE_CURRENT_BINARY_DIR}/../.. ${CMAKE_CURRENT_BINARY_DIR}/.. )
+find_file(CLIENTTOOLS_PACKAGE_FILE "hpccsystems-clienttools-${HPCC_AUDIENCE}_${version}-${stagever}${CMAKE_SYSTEM_NAME}-${CT_ARCH}.exe" HINTS ${CMAKE_CURRENT_BINARY_DIR}/../HPCC-Platform ${CMAKE_CURRENT_BINARY_DIR}/../.. ${CMAKE_CURRENT_BINARY_DIR}/.. )
 MESSAGE ("-- Clienttools package: ${CLIENTTOOLS_PACKAGE_FILE}")
 if (CLIENTTOOLS_PACKAGE_FILE)
     install ( PROGRAMS ${CLIENTTOOLS_PACKAGE_FILE} DESTINATION tmp )
