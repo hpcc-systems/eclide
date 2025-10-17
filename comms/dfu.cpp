@@ -118,7 +118,8 @@ public:
         CStringAssign Owner(request.Owner, searchOwner); 
         request.FileSizeFrom = 0; 
         request.FileSizeTo = 0; 
-        request.FirstN = 99; 
+        int firstN = 99;
+        request.FirstN = &firstN; 
         request.PageSize = 0; 
         request.PageStartFrom = 0; 
         request.Descending = false; 

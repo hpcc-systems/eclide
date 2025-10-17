@@ -321,7 +321,7 @@ bool ProtectWorkunits(const CString & url, IWorkunitVector *workunits, bool prot
     _ns6__WUProtect request;
     ns6__EspStringArray espStringArray;
     request.Wuids = &espStringArray;
-    request.Protect = protect;
+    request.Protect = &protect;
     for (unsigned i = 0; i < workunits->size(); ++i)
         espStringArray.Item.push_back(stringPool.Create((*workunits)[i]->GetWuid()));
 
@@ -583,16 +583,26 @@ public:
 
         _ns6__WUInfo request;
         request.Wuid = stringPool.Create(pWuid);
-        request.IncludeApplicationValues = false;
-        request.IncludeDebugValues = false;
-        request.IncludeExceptions = false;
-        request.IncludeGraphs = true;
-        request.IncludeResults = false;
-        request.IncludeSourceFiles = false;
-        request.IncludeTimers = false;
-        request.IncludeVariables = false;
-        request.IncludeWorkflows = false;
-        request.SuppressResultSchemas = true;
+        bool includeApplicationValues = false;
+        request.IncludeApplicationValues = &includeApplicationValues;
+        bool includeDebugValues = false;
+        request.IncludeDebugValues = &includeDebugValues;
+        bool includeExceptions = false;
+        request.IncludeExceptions = &includeExceptions;
+        bool includeGraphs = true;
+        request.IncludeGraphs = &includeGraphs;
+        bool includeResults = false;
+        request.IncludeResults = &includeResults;
+        bool includeSourceFiles = false;
+        request.IncludeSourceFiles = &includeSourceFiles;
+        bool includeTimers = false;
+        request.IncludeTimers = &includeTimers;
+        bool includeVariables = false;
+        request.IncludeVariables = &includeVariables;
+        bool includeWorkflows = false;
+        request.IncludeWorkflows = &includeWorkflows;
+        bool suppressResultSchemas = true;
+        request.SuppressResultSchemas = &suppressResultSchemas;
 
         _ns6__WUInfoResponse response;
         ESP_EXCEPTION_LOG3(response.Exceptions);
@@ -795,7 +805,7 @@ public:
         request.AttributeName = stringPool.Create(attribute);
         request.Queue = stringPool.Create(queue);
         request.Cluster = stringPool.Create(cluster);
-        request.TimeToWait = _timeToWait;
+        request.TimeToWait = &_timeToWait;
 
         CStructPool<ns6__DebugValue> debugValuePool;
         ns6__ArrayOfDebugValue arrayOfDebugValues;
@@ -1077,17 +1087,28 @@ protected:
 
         _ns6__WUInfo request;
         request.Wuid = stringPool.Create(wuid);
-        request.IncludeApplicationValues = true;
-        request.IncludeDebugValues = true;
-        request.IncludeExceptions = true;
-        request.IncludeGraphs = true;
-        request.IncludeResults = true;
-        request.IncludeSourceFiles = false;
-        request.IncludeTimers = true;
-        request.IncludeVariables = false;
-        request.IncludeWorkflows = false;
-        request.TruncateEclTo64k = false;
-        request.SuppressResultSchemas = false;
+        bool includeApplicationValues = true;
+        request.IncludeApplicationValues = &includeApplicationValues;
+        bool includeDebugValues = true;
+        request.IncludeDebugValues = &includeDebugValues;
+        bool includeExceptions = true;
+        request.IncludeExceptions = &includeExceptions;
+        bool includeGraphs = true;
+        request.IncludeGraphs = &includeGraphs;
+        bool includeResults = true;
+        request.IncludeResults = &includeResults;
+        bool includeSourceFiles = false;
+        request.IncludeSourceFiles = &includeSourceFiles;
+        bool includeTimers = true;
+        request.IncludeTimers = &includeTimers;
+        bool includeVariables = false;
+        request.IncludeVariables = &includeVariables;
+        bool includeWorkflows = false;
+        request.IncludeWorkflows = &includeWorkflows;
+        bool truncateEclTo64k = false;
+        request.TruncateEclTo64k = &truncateEclTo64k;
+        bool suppressResultSchemas = false;
+        request.SuppressResultSchemas = &suppressResultSchemas;
 
         _ns6__WUInfoResponse response;
         ESP_EXCEPTION_LOG3(response.Exceptions);
@@ -1400,9 +1421,9 @@ protected:
         request.Queue = stringPool.Create(queue);
         request.Cluster = stringPool.Create(cluster);
         request.Snapshot = stringPool.Create(snapshot);
-        request.IncludeDependencies = includeDependancies;
+        request.IncludeDependencies = &includeDependancies;
         request.IncludeComplexity = &includeComplexity;
-        request.TimeToWait = timeToWait;
+        request.TimeToWait = &timeToWait;
 
         _ns6__WUCompileECLResponse response;
         ESP_EXCEPTION_LOG3(response.Exceptions);
