@@ -5,7 +5,7 @@ set ( HPCC_NAME "ECL IDE" )
 set ( HPCC_PROJECT "eclide" )
 set ( HPCC_MAJOR 9 )
 set ( HPCC_MINOR 12 )
-set ( HPCC_POINT 47 )
+set ( HPCC_POINT 49 )
 set ( HPCC_MATURITY "closedown" )
 set ( HPCC_SEQUENCE 0 )
 ###
