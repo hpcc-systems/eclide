@@ -54,3 +54,23 @@ cmake --build . --config MinSizeRel --parallel
 ```sh
 cmake --build . --config RelWithDebInfo --target package --parallel
 ```
+
+### Digitally signed installer
+
+Code signing requires a sibling `sign` folder containing the certificate:
+- `../sign/hpcc_code_signing.pfx` - The code signing certificate
+- `../sign/passphrase.txt` - The certificate passphrase (optional if provided via CMake)
+
+The installer will be automatically signed during the package build if the passphrase is available.
+
+Alternatively, you can pass the signing passphrase at configure time:
+```sh
+cmake .. -A Win32 -DSIGNING_CERTIFICATE_PASSPHRASE="your_passphrase"
+```
+
+If the passphrase is not provided via the command line, CMake will attempt to read it from `../sign/passphrase.txt`.
+
+To sign the package separately after building:
+```sh
+cmake --build . --config RelWithDebInfo --target SIGN --parallel
+```
