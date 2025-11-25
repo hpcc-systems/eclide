@@ -15,8 +15,12 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 option(EMBED_64BIT_CLIENTTOOLS "Embed 64bit client tools (OFF=32bit)" ON)
 
 # Build tag generation ---
+# Note: in versions >= 9.14.x HPCC_AUDIENCE was added to version.cmake, so need to work around that with the tmp var.
+set ( HPCC_AUDIENCE "community" CACHE STRING "Audience of the build (community, enterprise, internal)")
+set(_hpcc_audience_tmp "${HPCC_AUDIENCE}")
 INCLUDE("${PROJECT_SOURCE_DIR}/version.cmake")
-set (HPCC_AUDIENCE "community" CACHE STRING "Audience of the build (community, enterprise, internal)")
+set(HPCC_AUDIENCE "${_hpcc_audience_tmp}")
+unset(_hpcc_audience_tmp)
 
 # Install Targets ---
 SET (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Location of BIN files")
