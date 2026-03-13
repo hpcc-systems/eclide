@@ -17,16 +17,21 @@ on:
         description: 'CMake Build Type'
         required: false
         default: 'RelWithDebInfo'
-      cmake-configuration:
+      configure-preset:
         type: string
-        description: 'CMake Configuration'
+        description: 'CMake Configure Preset'
         required: false
-        default: ''
-      cmake-configuration-ex:
+        default: 'vcpkg-VS-17'
+      build-preset:
         type: string
-        description: 'CMake Configuration Extra'
+        description: 'CMake Build Preset'
         required: false
-        default: ''
+        default: 'VS-17-RelWithDebInfo'
+      build-dir:
+        type: string
+        description: 'Build directory name (relative to source)'
+        required: false
+        default: 'build'
       update-cache:
         type: boolean
         description: 'Update Cache'
@@ -105,8 +110,8 @@ jobs:
         id: cache
         with:
           path: |
-            ${{github.workspace}}/build/vcpkg_installed
-          key: vcpkg-${{ inputs.os }}-${{ steps.vars.outputs.vcpkg_sha_short }}
+            ${{github.workspace}}/eclide/${{ inputs.build-dir }}/vcpkg_installed
+          key: vcpkg-${{ inputs.os }}-${{ inputs.configure-preset }}-${{ steps.vars.outputs.vcpkg_sha_short }}
 
       - uses: hendrikmuhs/ccache-action@v1.2
         with:
@@ -119,13 +124,15 @@ jobs:
 
       - name: CMake Configure
         shell: "bash"
+        working-directory: ${{ github.workspace }}/eclide
         run: |
-          mkdir -p ${{ github.workspace }}/build
-          cmake -S ./eclide -B ./build -T host=x86 -A Win32 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
+          cmake --preset ${{ inputs.configure-preset }}
 
       - name: CMake Build
+        shell: "bash"
+        working-directory: ${{ github.workspace }}/eclide
         run: |
-          cmake --build ./build --config RelWithDebInfo --parallel ${{ inputs.upload-package == true && '--target package' || ''}}
+          cmake --build --preset ${{ inputs.build-preset }} ${{ inputs.upload-package == true && '--target package' || ''}}
 
       - name: Upload Package
         if: ${{ inputs.upload-package == true }}
@@ -133,12 +140,12 @@ jobs:
         with:
           name: ${{ inputs.asset-name }}
           path: |
-            ${{ github.workspace }}/build/*.exe
+            ${{ github.workspace }}/eclide/${{ inputs.build-dir }}/*.exe
           if-no-files-found: error
 
       - name: Upload Error Logs
         if: ${{ failure() || cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.os }}-eclide-logs
-          path: ${{ github.workspace }}/build/**/*.log
+          name: ${{ inputs.os }}-${{ inputs.configure-preset }}-eclide-logs
+          path: ${{ github.workspace }}/eclide/${{ inputs.build-dir }}/**/*.log

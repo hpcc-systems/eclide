@@ -266,9 +266,9 @@ public:
 	{
          assert(wnd.IsWindow());
 		PrepareForDock(wnd);
-		return InsertWndTab(index,wnd,reinterpret_cast<DWORD>(wnd.m_hWnd));
+		return InsertWndTab(index, wnd, reinterpret_cast<DWORD_PTR>(wnd.m_hWnd));
 	}
-	int InsertWndTab(int index,CWindow wnd,DWORD param)
+	int InsertWndTab(int index, CWindow wnd, DWORD_PTR param)
 	{
 		assert(index>=0);
 		assert(index<=m_tabs.GetItemCount());
@@ -279,7 +279,7 @@ public:
 		int image = -1;
 		HICON hIcon=wnd.GetIcon(FALSE);
 		if(hIcon == NULL)
-			hIcon = (HICON) ::GetClassLong(wnd.m_hWnd, GCL_HICONSM);
+			hIcon = (HICON) ::GetClassLongPtr(wnd.m_hWnd, GCLP_HICONSM);
 		if(hIcon)
 			image = m_images.AddIcon(hIcon);
 		index=m_tabs.InsertItem(index,ptxt,image,param);
@@ -318,7 +318,7 @@ public:
 	}
     HWND GetItemHWND(int index) const
     {
-        return reinterpret_cast<HWND>(m_tabs.GetItemData(index));
+		return reinterpret_cast<HWND>(m_tabs.GetItemData(index));
     }
 
 	void AdjustCurentItem()

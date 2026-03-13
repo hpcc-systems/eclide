@@ -7,14 +7,15 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build",
-                "--config",
-                "RelWithDebInfo",
+                "--preset",
+                "VS-17-x64-RelWithDebInfo",
                 "--target",
-                "ECLIDE",
-                "--parallel"
+                "ECLIDE"
             ],
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile",
             "presentation": {
                 "reveal": "always",
@@ -27,20 +28,12 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "build",
-                "--config",
-                "Debug",
+                "--preset",
+                "VS-17-x64-Debug",
                 "--target",
-                "ECLIDE",
-                "--parallel"
+                "ECLIDE"
             ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "problemMatcher": "$msCompile",
             "presentation": {
                 "reveal": "always",
@@ -53,10 +46,8 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build",
-                "--config",
-                "RelWithDebInfo",
-                "--parallel"
+                "--preset",
+                "VS-17-x64-RelWithDebInfo"
             ],
             "group": "build",
             "problemMatcher": "$msCompile",
@@ -70,12 +61,8 @@
             "type": "shell",
             "command": "cmake",
             "args": [
-                "-A",
-                "x64",
-                "-S",
-                "${workspaceFolder}",
-                "-B",
-                "${workspaceFolder}/build"
+                "--preset",
+                "vcpkg-VS-17-x64"
             ],
             "group": "build",
             "problemMatcher": "$msCompile",
@@ -90,9 +77,93 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build",
-                "--config",
-                "RelWithDebInfo",
+                "--preset",
+                "VS-17-x64-RelWithDebInfo",
+                "--target",
+                "clean"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build ECLIDE (Win32 RelWithDebInfo)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "VS-17-RelWithDebInfo",
+                "--target",
+                "ECLIDE"
+            ],
+            "group": "build",
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build ECLIDE (Win32 Debug)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "VS-17-Debug",
+                "--target",
+                "ECLIDE"
+            ],
+            "group": "build",
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build All (Win32 RelWithDebInfo)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "VS-17-RelWithDebInfo"
+            ],
+            "group": "build",
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Configure CMake (Win32)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--preset",
+                "vcpkg-VS-17"
+            ],
+            "group": "build",
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Clean Build (Win32)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "VS-17-RelWithDebInfo",
                 "--target",
                 "clean"
             ],

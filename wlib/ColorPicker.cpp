@@ -452,7 +452,7 @@ BOOL CColorPicker::ShowPicker()
 	//
 
 	_AtlWinModule.AddCreateWndData (&m_wndPicker .m_thunk .cd, &m_wndPicker);
-	m_wndPicker .m_hWnd = ::CreateWindowEx (0, (LPCTSTR) MAKELONG (atom, 0), 
+	m_wndPicker .m_hWnd = ::CreateWindowEx (0, MAKEINTATOM(atom), 
 		_T (""),  WS_POPUP, m_Position.x, m_Position.y, 100, 100,
 		m_hwndParent, NULL, _AtlBaseModule.GetModuleInstance(), NULL);
 
@@ -611,7 +611,7 @@ BOOL CColorPicker::ShowPicker()
 	// Unregister our class
 	//
 
-	::UnregisterClass ((LPCTSTR) MAKELONG (atom, 0),
+	::UnregisterClass (MAKEINTATOM(atom),
 		_AtlBaseModule .GetModuleInstance());
 	return fOked;
 }

@@ -92,7 +92,7 @@ static void strtrim(char* str) {
     while ((*buffer++ = *str++));  // remove leading spaces: K&R
 }
 
-static void ColouriseESDLDocSensitive(unsigned int startPos, int length, int initStyle, WordList *keywordlists[],
+static void ColouriseESDLDocSensitive(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[],
     Accessor &styler) {
 
     WordList &listStructures = *keywordlists[0];
@@ -221,7 +221,7 @@ static bool IsStreamCommentStyle(int style) {
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldESDLDoc(unsigned int startPos, int length, int initStyle,
+static void FoldESDLDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
     WordList *[], Accessor &styler) {
     bool foldComment = true;
     bool foldPreprocessor = true;

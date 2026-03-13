@@ -107,7 +107,7 @@ static std::string GetRestOfLine(LexAccessor &styler, int start, bool allowSpace
     return restOfLine;
 }
 
-static void ColouriseDUDDocSensitive(unsigned int startPos, int length, int initStyle, WordList *keywordlists[], Accessor &styler) {
+static void ColouriseDUDDocSensitive(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordlists[], Accessor &styler) {
 
     WordList &listSections = *keywordlists[0];
     WordList &listPermissions = *keywordlists[1];
@@ -332,7 +332,7 @@ static bool IsStreamCommentStyle(int style) {
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldDUDDoc(unsigned int startPos, int length, int initStyle,
+static void FoldDUDDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
     WordList *[], Accessor &styler) {
     bool foldComment = true;
     bool foldPreprocessor = true;

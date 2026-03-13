@@ -330,7 +330,7 @@ int CSourceCtrl::HandleNotify(SCNotification *notification)
                 char message[200];
                 if (INVALID_POSITION == notification->position) 
                 {
-                    sprintf(message, "%0d (%0d,%0d)", notification->position, notification->x, notification->y);
+                    sprintf(message, "%td (%0d,%0d)", static_cast<ptrdiff_t>(notification->position), notification->x, notification->y);
                 } 
                 else 
                 {

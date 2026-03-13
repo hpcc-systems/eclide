@@ -2,13 +2,11 @@
 
 ##  Building on windows
 
-### Prerequisits 
+### Prerequisites
 * git (optional - needed to clone sources)
-* cmake
-* Visual Studio 2017 / 2019 / 2022
+* cmake 3.23 or later
+* Visual Studio 2019 or 2022 (with C++ workload)
 * NSIS (optional - needed to create install package)
-
-**Note:**  The following instructions assume you are using the `git bash` terminal.  If you are using the `cmd` terminal, replace `rm` with `del` and `mkdir` with `md`.
 
 ### Clone the repository
 ```sh
@@ -22,37 +20,54 @@ git submodule update --init --recursive
 rm ./vcpkg/vcpkg.exe
 ```
 
-### Create a build folder (eclide/build)
+### Configure
+
+CMake presets are provided for both Win32 (x86) and x64 targets using Visual Studio 2019 or 2022.
+
+#### Visual Studio 2022
+
 ```sh
-mkdir build
-cd build
+# Win32
+cmake --preset vcpkg-VS-17
+
+# x64
+cmake --preset vcpkg-VS-17-x64
 ```
 
-### Generate Visual Studio Solution
+#### Visual Studio 2019
+
 ```sh
-cmake .. -A Win32
-...or...
-cmake .. -G "Visual Studio 16 2019" -A Win32
-...or...
-cmake .. -G "Visual Studio 17 2022" -A Win32
+# Win32
+cmake --preset vcpkg-VS-16
+
+# x64
+cmake --preset vcpkg-VS-16-x64
 ```
 
 ### Build
+
 ```sh
-cmake --build . --config RelWithDebInfo --parallel
+# Win32 RelWithDebInfo
+cmake --build --preset VS-17-RelWithDebInfo
+
+# Win32 Debug
+cmake --build --preset VS-17-Debug
+
+# x64 RelWithDebInfo
+cmake --build --preset VS-17-x64-RelWithDebInfo
+
+# x64 Debug
+cmake --build --preset VS-17-x64-Debug
 ```
 
-Supported Builds
+To build only the `ECLIDE` target, add `--target ECLIDE`:
 ```sh
-cmake --build . --config Debug --parallel
-cmake --build . --config RelWithDebInfo --parallel
-cmake --build . --config Release --parallel
-cmake --build . --config MinSizeRel --parallel
+cmake --build --preset VS-17-x64-RelWithDebInfo --target ECLIDE
 ```
 
 ### Create Installer
 ```sh
-cmake --build . --config RelWithDebInfo --target package --parallel
+cmake --build --preset VS-17-x64-RelWithDebInfo --target package
 ```
 
 ### Digitally signed installer
@@ -65,12 +80,12 @@ The installer will be automatically signed during the package build if the passp
 
 Alternatively, you can pass the signing passphrase at configure time:
 ```sh
-cmake .. -A Win32 -DSIGNING_CERTIFICATE_PASSPHRASE="your_passphrase"
+cmake --preset vcpkg-VS-17-x64 -DSIGNING_CERTIFICATE_PASSPHRASE="your_passphrase"
 ```
 
 If the passphrase is not provided via the command line, CMake will attempt to read it from `../sign/passphrase.txt`.
 
 To sign the package separately after building:
 ```sh
-cmake --build . --config RelWithDebInfo --target SIGN --parallel
+cmake --build --preset VS-17-x64-RelWithDebInfo --target SIGN
 ```
