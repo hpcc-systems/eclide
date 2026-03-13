@@ -1,6 +1,4 @@
 /.vs
-/.vscode/*.json
-!/.vscode/settings.*
 /build
 /build-x64
 /comms/6_4_0

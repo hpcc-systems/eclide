@@ -33,14 +33,8 @@ void CListRow::GetDispInfo(NMLVDISPINFO* plvdi)
     if(plvdi->item.mask & LVIF_TEXT){
         CString txt;
         GetText(plvdi->item.iSubItem, txt);
-        HANDLE hr = _tcscpy(plvdi->item.pszText, txt);
-        if(FAILED(hr))
-        { 
-        // TODO: Write an error handler. MAX_COUNT
-        // is a user-defined value. You must not enter                                
-        // more characters than specified by MAX_COUNT or  
-        // the text will be truncated.
-        }
+        if (plvdi->item.pszText != NULL && plvdi->item.cchTextMax > 0)
+            _tcsncpy_s(plvdi->item.pszText, plvdi->item.cchTextMax, txt, _TRUNCATE);
     }
 
 }
