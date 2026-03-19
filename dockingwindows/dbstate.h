@@ -67,7 +67,17 @@ protected:
 ///////////////////////////////////////////////////
 						}
 						else
-							dpos.weight=reinterpret_cast<DWORD>(dpos.dockPos.hdr.hBar) | 0xe0000000;
+						{
+							// Fold handle pointer down to 29-bit ordering key for weight sorting
+							ULONG_PTR hBarBits = reinterpret_cast<ULONG_PTR>(dpos.dockPos.hdr.hBar);
+							DWORD foldedBar = 0;
+#ifdef _WIN64
+							foldedBar = static_cast<DWORD>(((hBarBits >> 4) ^ (hBarBits >> 33)) & 0x1fffffff);
+#else
+							foldedBar = static_cast<DWORD>((hBarBits >> 4) & 0x1fffffff);
+#endif
+							dpos.weight = foldedBar | 0xe0000000;
+						}
 						m_queue.push(dpos);
 					}
 					else

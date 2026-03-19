@@ -389,7 +389,7 @@ protected:
 
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnClose();
-    afx_msg void OnTimer(UINT nID);
+    afx_msg void OnTimer(UINT_PTR nID);
     afx_msg void OnActivateApp(BOOL bActive, DWORD dwThreadID);
     afx_msg void OnSize(UINT nType, int cx, int cy);
 

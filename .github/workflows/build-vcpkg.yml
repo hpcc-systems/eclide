@@ -44,6 +44,19 @@ jobs:
     uses: ./.github/workflows/build-gh_runner.yml
     with:
       os: windows-2022
+      configure-preset: vcpkg-VS-17
+      build-preset: VS-17-RelWithDebInfo
+      build-dir: build
+    secrets: inherit
+
+  build-gh_runner-windows-2022-x64:
+    if: ${{ contains('pull_request,push', github.event_name) }}
+    uses: ./.github/workflows/build-gh_runner.yml
+    with:
+      os: windows-2022
+      configure-preset: vcpkg-VS-17-x64
+      build-preset: VS-17-x64-RelWithDebInfo
+      build-dir: build-x64
     secrets: inherit
 
   build-gh_runner-windows-2025:
@@ -51,4 +64,17 @@ jobs:
     uses: ./.github/workflows/build-gh_runner.yml
     with:
       os: windows-2025
+      configure-preset: vcpkg-VS-17
+      build-preset: VS-17-RelWithDebInfo
+      build-dir: build
+    secrets: inherit
+
+  build-gh_runner-windows-2025-x64:
+    if: ${{ contains('pull_request,push', github.event_name) }}
+    uses: ./.github/workflows/build-gh_runner.yml
+    with:
+      os: windows-2025
+      configure-preset: vcpkg-VS-17-x64
+      build-preset: VS-17-x64-RelWithDebInfo
+      build-dir: build-x64
     secrets: inherit

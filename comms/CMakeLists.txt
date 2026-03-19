@@ -166,7 +166,7 @@ if(MSVC)
         ${GSOAP_DIR}/stdsoap2.cpp
         ${GSOAP_DIR}/mod_gsoap/gsoap_win/wininet/gsoapWinInet.cpp
         PROPERTIES
-        COMPILE_FLAGS "/wd5033"
+        COMPILE_FLAGS "/wd5033 /bigobj"
     )
 endif()
 

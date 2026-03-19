@@ -115,13 +115,13 @@ public:
 	//
 	// From MFC CFileDialog
 	//
-	DWORD GetStartPosition () const
+	DWORD_PTR GetStartPosition () const
 	{
-		return reinterpret_cast < DWORD > ( m_ofn.lpstrFile );
+		return reinterpret_cast<DWORD_PTR>(m_ofn.lpstrFile);
 	}
 
 	// Returns the next filename from the group selected in the dialog box. 
-	//	path of the filename includes the file’s title plus the entire 
+	//	path of the filename includes the fileï¿½s title plus the entire 
 	//	directory path. 
 	//
 	// You can use GetNextPathName in a forward iteration loop if you establish 
@@ -129,7 +129,7 @@ public:
 	//
 	// From MFC CFileDialog
 	//
-	_CSTRING_NS::CString GetNextPathName ( DWORD & dwPos ) const
+	_CSTRING_NS::CString GetNextPathName (DWORD_PTR & dwPos) const
 	{
 		BOOL bExplorer = m_ofn.Flags & OFN_EXPLORER;
 		TCHAR chDelimiter;
@@ -138,7 +138,7 @@ public:
 		else
 			chDelimiter = ' ';
 		
-		LPTSTR lpsz = reinterpret_cast < LPTSTR > ( dwPos );
+		LPTSTR lpsz = reinterpret_cast<LPTSTR>(dwPos);
 		if (lpsz == m_ofn.lpstrFile) // first time
 		{
 			if ((m_ofn.Flags & OFN_ALLOWMULTISELECT) == 0)
@@ -187,7 +187,7 @@ public:
 			if (*lpsz == '\0') // if double terminated then done
 				dwPos = NULL;
 			else
-				dwPos = reinterpret_cast < DWORD > ( lpsz );
+				dwPos = reinterpret_cast<DWORD_PTR>(lpsz);
 		}
 		
 		// only add '\\' if it is needed
