@@ -22,7 +22,17 @@ rm ./vcpkg/vcpkg.exe
 
 ### Configure
 
-CMake presets are provided for both Win32 (x86) and x64 targets using Visual Studio 2019 or 2022.
+CMake presets are provided for both Win32 (x86) and x64 targets using Visual Studio 2019, 2022, or 2026.
+
+#### Visual Studio 2026
+
+```sh
+# Win32
+cmake --preset vcpkg-VS-18
+
+# x64
+cmake --preset vcpkg-VS-18-x64
+```
 
 #### Visual Studio 2022
 
@@ -48,26 +58,26 @@ cmake --preset vcpkg-VS-16-x64
 
 ```sh
 # Win32 RelWithDebInfo
-cmake --build --preset VS-17-RelWithDebInfo
+cmake --build --preset VS-18-RelWithDebInfo
 
 # Win32 Debug
-cmake --build --preset VS-17-Debug
+cmake --build --preset VS-18-Debug
 
 # x64 RelWithDebInfo
-cmake --build --preset VS-17-x64-RelWithDebInfo
+cmake --build --preset VS-18-x64-RelWithDebInfo
 
 # x64 Debug
-cmake --build --preset VS-17-x64-Debug
+cmake --build --preset VS-18-x64-Debug
 ```
 
 To build only the `ECLIDE` target, add `--target ECLIDE`:
 ```sh
-cmake --build --preset VS-17-x64-RelWithDebInfo --target ECLIDE
+cmake --build --preset VS-18-x64-RelWithDebInfo --target ECLIDE
 ```
 
 ### Create Installer
 ```sh
-cmake --build --preset VS-17-x64-RelWithDebInfo --target package
+cmake --build --preset VS-18-x64-RelWithDebInfo --target package
 ```
 
 ### Digitally signed installer
@@ -80,12 +90,12 @@ The installer will be automatically signed during the package build if the passp
 
 Alternatively, you can pass the signing passphrase at configure time:
 ```sh
-cmake --preset vcpkg-VS-17-x64 -DSIGNING_CERTIFICATE_PASSPHRASE="your_passphrase"
+cmake --preset vcpkg-VS-18-x64 -DSIGNING_CERTIFICATE_PASSPHRASE="your_passphrase"
 ```
 
 If the passphrase is not provided via the command line, CMake will attempt to read it from `../sign/passphrase.txt`.
 
 To sign the package separately after building:
 ```sh
-cmake --build --preset VS-17-x64-RelWithDebInfo --target SIGN
+cmake --build --preset VS-18-x64-RelWithDebInfo --target SIGN
 ```

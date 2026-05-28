@@ -87,6 +87,24 @@
             "hidden": true
         },
         {
+            "name": "VS-18",
+            "generator": "Visual Studio 18 2026",
+            "architecture": {
+                "strategy": "set",
+                "value": "Win32"
+            },
+            "hidden": true
+        },
+        {
+            "name": "VS-18-x64",
+            "generator": "Visual Studio 18 2026",
+            "architecture": {
+                "strategy": "set",
+                "value": "x64"
+            },
+            "hidden": true
+        },
+        {
             "name": "vcpkg-Ninja",
             "inherits": [
                 "vcpkg",
@@ -126,6 +144,20 @@
             "inherits": [
                 "vcpkg-x64",
                 "VS-17-x64"
+            ]
+        },
+        {
+            "name": "vcpkg-VS-18",
+            "inherits": [
+                "vcpkg",
+                "VS-18"
+            ]
+        },
+        {
+            "name": "vcpkg-VS-18-x64",
+            "inherits": [
+                "vcpkg-x64",
+                "VS-18-x64"
             ]
         }
     ],
@@ -168,6 +200,34 @@
         {
             "name": "VS-17-x64-RelWithDebInfo",
             "configurePreset": "vcpkg-VS-17-x64",
+            "configuration": "RelWithDebInfo",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-18-Debug",
+            "configurePreset": "vcpkg-VS-18",
+            "configuration": "Debug",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-18-x64-Debug",
+            "configurePreset": "vcpkg-VS-18-x64",
+            "configuration": "Debug",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-18-RelWithDebInfo",
+            "configurePreset": "vcpkg-VS-18",
+            "configuration": "RelWithDebInfo",
+            "jobs": 4,
+            "nativeToolOptions": ["-m"]
+        },
+        {
+            "name": "VS-18-x64-RelWithDebInfo",
+            "configurePreset": "vcpkg-VS-18-x64",
             "configuration": "RelWithDebInfo",
             "jobs": 4,
             "nativeToolOptions": ["-m"]
