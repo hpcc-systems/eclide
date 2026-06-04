@@ -48,7 +48,7 @@ BOOL CAMTApp::InitInstance()
 	HRESULT hRes = _Module.Init(NULL, m_hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
 
-#ifndef _DEBUG
+#if !defined(_DEBUG) && defined(USE_BUGTRAP)
 	// Setup exception handler
 	BT_SetAppName(_T("Attribute Migration Tool"));
 	BT_SetSupportEMail(_T("gsmith@seisint.com"));

@@ -124,7 +124,9 @@ extern WTL::CAppModule _Module;
 #include "stdboost.h"
 
 //  BugTrapper --
+#ifdef USE_BUGTRAP
 #include "BugTrap.h"
+#endif
 
 //  MFC Command Update Helper
 #define	UPDATEUI(cui, id, val)	if (cui->m_nID == id){\

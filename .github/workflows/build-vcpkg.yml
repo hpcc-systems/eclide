@@ -8,7 +8,8 @@ on:
         options:
           [
             "windows-2022-x86",
-            "windows-2022-x64"
+            "windows-2022-x64",
+            "windows-2022-arm64"
           ]
         description: 'Operating System'
         required: false
@@ -38,7 +39,10 @@ jobs:
     if: ${{ contains('workflow_dispatch', github.event_name) }}
     uses: ./.github/workflows/build-gh_runner.yml
     with:
-      os: ${{ inputs.os }}
+      os: windows-2022
+      configure-preset: ${{ inputs.os == 'windows-2022-arm64' && 'vcpkg-VS-17-arm64' || inputs.os == 'windows-2022-x64' && 'vcpkg-VS-17-x64' || 'vcpkg-VS-17' }}
+      build-preset: ${{ inputs.os == 'windows-2022-arm64' && 'VS-17-arm64-RelWithDebInfo' || inputs.os == 'windows-2022-x64' && 'VS-17-x64-RelWithDebInfo' || 'VS-17-RelWithDebInfo' }}
+      build-dir: ${{ inputs.os == 'windows-2022-arm64' && 'build-arm64' || inputs.os == 'windows-2022-x64' && 'build-x64' || 'build' }}
     secrets: inherit
 
   build-gh_runner-windows-2022-x86:
@@ -59,4 +63,14 @@ jobs:
       configure-preset: vcpkg-VS-17-x64
       build-preset: VS-17-x64-RelWithDebInfo
       build-dir: build-x64
+    secrets: inherit
+
+  build-gh_runner-windows-2022-arm64:
+    if: ${{ contains('pull_request,push', github.event_name) }}
+    uses: ./.github/workflows/build-gh_runner.yml
+    with:
+      os: windows-2022
+      configure-preset: vcpkg-VS-17-arm64
+      build-preset: VS-17-arm64-RelWithDebInfo
+      build-dir: build-arm64
     secrets: inherit

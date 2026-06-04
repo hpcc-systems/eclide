@@ -43,6 +43,26 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build-x64/bin/Debug",
             "environment": []
+        },
+        {
+            "name": "Launch ECLIDE arm64",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build-arm64/bin/RelWithDebInfo/eclide.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build-arm64/bin/RelWithDebInfo",
+            "environment": []
+        },
+        {
+            "name": "Launch ECLIDE arm64 (Debug)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build-arm64/bin/Debug/eclide.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build-arm64/bin/Debug",
+            "environment": []
         }
     ]
 }

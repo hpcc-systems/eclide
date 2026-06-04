@@ -52,6 +52,17 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 # General Options ---
 option(EMBED_64BIT_CLIENTTOOLS "Embed 64bit client tools (OFF=32bit)" ON)
 
+set(ECLIDE_DEFAULT_ENABLE_BUGTRAP ON)
+if(
+    VCPKG_TARGET_TRIPLET MATCHES "^[Aa][Rr][Mm]"
+    OR CMAKE_SYSTEM_PROCESSOR MATCHES "^[Aa][Rr][Mm]"
+    OR CMAKE_GENERATOR_PLATFORM MATCHES "^[Aa][Rr][Mm]"
+    OR CMAKE_VS_PLATFORM_NAME MATCHES "^[Aa][Rr][Mm]"
+)
+    set(ECLIDE_DEFAULT_ENABLE_BUGTRAP OFF)
+endif()
+option(ENABLE_BUGTRAP "Enable BugTrap crash handling support" ${ECLIDE_DEFAULT_ENABLE_BUGTRAP})
+
 # Build tag generation ---
 # Note: in versions >= 9.14.x HPCC_AUDIENCE was added to version.cmake, so need to work around that with the tmp var.
 set ( HPCC_AUDIENCE "community" CACHE STRING "Audience of the build (community, enterprise, internal)")
@@ -94,8 +105,10 @@ ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 # Projects  ---
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-ADD_SUBDIRECTORY (BugTrap)
-SET_PROPERTY(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
+if(ENABLE_BUGTRAP)
+    ADD_SUBDIRECTORY (BugTrap)
+    SET_PROPERTY(TARGET BUGTRAP PROPERTY FOLDER "3rdParty")
+endif()
 ADD_SUBDIRECTORY (en_us)
 ADD_SUBDIRECTORY (clib)
 ADD_SUBDIRECTORY (EclLib)

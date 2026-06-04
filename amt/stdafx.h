@@ -121,7 +121,9 @@ extern WTL::CAppModule _Module;
 #include "stdboost.h"
 
 //  BugTrapper --
+#ifdef USE_BUGTRAP
 #include "BugTrap.h"
+#endif
 
 extern const TCHAR *g_szConfigSection; //=_T("Configs");
 

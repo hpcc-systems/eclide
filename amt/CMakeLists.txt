@@ -51,8 +51,11 @@ INCLUDE_DIRECTORIES (
     ../EclEditor
 
     ${SCINTILLA_INCLUDE_DIR}
-    ${BUGTRAP_DIR}
 )
+
+if(ENABLE_BUGTRAP)
+    INCLUDE_DIRECTORIES(${BUGTRAP_DIR})
+endif()
 
 ADD_DEFINITIONS( -D_AFXDLL -D_USRDLL )
 
@@ -67,8 +70,12 @@ ADD_DEPENDENCIES ( AMT
     CLIB
     COMMS
     WLIB
-    BUGTRAP
 )
+
+if(ENABLE_BUGTRAP)
+    ADD_DEPENDENCIES(AMT BUGTRAP)
+    target_compile_definitions(AMT PRIVATE USE_BUGTRAP)
+endif()
 
 TARGET_LINK_LIBRARIES( AMT PRIVATE
     CLIB
@@ -76,12 +83,15 @@ TARGET_LINK_LIBRARIES( AMT PRIVATE
     COMMS
     WLIB
     ECLEDITOR
-    BUGTRAP
 
     msxml2
     Boost::filesystem
     Boost::serialization
 )
+
+if(ENABLE_BUGTRAP)
+    target_link_libraries(AMT PRIVATE BUGTRAP)
+endif()
 
 SET_TARGET_PROPERTIES(AMT PROPERTIES LINK_FLAGS "/ENTRY:\"wWinMainCRTStartup\"")
 
