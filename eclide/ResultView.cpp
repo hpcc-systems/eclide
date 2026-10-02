@@ -48,6 +48,9 @@ const std::_tstring ECLWatchStr()
     if (str.length() == 0) {
         str = static_cast<const TCHAR*>(CString(GetIConfig(QUERYBUILDER_CFG)->Get(GLOBAL_SERVER_WORKUNIT)));
         boost::algorithm::ireplace_first(str, _T("/WsWorkunits"), _T("/esp/files/index.html"));
+    } else {
+        boost::algorithm::ireplace_first(str, _T("stub.html"), _T("index.html"));
+        boost::algorithm::ireplace_first(str, _T("stub.htm"), _T("index.html"));
     }
     return str;
 }
@@ -65,12 +68,12 @@ const TCHAR * GetFramedWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 
 const TCHAR * GetWorkUnitEclWatchURL(Dali::IWorkunit *wu, CString &url)
 {
-    //http://localhost:8010/esp/files/index.html#/workunits/W20241018-162657?fullscreen=1
+    //http://localhost:8010/esp/files/index.html#/workunits/W20241018-162657?fullscreen
     std::_tstring str = ECLWatchStr();
     url = str.c_str();
     url += _T("#/workunits/");
     url += wu->GetWuid();
-    url += _T("?fullscreen=1");
+    url += _T("?fullscreen");
     url = url.Trim();
     return url;
 }
@@ -82,7 +85,7 @@ const TCHAR * GetGraphEclWatchURL(Dali::IWorkunit *wu, CString &url)
     url += _T("#/workunits/");
     url += wu->GetWuid();
     url += _T("/metrics");
-    url += _T("?fullscreen=1");
+    url += _T("?fullscreen");
     url = url.Trim();
     return url;
 }

@@ -86,7 +86,7 @@ static const TCHAR accountRoot[]	= _T("8010/Ws_Account");
 static const TCHAR smcRoot[]		= _T("8010/WsSMC");
 static const TCHAR filesprayRoot[]	= _T("8010/FileSpray");
 static const TCHAR dfuRoot[]		= _T("8010/WsDfu");
-static const TCHAR eclwatchRoot[]	= _T("8010/esp/files/stub.htm");
+static const TCHAR eclwatchRoot[]	= _T("8010/esp/files/index.html");
 
 struct ServerAndRoot
 {
