@@ -464,7 +464,7 @@ public:
 			SetDlgItemText(IDC_EDIT_SMCSERVER,url+_T("8010/WsSMC"));
 			SetDlgItemText(IDC_EDIT_SPRAYSERVER,url+_T("8010/FileSpray"));
 			SetDlgItemText(IDC_EDIT_DFUSERVER,url+_T("8010/WsDfu"));
-			SetDlgItemText(IDC_EDIT_ECLWATCH, url+_T("8010/esp/files/stub.htm"));
+			SetDlgItemText(IDC_EDIT_ECLWATCH, url+_T("8010/esp/files/index.html"));
 		}
 	}
 	void EnableServerSettings()
